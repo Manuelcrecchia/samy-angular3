@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f8f8f8;
+            font-family: Arial, sans-serif;
+        }
+        .button {
+            background-color: #ff69b4;
+            border: none;
+            color: white;
+            padding: 15px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+            border-radius: 12px;
+        }
+        @media screen and (max-width: 600px) {
+            .button {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <button class="button" onclick="buttonClicked('Area Clienti')">Area Clienti</button>
+    <button class="button" onclick="buttonClicked('Area Riservati')">Area Riservati</button>
+
+    <script>
+        function buttonClicked(buttonName) {
+            alert("Hai cliccato il bottone: " + buttonName);
+        }
+    </script>
+</body>
+</html>
