@@ -8,12 +8,8 @@ import { Router } from '@angular/router';
 export class HomeComponent {
   constructor(private router: Router) {}
 
-  buttonClicked(buttonName: string) {
-    if (buttonName === 'Area Clienti') {
-      this.router.navigate(['/path/to/clienti']);
-    } else if (buttonName === 'Area Riservati') {
-      this.router.navigate(['/login']);
-    }
+  buttonClicked() {
+    this.router.navigateByUrl('/login');
   }
 }
 

@@ -32,13 +32,7 @@
     </style>
 </head>
 <body>
-    <button class="button" onclick="buttonClicked('Area Clienti')">Area Clienti</button>
-    <button class="button" onclick="buttonClicked('Area Riservati')">Area Riservati</button>
-
-    <script>
-        function buttonClicked(buttonName) {
-            alert("Hai cliccato il bottone: " + buttonName);
-        }
-    </script>
+    <button class="button" (click)="buttonClicked()">Area Clienti</button>
+    <button class="button" (click)="buttonClicked()">Area Riservati</button>
 </body>
 </html>
