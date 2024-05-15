@@ -7,9 +7,11 @@ import { CustomerAreaComponent } from './componenti/login/customer-area/customer
 import { HomeComponent } from './componenti/home/home.component';
 import { PrivateAreaComponent } from './componenti/login/private-area/private-area.component';
 import { HomeadminComponent } from './admin/homeadmin/homeadmin.component';
+import { GlobalService } from './service/global.service';
 
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatButtonToggleGroup } from '@angular/material/button-toggle';
+import { HttpClientModule } from '@angular/common/http';
 
 
 
@@ -25,9 +27,11 @@ import { MatButtonToggleGroup } from '@angular/material/button-toggle';
     BrowserModule,
     AppRoutingModule,
     MatSlideToggleModule,
-    MatButtonToggleGroup
+    MatButtonToggleGroup,
+    HttpClientModule
   ],
     providers: [
+      GlobalService
     ],
     bootstrap: [AppComponent]
   })

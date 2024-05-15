@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { GlobalService } from '../../../SERVICE/global.service';
+import { GlobalService } from '../../../service/global.service';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Router } from '@angular/router';
 @Component({
