@@ -8,8 +8,13 @@ import { Router } from '@angular/router';
 export class HomeComponent {
   constructor(private router: Router) {}
 
-  buttonClicked() {
-    this.router.navigateByUrl('/login');
+  navigateToCustomerArea() {
+    this.router.navigateByUrl('/loginCustomer');
+  }
+
+  navigateToPrivateArea() {
+    console.log("in");
+    this.router.navigateByUrl('/loginPrivateArea');
   }
 }
 

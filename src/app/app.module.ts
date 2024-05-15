@@ -3,19 +3,23 @@ import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { LoginComponent } from './componenti/login/login.component';
+import { CustomerAreaComponent } from './componenti/login/customer-area/customer-area.component';
 import { HomeComponent } from './componenti/home/home.component';
-
+import { PrivateAreaComponent } from './componenti/login/private-area/private-area.component';
+import { HomeadminComponent } from './admin/homeadmin/homeadmin.component';
 
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatButtonToggleGroup } from '@angular/material/button-toggle';
 
 
+
 @NgModule({
   declarations: [
     AppComponent,
-    LoginComponent,
-    HomeComponent
+    HomeComponent,
+    CustomerAreaComponent,
+    PrivateAreaComponent,
+    HomeadminComponent
   ],
   imports: [
     BrowserModule,
