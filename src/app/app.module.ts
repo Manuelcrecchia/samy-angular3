@@ -12,6 +12,7 @@ import { GlobalService } from './service/global.service';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatButtonToggleGroup } from '@angular/material/button-toggle';
 import { HttpClientModule } from '@angular/common/http';
+import { SettingsAdminComponent } from './admin/settings-admin/settings-admin.component';
 
 
 
@@ -21,7 +22,8 @@ import { HttpClientModule } from '@angular/common/http';
     HomeComponent,
     CustomerAreaComponent,
     PrivateAreaComponent,
-    HomeAdminComponent
+    HomeAdminComponent,
+    SettingsAdminComponent
   ],
   imports: [
     BrowserModule,
