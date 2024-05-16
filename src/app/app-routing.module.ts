@@ -3,13 +3,13 @@ import { RouterModule, Routes } from '@angular/router';
 import { HomeComponent } from './componenti/home/home.component';
 import { CustomerAreaComponent } from './componenti/login/customer-area/customer-area.component';
 import { PrivateAreaComponent } from './componenti/login/private-area/private-area.component';
-import { HomeadminComponent } from './admin/homeadmin/homeadmin.component'; // Fixed the import for AdminAreaComponent
+import { HomeAdminComponent } from './admin/homeadmin/homeadmin.component'; // Fixed the import for HomeAdminComponent
 
 const routes: Routes = [
   { path: '', component: HomeComponent },
   { path: 'loginCustomer', component: CustomerAreaComponent },
   { path: 'loginPrivateArea', component: PrivateAreaComponent },
-  { path: 'homeAdmin', component: HomeadminComponent }, // Fixed the import for AdminAreaComponent
+  { path: 'homeAdmin', component: HomeAdminComponent }, // Fixed the import for HomeAdminComponent
 ];
 
 @NgModule({

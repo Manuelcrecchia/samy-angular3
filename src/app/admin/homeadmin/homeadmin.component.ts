@@ -1,10 +1,20 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, ElementRef } from '@angular/core';
 
 @Component({
   selector: 'app-homeadmin',
   templateUrl: './homeadmin.component.html',
-  styleUrl: './homeadmin.component.css'
+  styleUrls: ['./homeadmin.component.css']
 })
-export class HomeadminComponent {
+export class HomeAdminComponent implements OnInit {
+
+  constructor(private el: ElementRef) { }
+
+  ngOnInit() {
+  }
+
+  toggleMenu() {
+    const menu = this.el.nativeElement.querySelector('.menu');
+    menu.classList.toggle('open');
+  }
 
 }

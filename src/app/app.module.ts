@@ -6,7 +6,7 @@ import { AppComponent } from './app.component';
 import { CustomerAreaComponent } from './componenti/login/customer-area/customer-area.component';
 import { HomeComponent } from './componenti/home/home.component';
 import { PrivateAreaComponent } from './componenti/login/private-area/private-area.component';
-import { HomeadminComponent } from './admin/homeadmin/homeadmin.component';
+import { HomeAdminComponent } from './admin/homeadmin/homeadmin.component';
 import { GlobalService } from './service/global.service';
 
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
@@ -21,14 +21,14 @@ import { HttpClientModule } from '@angular/common/http';
     HomeComponent,
     CustomerAreaComponent,
     PrivateAreaComponent,
-    HomeadminComponent
+    HomeAdminComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     MatSlideToggleModule,
     MatButtonToggleGroup,
-    HttpClientModule
+    HttpClientModule,
   ],
     providers: [
       GlobalService
