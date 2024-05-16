@@ -10,11 +10,12 @@ import { HomeAdminComponent } from './admin/homeadmin/homeadmin.component';
 import { GlobalService } from './service/global.service';
 
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
-import { MatButtonToggleGroup } from '@angular/material/button-toggle';
+import { MatButtonToggleGroup, MatButtonToggleModule } from '@angular/material/button-toggle';
 import { HttpClientModule } from '@angular/common/http';
 import { SettingsAdminComponent } from './admin/settings-admin/settings-admin.component';
-
-
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { FormsModule } from '@angular/forms';
+import { MatSelectModule } from '@angular/material/select';
 
 @NgModule({
   declarations: [
@@ -31,6 +32,11 @@ import { SettingsAdminComponent } from './admin/settings-admin/settings-admin.co
     MatSlideToggleModule,
     MatButtonToggleGroup,
     HttpClientModule,
+    MatFormFieldModule,
+    FormsModule,
+    MatSelectModule,
+    MatButtonToggleModule
+
   ],
     providers: [
       GlobalService
@@ -40,3 +46,4 @@ import { SettingsAdminComponent } from './admin/settings-admin/settings-admin.co
   // Remove the existing export statement for the AppModule class
   // export class AppModule { }
 export class AppModule { }
+export class YourModule { }
