@@ -9,12 +9,13 @@ export class HomeAdminComponent implements OnInit {
 
   constructor(private el: ElementRef) { }
 
+  isMenuOpen = false;
+
   ngOnInit() {
   }
 
   toggleMenu() {
-    const menu = this.el.nativeElement.querySelector('.menu');
-    menu.classList.toggle('open');
+    this.isMenuOpen = !this.isMenuOpen;
   }
 
 }

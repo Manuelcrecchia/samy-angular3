@@ -71,16 +71,13 @@
     </style>
 </head>
 <body>
-  <div class="menu-toggle" (click)="toggleMenu()">
-    <div class="bar"></div>
-    <div class="bar"></div>
-    <div class="bar"></div>
-</div>
-
-<div class="menu">
-    <button class="button">gestione utenti</button>
-
-</div>
+    <div class="menu-container">
+        <button (click)="toggleMenu()" class="menu-toggle">Toggle Menu</button>
+        <div *ngIf="isMenuOpen" class="menu">
+          <a href="#gestione-utenti">Gestione Utenti</a>
+          <a href="#gestione-dipendenti">Gestione Dipendenti</a>
+        </div>
+      </div>
 
     <img class="logo" src="https://www.samypulizie.it/wp-content/uploads/2020/01/logo.png" alt="Logo">
 
