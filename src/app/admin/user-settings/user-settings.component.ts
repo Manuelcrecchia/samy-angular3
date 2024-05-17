@@ -23,7 +23,9 @@ export class UserSettingsComponent {
         responseType: 'text',
       })
       .subscribe((response) => {
+
         let data = JSON.parse(response);
+        console.log(data);
         if (data.length > 0) {
           for (let i = 0; i < data.length; i++) {
             this.admins[i] = data[i];
@@ -35,7 +37,7 @@ export class UserSettingsComponent {
   ngOnChanges(){
     this.admins = []
     this.http
-      .get(this.globalService.url + 'admin/admin/getAll', {
+      .get(this.globalService.url + 'admin/getAll', {
         headers: this.globalService.headers,
         responseType: 'text',
       })
@@ -55,11 +57,11 @@ export class UserSettingsComponent {
       cognome: this.adminAdd.cognome,
       email: this.adminAdd.email,
       codiceOperatore: this.adminAdd.codiceOperatore,
-      admin: this.adminAdd.admin
+      admin: "S"
     };
   
     this.http
-      .post(this.globalService.url + 'admin/admin/add', body, {
+      .post(this.globalService.url + 'admin/add', body, {
         headers: this.globalService.headers,
         responseType: 'text',
       }).subscribe((res)=> {
@@ -71,7 +73,7 @@ export class UserSettingsComponent {
    deleteAdmin(i: number)  {
     let body = { email: this.admins[i].email };
     this.http
-      .post(this.globalService.url + 'admin/admin/delete', body, {
+      .post(this.globalService.url + 'admin/delete', body, {
         headers: this.globalService.headers,
         responseType: 'text',
       }).subscribe((res)=> {

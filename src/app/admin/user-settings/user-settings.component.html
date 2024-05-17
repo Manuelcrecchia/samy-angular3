@@ -1,4 +1,4 @@
-<div class="example-container" *ngFor="let admin of admins;  let i = index">
+<div *ngFor="let admin of admins;  let i = index">
     <mat-label>{{admin.nome}}</mat-label>
 
       <mat-label>{{admin.cognome}}</mat-label>
@@ -16,7 +16,7 @@
 
 
   
-  <mat-form-field>
+  <!-- <mat-form-field>
     <mat-label>Nome</mat-label>
     <input matInput #input [(ngModel)]="adminAdd.nome">
   </mat-form-field>
@@ -44,4 +44,4 @@
         </mat-select>
       </mat-form-field>
 
-    <button mat-raised-button color="primary" (click)="addAdmin()">Aggiungi</button>
+    <button mat-raised-button color="primary" (click)="addAdmin()">Aggiungi</button> -->
