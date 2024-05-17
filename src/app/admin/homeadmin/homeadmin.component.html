@@ -91,6 +91,12 @@
         }
 
         @media (min-width: 601px) {
+          .button-group-1,
+.button-group-2 {
+    display: flex;
+    flex-direction: column;
+}
+
             .menu-container {
                 margin-top: 120px;
             }
@@ -105,10 +111,15 @@
         }
 
         @media (min-width: 1024px) {
+          button-group-1,
+    .button-group-2 {
+        flex-direction: row;
+    }
             body {
                 background-image: url('https://static.vecteezy.com/ti/vettori-gratis/p1/6580883-dipendenti-di-donna-di-un-impresa-di-pulizie-su-sfondo-bianco-governanti-illustrazione-vettoriale.jpg');
                 background-size: cover;
                 background-position: center;
+                height: 100%;
             }
 
             .logo {
@@ -123,18 +134,23 @@
     </style>
 </head>
 <body>
-    <button (click)="toggleMenu()" class="menu-toggle">Menu</button>
-    <div *ngIf="isMenuOpen" class="menu">
-        <a href="#gestione-utenti">Gestione Utenti</a>
-        <a href="#gestione-dipendenti">Gestione Dipendenti</a>
-    </div>
-    <div class="menu-container">
-        <img class="logo" src="https://www.samypulizie.it/wp-content/uploads/2020/01/logo.png" alt="Logo">
-        <button class="button">Gestione preventivi</button>
-        <button class="button">Gestione clienti</button>
-        <button class="button">Gestione Dipendenti</button>
-        <button class="button">Calendario</button>
-        <button class="button">Impostazioni</button>
-    </div>
+  <button (click)="toggleMenu()" class="menu-toggle">Menu</button>
+  <div *ngIf="isMenuOpen" class="menu">
+      <a href="#gestione-utenti">Gestione Utenti</a>
+      <a href="#gestione-dipendenti">Gestione Dipendenti</a>
+  </div>
+  <div class="menu-container">
+      <img class="logo" src="https://www.samypulizie.it/wp-content/uploads/2020/01/logo.png" alt="Logo">
+      <div class="button-group-1">
+          <button class="button">Gestione preventivi</button>
+          <button class="button">Gestione clienti</button>
+      </div>
+      <div class="button-group-2">
+          <button class="button">Gestione Dipendenti</button>
+          <button class="button">Calendario</button>
+          <button class="button">Impostazioni</button>
+      </div>
+  </div>
 </body>
 </html>
+
