@@ -1,0 +1,47 @@
+<div class="example-container" *ngFor="let admin of admins;  let i = index">
+    <mat-label>{{admin.nome}}</mat-label>
+
+      <mat-label>{{admin.cognome}}</mat-label>
+
+      <mat-label>{{admin.email}}</mat-label>
+
+      <mat-label>{{admin.codiceOperatore}}</mat-label>
+
+      <mat-label>{{admin.admin}}</mat-label>
+
+
+      <button mat-raised-button color="primary" (click)="deleteAdmin(i)">Elimina</button>
+
+    </div>
+
+
+  
+  <mat-form-field>
+    <mat-label>Nome</mat-label>
+    <input matInput #input [(ngModel)]="adminAdd.nome">
+  </mat-form-field>
+
+  <mat-form-field>
+      <mat-label>Cognome</mat-label>
+      <input matInput #input [(ngModel)]="adminAdd.cognome">
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Email</mat-label>
+      <input matInput #input [(ngModel)]="adminAdd.email">
+    </mat-form-field>
+
+    <mat-form-field>
+        <mat-label>Codice operatore</mat-label>
+        <input matInput #input [(ngModel)]="adminAdd.codiceOperatore">
+      </mat-form-field>    
+
+      <mat-form-field>
+        <mat-label>Admin</mat-label>
+        <mat-select [(ngModel)]="adminAdd.admin">
+          <mat-option value="U">Ufficio</mat-option>
+          <mat-option value="C">Caposquadra</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+    <button mat-raised-button color="primary" (click)="addAdmin()">Aggiungi</button>

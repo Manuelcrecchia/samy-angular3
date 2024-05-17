@@ -1,4 +1,6 @@
 import { Component, OnInit, ElementRef } from '@angular/core';
+import { Router } from '@angular/router';
+
 
 @Component({
   selector: 'app-homeadmin',
@@ -7,7 +9,7 @@ import { Component, OnInit, ElementRef } from '@angular/core';
 })
 export class HomeAdminComponent implements OnInit {
 
-  constructor(private el: ElementRef) { }
+  constructor(private el: ElementRef, private router: Router) { }
 
   isMenuOpen: boolean = false;
 
@@ -16,6 +18,11 @@ export class HomeAdminComponent implements OnInit {
 
   toggleMenu() {
     this.isMenuOpen = !this.isMenuOpen;
+  }
+
+  navigateToUserSettings() {
+    this.router.navigateByUrl('/userSettings');
+
   }
 
 

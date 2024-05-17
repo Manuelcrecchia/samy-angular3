@@ -167,8 +167,8 @@
 <body>
   <button (click)="toggleMenu()" class="menu-toggle" ><i class="fas fa-cog"></i></button>
   <div *ngIf="isMenuOpen" class="menu">
-      <a href="#gestione-utenti">Gestione Utenti</a>
-      <a href="#gestione-dipendenti">Gestione Dipendenti</a>
+      <a (click)="navigateToUserSettings()">Gestione Utenti</a>
+      <a>Gestione Dipendenti</a>
   </div>
   <div class="logo">
       <img class="logo" src="https://www.samypulizie.it/wp-content/uploads/2020/01/logo.png" alt="Logo">

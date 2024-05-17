@@ -15,6 +15,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { FormsModule } from '@angular/forms';
 import { MatSelectModule } from '@angular/material/select';
+import { UserSettingsComponent } from './admin/user-settings/user-settings.component';
 
 
 @NgModule({
@@ -24,6 +25,7 @@ import { MatSelectModule } from '@angular/material/select';
     CustomerAreaComponent,
     PrivateAreaComponent,
     HomeAdminComponent,
+    UserSettingsComponent,
   ],
   imports: [
     BrowserModule,
