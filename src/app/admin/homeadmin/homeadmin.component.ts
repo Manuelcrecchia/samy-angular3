@@ -9,7 +9,7 @@ export class HomeAdminComponent implements OnInit {
 
   constructor(private el: ElementRef) { }
 
-  isMenuOpen = false;
+  isMenuOpen: boolean = false;
 
   ngOnInit() {
   }
@@ -17,5 +17,7 @@ export class HomeAdminComponent implements OnInit {
   toggleMenu() {
     this.isMenuOpen = !this.isMenuOpen;
   }
+
+
 
 }

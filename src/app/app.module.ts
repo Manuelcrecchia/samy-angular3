@@ -12,7 +12,6 @@ import { GlobalService } from './service/global.service';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatButtonToggleGroup, MatButtonToggleModule } from '@angular/material/button-toggle';
 import { HttpClientModule } from '@angular/common/http';
-import { SettingsAdminComponent } from './admin/settings-admin/settings-admin.component';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { FormsModule } from '@angular/forms';
 import { MatSelectModule } from '@angular/material/select';
@@ -24,7 +23,6 @@ import { MatSelectModule } from '@angular/material/select';
     CustomerAreaComponent,
     PrivateAreaComponent,
     HomeAdminComponent,
-    SettingsAdminComponent
   ],
   imports: [
     BrowserModule,
