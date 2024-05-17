@@ -1,28 +1,39 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
+
+    <!-- ... altre cose ... -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+      <!-- ... altre cose ... -->
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+
+
+    <!-- ... altre cose ... -->
+
+
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <style>
         body {
-            position: relative;
+            position: relative;-regular
             display: block;
             overflow: hidden;
             margin: 0;
             font-family: Arial, sans-serif;
             background-color: #f0f0f0;
-        }
 
+        }
+        -regular
         .menu-toggle {
             position: absolute;
             top: 20px;
-            right: 20px;
+            right: 80px;
             border: none;
             color: white;
             background-color: #ff69b4;
             padding: 20px;
             text-align: center;
             text-decoration: none;
-            font-size: 18px;
+            font-size: 104px;
             margin: 4px 2px;
             cursor: pointer;
             border-radius: 10px;
@@ -30,17 +41,7 @@
         }
 
         .menu-toggle:hover {
-            background-color: #ff1493;
-        }
-
-        .menu {
-            position: absolute;
-            top: 80px;
-            right: 20px;
-            background-color: #fff;
-            border: 1px solid #ccc;
-            border-radius: 10px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            background-color: #ff1493;-regular
         }
 
         .menu a {
@@ -51,20 +52,8 @@
             transition: background-color 0.3s ease;
         }
 
-        .menu a:hover {
-            background-color: #f0f0f0;
-        }
 
-        .menu-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            width: 100%;
-            max-width: 400px;
-            margin: auto;
-            margin-top: 150px;
-        }
+
 
         .button {
             background-color: #ff69b4;
@@ -79,6 +68,7 @@
             border-radius: 10px;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
             transition: background-color 0.3s ease;
+            margin-top: 30px
         }
 
         .button:hover {
@@ -86,70 +76,112 @@
         }
 
         .logo {
-            width: 300px;
-            height: auto;
-        }
+            width: 250px;
 
-        @media (min-width: 601px) {
-          .button-group-1,
+            margin-top: -400;
+        }
+        .button i {
+    font-size: 54px; /* Cambia questo valore per modificare la dimensione delle icone */
+}
+.button-group-1,
 .button-group-2 {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
+
+}
+.menu-toggle {
+                right: 30px;
+            }
+            .button {
+    margin-right: 20px; /* Aggiungi un margine a destra di ogni bottone */
 }
 
-            .menu-container {
-                margin-top: 120px;
-            }
+.button:last-child {
+    margin-right: 0; /* Rimuovi il margine dal ultimo bottone */
+}
+@media (max-width: 600px) {
+    .menu-toggle i {
+        font-size: 40px; /* Ingrandisci l'icona del menu toggle */
+    }
+}
 
-            .menu-toggle {
-                right: 20px;
-            }
+        @media (min-width: 1024px)
 
-            .menu {
-                right: 20px;
-            }
-        }
+{
+  .button {
+    margin-right: 20px; /* Aggiungi un margine a destra di ogni bottone */
+}
 
-        @media (min-width: 1024px) {
-          button-group-1,
+.button:last-child {
+    margin-right: 0; /* Rimuovi il margine dal ultimo bottone */
+}
+
+
+
+          .menu {background-color: #ffffff;
+            border-right:5px solid black;
+            color: rgb(0, 0, 0);
+            padding: 15px 20px;
+            text-decoration: none;
+            font-size: 18px;
+            margin: 0px 0;
+            cursor: pointer;
+            border-radius: 10px solid black;
+            width: 8%;
+            border-right: 5px;
+}
+.menu-toggle i {
+    font-size: 44px; /* Cambia questo valore per modificare la dimensione delle icone */
+}
+.button i {
+    font-size: 74px; /* Cambia questo valore per modificare la dimensione delle icone */
+}
+.button-group-1,
     .button-group-2 {
         flex-direction: row;
+        margin-left: 700px;
+        margin-top: -20px;
+        margin-bottom: 0px;
     }
             body {
                 background-image: url('https://static.vecteezy.com/ti/vettori-gratis/p1/6580883-dipendenti-di-donna-di-un-impresa-di-pulizie-su-sfondo-bianco-governanti-illustrazione-vettoriale.jpg');
-                background-size: cover;
+                background-size: 70%;
                 background-position: center;
                 height: 100%;
+                width: 100%;
             }
 
             .logo {
                 width: 500px;
                 margin-top: 50px; /* Alziamo la scritta "Samy" */
+                margin-left: 300px; /* Spostiamo la scritta "Samy" a destra */
             }
 
             .menu-container {
                 margin-top: 350px; /* Alziamo i pulsanti */
+                margin-right: 300px; /* Spostiamo i pulsanti a destra */
             }
         }
     </style>
 </head>
 <body>
-  <button (click)="toggleMenu()" class="menu-toggle">Menu</button>
+  <button (click)="toggleMenu()" class="menu-toggle" ><i class="fas fa-cog"></i></button>
   <div *ngIf="isMenuOpen" class="menu">
       <a href="#gestione-utenti">Gestione Utenti</a>
       <a href="#gestione-dipendenti">Gestione Dipendenti</a>
   </div>
-  <div class="menu-container">
+  <div class="logo">
       <img class="logo" src="https://www.samypulizie.it/wp-content/uploads/2020/01/logo.png" alt="Logo">
+    </div>
       <div class="button-group-1">
-          <button class="button">Gestione preventivi</button>
-          <button class="button">Gestione clienti</button>
+          <button class="button">  <i class="fas fa-user"></i><br>Gestione Dipendenti</button>
+          <button class="button"><i class="fas fa-restroom"></i><br>Gestione Clienti</button>
+
       </div>
       <div class="button-group-2">
-          <button class="button">Gestione Dipendenti</button>
-          <button class="button">Calendario</button>
-          <button class="button">Impostazioni</button>
-      </div>
+          <button class="button"><i class="fas fa-folder"></i><br>Gestione Preventivi</button>
+          <button class="button"> <i class="fas fa-calendar"></i><br>Calendario ..........</button>
+
   </div>
 </body>
 </html>
