@@ -3,22 +3,20 @@ import { HttpClient } from '@angular/common/http';
 import { GlobalService } from '../../service/global.service';
 
 @Component({
-  selector: 'app-user-settings',
-  templateUrl: './user-settings.component.html',
-  styleUrl: './user-settings.component.css'
+  selector: 'app-employees-settings',
+  templateUrl: './employees-settings.component.html',
+  styleUrl: './employees-settings.component.css'
 })
-export class UserSettingsComponent {
-
-  adminOptions = ['U', 'C'];
-  adminAdd: {nome: string, cognome: string, email:string, codiceOperatore:string, admin: string} = {nome: '', cognome: '', email: '', codiceOperatore: '', admin: 'U'};
-  admins : {nome: string, cognome: string, email:string, codiceOperatore:string, admin: string}[] = []
+export class EmployeesSettingsComponent {
+  employeesAdd: {nome: string, cognome: string, email:string, cellulare:string} = {nome: '', cognome: '', email: '', cellulare: ''};
+  employeess : {nome: string, cognome: string, email:string, cellulare:string}[] = []
   constructor(
     private http: HttpClient,
     public globalService: GlobalService,
   ) {}
   ngOnInit() {
     this.http
-      .get(this.globalService.url + 'admin/getAll', {
+      .get(this.globalService.url + 'employees/getAll', {
         headers: this.globalService.headers,
         responseType: 'text',
       })
@@ -28,16 +26,16 @@ export class UserSettingsComponent {
         console.log(data);
         if (data.length > 0) {
           for (let i = 0; i < data.length; i++) {
-            this.admins[i] = data[i];
+            this.employeess[i] = data[i];
           }
         }
       });
   }
   
   ngOnChanges(){
-    this.admins = []
+    this.employeess = []
     this.http
-      .get(this.globalService.url + 'admin/getAll', {
+      .get(this.globalService.url + 'employees/getAll', {
         headers: this.globalService.headers,
         responseType: 'text',
       })
@@ -45,24 +43,22 @@ export class UserSettingsComponent {
         let data = JSON.parse(response);
         if (data.length > 0) {
           for (let i = 0; i < data.length; i++) {
-            this.admins[i] = data[i];
+            this.employeess[i] = data[i];
           }
         }
       });
   }
   
-   addAdmin() {
+   addEmployees() {
     let body = {
-      nome: this.adminAdd.nome,
-      cognome: this.adminAdd.cognome,
-      email: this.adminAdd.email,
-      codiceOperatore: this.adminAdd.codiceOperatore,
-      admin: this.adminAdd.admin
-
+      nome: this.employeesAdd.nome,
+      cognome: this.employeesAdd.cognome,
+      email: this.employeesAdd.email,
+      codiceOperatore: this.employeesAdd.cellulare,
     };
   
     this.http
-      .post(this.globalService.url + 'admin/add', body, {
+      .post(this.globalService.url + 'employees/add', body, {
         headers: this.globalService.headers,
         responseType: 'text',
       }).subscribe((res)=> {
@@ -71,10 +67,10 @@ export class UserSettingsComponent {
      ;
   }
   
-   deleteAdmin(i: number)  {
-    let body = { email: this.admins[i].email };
+   deleteEmployees(i: number)  {
+    let body = { email: this.employeess[i].email };
     this.http
-      .post(this.globalService.url + 'admin/delete', body, {
+      .post(this.globalService.url + 'employees/delete', body, {
         headers: this.globalService.headers,
         responseType: 'text',
       }).subscribe((res)=> {
@@ -82,5 +78,4 @@ export class UserSettingsComponent {
       this.ngOnChanges();
       
   }
-  
-  } 
+}

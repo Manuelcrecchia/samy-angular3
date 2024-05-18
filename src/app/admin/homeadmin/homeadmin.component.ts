@@ -25,6 +25,10 @@ export class HomeAdminComponent implements OnInit {
 
   }
 
+  navigateToEmployeesSettings() {
+    this.router.navigateByUrl('/employeesSettings')
+  }
+
 
 
 }

@@ -1,43 +1,27 @@
-body {
-    font-family: Arial, sans-serif;
-    background-color: #f0f0f0;
-    margin: 0;
-    padding: 20px;
-}
-
-.example-container {
-    background-color: white;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    padding: 20px;
-    margin-bottom: 20px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+.admin-list {
     display: flex;
-    align-items: center;
-    justify-content: space-between;
-}
-
-.example-container mat-label {
-    margin: 0 10px;
-    font-weight: bold;
-    flex: 1;
-}
-
-.example-container button {
-    margin-left: 20px;
-}
-
-mat-form-field {
-    display: block;
-    margin-bottom: 20px;
-}
-
-mat-form-field input, mat-form-field mat-select {
+    flex-direction: column;
+    gap: 16px;
+  }
+  
+  .admin-card {
     width: 100%;
-}
-
-button[mat-raised-button] {
-    margin-top: 10px;
-    display: block;
-    width: 100%;
-}
+    margin-bottom: 16px;
+  }
+  
+  .admin-details {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  
+  .admin-form {
+    margin-top: 32px;
+  }
+  
+  .add-admin-form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  
