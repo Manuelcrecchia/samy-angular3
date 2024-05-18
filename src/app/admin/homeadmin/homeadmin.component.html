@@ -99,7 +99,27 @@
 .button:last-child {
     margin-right: 0; /* Rimuovi il margine dal ultimo bottone */
 }
+
+
+/* CSS */
+/* CSS */
+#big-button {
+  background-color: #ff69b4;
+            border: none;
+            color: white;
+            padding: 25px 40px;
+            text-align: center;
+            text-decoration: none;
+            font-size: 18px;
+            margin: 20px 0;
+            cursor: pointer;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            transition: background-color 0.3s ease;
+            margin-top: 30px
+}
 @media (max-width: 600px) {
+
     .menu-toggle i {
         font-size: 40px; /* Ingrandisci l'icona del menu toggle */
     }
@@ -116,8 +136,22 @@
     margin-right: 0; /* Rimuovi il margine dal ultimo bottone */
 }
 
-
-
+/* CSS */
+#big-button {
+  background-color: #ff69b4;
+  border: none;
+  color: white;
+  padding: 30px 60px; /* Usa 'em' o 'rem' per un layout reattivo */
+  text-align: center;
+  text-decoration: none;
+  font-size: 20px; /* Usa 'em' o 'rem' per un layout reattivo */
+  margin: 1em 0;
+  cursor: pointer;
+  border-radius: 10px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  transition: background-color 0.3s ease;
+  margin-top: 30px; /* Usa 'em' o 'rem' per un layout reattivo */
+}
           .menu {background-color: #ffffff;
             border-right:5px solid black;
             color: rgb(0, 0, 0);
@@ -180,9 +214,13 @@
       </div>
       <div class="button-group-2">
           <button class="button"><i class="fas fa-folder"></i><br>Gestione Preventivi</button>
-          <button class="button"> <i class="fas fa-calendar"></i><br>Calendario ..........</button>
+          <button id="big-button"><i class="fas fa-calendar fa-3x"></i><br>Calendario </button>
+
 
   </div>
 </body>
 </html>
 
+
+
+<!-- HTML -->

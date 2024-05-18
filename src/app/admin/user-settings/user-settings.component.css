@@ -3,25 +3,24 @@
     flex-direction: column;
     gap: 16px;
   }
-  
+
   .admin-card {
     width: 100%;
     margin-bottom: 16px;
   }
-  
+
   .admin-details {
     display: flex;
     flex-direction: column;
     gap: 4px;
   }
-  
+
   .admin-form {
     margin-top: 32px;
   }
-  
+
   .add-admin-form {
     display: flex;
     flex-direction: column;
     gap: 16px;
   }
-  
