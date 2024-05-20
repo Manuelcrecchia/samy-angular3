@@ -33,6 +33,7 @@ import {MatAutocompleteModule} from '@angular/material/autocomplete';
 import {MatExpansionModule} from '@angular/material/expansion';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { EmployeesSettingsComponent } from './admin/employees-settings/employees-settings.component';
+import { HomesitoComponent } from './componenti/sito/homesito/homesito.component';
 
 
 
@@ -45,6 +46,7 @@ import { EmployeesSettingsComponent } from './admin/employees-settings/employees
     HomeAdminComponent,
     UserSettingsComponent,
     EmployeesSettingsComponent,
+    HomesitoComponent,
   ],
   imports: [
     BrowserModule,
