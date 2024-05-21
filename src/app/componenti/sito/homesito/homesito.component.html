@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Il mio sito</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+      background-image: url('https://www.regimeforfettario.it/wp-content/uploads/2019/05/aprire-partita-iva-impresa-pulizie.jpg');
+  background-repeat: no-repeat;
+  background-size: cover;
+    }
+    .navbar {
+      background-color: pink;
+      padding: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .navbar a {
+      color: white;
+      text-decoration: none;
+    }
+    .menu {
+      display: flex;
+      list-style: none;
+      padding-left: 0;
+    }
+    .menu a {
+      padding: 20px;
+      font-size: 1.2em;
+    }
+    .dropdown {
+      position: relative;
+    }
+    .dropdown-content {
+      display: none;
+      position: absolute;
+      background-color: white; /* Cambia il colore di sfondo in bianco */
+      min-width: 160px;
+      box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+      z-index: 1;
+    }
+    .dropdown-content a {
+      color: black; /* Cambia il colore del testo in nero */
+      margin: 10px; /* Aumenta il margine tra i link */
+      padding: 5px;
+      display: block; /* Aggiunge un blocco per ogni link */
+    }
+    .dropdown:hover .dropdown-content {
+      display: block;
+    }
+    .menu-checkbox {
+      display: none;
+    }
+    .menu-toggle {
+      display: none;
+      z-index: 2;
+    }
+    .access-button {
+      background-color: blue;
+      color: white;
+      padding: 10px;
+      border: none;
+      cursor: pointer;
+    }
+    .access-button-mobile {
+      display: none;
+    }
+    .access-button-mobile a {
+      color: blue;
+    }
+    @media (max-width: 600px) {
+      .body {
+      flex-direction: column;
+     background-image: url( https://8edb9ea907.cbaul-cdnwnd.com/57cf554292313d85c7a482fb45cec176/200000000-d40c1d50d4/impresa-di-pulizie.jpg?ph=8edb9ea907);
+    }
+      .navbar {
+        flex-direction: column;
+        width: auto;
+      }
+      .navbar {
+        flex-direction: column;
+      }
+      .navbar-brand {
+        order: -1;
+      }
+      .menu-toggle {
+        display: block;
+        order: 1;
+        margin-left: auto;
+      }
+      .navbar a:not(.logo) {
+        color: black;
+      }
+      .menu {
+        display: none;
+        position: absolute;
+        width: 100%;
+        flex-direction: column;
+        background-color: white;
+      }
+      .menu a {
+        display: block;
+        padding: 10px;
+        font-size: 1em;
+      }
+      .menu-checkbox:checked ~ .menu {
+        display: flex;
+      }
+      .dropdown:hover .dropdown-content {
+        display: none;
+      }
+      .dropdown-content {
+        position: static;
+        box-shadow: none;
+      }
+      .dropdown-content a {
+        border: none;
+        margin: 0;
+        padding: 10px;
+      }
+      .access-button {
+        display: none;
+      }
+      .access-button-mobile {
+        display: block;
+      }
+    }
+  </style>
+</head>
+<body>
+  <nav class="navbar">
+    <a class="navbar-brand" href="#">
+      <img src="https://www.samypulizie.it/wp-content/uploads/2020/01/logo.png" alt="Logo" style="height: 40px;">
+    </a>
+    <input type="checkbox" class="menu-checkbox" id="menu-checkbox" />
+    <label for="menu-checkbox" class="menu-toggle">&#9776;</label>
+    <ul class="menu">
+      <li><a href="#home">Home</a></li>
+      <li class="dropdown">
+        <a href="#" class="dropdown-toggle">Contatti</a>
+        <div class="dropdown-content">
+          <a href="mailto:info@samypulizie.it">email</a>
+          <a href="https://www.google.com/maps/dir/Via+Tirino,+147,+65129+Pescara+PE/'45.59135,10.243048'/@44.0076457,10.8110617,8z/data=!3m1!4b1!4m11!4m10!1m5!1m1!1s0x1331a6223b8afae7:0xe0f8329b5888d54d!2m2!1d14.2181475!2d42.4462893!1m3!2m2!1d10.243048!2d45.59135?hl=it&entry=ttu">Sede Commerciale</a>
+        </div>
+      </li>
+      <li class="dropdown">
+        <a href="#" class="dropdown-toggle">Servizi</a>
+        <div class="dropdown-content">
+          <a href="uffici.html">Pulizia Uffici Pubblici/Privati</a>
+          <a href="condomini.html">Pulizia Condomini</a>
+          <a href="condomini.html">sanificazioni</a>
+        </div>
+      </li>
+      <li><a href="#galleria">Galleria</a></li>
+      <li class="access-button-mobile" (click)="navigateToHome()" >Accedi</li>
+    </ul>
+    <button class="access-button" (click)="navigateToHome()" >Accedi</button>
+  </nav>
+</body>
+</html>
