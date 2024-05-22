@@ -1,6 +1,5 @@
 import { NgModule, Component } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { HomeComponent } from './componenti/home/home.component';
 import { CustomerAreaComponent } from './componenti/login/customer-area/customer-area.component';
 import { PrivateAreaComponent } from './componenti/login/private-area/private-area.component';
 import { HomeAdminComponent } from './admin/homeadmin/homeadmin.component'; // Fixed the import for HomeAdminComponent
@@ -11,7 +10,6 @@ import { HomesitoComponent } from './componenti/sito/homesito/homesito.component
 
 const routes: Routes = [
   { path: '', component: HomesitoComponent },
-  { path: 'home', component: HomeComponent },
   { path: 'loginCustomer', component: CustomerAreaComponent },
   { path: 'loginPrivateArea', component: PrivateAreaComponent },
   { path: 'homeAdmin', component: HomeAdminComponent },

@@ -10,9 +10,12 @@ import { Router } from '@angular/router';
 export class HomesitoComponent {
   constructor(private router: Router) {}
 
-
-  navigateToHome() {
-    this.router.navigateByUrl('/home');
+  navigateToCustomerArea() {
+    this.router.navigateByUrl('/loginCustomer');
   }
 
+  navigateToPrivateArea() {
+    console.log("in");
+    this.router.navigateByUrl('/loginPrivateArea');
+  }
 }

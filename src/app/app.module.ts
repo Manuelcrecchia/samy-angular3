@@ -4,7 +4,6 @@ import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { CustomerAreaComponent } from './componenti/login/customer-area/customer-area.component';
-import { HomeComponent } from './componenti/home/home.component';
 import { PrivateAreaComponent } from './componenti/login/private-area/private-area.component';
 import { HomeAdminComponent } from './admin/homeadmin/homeadmin.component';
 import { GlobalService } from './service/global.service';
@@ -40,7 +39,6 @@ import { HomesitoComponent } from './componenti/sito/homesito/homesito.component
 @NgModule({
   declarations: [
     AppComponent,
-    HomeComponent,
     CustomerAreaComponent,
     PrivateAreaComponent,
     HomeAdminComponent,
