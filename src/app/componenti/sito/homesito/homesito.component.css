@@ -1,7 +1,231 @@
+/* CSS per desktop */
+
+
+
+
 .navbar {
+  display: flex;
+  justify-content: space-between;
   background-color: pink;
+  padding: 10px;
+  height: 50px;
+  transform: scale(1);
+  width: 100%; /* Ridimensiona l'intera barra del menu all'80% della sua dimensione originale */
+margin-top: -20px;
+}
+/* Stile per il bottone "Preventivi" */
+.button-preventivi {
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  cursor: pointer;
+  border-radius: 4px;
+  background: purple; /* Imposta il colore di sfondo del bottone a viola */
+  color: white; /* Imposta il colore del testo del bottone a bianco */
+  padding: 10px 20px; /* Aggiunge 10px di spazio sopra e sotto il testo del bottone e 20px di spazio ai lati */
+  text-decoration: none; /* Rimuove il sottolineamento dal testo del bottone */
+  transition: background 0.5s; /* Aggiunge un effetto di transizione al cambiamento del colore di sfondo del bottone */
 }
 
-.dropdown-menu {
-  background-color: pink;
+/* Cambia il colore di sfondo del bottone quando si passa il mouse sopra */
+.button-preventivi:hover {
+  background: darkviolet; /* Cambia il colore di sfondo del bottone a un viola più scuro quando si passa il mouse sopra */
+}
+.logo {
+  order: -1;
+  transform: scale(0.4);
+  height: 40px;
+  width: 100px; /* Ridimensiona il logo all'80% della sua dimensione originale */
+}
+.menu-item {
+  list-style: none; /* Rimuove i punti elenco */
+}
+
+.menu {
+  display: flex;
+  transform: scale(0.8);
+  padding:10px;
+  ;/* Ridimensiona il menu all'80% della sua dimensione originale */
+}
+
+
+.dropdown:hover .dropdown-content {
+  display: none;
+}
+
+
+
+
+.button {
+  background-color: rgb(47, 0, 255);
+  color: white;
+  border: 30px;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  cursor: pointer;
+  border-radius: 4px;
+  background: linear-gradient(to right, rgb(47, 0, 255), rgb(213, 3, 255));
+  transition: background 0.5s;
+  margin-top: -30px;
+  margin-left: 100px;
+}
+
+.button:hover {
+  background: linear-gradient(to right, rgb(158, 48, 255), rgb(255, 0, 234));
+}
+.menu-toggle-checkbox {
+  visibility: hidden; /* Nasconde il checkbox ma mantiene la sua funzionalità */
+}
+
+.menu-toggle {
+  margin-right: 1000px;
+  display: none; /* Nascond0e il menu hamburger di default */
+}
+.dropdown-content {
+  text-align: center;
+  display: none; /* Nasconde il contenuto del dropdown di default */
+  position: absolute; /* Posiziona il dropdown rispetto al suo contenitore */
+  background-color: transparent; /* Rende il colore di sfondo del dropdown trasparente */
+  width: auto; /* Imposta la larghezza minima del dropdown */
+  padding: 10px; /* Aggiunge un po' di spazio intorno ai bottoni */
+  margin-top: -10px
+}
+.dropdown-content a {
+  display: block;
+  border: 1px solid black;
+  margin: 40px 25px; /* Aggiunge 10px di spazio sopra e sotto ogni bottone e 5px di spazio ai lati */
+  padding: 75px;
+  background-color: transparent;
+  margin-top: -50px;
+}
+.dropdown:hover .dropdown-content {
+  text-align: center;
+  display: block; /* Mostra il contenuto del dropdown quando si passa il mouse sopra il suo contenitore */
+}
+.menu-item a {
+  background-color: rgb(255, 196, 0);
+  color: white;
+  border: none;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 10px 50px;
+  cursor: pointer;
+  border-radius: 20px;
+  background: linear-gradient(to right, rgb(0, 132, 255), rgb(0, 0, 0));
+  transition: background 0.5s;
+  margin-top: -10px;
+}
+.menu-item a:hover {
+  background: linear-gradient(to right, rgb(158, 48, 255), rgb(47, 0, 255));
+}
+.dropdown-content li {
+  list-style: none; /* Rimuove i punti elenco */
+}
+
+/* Il resto del tuo CSS va qui */
+
+/* Il resto del tuo CSS va qui */
+/* CSS per dispositivi mobili */
+@media (max-width: 601px) {
+  body {
+    background-color: pink;
+  }
+
+  .navbar {
+    flex-direction: column;
+    height: auto;
+  }
+
+  .menu {
+    display: none;
+    margin-left: -90px;
+  }
+
+  .menu-toggle-checkbox:checked ~ .menu {
+    display: block;
+  }
+
+  .button {
+    background-color: rgb(47, 0, 255);
+    color: white;
+    border: none;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+    border-radius: 4px;
+    background: linear-gradient(to right, rgb(47, 0, 255), rgb(158, 48, 255));
+    transition: background 0.5s;
+  }
+
+  .button:hover {
+    background: linear-gradient(to right, rgb(158, 48, 255), rgb(225, 0, 255));
+  }
+ /* Stile base per i link del menu */
+.menu-item a {
+  display: block;
+  color: white;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+  border-bottom: 1px solid white;
+  margin-right: 200px;
+}
+.menu-item {
+  float: none;
+
+}
+
+  .menu-toggle {
+    display: block; /* Nasconde il menu hamburger di default */
+
+  }
+  .dropdown:hover .dropdown-content {
+    display: block;
+  }
+  .dropdown:focus-within .dropdown-content {
+    display: block;
+  }
+  .dropdown-content {
+    margin-top: -70px;
+    height: 1600px;
+    left: 200px;
+    text-align: center;
+    display: none; /* Nasconde il contenuto del dropdown di default */
+    position: absolute; /* Posiziona il dropdown rispetto al suo contenitore */
+    background-color: transparent; /* Rende il colore di sfondo del dropdown trasparente */
+    width: auto; /* Imposta la larghezza minima del dropdown */
+    padding: 10px; /* Aggiunge un po' di spazio intorno ai bottoni */
+  }
+  .dropdown-content a {
+    display: block; /* Fa sì che ogni link occupi una propria riga */
+    border: 1px solid rgb(255, 255, 255); /* Aggiunge un bordo intorno a ogni link */
+    margin: 5px 0; /* Aggiunge un po' di spazio sopra e sotto ogni link */
+    padding: 5px; /* Aggiunge un po' di spazio intorno al testo di ogni link */
+    background-color: transparent; /* Rende il colore di sfondo di ogni link trasparente */
+  }
+
+  .menu-item a {
+    color: rgb(5, 5, 5); /* Imposta il colore del testo */
+    text-decoration: none; /* Rimuove le sottolineature */
+    font-size: 26px; /* Imposta la dimensione del font */
+    margin-left: 100px; /* Aggiunge un margine sinistro */
+  }
+
+
+  .dropdown-content li {
+    list-style: none; /* Rimuove i punti elenco */
+  }
+
+  /* Il resto del tuo CSS va qui */
 }

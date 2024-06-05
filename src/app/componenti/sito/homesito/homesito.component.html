@@ -1,252 +1,63 @@
 <!DOCTYPE html>
-<html lang="it">
+<html>
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Il mio sito</title>
+
+  <link rel="stylesheet" type="text/html" href="homesito.component.css">
+</head>
+<body>
   <style>
-    .background-container {
-  position: relative; /* Imposta il riferimento per il posizionamento assoluto del pulsante */
-  /* Il tuo codice per l'immagine di sfondo qui */
-
-}.quote-button {
-  position: absolute;
-  top: 50%; /* Centra il pulsante verticalmente */
-  left: 50%; /* Centra il pulsante orizzontalmente */
-  transform: translate(-50%, -50%); /* Corregge il posizionamento per centrare esattamente il pulsante */
-  margin-top: -200px;
-
-  /* Aggiungi queste proprietà per cambiare le dimensioni e il colore del pulsante */
-  width: 200px; /* Imposta la larghezza del pulsante */
-  height: 50px; /* Imposta l'altezza del pulsante */
-  background-color: rgb(225, 0, 255); /* Imposta il colore di sfondo del pulsante */
-  color: white; /* Imposta il colore del testo del pulsante */
-  border: none; /* Rimuove il bordo del pulsante */
-  font-size: 20px; /* Imposta la dimensione del testo del pulsante */
-  cursor: pointer; /* Cambia il cursore quando passa sopra il pulsante */
-}
     body {
-      margin: 0;
-      padding: 0;
-      font-family: Arial, sans-serif;
-      background-image: url('assets/images/homesito1.jpeg');
-  background-repeat: no-repeat;
-  background-size: cover;
+      background: url('assets/homesito1.jpeg');
+      background-repeat: no-repeat;
+      background-size: cover;
+    }
 
-    }
-    .navbar {
-      background-color: pink;☰
-      padding: 10px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .navbar a {
-      color: white;
-      text-decoration: none;
-    }
-    .menu {
-      display: flex;
-      list-style: none;
-      padding-left: 0;
-      justify-content: center;
-    }
-    .menu a {
-      padding: 20px;
-      font-size: 1.2em;
-    }
-    .dropdown {
-      position: relative;
-    }
-    .dropdown-content {
-      display: none;
-      position: absolute;
-      background-color: white; /* Cambia il colore di sfondo in bianco */
-      min-width: 160px;
-      box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-      z-index: 1;
-    }
-    .dropdown-content a {
-      color: black; /* Cambia il colore del testo in nero */
-      margin: 10px; /* Aumenta il margine tra i link */
-      padding: 5px;
-      display: block; /* Aggiunge un blocco per ogni link */
-    }
-    .dropdown:hover .dropdown-content {
-      display: block;
-    }
-    .menu-checkbox {
-      display: none;
-    }
-    .menu-toggle {
-      display: none;
-      z-index: 2;
-    }
-    .access-button {
-      background-color: blue;
-      color: white;
-      padding: 10px;
-      border: none;
-      cursor: pointer;
-      margin-left: -1110px;
-
-    }
-    .access-button-mobile {
-      display: none;
-    }
-    .access-button-mobile a {
-      color: blue;
-    }
-    @media (max-width: 601px) {
-      .body {
-      flex-direction: column;
-      background-image: url('assets/images/homesito1.jpeg');
-
-
-
-
-    }
-      .navbar {
-        flex-direction: column;
-        width: auto;
-      }
-      .navbar {
-        flex-direction: column;
-      }
-      .navbar-brand {
-        order: -1;
-      }
-      .menu-toggle {
-        display: block;
-        order: 1;
-        margin-left: auto;
-      }
-      .navbar a:not(.logo) {
-        color: black;
-      }
-      .menu {
-        display: none;
-        position: absolute;
+    @media (max-width: 600px) {
+      body {
+        background: none;
+        background-color: pink;
         width: 100%;
-        flex-direction: column;
-        background-color: white;
-      }
-      .menu a {
-        display: block;
-        padding: 10px;
-        font-size: 1em;
-      }
-      .menu-checkbox:checked ~ .menu {
-        display: flex;
-      }
-      .dropdown:hover .dropdown-content {
-        display: none;
-      }
-      .dropdown-content {
-        position:.background-container {
-  position: relative; /* Imposta il riferimento per il posizionamento assoluto del pulsante */
-  /* Il tuo codice per l'immagine di sfondo qui */
-}
-
-.quote-button {
-  position: absolute;
-  top: 50%; /* Centra il pulsante verticalmente */
-  left: 50%; /* Centra il pulsante orizzontalmente */
-  transform: translate(-50%, -50%); /* Corregge il posizionamento per centrare esattamente il pulsante */
-  /* Stili del pulsante qui */
-} static;
-        box-shadow: none;
-      }body {.background-container {
-  position: relative; /* Imposta il riferimento per il posizionamento assoluto del pulsante */
-  /* Il tuo codice per l'immagine di sfondo qui */
-}
-
-.quote-button {
-  position: absolute;
-  top: 50%; /* Centra il pulsante verticalmente */
-  left: 50%; /* Centra il pulsante orizzontalmente */
-  transform: translate(-50%, -50%); /* Corregge il posizionamento per centrare esattamente il pulsante */
-  /* Stili del pulsante qui */
-}
-
-.quote-button {
-  position: absolute;
-  top: 50%; /* Centra il pulsante verticalmente */
-  left: 50%; /* Centra il pulsante orizzontalmente */
-  transform: translate(-50%, -50%); /* Corregge il posizionamento per centrare esattamente il pulsante */
-  /* Stili del pulsante qui */
-}tion: center center;
-}
-      .dropdown-c.background-container {
-  position: relative; /* Imposta il riferimento per il posizionamento assoluto del pulsante */
-  /* Il tuo codice per l'immagine di sfondo qui */
-}
-
-.quote-button {
-  position: absolute;
-  top: 50%; /* Centra il pulsante verticalmente */
-  left: 50%; /* Centra il pulsante orizzontalmente */
-  transform: translate(-50%, -50%); /* Corregge il posizionamento per centrare esattamente il pulsante */
-  /* Stili del pulsante qui */
-}ontent a {
-        border: none;
-        margin: 0;
-        padding: 10px;
-      }
-      .access-button {
-        display: none;
-      }
-      .access-button-mobile {
-        display: block;
+        height: 100%;
       }
     }
   </style>
-</head>
-<body>
+    <!-- Il contenuto del tuo sito web va qui -->
+
   <nav class="navbar">
-    <a class="navbar-brand" href="#">
-      <img src="https://www.samypulizie.it/wp-content/uploads/2020/01/logo.png" alt="Logo" style="height: 40px;">
-    </a>
-    <input type="checkbox" class="menu-checkbox" id="menu-checkbox" />
-    <label for="menu-checkbox" class="menu-toggle">&#9776;</label>
+    <div class="logo"><img src="https://www.samypulizie.it/wp-content/uploads/2020/01/logo.png" alt="Logo del sito"></div>
+    <input type="checkbox" id="menu-toggle-checkbox" class="menu-toggle-checkbox">
+    <label for="menu-toggle-checkbox" class="menu-toggle">☰</label>
     <ul class="menu">
-      <li><a href="#home">Home</a></li>
-      <li class="dropdown">
-        <a href="#" class="dropdown-toggle">Contatti</a>
-        <div class="dropdown-content">
+      <div class="dropdown" id="myDropdown">
+  <!-- Il tuo codice del dropdown va qui -->
+</div>
+      <li class="menu-item dropdown">
+        <a href="#">contatti</a>
+        <ul class="dropdown-content"tabindex="0">
+          <a href="tel:08554360">Call Center</a>
           <a href="mailto:info@samypulizie.it">email</a>
           <a href="https://www.google.com/maps/dir/Via+Tirino,+147,+65129+Pescara+PE/'45.59135,10.243048'/@44.0076457,10.8110617,8z/data=!3m1!4b1!4m11!4m10!1m5!1m1!1s0x1331a6223b8afae7:0xe0f8329b5888d54d!2m2!1d14.2181475!2d42.4462893!1m3!2m2!1d10.243048!2d45.59135?hl=it&entry=ttu">Sede Commerciale</a>
-        </div>
+        </ul>
       </li>
-      <li class="dropdown">
-        <a href="#" class="dropdown-toggle">Servizi</a>
-        <div class="dropdown-content">
-          <a href="uffici.html">Pulizia Uffici Pubblici/Privati</a>
-          <a href="condomini.html">Pulizia Condomini</a>
-          <a href="condomini.html">sanificazioni</a>
-        </div>
-      </li>
-      <li><a href="#galleria">Galleria</a></li>
-      <li class="access-button-mobile" (click)="navigateToPrivateArea()" >Area Riservata</li>
-      <li class="access-button-mobile" (click)="navigateToCustomerArea()" >Area Clienti</li>
+      <li class="menu-item dropdown"><a href="#">servizi</a>
+      <ul class="dropdown-content"tabindex="0">
+        <li><a href="#">Sanificazioni</a></li>
+        <li><a href="#">uffici privati/pubblici</a></li>
+        <li><a href="#">Pulizia Condomini</a></li>
+      </ul>
+    </li>
+      <li class="menu-item"><a href="#">Galleria</a></li>
+      <div class="buttons">
+        <button class=button (click)="navigateToCustomerArea()" >Area clienti</button>
+        <button class=button (click)="navigateToPrivateArea()" >Area riservata</button>
+      </div>
     </ul>
-    <button class="access-button" (click)="navigateToPrivateArea()" >Area Riservata</button>
-    <button class="access-button" (click)="navigateToCustomerArea()">Area Clienti </button>
   </nav>
-</body>
-</html>
-<div class="map-container">
-  <iframe src="https://www.google.com/maps/embed?pb=!1m28!1m12!1m3!1d11774.409853163359!2d14.203068573204833!3d42.45747377002006!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!4m13!3e6!4m5!1s0x1331a60db9286477%3A0xa0b89e89b22cbfe2!2sPescara%2C%20Provincia%20di%20Pescara!3m2!1d42.4617624!2d14.2160321!4m5!1s0x1331a6223b8afae7%3A0xe0f8329b5888d54d!2sVia%20Tirino%2C%20147%2C%20Pescara%2C%20PE!3m2!1d42.4462893!2d14.218147499999999!5e0!3m2!1sit!2sit!4v1713538014550!5m2!1sit!2sit" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
-</div>
-<div class="background-container">
-  <button class="quote-button">Preventivo</button>
-  <!-- Il tuo codice per l'immagine di sfondo e la foto qui -->
-</div>
+  <a href="https://forms.gle/Sp9NE5skntNeU9oq9" class="button-preventivi">Preventivi</a>
 
-<a href="https://www.instagram.com/samypulizie/">
-  <img src="assets/images/instagram.jpeg" alt="Logo Instagram">
-</a>
+  </body>
+  </html>
 
-<a href="https://www.facebook.com/samypulizie.samypulizie">
-  <img src="assets/images/facebook.jpeg" alt="Logo Facebook">
-</a>
+
+
+
