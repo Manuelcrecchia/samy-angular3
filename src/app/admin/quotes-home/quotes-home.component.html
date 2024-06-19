@@ -1,0 +1,128 @@
+
+<p>
+  <mat-toolbar class="example-toolbar">
+  <span>Preventivi</span>
+  <span class="example-spacer"></span>
+  <button (click)="navigateToeditQuote()" mat-icon-button class="example-icon">
+    <mat-icon>edit</mat-icon>
+  </button>
+  <button (click)="navigateToAddQuote()" mat-icon-button class="example-icon">
+   <mat-icon>add</mat-icon>
+ </button>
+</mat-toolbar>
+</p>
+<app-quote-list-prw [color] = "color"></app-quote-list-prw>
+<mat-drawer-container class="example-container">
+    <mat-list role="list">
+      <mat-list-item *ngFor="let quote of quotesFrEnd" role="listitem">
+        <button mat-raised-button (click)="changePdf(quote.numeroCliente)">
+          {{ quote.numeroCliente }} {{ quote.nome }} {{ quote.cognome }}
+          {{ quote.ragioneSociale }}
+        </button></mat-list-item
+      >
+    </mat-list>
+    <mat-drawer-container>
+
+
+      <mat-form-field class="example-form-field">
+        <mat-label>Numero cliente</mat-label>
+        <input
+          #inputNumeroCliente
+          matInput
+          type="text"
+          (input)="filterFunction($event, 1)"
+        />
+        <button
+          *ngIf="inputNumeroCliente.value"
+          matSuffix
+          mat-icon-button
+          aria-label="Clear"
+          (click)="inputNumeroCliente.value = ''; filterFunction($event, 0)"
+        >
+          <mat-icon>close</mat-icon>
+        </button>
+      </mat-form-field>
+      <mat-form-field class="example-form-field">
+        <mat-label>Nome</mat-label>
+        <input
+          #inputNome
+          matInput
+          type="text"
+          (input)="filterFunction($event, 2)"
+        />
+        <button
+          *ngIf="inputNome.value"
+          matSuffix
+          mat-icon-button
+          aria-label="Clear"
+          (click)="inputNome.value = ''; filterFunction($event, 0)"
+        >
+          <mat-icon>close</mat-icon>
+        </button>
+      </mat-form-field>
+      <mat-form-field class="example-form-field">
+        <mat-label>Cognome</mat-label>
+        <input
+          #inputCognome
+          matInput
+          type="text"
+          (input)="filterFunction($event, 3)"
+        />
+        <button
+          *ngIf="inputCognome.value"
+          matSuffix
+          mat-icon-button
+          aria-label="Clear"
+          (click)="inputCognome.value = ''; filterFunction($event, 0)"
+        >
+          <mat-icon>close</mat-icon>
+        </button>
+      </mat-form-field>
+      <mat-form-field class="example-form-field">
+        <mat-label>Ragione sociale</mat-label>
+        <input
+          #inputRagioneSociale
+          matInput
+          type="text"
+          (input)="filterFunction($event, 4)"
+        />
+        <button
+          *ngIf="inputRagioneSociale.value"
+          matSuffix
+          mat-icon-button
+          aria-label="Clear"
+          (click)="inputRagioneSociale.value = ''; filterFunction($event, 0)"
+        >
+          <mat-icon>close</mat-icon>
+        </button>
+      </mat-form-field>
+      <mat-form-field class="example-form-field2">
+        <mat-label>Stato</mat-label>
+        <mat-select  matInput [(value)]="color" (selectionChange)="ngOnChanges()">
+          <mat-option [value]="'red'">ROSSO</mat-option>
+          <mat-option [value]="'yellow'">GIALLO</mat-option>
+          <mat-option [value]="'green'">VERDE</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </mat-drawer-container>
+
+    <div *ngIf="quotesFrEnd.length>0">
+
+
+    <mat-slide-toggle color="primary" (click)="pdfTsSelezionato = !pdfTsSelezionato"> </mat-slide-toggle>
+    <button mat-raised-button (click)="setQuoteToGreen()">Segna come completato</button>
+    <button mat-raised-button (click)="deleteQuote()">Cancella il preventivo</button>
+    </div>
+
+      <ngx-extended-pdf-viewer
+      [base64Src]="pdfTsSelezionato ? pdfTs : pdfPrev"
+      backgroundColor="#ffffff"
+      [showToolbar]="false"
+      [height]="'100%'"
+      [useBrowserLocale]="true"
+      [handTool]="false"
+      [showHandToolButton]="false"
+      [textLayer]="false"
+    >
+    </ngx-extended-pdf-viewer>
+</mat-drawer-container>

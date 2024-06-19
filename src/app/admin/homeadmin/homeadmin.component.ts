@@ -29,6 +29,17 @@ export class HomeAdminComponent implements OnInit {
     this.router.navigateByUrl('/employeesSettings')
   }
 
+  navigateToQuotesHome() {
+    this.router.navigateByUrl('/quotesHome')
+  }
+
+  navigateToCaricaFile() {
+    this.router.navigateByUrl('/CaricaFile')
+  }
+
+
+
+
 
 
 }

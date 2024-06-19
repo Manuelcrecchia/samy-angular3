@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -33,6 +33,10 @@ import {MatExpansionModule} from '@angular/material/expansion';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { EmployeesSettingsComponent } from './admin/employees-settings/employees-settings.component';
 import { HomesitoComponent } from './componenti/sito/homesito/homesito.component';
+import { QuotesHomeComponent } from './admin/quotes-home/quotes-home.component';
+import { AddQuoteComponent } from './admin/add-quote/add-quote.component';
+import { EditQuoteComponent } from './admin/edit-quote/edit-quote.component';
+import { CaricaFileComponent } from './admin/carica-file/carica-file.component';
 
 
 
@@ -45,6 +49,10 @@ import { HomesitoComponent } from './componenti/sito/homesito/homesito.component
     UserSettingsComponent,
     EmployeesSettingsComponent,
     HomesitoComponent,
+    QuotesHomeComponent,
+    AddQuoteComponent,
+    EditQuoteComponent,
+    CaricaFileComponent,
   ],
   imports: [
     BrowserModule,
@@ -84,7 +92,10 @@ import { HomesitoComponent } from './componenti/sito/homesito/homesito.component
     providers: [
       GlobalService
     ],
-    bootstrap: [AppComponent]
+    bootstrap: [AppComponent],
+    schemas: [
+      CUSTOM_ELEMENTS_SCHEMA
+    ]
   })
   // Remove the existing export statement for the AppModule class
   // export class AppModule { }

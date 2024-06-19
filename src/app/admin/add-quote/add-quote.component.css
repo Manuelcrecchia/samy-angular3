@@ -1,0 +1,50 @@
+form {
+  background-color: #FFB6C1; /* Rosa chiaro */
+  color: #FF1493; /* Rosa scuro */
+  padding: 20px;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+}
+
+mat-form-field {
+  margin-bottom: 10px;
+}
+
+input {
+  background-color: #ffffff; /* Bianco */
+  border: none;
+  padding: 10px;
+  margin: 15px 0;
+}
+
+input:focus {
+  outline: none;
+  box-shadow: 0 0 10px #FF1493; /* Rosa scuro */
+}
+
+mat-label {
+  color: #FF1493; /* Rosa scuro */
+}
+
+button.mat-raised-button {
+  background-color: #FF1493; /* Rosa scuro */
+  color: #ff0000; /* Bianco */
+  margin-top: 20px;
+}
+
+/* Stili specifici per i dispositivi mobili */
+@media (max-width: 600px) {
+  form {
+    padding: 10px;
+  }
+
+  input {
+    padding: 5px;
+  }
+
+  button.mat-raised-button {
+    padding: 5px;
+    font-size: 12px;
+  }
+}

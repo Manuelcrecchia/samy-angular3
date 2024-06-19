@@ -1,0 +1,167 @@
+<form>
+  <mat-form-field appearance="fill">
+    <mat-label>Tipo del preventivo</mat-label>
+    <mat-select
+      name="tipoPreventivo"
+      [(ngModel)]="this.quoteModelService.tipoPreventivo"
+    >
+      <mat-option value="S">Sopralluogo</mat-option>
+      <mat-option value="U">Ufficio</mat-option>
+      <mat-option value="T">Telefonico</mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field appearance="fill" class="example-full-width">
+    <mat-label>Codice operatore</mat-label>
+    <input matInput name="codiceOperatore" pattern="^.{2}$" [(ngModel)]="this.quoteModelService.codiceOperatore" />
+  </mat-form-field>
+
+  <p>{{this.quoteModelService.data}}</p>
+
+
+  <mat-form-field appearance="fill" class="example-full-width">
+    <mat-label>Tipo Preventivo</mat-label>
+    <input matInput name="tipopreventivo" maxlength="255" [(ngModel)]="this.quoteModelService.tipoPreventivo" />
+  </mat-form-field>
+
+  <mat-form-field appearance="fill" class="example-full-width">
+    <mat-label>Numero Preventivo</mat-label>
+    <input
+      matInput
+      name="numeropreventivo" maxlength="255"
+      [(ngModel)]="this.quoteModelService.numeroPreventivo"
+    />
+  </mat-form-field>
+
+  <mat-form-field appearance="fill" class="example-full-width">
+    <mat-label>data</mat-label>
+    <input
+      matInput
+      name="data" maxlength="255"
+      [(ngModel)]="this.quoteModelService.data"
+    />
+  </mat-form-field>
+
+  <mat-form-field appearance="fill" class="example-full-width">
+    <mat-label>Nominativo</mat-label>
+    <input matInput name="data" maxlength="255" [(ngModel)]="this.quoteModelService.data" />
+  </mat-form-field>
+
+  <mat-form-field appearance="fill" class="example-full-width">
+    <mat-label>Codice Fiscale Partita Iva</mat-label>
+    <input
+      matInput
+      name="cfpi" maxlength="255"
+      [(ngModel)]="this.quoteModelService.cfpi"
+    />
+  </mat-form-field>
+
+  <mat-form-field appearance="fill" class="example-full-width">
+    <mat-label>Citta</mat-label>
+    <input
+      matInput
+      name="citta" maxlength="255"
+      [(ngModel)]="this.quoteModelService.citta"
+    />
+  </mat-form-field>
+
+  <mat-form-field appearance="fill" class="example-full-width">
+    <mat-label>Selettore Prefisso Via</mat-label>
+    <input matInput name="selettoreprefissovia" maxlength="255" [(ngModel)]="this.quoteModelService.selettorePrefissoVia" />
+  </mat-form-field>
+
+  <mat-form-field appearance="fill" class="example-full-width">
+    <mat-label>Via</mat-label>
+    <input
+      matInput
+      name="via" maxlength="255"
+      [(ngModel)]="this.quoteModelService.via"
+    />
+  </mat-form-field>
+
+
+  <mat-form-field appearance="fill" class="example-full-width">
+    <mat-label>Cap</mat-label>
+    <input matInput name="cap" maxlength="255" [(ngModel)]="this.quoteModelService.cup" />
+  </mat-form-field>
+
+  <mat-form-field appearance="fill" class="example-full-width">
+    <mat-label>Email</mat-label>
+    <input matInput name="email" maxlength="255" [(ngModel)]="this.quoteModelService.email" />
+  </mat-form-field>
+
+
+  <mat-form-field appearance="fill" class="example-full-width">
+    <mat-label>Telefono</mat-label>
+    <input matInput name="telefono" maxlength="255" [(ngModel)]="this.quoteModelService.telefono" />
+  </mat-form-field>
+
+  <mat-form-field appearance="fill" class="example-full-width">
+    <mat-label>Referente</mat-label>
+    <input
+      matInput
+      name="Referente" maxlength="255"
+      [(ngModel)]="this.quoteModelService.referente"
+    />
+  </mat-form-field>
+
+
+  <mat-form-field appearance="fill" class="example-full-width">
+    <mat-label>Descrizione immobile</mat-label>
+    <input
+      matInput
+      name="descrizioneimmobiole" maxlength="255"
+      [(ngModel)]="this.quoteModelService.descrizioneImmmobile"
+    />
+  </mat-form-field>
+
+
+
+  <mat-form-field class="example-full-width"
+    ><mat-label>Servizi</mat-label>
+    <input
+      matInput
+      name="servizi" maxlength="255"
+      [(ngModel)]="this.quoteModelService.servizi"
+    />
+  </mat-form-field>
+
+  <mat-form-field class="example-full-width"
+    ><mat-label>Imponibile</mat-label>
+    <input
+      matInput
+      name="imponibile" maxlength="255"
+      [(ngModel)]="this.quoteModelService.imponibile"
+    />
+  </mat-form-field>
+
+  <mat-form-field class="example-full-width"
+    ><mat-label>Iva</mat-label>
+    <input
+      matInput
+      name="iva" maxlength="255"
+      [(ngModel)]="this.quoteModelService.iva"
+    />
+  </mat-form-field>
+
+  <mat-form-field class="example-full-width"
+    ><mat-label>Pagamento</mat-label>
+    <input matInput name="pagamento" maxlength="255" [(ngModel)]="this.quoteModelService.pagamento" />
+  </mat-form-field>
+
+  <mat-form-field class="example-full-width"
+    ><mat-label>Note</mat-label>
+    <input
+      matInput
+      name="note" maxlength="255"
+      [(ngModel)]="this.quoteModelService.note"
+    />
+  </mat-form-field>
+
+  <mat-form-field class="example-full-width"
+    ><mat-label>Stato</mat-label>
+    <input matInput name="stato" maxlength="255" [(ngModel)]="this.quoteModelService.stato" />
+  </mat-form-field>
+
+  <button mat-raised-button (click)="editQuote()">Salva</button>
+</form>

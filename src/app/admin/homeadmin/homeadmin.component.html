@@ -203,6 +203,7 @@
   <div *ngIf="isMenuOpen" class="menu">
       <a (click)="navigateToUserSettings()">Gestione Utenti</a>
       <a (click)="navigateToEmployeesSettings()">Gestione Dipendenti</a>
+      <a (click)="navigateToCaricaFile()">Gestisci File</a>
   </div>
   <div class="logo">
       <img class="logo" src="https://www.samypulizie.it/wp-content/uploads/2020/01/logo.png" alt="Logo">
@@ -213,7 +214,7 @@
 
       </div>
       <div class="button-group-2">
-          <button class="button"><i class="fas fa-folder"></i><br>Gestione Preventivi</button>
+          <button (click)="navigateToQuotesHome()" class="button"><i class="fas fa-folder"></i><br>Gestione Preventivi</button>
           <button id="big-button"><i class="fas fa-calendar fa-3x"></i><br>Calendario </button>
 
 
