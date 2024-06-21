@@ -82,7 +82,7 @@
 
   <mat-form-field appearance="fill" class="example-full-width">
     <mat-label>Cap</mat-label>
-    <input matInput name="cap" maxlength="255" [(ngModel)]="this.quoteModelService.cup" />
+    <input matInput name="cap" maxlength="255" [(ngModel)]="this.quoteModelService.cap" />
   </mat-form-field>
 
   <mat-form-field appearance="fill" class="example-full-width">
@@ -156,11 +156,6 @@
       name="note" maxlength="255"
       [(ngModel)]="this.quoteModelService.note"
     />
-  </mat-form-field>
-
-  <mat-form-field class="example-full-width"
-    ><mat-label>Stato</mat-label>
-    <input matInput name="stato" maxlength="255" [(ngModel)]="this.quoteModelService.stato" />
   </mat-form-field>
 
   <button mat-raised-button (click)="editQuote()">Salva</button>

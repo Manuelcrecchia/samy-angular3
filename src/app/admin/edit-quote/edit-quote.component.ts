@@ -28,7 +28,7 @@ export class EditQuoteComponent {
       citta: this.quoteModelService.citta,
       selettoreprefissovia: this.quoteModelService.selettorePrefissoVia,
       via: this.quoteModelService.via,
-      cap: this.quoteModelService.cup,
+      cap: this.quoteModelService.cap,
       email: this.quoteModelService.email,
       telefono: this.quoteModelService.telefono,
       referente: this.quoteModelService.referente,
@@ -38,7 +38,6 @@ export class EditQuoteComponent {
       iva: this.quoteModelService.iva,
       pagamento: this.quoteModelService.pagamento,
        note: this.quoteModelService.note,
-      stato: this.quoteModelService.stato,
     }
     this.http
       .post(this.globalService.url + 'admin/quotes/edit', body, {

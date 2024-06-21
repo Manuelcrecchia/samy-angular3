@@ -13,18 +13,18 @@ export class QuoteModelService {
   citta = '';
   selettorePrefissoVia = '';
   via = '';
-  cup = '';
+  cap = '';
   email = '';
    telefono = '';
   referente = '';
   descrizioneImmmobile= '';
-  servizi = '';
+  servizi = [];
+  interventi = [];
 
   imponibile = "0.00";
   iva= "N";
   pagamento = "";
   note= '';
-  stato = "R";
 
   constructor() {}
 }

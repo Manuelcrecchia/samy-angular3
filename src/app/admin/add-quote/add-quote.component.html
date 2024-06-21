@@ -12,30 +12,14 @@
   <mat-form-field appearance="fill">
     <mat-label>Tipo del preventivo</mat-label>
     <mat-select name="tipoPreventivo" [(ngModel)]="this.quoteModelService.tipoPreventivo">
-      <mat-option value="S">Sopralluogo</mat-option>
-      <mat-option value="U">Ufficio</mat-option>
-      <mat-option value="T">Telefonico</mat-option>
+      <mat-option value="O">Ordinario</mat-option>
+      <mat-option value="S">Straordinario</mat-option>
     </mat-select>
   </mat-form-field>
 
   <mat-form-field appearance="fill" class="example-full-width">
     <mat-label>Codice Operatore</mat-label>
     <input matInput name="codiceOperatore" pattern="^.{2}$" [(ngModel)]="this.globalService.userCode" />
-  </mat-form-field>
-
-  <mat-form-field appearance="fill" class="example-full-width">
-    <mat-label>Tipo Preventivo</mat-label>
-    <input matInput name="tipopreventivo" maxlength="255" [(ngModel)]="this.quoteModelService.tipoPreventivo" />
-  </mat-form-field>
-
-  <mat-form-field appearance="fill" class="example-full-width">
-    <mat-label>Numero Preventivo</mat-label>
-    <input matInput name="numeropreventivo" maxlength="255" [(ngModel)]="this.quoteModelService.numeroPreventivo" />
-  </mat-form-field>
-
-  <mat-form-field appearance="fill" class="example-full-width">
-    <mat-label>Data</mat-label>
-    <input matInput name="data" maxlength="255" [(ngModel)]="this.quoteModelService.data" />
   </mat-form-field>
 
   <mat-form-field appearance="fill" class="example-full-width">
@@ -53,11 +37,17 @@
     <input matInput name="citta" maxlength="255" [(ngModel)]="this.quoteModelService.citta" />
   </mat-form-field>
 
-  <mat-form-field appearance="fill" class="example-full-width">
-    <mat-label>Selettore Prefisso Via
-    </mat-label>
-    <input matInput name="selettoreprefissovia" maxlength="255" [(ngModel)]="this.quoteModelService.selettorePrefissoVia" />
-  </mat-form-field>
+  <form id="form" name="form">
+    <mat-form-field appearance="fill">
+      <mat-label>Selettore prefisso via</mat-label>
+      <mat-select name="tipoPreventivo" [(ngModel)]="this.quoteModelService.selettorePrefissoVia">
+        <mat-option value="VIA">VIA</mat-option>
+        <mat-option value="STRADA">STRADA</mat-option>
+        <mat-option value="VIALE">VIALE</mat-option>
+        <mat-option value="PIAZZA">PIAZZA</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </form>
 
   <mat-form-field appearance="fill" class="example-full-width">
     <mat-label>Via</mat-label>
@@ -66,7 +56,7 @@
 
   <mat-form-field appearance="fill" class="example-full-width">
     <mat-label>Cap</mat-label>
-    <input matInput name="cap" maxlength="255" [(ngModel)]="this.quoteModelService.cup" />
+    <input matInput name="cap" maxlength="255" [(ngModel)]="this.quoteModelService.cap" />
   </mat-form-field>
 
 
@@ -96,7 +86,22 @@
 
   <mat-form-field class="example-full-width">
     <mat-label>Servizi</mat-label>
-    <input matInput name="servizi" maxlength="255" [(ngModel)]="this.quoteModelService.servizi" />
+    <input matInput name="servizi" maxlength="255" [(ngModel)]="this.quoteModelService.servizi[0]" />
+  </mat-form-field>
+
+  <mat-form-field *ngIf="this.quoteModelService.tipoPreventivo == 'O'" class="example-full-width">
+    <mat-label>Interventi</mat-label>
+    <input matInput name="interventi" maxlength="255" [(ngModel)]="this.quoteModelService.interventi[0]" />
+  </mat-form-field>
+
+  <mat-form-field class="example-full-width">
+    <mat-label>Servizi</mat-label>
+    <input matInput name="servizi" maxlength="255" [(ngModel)]="this.quoteModelService.servizi[1]" />
+  </mat-form-field>
+
+  <mat-form-field *ngIf="this.quoteModelService.tipoPreventivo == 'O'" class="example-full-width">
+    <mat-label>Interventi</mat-label>
+    <input matInput name="interventi" maxlength="255" [(ngModel)]="this.quoteModelService.interventi[1]" />
   </mat-form-field>
 
   <mat-form-field class="example-full-width">
@@ -119,11 +124,7 @@
     <input matInput name="note" maxlength="255" [(ngModel)]="this.quoteModelService.note" />
   </mat-form-field>
 
-  <mat-form-field class="example-full-width">
-    <mat-label>Stato</mat-label>
-    <input matInput name="stato" maxlength="255" [(ngModel)]="this.quoteModelService.stato" />
-  </mat-form-field>
     </form>
-    <button mat-raised-button color="primary" (click)="navigateToAddQuote()">Salva</button>
+    <button mat-raised-button color="primary" (click)="addQuote()">Salva</button>
 </body>
 </html>

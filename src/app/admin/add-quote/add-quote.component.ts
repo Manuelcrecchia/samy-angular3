@@ -14,38 +14,41 @@ export class AddQuoteComponent {
 
   constructor(public globalService: GlobalService, public quoteModelService: QuoteModelService, private http: HttpClient, private router: Router){}
 
-  navigateToAddQuote(){
-    this.router.navigateByUrl('/addQuote');
-  }
-
   ngOnInit(){
   }
 
   addQuote(){
+
+    let serviziJson: string[] = [];
+    serviziJson.concat(this.quoteModelService.servizi[0]);
+    serviziJson.concat(this.quoteModelService.servizi[1]);
+
+    let interventiJson: string[] = [];
+    interventiJson.concat(this.quoteModelService.interventi[0]);
+    interventiJson.concat(this.quoteModelService.interventi[1]);
+
     let body = {
       codiceOperatore: this.globalService.userCode,
       tipoPreventivo: this.quoteModelService.tipoPreventivo,
-      numeropreventivo: this.quoteModelService.numeroPreventivo,
-      data: this.quoteModelService.data,
       nominativo: this.quoteModelService.nominativo,
       cfpi: this.quoteModelService.cfpi,
       citta: this.quoteModelService.citta,
       selettoreprefissovia: this.quoteModelService.selettorePrefissoVia,
       via: this.quoteModelService.via,
-      cup: this.quoteModelService.cup,
+      cup: this.quoteModelService.cap,
       email: this.quoteModelService.email,
       telefono: this.quoteModelService.telefono,
       referente: this.quoteModelService.referente,
       descrizioneimmmobile: this.quoteModelService.descrizioneImmmobile,
-      servizi: this.quoteModelService.servizi,
+      servizi: serviziJson[0],
+      interventi: interventiJson[0],
       imponibile: this.quoteModelService.imponibile,
       iva: this.quoteModelService.iva,
       pagamento: this.quoteModelService.pagamento,
       note : this.quoteModelService.note,
-      stato: this.quoteModelService.stato,
     }
     this.http
-      .post(this.globalService.url + 'admin/quotes/add', body, {
+      .post(this.globalService.url + 'quotes/add', body, {
         headers: this.globalService.headers,
         responseType: 'text',
       })
