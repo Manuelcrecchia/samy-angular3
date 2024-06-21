@@ -37,6 +37,7 @@ import { QuotesHomeComponent } from './admin/quotes-home/quotes-home.component';
 import { AddQuoteComponent } from './admin/add-quote/add-quote.component';
 import { EditQuoteComponent } from './admin/edit-quote/edit-quote.component';
 import { CaricaFileComponent } from './admin/carica-file/carica-file.component';
+import { FileDirective } from './file.directive';
 
 
 
@@ -53,6 +54,7 @@ import { CaricaFileComponent } from './admin/carica-file/carica-file.component';
     AddQuoteComponent,
     EditQuoteComponent,
     CaricaFileComponent,
+    FileDirective,
   ],
   imports: [
     BrowserModule,

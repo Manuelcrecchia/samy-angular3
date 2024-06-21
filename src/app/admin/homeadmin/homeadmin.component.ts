@@ -20,6 +20,11 @@ export class HomeAdminComponent implements OnInit {
     this.isMenuOpen = !this.isMenuOpen;
   }
 
+  navigateToCaricaFile() {
+    this.router.navigateByUrl('/caricaFile')
+  }
+
+
   navigateToUserSettings() {
     this.router.navigateByUrl('/userSettings');
 
@@ -33,9 +38,7 @@ export class HomeAdminComponent implements OnInit {
     this.router.navigateByUrl('/quotesHome')
   }
 
-  navigateToCaricaFile() {
-    this.router.navigateByUrl('/CaricaFile')
-  }
+
 
 
 

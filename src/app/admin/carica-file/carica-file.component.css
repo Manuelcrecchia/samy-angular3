@@ -1,0 +1,57 @@
+/* CSS */
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  text-align: center;
+}
+
+.uploadfilecontainer {
+  margin: 20px;
+  padding: 20px;
+  border: 1px solid #ddd;
+  background-color: #f9f9f9;
+  cursor: pointer;
+}
+
+.files-list {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.files-list div {
+  display: flex;
+  align-items: center;
+  margin: 10px;
+}
+
+.files-list p {
+  margin-right: 10px;
+}
+
+.delete-file {
+  background: none;
+  border: none;
+}
+
+.btn {
+  margin-top: 20px;
+}
+
+@media (max-width: 600px) {
+  .container {
+    padding: 10px;
+  }
+
+  .uploadfilecontainer, .files-list div {
+    flex-direction: column;
+  }
+
+  .files-list p {
+    margin-right: 0;
+    margin-bottom: 10px;
+  }
+}
