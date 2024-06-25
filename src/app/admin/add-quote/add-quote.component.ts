@@ -35,7 +35,7 @@ export class AddQuoteComponent {
       citta: this.quoteModelService.citta,
       selettoreprefissovia: this.quoteModelService.selettorePrefissoVia,
       via: this.quoteModelService.via,
-      cup: this.quoteModelService.cap,
+      cap: this.quoteModelService.cap,
       email: this.quoteModelService.email,
       telefono: this.quoteModelService.telefono,
       referente: this.quoteModelService.referente,
@@ -47,14 +47,18 @@ export class AddQuoteComponent {
       pagamento: this.quoteModelService.pagamento,
       note : this.quoteModelService.note,
     }
+    console.log(body);
     this.http
       .post(this.globalService.url + 'quotes/add', body, {
         headers: this.globalService.headers,
         responseType: 'text',
       })
+      // ...
       .subscribe((response) => {
+        console.log(response);
         this.router.navigateByUrl('/quotesHome');
-      })
+
+      });
    }
 
 }

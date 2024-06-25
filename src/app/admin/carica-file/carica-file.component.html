@@ -1,3 +1,36 @@
-<!-- <div>
-  <input type="file" (change)="onFileSelected($event)" accept=".pdf" />
-</div> -->
+<section class="container">
+
+  <h1>{{title}} di {{user}}
+  </h1>
+
+
+<h3>caricamento al{{progress}}%</h3>
+
+
+<p style="color:red">{{error}}</p>
+
+
+<!--
+<div class="uploadfilecontainer"
+
+  This HTML code represents the template for the 'carica-file' component.
+  It contains an input element of type 'file' that is hidden from the user.
+  When a user clicks on an element with the 'click' event, the hidden file input is triggered.
+  The 'appDragDrop' directive is applied to this element to enable drag and drop functionality.
+  When a file is dropped onto the element, the 'onFileDropped' method is called.
+  The 'change' event is bound to the hidden file input, so when a file is selected, the 'onFileSelected' method is called with the selected file as a parameter.
+
+<input hidden type="file" #fileInput (change)="onFileSelected($event.target.files)">
+(click)="fileInput.click()" appDragDrop (onfiledropped)="onFileDropped($event)">
+<input hidden type="file" #fileInput (change)="onFileSelected($event.target.files)" >
+</div>-->
+<div class="files-list">
+<div *ngFor="let file of toUpload">
+<p>{{file.name}}</p>
+<button class="delete-file" (click)="toUpload.splice(toUpload.indexOf(file),1)">
+  <img src="assets/images/delete.png" >
+</button>
+</div>
+<button class="btn btn-primary" (click)="send()" [disabled]="toUpload.length==0">Upload</button>
+</div>
+</section>

@@ -1,6 +1,5 @@
 
-<!-- <p>
-  <mat-toolbar class="example-toolbar">
+<mat-toolbar class="example-toolbar">
   <span>Preventivi</span>
   <span class="example-spacer"></span>
   <button (click)="navigateToeditQuote()" mat-icon-button class="example-icon">
@@ -10,13 +9,13 @@
    <mat-icon>add</mat-icon>
  </button>
 </mat-toolbar>
-</p>
+
 <app-quote-list-prw [color] = "color"></app-quote-list-prw>
 <mat-drawer-container class="example-container">
     <mat-list role="list">
       <mat-list-item *ngFor="let quote of quotesFrEnd" role="listitem">
         <button mat-raised-button >
-          {{ quote.numeroPreventivo }} 
+          {{ quote.numeroPreventivo }}
         </button></mat-list-item
       >
     </mat-list>
@@ -25,27 +24,17 @@
 
       <mat-form-field class="example-form-field">
         <mat-label>Numero cliente</mat-label>
-        <input
-          #inputNumeroCliente
-          matInput
-          type="text"
-        />
-        <button
-          *ngIf="inputNumeroCliente.value"
-          matSuffix
-          mat-icon-button
-          aria-label="Clear"
-        >
-          <mat-icon>close</mat-icon>
-        </button>
-      </mat-form-field>
-      
+                <input
+                  #inputNumeroCliente
+                  matInput>
+        <section>
+          <button mat-raised-button (click)="(inputNumeroCliente.value)">Cerca</button>
 
     <div *ngIf="quotesFrEnd.length>0">
 
 
     <button mat-raised-button (click)="deleteQuote()">Cancella il preventivo</button>
-    </div> -->
+    </div>
 
       <ngx-extended-pdf-viewer
       [base64Src]="pdfPrev"
@@ -58,4 +47,5 @@
       [textLayer]="false"
     >
     </ngx-extended-pdf-viewer>
-<!-- </mat-drawer-container> -->
+    <!-- Remove the closing tag </mat-form-field> -->
+

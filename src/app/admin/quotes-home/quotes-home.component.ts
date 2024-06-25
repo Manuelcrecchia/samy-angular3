@@ -52,9 +52,7 @@ navigateToAddQuote(){
 
 
 
-
 ngOnInit() {
-
   this.http
     .get(this.globalService.url + 'quotes/getAll', {
       headers: this.globalService.headers,
@@ -63,125 +61,31 @@ ngOnInit() {
     .subscribe((response) => {
       this.quotesFrEnd = JSON.parse(response).reverse()
 
-          if (this.quotesFrEnd.length > 0) {
-            this.pdfTsSelezionato = true
-            this.numeroClienteSelezionato = this.quotesFrEnd[0].numeroPreventivo;
-            const body = { numeroPreventivo: this.quotesFrEnd[0].numeroPreventivo };
-                  this.http
-                    .post(
-                      this.globalService.url + 'pdfs/sendQuote',
-                      body,
-                      {
-                        headers: this.globalService.headers,
-                        responseType: 'text',
-                      }
-                    )
-                    .subscribe((response) => {
-                      if(response == 'Unauthorized') {
-                        this.router.navigateByUrl('/')
-                      }
-                      else {
-                        this.pdfTsSelezionato = true;
-                        this.pdfPrev = response
-                      }
-                      
-                    });
-                }
-              });
-
-          }
-
-// changePdf(numeroPreventivo: string) {
-//   this.numeroClienteSelezionatoBool = true;
-//   this.numeroClienteSelezionato = numeroPreventivo;
-//   const body = { numeroPreventivo: this.numeroClienteSelezionato };
-//         this.http
-//           .post(this.globalService.url + 'pdfs/sendQuote', body, {
-//             headers: this.globalService.headers,
-//             responseType: 'text',
-//           })
-//           .subscribe((response) => {
-//             response == 'Unauthorized'
-//               ? this.router.navigateByUrl('/')
-//               : (this.pdfPrev = response);
-//             this.http
-//               .post(
-//                 this.globalService.url +
-//                 'pdfs/sendTechnicalSpecification',
-//                 body,
-//                 {
-//                   headers: this.globalService.headers,
-//                   responseType: 'text',
-//                 }
-//               )
-//               .subscribe((response) => {
-//                 response == 'Unauthorized'
-//                   ? this.router.navigateByUrl('/')
-//                   : (this.pdfTs = response);
-//               });
-//           });
-//       }
-
-// filterFunction(e: Event, n: number) {
-//     switch (n) {
-//       case 1: {
-//         if ((<HTMLInputElement>e.target).value == '') {
-//           console.log("in")
-//           this.quotesFrEnd = this.saveQuotesFrEnd;
-//         }
-//         else {
-//           for (let i = 0; i < this.saveQuotesFrEnd.length; i++) {
-//             console.log(this.saveQuotesFrEnd)
-//             if (
-//               !this.quotesFrEnd[i].numeroPreventivo.startsWith(
-//                 (<HTMLInputElement>e.target).value
-//               )
-//             ) {
-//               this.quotesFrEnd.splice(i, 1);
-//             }
-//           }
-//         }
-
-//         break;
-//       }
-//       // case 2: {
-//       //   if (
-//       //     this.redQuotes[i].nome.startsWith(
-//       //       (<HTMLInputElement>e.target).value.toUpperCase()
-//       //     )
-//       //   ) {
-//       //     this.quotesFrEnd.push(this.redQuotes[i]);
-//       //   }
-//       //   break;
-//       // }
-//       // case 3: {
-//       //   if (
-//       //     this.redQuotes[i].cognome.startsWith(
-//       //       (<HTMLInputElement>e.target).value.toUpperCase()
-//       //     )
-//       //   ) {
-//       //     this.quotesFrEnd.push(this.redQuotes[i]);
-//       //   }
-//       //   break;
-//       // }
-//       // case 4: {
-//       //   if (
-//       //     this.redQuotes[i].ragioneSociale.startsWith(
-//       //       (<HTMLInputElement>e.target).value.toUpperCase()
-//       //     )
-//       //   ) {
-//       //     this.quotesFrEnd.push(this.redQuotes[i]);
-//       //   }
-//       //   break;
-//       // }
-//       default: {
-//         console.log("default")
-//         this.quotesFrEnd = this.saveQuotesFrEnd;
-
-//         break;
-//       }
-//     }
-// }
+      if (this.quotesFrEnd.length > 0) {
+        this.pdfTsSelezionato = true
+        this.numeroClienteSelezionato = this.quotesFrEnd[0].numeroPreventivo;
+        const body = { numeroPreventivo: this.quotesFrEnd[0].numeroPreventivo };
+        this.http
+          .post(
+            this.globalService.url + 'pdfs/sendQuote',
+            body,
+            {
+              headers: this.globalService.headers,
+              responseType: 'text',
+            }
+          )
+          .subscribe((response) => {
+            if(response == 'Unauthorized') {
+              this.router.navigateByUrl('/')
+            }
+            else {
+              this.pdfTsSelezionato = true;
+              this.pdfPrev = response
+            }
+          });
+      }
+    });
+}
 
 deleteQuote() {
   let allOfficeNumCli: string[];
@@ -229,50 +133,50 @@ deleteQuote() {
     }); //Fine richiesta al database di tutti i numeri clienti degli uffici
 }
 
-// setQuoteToGreen() {
-//   let allOfficeNumCli: string[];
-//   this.http //Richiesta al database di tutti i numeri clienti degli uffici
-//     .get(this.globalService.url + 'admin/officeQuotes/getAllNumCli', {
-//       headers: this.globalService.headers,
-//       responseType: 'text',
-//     })
-//     .subscribe((response) => {
-//       let allOfficeNumCliJ = JSON.parse(response);
-//       if (allOfficeNumCliJ.length != 0) {
-//         for (let i = 0; i < allOfficeNumCliJ.length; i++) {
-//           allOfficeNumCli += allOfficeNumCliJ[i]['numeroPreventivo'];
-//         }
-//       } else {
-//         allOfficeNumCli = [];
-//       }
-//       const body = { numeroPreventivo: this.numeroClienteSelezionato };
+setQuoteToGreen() {
+  let allOfficeNumCli: string[];
+  this.http //Richiesta al database di tutti i numeri clienti degli uffici
+    .get(this.globalService.url + 'admin/officeQuotes/getAllNumCli', {
+      headers: this.globalService.headers,
+      responseType: 'text',
+    })
+    .subscribe((response) => {
+      let allOfficeNumCliJ = JSON.parse(response);
+      if (allOfficeNumCliJ.length != 0) {
+        for (let i = 0; i < allOfficeNumCliJ.length; i++) {
+          allOfficeNumCli += allOfficeNumCliJ[i]['numeroPreventivo'];
+        }
+      } else {
+        allOfficeNumCli = [];
+      }
+      const body = { numeroPreventivo: this.numeroClienteSelezionato };
 
-//       if (allOfficeNumCli.includes(this.numeroClienteSelezionato)) {
+      if (allOfficeNumCli.includes(this.numeroClienteSelezionato)) {
 
-//         this.http
-//           .post(this.globalService.url + 'admin/officeQuotes/setToGreen', body, {
-//             headers: this.globalService.headers,
-//             responseType: 'text',
-//           })
-//           .subscribe((response) => {
-//             this.ngOnInit();
-//           });
-//       } else {
-//         this.http
-//           .post(
-//             this.globalService.url + 'admin/quotes/setToGreen',
-//             body,
-//             {
-//               headers: this.globalService.headers,
-//               responseType: 'text',
-//             }
-//           )
-//           .subscribe((response) => {
-//             this.router.navigateByUrl('/quotesHome');
-//           });
-//       }
-//     }); //Fine richiesta al database di tutti i numeri clienti degli uffic
+        this.http
+          .post(this.globalService.url + 'admin/officeQuotes/setToGreen', body, {
+            headers: this.globalService.headers,
+            responseType: 'text',
+          })
+          .subscribe((response) => {
+            this.ngOnInit();
+          });
+      } else {
+        this.http
+          .post(
+            this.globalService.url + 'admin/quotes/setToGreen',
+            body,
+            {
+              headers: this.globalService.headers,
+              responseType: 'text',
+            }
+          )
+          .subscribe((response) => {
+            this.router.navigateByUrl('/quotesHome');
+          });
+      }
+    }); //Fine richiesta al database di tutti i numeri clienti degli uffic
 
-//   const body = { numeroPreventivo: this.numeroClienteSelezionato };
-// }
+  const body = { numeroPreventivo: this.numeroClienteSelezionato };
+}
 }
