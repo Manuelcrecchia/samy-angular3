@@ -17,6 +17,28 @@ button.mat-raised-button {
 ngx-extended-pdf-viewer {
   border: 1px solid #ff0080; /* Rosa scuro */
 }
+.example-spacer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 5px;
+  border-bottom: 1px solid #000; /* Aggiunge una linea sotto il contenuto */
+}
+
+.example-form-field {
+  margin-right: 10px;
+  margin-top: 2px;
+  padding: auto;
+}
+.edit-container {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.edit-icon {
+  margin-right: 10px;
+}
 
 /* Stili specifici per i dispositivi mobili */
 @media (max-width: 600px) {
@@ -24,8 +46,5 @@ ngx-extended-pdf-viewer {
     padding: 5px;
   }
 
-  button.mat-raised-button {
-    padding: 5px;
-    font-size: 12px;
-  }
+
 }
