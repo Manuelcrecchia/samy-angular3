@@ -15,7 +15,7 @@ button.mat-raised-button {
 }
 
 ngx-extended-pdf-viewer {
-  border: 1px solid #ffffff; /* Rosa scuro */
+  border: 1px solid #ff0080; /* Rosa scuro */
 }
 
 /* Stili specifici per i dispositivi mobili */

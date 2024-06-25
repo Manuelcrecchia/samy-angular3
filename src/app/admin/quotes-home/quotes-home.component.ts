@@ -25,16 +25,6 @@ export class QuotesHomeComponent   {@Input() color: any;
   data!: QuoteModelService;
 
 
-
-
-
-
-
-
-
-
-
-
   constructor(  private http: HttpClient,
     private pdfService: NgxExtendedPdfViewerService,
     private globalService: GlobalService,
@@ -47,9 +37,6 @@ export class QuotesHomeComponent   {@Input() color: any;
 navigateToAddQuote(){
   this.router.navigateByUrl('/addQuote');
 }
-
-
-
 
 
 ngOnInit() {
@@ -80,7 +67,8 @@ ngOnInit() {
             }
             else {
               this.pdfTsSelezionato = true;
-              this.pdfPrev = response
+              this.pdfPrev = response;
+              console.log(this.pdfPrev);
             }
           });
       }
