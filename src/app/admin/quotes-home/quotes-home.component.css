@@ -14,8 +14,13 @@ button.mat-raised-button {
   margin: 10px 0;
 }
 
-ngx-extended-pdf-viewer {
-  border: 1px solid #ff0080; /* Rosa scuro */
+.ngx-extended-pdf-viewer {
+  position: absolute; /* Posiziona il PDF in alto alla pagina */
+  top: 100px;
+  left: 140px;
+  width: 100%; /* Fai occupare al PDF l'intera larghezza */
+  height: 100%; /* Fai occupare al PDF l'intera altezza della viewport */
+  border: 1px solid #ffffff; /* Rosa scuro */
 }
 .example-spacer {
   display: flex;
@@ -27,24 +32,21 @@ ngx-extended-pdf-viewer {
 
 .example-form-field {
   margin-right: 10px;
-  margin-top: 2px;
-  padding: auto;
-}
-.edit-container {
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
+  margin-top: 10px;
 }
 
-.edit-icon {
-  margin-right: 10px;
-}
 
-/* Stili specifici per i dispositivi mobili */
 @media (max-width: 600px) {
-  mat-drawer-container {
-    padding: 5px;
+  .quote-list, .pdf-viewer {
+    display: block; /* Gli elementi sono disposti uno sopra l'altro */
+    width: 100%; /* Ogni elemento occupa l'intera larghezza */
   }
+  .ngx-extended-pdf-viewer {
 
-
+    top: 700px;
+    left: 140px;
+    width: 100%; /* Fai occupare al PDF l'intera larghezza */
+    height: 100%; /* Fai occupare al PDF l'intera altezza della viewport */
+    border: 1px solid #ffffff; /* Rosa scuro */
+  }
 }

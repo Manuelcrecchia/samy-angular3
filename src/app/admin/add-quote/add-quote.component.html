@@ -84,25 +84,347 @@
   </mat-form-field>
 
 
+
+
+
   <mat-form-field class="example-full-width">
-    <mat-label>Servizi</mat-label>
-    <input matInput name="servizi" maxlength="255" [(ngModel)]="this.quoteModelService.servizi[0]" />
+    <mat-label>Servizi1</mat-label>
+    <input matInput name="servizi1" maxlength="255" [(ngModel)]="this.quoteModelService.servizi[0]" />
   </mat-form-field>
 
   <mat-form-field *ngIf="this.quoteModelService.tipoPreventivo == 'O'" class="example-full-width">
-    <mat-label>Interventi</mat-label>
-    <input matInput name="interventi" maxlength="255" [(ngModel)]="this.quoteModelService.interventi[0]" />
+    <mat-label>Interventi1</mat-label>
+    <mat-select name="Interventi1" [(ngModel)]="this.quoteModelService.interventi">
+      <mat-option value="G">G</mat-option>
+      <mat-option value="1S">1S</mat-option>
+      <mat-option value="2S">2S</mat-option>
+      <mat-option value="3S">3S</mat-option>
+      <mat-option value="4S">4S</mat-option>
+      <mat-option value="Q">Q</mat-option>
+      <mat-option value="1M">1M</mat-option>
+      <mat-option value="2M">2M</mat-option>
+      <mat-option value="3M">3M</mat-option>
+      <mat-option value="4M">4M</mat-option>
+      <mat-option value="TM">TM</mat-option>
+      <mat-option value="SM">SM</mat-option>
+      <mat-option value="A">A</mat-option>
+    </mat-select>
   </mat-form-field>
-
   <mat-form-field class="example-full-width">
-    <mat-label>Servizi</mat-label>
-    <input matInput name="servizi" maxlength="255" [(ngModel)]="this.quoteModelService.servizi[1]" />
+    <mat-label>Servizi2</mat-label>
+    <input matInput name="servizi2" maxlength="255" [(ngModel)]="this.quoteModelService.servizi[0]" />
   </mat-form-field>
 
   <mat-form-field *ngIf="this.quoteModelService.tipoPreventivo == 'O'" class="example-full-width">
-    <mat-label>Interventi</mat-label>
-    <input matInput name="interventi" maxlength="255" [(ngModel)]="this.quoteModelService.interventi[1]" />
+    <mat-label>Interventi2</mat-label>
+    <mat-select name="Interventi2" [(ngModel)]="this.quoteModelService.interventi">
+      <mat-option value="G">G</mat-option>
+      <mat-option value="1S">1S</mat-option>
+      <mat-option value="2S">2S</mat-option>
+      <mat-option value="3S">3S</mat-option>
+      <mat-option value="4S">4S</mat-option>
+      <mat-option value="Q">Q</mat-option>
+      <mat-option value="1M">1M</mat-option>
+      <mat-option value="2M">2M</mat-option>
+      <mat-option value="3M">3M</mat-option>
+      <mat-option value="4M">4M</mat-option>
+      <mat-option value="TM">TM</mat-option>
+      <mat-option value="SM">SM</mat-option>
+      <mat-option value="A">A</mat-option>
+    </mat-select>
   </mat-form-field>
+
+  <mat-form-field class="example-full-width">
+    <mat-label>Servizi3</mat-label>
+    <input matInput name="servizi3" maxlength="255" [(ngModel)]="this.quoteModelService.servizi[0]" />
+  </mat-form-field>
+
+  <mat-form-field *ngIf="this.quoteModelService.tipoPreventivo == 'O'" class="example-full-width">
+    <mat-label>Interventi3</mat-label>
+    <mat-select name="Interventi3" [(ngModel)]="this.quoteModelService.interventi">
+      <mat-option value="G">G</mat-option>
+      <mat-option value="1S">1S</mat-option>
+      <mat-option value="2S">2S</mat-option>
+      <mat-option value="3S">3S</mat-option>
+      <mat-option value="4S">4S</mat-option>
+      <mat-option value="Q">Q</mat-option>
+      <mat-option value="1M">1M</mat-option>
+      <mat-option value="2M">2M</mat-option>
+      <mat-option value="3M">3M</mat-option>
+      <mat-option value="4M">4M</mat-option>
+      <mat-option value="TM">TM</mat-option>
+      <mat-option value="SM">SM</mat-option>
+      <mat-option value="A">A</mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field class="example-full-width">
+    <mat-label>Servizi4</mat-label>
+    <input matInput name="servizi4" maxlength="255" [(ngModel)]="this.quoteModelService.servizi[0]" />
+  </mat-form-field>
+
+  <mat-form-field *ngIf="this.quoteModelService.tipoPreventivo == 'O'" class="example-full-width">
+    <mat-label>Interventi4</mat-label>
+    <mat-select name="Interventi4" [(ngModel)]="this.quoteModelService.interventi">
+      <mat-option value="G">G</mat-option>
+      <mat-option value="1S">1S</mat-option>
+      <mat-option value="2S">2S</mat-option>
+      <mat-option value="3S">3S</mat-option>
+      <mat-option value="4S">4S</mat-option>
+      <mat-option value="Q">Q</mat-option>
+      <mat-option value="1M">1M</mat-option>
+      <mat-option value="2M">2M</mat-option>
+      <mat-option value="3M">3M</mat-option>
+      <mat-option value="4M">4M</mat-option>
+      <mat-option value="TM">TM</mat-option>
+      <mat-option value="SM">SM</mat-option>
+      <mat-option value="A">A</mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field class="example-full-width">
+    <mat-label>Servizi5</mat-label>
+    <input matInput name="servizi5" maxlength="255" [(ngModel)]="this.quoteModelService.servizi[0]" />
+  </mat-form-field>
+
+  <mat-form-field *ngIf="this.quoteModelService.tipoPreventivo == 'O'" class="example-full-width">
+    <mat-label>Interventi5</mat-label>
+    <mat-select name="Interventi5" [(ngModel)]="this.quoteModelService.interventi">
+      <mat-option value="G">G</mat-option>
+      <mat-option value="1S">1S</mat-option>
+      <mat-option value="2S">2S</mat-option>
+      <mat-option value="3S">3S</mat-option>
+      <mat-option value="4S">4S</mat-option>
+      <mat-option value="Q">Q</mat-option>
+      <mat-option value="1M">1M</mat-option>
+      <mat-option value="2M">2M</mat-option>
+      <mat-option value="3M">3M</mat-option>
+      <mat-option value="4M">4M</mat-option>
+      <mat-option value="TM">TM</mat-option>
+      <mat-option value="SM">SM</mat-option>
+      <mat-option value="A">A</mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field class="example-full-width">
+    <mat-label>Servizi6</mat-label>
+    <input matInput name="servizi6" maxlength="255" [(ngModel)]="this.quoteModelService.servizi[0]" />
+  </mat-form-field>
+
+  <mat-form-field *ngIf="this.quoteModelService.tipoPreventivo == 'O'" class="example-full-width">
+    <mat-label>Interventi6</mat-label>
+    <mat-select name="Interventi6" [(ngModel)]="this.quoteModelService.interventi">
+      <mat-option value="G">G</mat-option>
+      <mat-option value="1S">1S</mat-option>
+      <mat-option value="2S">2S</mat-option>
+      <mat-option value="3S">3S</mat-option>
+      <mat-option value="4S">4S</mat-option>
+      <mat-option value="Q">Q</mat-option>
+      <mat-option value="1M">1M</mat-option>
+      <mat-option value="2M">2M</mat-option>
+      <mat-option value="3M">3M</mat-option>
+      <mat-option value="4M">4M</mat-option>
+      <mat-option value="TM">TM</mat-option>
+      <mat-option value="SM">SM</mat-option>
+      <mat-option value="A">A</mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field class="example-full-width">
+    <mat-label>Servizi7</mat-label>
+    <input matInput name="servizi7" maxlength="255" [(ngModel)]="this.quoteModelService.servizi[0]" />
+  </mat-form-field>
+
+  <mat-form-field *ngIf="this.quoteModelService.tipoPreventivo == 'O'" class="example-full-width">
+    <mat-label>Interventi7</mat-label>
+    <mat-select name="Interventi7" [(ngModel)]="this.quoteModelService.interventi">
+      <mat-option value="G">G</mat-option>
+      <mat-option value="1S">1S</mat-option>
+      <mat-option value="2S">2S</mat-option>
+      <mat-option value="3S">3S</mat-option>
+      <mat-option value="4S">4S</mat-option>
+      <mat-option value="Q">Q</mat-option>
+      <mat-option value="1M">1M</mat-option>
+      <mat-option value="2M">2M</mat-option>
+      <mat-option value="3M">3M</mat-option>
+      <mat-option value="4M">4M</mat-option>
+      <mat-option value="TM">TM</mat-option>
+      <mat-option value="SM">SM</mat-option>
+      <mat-option value="A">A</mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field class="example-full-width">
+    <mat-label>Servizi8</mat-label>
+    <input matInput name="servizi8" maxlength="255" [(ngModel)]="this.quoteModelService.servizi[0]" />
+  </mat-form-field>
+
+  <mat-form-field *ngIf="this.quoteModelService.tipoPreventivo == 'O'" class="example-full-width">
+    <mat-label>Interventi8</mat-label>
+    <mat-select name="Interventi8" [(ngModel)]="this.quoteModelService.interventi">
+      <mat-option value="G">G</mat-option>
+      <mat-option value="1S">1S</mat-option>
+      <mat-option value="2S">2S</mat-option>
+      <mat-option value="3S">3S</mat-option>
+      <mat-option value="4S">4S</mat-option>
+      <mat-option value="Q">Q</mat-option>
+      <mat-option value="1M">1M</mat-option>
+      <mat-option value="2M">2M</mat-option>
+      <mat-option value="3M">3M</mat-option>
+      <mat-option value="4M">4M</mat-option>
+      <mat-option value="TM">TM</mat-option>
+      <mat-option value="SM">SM</mat-option>
+      <mat-option value="A">A</mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field class="example-full-width">
+    <mat-label>Servizi9</mat-label>
+    <input matInput name="servizi9" maxlength="255" [(ngModel)]="this.quoteModelService.servizi[0]" />
+  </mat-form-field>
+
+  <mat-form-field *ngIf="this.quoteModelService.tipoPreventivo == 'O'" class="example-full-width">
+    <mat-label>Interventi9</mat-label>
+    <mat-select name="Interventi9" [(ngModel)]="this.quoteModelService.interventi">
+      <mat-option value="G">G</mat-option>
+      <mat-option value="1S">1S</mat-option>
+      <mat-option value="2S">2S</mat-option>
+      <mat-option value="3S">3S</mat-option>
+      <mat-option value="4S">4S</mat-option>
+      <mat-option value="Q">Q</mat-option>
+      <mat-option value="1M">1M</mat-option>
+      <mat-option value="2M">2M</mat-option>
+      <mat-option value="3M">3M</mat-option>
+      <mat-option value="4M">4M</mat-option>
+      <mat-option value="TM">TM</mat-option>
+      <mat-option value="SM">SM</mat-option>
+      <mat-option value="A">A</mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field class="example-full-width">
+    <mat-label>Servizi10</mat-label>
+    <input matInput name="servizi10" maxlength="255" [(ngModel)]="this.quoteModelService.servizi[0]" />
+  </mat-form-field>
+
+  <mat-form-field *ngIf="this.quoteModelService.tipoPreventivo == 'O'" class="example-full-width">
+    <mat-label>Interventi10</mat-label>
+    <mat-select name="Interventi10" [(ngModel)]="this.quoteModelService.interventi">
+      <mat-option value="G">G</mat-option>
+      <mat-option value="1S">1S</mat-option>
+      <mat-option value="2S">2S</mat-option>
+      <mat-option value="3S">3S</mat-option>
+      <mat-option value="4S">4S</mat-option>
+      <mat-option value="Q">Q</mat-option>
+      <mat-option value="1M">1M</mat-option>
+      <mat-option value="2M">2M</mat-option>
+      <mat-option value="3M">3M</mat-option>
+      <mat-option value="4M">4M</mat-option>
+      <mat-option value="TM">TM</mat-option>
+      <mat-option value="SM">SM</mat-option>
+      <mat-option value="A">A</mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field class="example-full-width">
+    <mat-label>Servizi11</mat-label>
+    <input matInput name="servizi11" maxlength="255" [(ngModel)]="this.quoteModelService.servizi[0]" />
+  </mat-form-field>
+
+  <mat-form-field *ngIf="this.quoteModelService.tipoPreventivo == 'O'" class="example-full-width">
+    <mat-label>Interventi11</mat-label>
+    <mat-select name="Interventi11" [(ngModel)]="this.quoteModelService.interventi">
+      <mat-option value="G">G</mat-option>
+      <mat-option value="1S">1S</mat-option>
+      <mat-option value="2S">2S</mat-option>
+      <mat-option value="3S">3S</mat-option>
+      <mat-option value="4S">4S</mat-option>
+      <mat-option value="Q">Q</mat-option>
+      <mat-option value="1M">1M</mat-option>
+      <mat-option value="2M">2M</mat-option>
+      <mat-option value="3M">3M</mat-option>
+      <mat-option value="4M">4M</mat-option>
+      <mat-option value="TM">TM</mat-option>
+      <mat-option value="SM">SM</mat-option>
+      <mat-option value="A">A</mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field class="example-full-width">
+    <mat-label>Servizi12</mat-label>
+    <input matInput name="servizi12" maxlength="255" [(ngModel)]="this.quoteModelService.servizi[0]" />
+  </mat-form-field>
+
+  <mat-form-field *ngIf="this.quoteModelService.tipoPreventivo == 'O'" class="example-full-width">
+    <mat-label>Interventi12</mat-label>
+    <mat-select name="Interventi12" [(ngModel)]="this.quoteModelService.interventi">
+      <mat-option value="G">G</mat-option>
+      <mat-option value="1S">1S</mat-option>
+      <mat-option value="2S">2S</mat-option>
+      <mat-option value="3S">3S</mat-option>
+      <mat-option value="4S">4S</mat-option>
+      <mat-option value="Q">Q</mat-option>
+      <mat-option value="1M">1M</mat-option>
+      <mat-option value="2M">2M</mat-option>
+      <mat-option value="3M">3M</mat-option>
+      <mat-option value="4M">4M</mat-option>
+      <mat-option value="TM">TM</mat-option>
+      <mat-option value="SM">SM</mat-option>
+      <mat-option value="A">A</mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field class="example-full-width">
+    <mat-label>Servizi13</mat-label>
+    <input matInput name="servizi13" maxlength="255" [(ngModel)]="this.quoteModelService.servizi[0]" />
+  </mat-form-field>
+
+  <mat-form-field *ngIf="this.quoteModelService.tipoPreventivo == 'O'" class="example-full-width">
+    <mat-label>Interventi13</mat-label>
+    <mat-select name="Interventi13" [(ngModel)]="this.quoteModelService.interventi">
+      <mat-option value="G">G</mat-option>
+      <mat-option value="1S">1S</mat-option>
+      <mat-option value="2S">2S</mat-option>
+      <mat-option value="3S">3S</mat-option>
+      <mat-option value="4S">4S</mat-option>
+      <mat-option value="Q">Q</mat-option>
+      <mat-option value="1M">1M</mat-option>
+      <mat-option value="2M">2M</mat-option>
+      <mat-option value="3M">3M</mat-option>
+      <mat-option value="4M">4M</mat-option>
+      <mat-option value="TM">TM</mat-option>
+      <mat-option value="SM">SM</mat-option>
+      <mat-option value="A">A</mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field class="example-full-width">
+    <mat-label>Servizi14</mat-label>
+    <input matInput name="servizi14" maxlength="255" [(ngModel)]="this.quoteModelService.servizi[0]" />
+  </mat-form-field>
+
+  <mat-form-field *ngIf="this.quoteModelService.tipoPreventivo == 'O'" class="example-full-width">
+    <mat-label>Interventi14</mat-label>
+    <mat-select name="Interventi14" [(ngModel)]="this.quoteModelService.interventi">
+      <mat-option value="G">G</mat-option>
+      <mat-option value="1S">1S</mat-option>
+      <mat-option value="2S">2S</mat-option>
+      <mat-option value="3S">3S</mat-option>
+      <mat-option value="4S">4S</mat-option>
+      <mat-option value="Q">Q</mat-option>
+      <mat-option value="1M">1M</mat-option>
+      <mat-option value="2M">2M</mat-option>
+      <mat-option value="3M">3M</mat-option>
+      <mat-option value="4M">4M</mat-option>
+      <mat-option value="TM">TM</mat-option>
+      <mat-option value="SM">SM</mat-option>
+      <mat-option value="A">A</mat-option>
+    </mat-select>
+  </mat-form-field>
+
+
+
+
 
   <mat-form-field class="example-full-width">
     <mat-label>Imponibile</mat-label>

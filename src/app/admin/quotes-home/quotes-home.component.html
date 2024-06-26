@@ -20,9 +20,8 @@
   </div>
 </mat-toolbar>
 
-
 <app-quote-list-prw [color] = "color"></app-quote-list-prw>
-<mat-drawer-container class="example-container">
+<div class="quote-list">
     <mat-list role="list">
       <mat-list-item *ngFor="let quote of quotesFrEnd" role="listitem">
         <button mat-raised-button (click)="changePdf(quote.numeroPreventivo)">
@@ -33,18 +32,29 @@
         </button></mat-list-item
       >
     </mat-list>
-    <mat-drawer-container>
+  </div>
 
 
 
-      <ngx-extended-pdf-viewer
-      [base64Src]="pdfPrev"
-      useBrowserLocale="true"
-      backgroundColor="#fffff"
-      [showToolbar]="false"
-      [height]="'100%'"
-      [handTool]="false"
-      [showHandToolButton]="false"
-      [textLayer]="false"
+
+<ngx-extended-pdf-viewer class="ngx-extended-pdf-viewer"
+[base64Src]="pdfPrev"
+useBrowserLocale="true"
+backgroundColor="#fffff"
+[showToolbar]="false"
+[height]="'100%'"
+[handTool]="false"
+[showHandToolButton]="false"
+[textLayer]="false"
 >
 </ngx-extended-pdf-viewer>
+
+
+
+
+
+
+
+
+
+
