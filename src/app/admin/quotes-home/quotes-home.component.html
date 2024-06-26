@@ -21,25 +21,15 @@
 </mat-toolbar>
 
 
-<div class="edit-container">
-  <button (click)="navigateToeditQuote()" mat-icon-button class="example-icon">
-    <mat-icon>edit</mat-icon>
-  </button>
-  <button (click)="deleteQuote()" mat-icon-button class="example-icon">
-    <mat-icon>delete</mat-icon>
-  </button>
-  </div>
-
-
-
-
-
 <app-quote-list-prw [color] = "color"></app-quote-list-prw>
 <mat-drawer-container class="example-container">
     <mat-list role="list">
       <mat-list-item *ngFor="let quote of quotesFrEnd" role="listitem">
-        <button mat-raised-button >
-          {{ quote.numeroPreventivo }}
+        <button mat-raised-button (click)="changePdf(quote.numeroPreventivo)">
+          {{ quote.numeroPreventivo }}  {{quote.nominativo}}
+          <button mat-raised-button (click)="navigateToEditQuote(quote.numeroPreventivo)">Modifica</button>
+          <button mat-raised-button (click)="delete(quote.numeroPreventivo)">Cancella</button>
+
         </button></mat-list-item
       >
     </mat-list>

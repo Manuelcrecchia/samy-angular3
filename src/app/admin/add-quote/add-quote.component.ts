@@ -18,9 +18,13 @@ export class AddQuoteComponent {
   }
 
   addQuote(){
-
-    let serviziJson: string[] = [];
-    serviziJson.concat(this.quoteModelService.servizi[0]);
+    if(this.quoteModelService.tipoPreventivo == 
+      ''){
+          //INSERIRE UN ALERT PER AVVISARE DI IMMETERE IL CAMPO
+    }
+    else{
+      let serviziJson: string[] = [];
+        serviziJson.concat(this.quoteModelService.servizi[0]);
     serviziJson.concat(this.quoteModelService.servizi[1]);
 
     let interventiJson: string[] = [];
@@ -39,7 +43,7 @@ export class AddQuoteComponent {
       email: this.quoteModelService.email,
       telefono: this.quoteModelService.telefono,
       referente: this.quoteModelService.referente,
-      descrizioneimmmobile: this.quoteModelService.descrizioneImmmobile,
+      descrizioneImmobile: this.quoteModelService.descrizioneImmobile,
       servizi: serviziJson[0],
       interventi: interventiJson[0],
       imponibile: this.quoteModelService.imponibile,
@@ -47,7 +51,6 @@ export class AddQuoteComponent {
       pagamento: this.quoteModelService.pagamento,
       note : this.quoteModelService.note,
     }
-    console.log(body);
     this.http
       .post(this.globalService.url + 'quotes/add', body, {
         headers: this.globalService.headers,
@@ -59,6 +62,7 @@ export class AddQuoteComponent {
         this.router.navigateByUrl('/quotesHome');
 
       });
+    }
    }
 
 }

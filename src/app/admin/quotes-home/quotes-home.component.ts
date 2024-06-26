@@ -16,6 +16,7 @@ export class QuotesHomeComponent   {@Input() color: any;
 
   quotesFrEnd: {
     numeroPreventivo: string;
+    nominativo: string;
   }[] = [];
 
   pdfPrev!: string;
@@ -68,91 +69,18 @@ ngOnInit() {
             else {
               this.pdfTsSelezionato = true;
               this.pdfPrev = response;
-              console.log(this.pdfPrev);
             }
           });
       }
     });
 }
 
-deleteQuote() {
-  let allOfficeNumCli: string[];
-  this.http //Richiesta al database di tutti i numeri clienti degli uffici
-    .get(this.globalService.url + 'admin/officeQuotes/getAllNumCli', {
-      headers: this.globalService.headers,
-      responseType: 'text',
-    })
-    .subscribe((response) => {
-      let allOfficeNumCliJ = JSON.parse(response);
-      if (allOfficeNumCliJ.length != 0) {
-        for (let i = 0; i < allOfficeNumCliJ.length; i++) {
-          allOfficeNumCli += allOfficeNumCliJ[i]['numeroPreventivo'];
-        }
-      } else {
-        allOfficeNumCli = [];
-      }
-      const body = { numeroPreventivo: this.numeroClienteSelezionato };
+changePdf(numeroPreventivo: string){
 
-      if (allOfficeNumCli.includes(this.numeroClienteSelezionato)) {
-        this.http
-          .post(this.globalService.url + 'admin/officeQuotes/delete', body, {
-            headers: this.globalService.headers,
-            responseType: 'text',
-          })
-          .subscribe((response) => {
-          });
-      } else {
-        this.http
-          .post(this.globalService.url + 'admin/quotes/delete', body, {
-            headers: this.globalService.headers,
-            responseType: 'text',
-          })
-          .subscribe((response) => {
-          });
-      }
-      this.http
-        .post(this.globalService.url + 'admin/technicalSpecification/delete', body, {
-          headers: this.globalService.headers,
-          responseType: 'text',
-        })
-        .subscribe((response) => {
-          this.ngOnInit();
-        })
-    }); //Fine richiesta al database di tutti i numeri clienti degli uffici
-}
-
-setQuoteToGreen() {
-  let allOfficeNumCli: string[];
-  this.http //Richiesta al database di tutti i numeri clienti degli uffici
-    .get(this.globalService.url + 'admin/officeQuotes/getAllNumCli', {
-      headers: this.globalService.headers,
-      responseType: 'text',
-    })
-    .subscribe((response) => {
-      let allOfficeNumCliJ = JSON.parse(response);
-      if (allOfficeNumCliJ.length != 0) {
-        for (let i = 0; i < allOfficeNumCliJ.length; i++) {
-          allOfficeNumCli += allOfficeNumCliJ[i]['numeroPreventivo'];
-        }
-      } else {
-        allOfficeNumCli = [];
-      }
-      const body = { numeroPreventivo: this.numeroClienteSelezionato };
-
-      if (allOfficeNumCli.includes(this.numeroClienteSelezionato)) {
-
-        this.http
-          .post(this.globalService.url + 'admin/officeQuotes/setToGreen', body, {
-            headers: this.globalService.headers,
-            responseType: 'text',
-          })
-          .subscribe((response) => {
-            this.ngOnInit();
-          });
-      } else {
-        this.http
+const body = { numeroPreventivo: numeroPreventivo };
+this.http
           .post(
-            this.globalService.url + 'admin/quotes/setToGreen',
+            this.globalService.url + 'pdfs/sendQuote',
             body,
             {
               headers: this.globalService.headers,
@@ -160,11 +88,18 @@ setQuoteToGreen() {
             }
           )
           .subscribe((response) => {
-            this.router.navigateByUrl('/quotesHome');
+            if(response == 'Unauthorized') {
+              this.router.navigateByUrl('/')
+            }
+            else {
+              this.pdfTsSelezionato = true;
+              this.pdfPrev = response;
+            }
           });
-      }
-    }); //Fine richiesta al database di tutti i numeri clienti degli uffic
+}
 
-  const body = { numeroPreventivo: this.numeroClienteSelezionato };
+navigateToEditQuote(numeroPreventivo: string){}
+delete(numeroPreventivo: string){
+  
 }
 }

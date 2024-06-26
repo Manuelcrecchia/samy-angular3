@@ -17,7 +17,7 @@ export class QuoteModelService {
   email = '';
    telefono = '';
   referente = '';
-  descrizioneImmmobile= '';
+  descrizioneImmobile= '';
   servizi = [];
   interventi = [];
 

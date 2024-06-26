@@ -32,7 +32,7 @@ export class EditQuoteComponent {
       email: this.quoteModelService.email,
       telefono: this.quoteModelService.telefono,
       referente: this.quoteModelService.referente,
-      descrizioneimmobile: this.quoteModelService.descrizioneImmmobile,
+      descrizioneimmobile: this.quoteModelService.descrizioneImmobile,
       servizi: this.quoteModelService.servizi,
       imponibile: this.quoteModelService.imponibile,
       iva: this.quoteModelService.iva,
