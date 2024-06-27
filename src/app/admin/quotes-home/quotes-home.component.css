@@ -27,7 +27,7 @@ button.mat-raised-button {
   align-items: center;
   justify-content: space-between;
   margin-top: 5px;
-  border-bottom: 1px solid #000; /* Aggiunge una linea sotto il contenuto */
+  border-bottom: 1px solid #ffffff; /* Aggiunge una linea sotto il contenuto */
 }
 
 .example-form-field {
