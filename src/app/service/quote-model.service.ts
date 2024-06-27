@@ -18,8 +18,8 @@ export class QuoteModelService {
    telefono = '';
   referente = '';
   descrizioneImmobile= '';
-  servizi = [];
-  interventi = [];
+  servizi = ['','','','','','','','','','','','','',''];
+  interventi = ['','','','','','','','','','','','','',''];
 
   imponibile = "0.00";
   iva= "N";

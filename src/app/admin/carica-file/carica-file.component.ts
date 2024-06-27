@@ -76,7 +76,6 @@ export class CaricaFileComponent {
     this.error = 'file caricato';
     let files = event.dataTransfer?.files;
     if (files && files.length > 1) {
-      console.log('solo 1 file alla volta');
     } else {
       let file = files ? files[0] : null;
       if (file) {

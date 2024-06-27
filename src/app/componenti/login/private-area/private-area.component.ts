@@ -18,7 +18,6 @@ constructor(private globalService: GlobalService, private http: HttpClient, priv
 
   loginFunction(email: string, password: string) {
     let res;
-    console.log("in");
     let resp;
     const body = {email: email, password: password};
     this.http.post(this.globalService.url + "login/admin", body, {headers: this.globalService.headers, responseType: 'text'}).subscribe(response => {
@@ -27,13 +26,11 @@ constructor(private globalService: GlobalService, private http: HttpClient, priv
       if(resp == "NON TROVATO") {
         this.nc = true;
         this.pe = false;
-        console.log("NON TROVATO");
       }
       else{
         if(resp == "NO"){
           this.pe = true;
           this.nc = false;
-          console.log("NO");
         }
         else{
           this.globalService.userCode = res["codiceOperatore"];

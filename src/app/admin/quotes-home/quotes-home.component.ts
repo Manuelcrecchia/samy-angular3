@@ -12,7 +12,6 @@ import { QuoteModelService } from '../../service/quote-model.service';
 })
 export class QuotesHomeComponent   {@Input() color: any;
   numeroClienteSelezionato = '';
-  numeroClienteSelezionatoBool = false;
 
   quotesFrEnd: {
     numeroPreventivo: string;
@@ -20,10 +19,8 @@ export class QuotesHomeComponent   {@Input() color: any;
   }[] = [];
 
   pdfPrev!: string;
-  pdfTs!: string;
   pdfTsSelezionato = false;
 
-  data!: QuoteModelService;
 
 
   constructor(  private http: HttpClient,
@@ -41,6 +38,46 @@ navigateToAddQuote(){
 
 
 ngOnInit() {
+  this.http
+    .get(this.globalService.url + 'quotes/getAll', {
+      headers: this.globalService.headers,
+      responseType: 'text',
+    })
+    .subscribe((response) => {
+      this.quotesFrEnd = JSON.parse(response).reverse()
+
+      if (this.quotesFrEnd.length > 0) {
+        this.pdfTsSelezionato = true
+        this.numeroClienteSelezionato = this.quotesFrEnd[0].numeroPreventivo;
+        const body = { numeroPreventivo: this.quotesFrEnd[0].numeroPreventivo };
+        this.http
+          .post(
+            this.globalService.url + 'pdfs/sendQuote',
+            body,
+            {
+              headers: this.globalService.headers,
+              responseType: 'text',
+            }
+          )
+          .subscribe((response) => {
+            if(response == 'Unauthorized') {
+              this.router.navigateByUrl('/')
+            }
+            else {
+              this.pdfTsSelezionato = true;
+              this.pdfPrev = response;
+            }
+          });
+      }
+    });
+}
+
+ngOnChanges(){
+  this.quotesFrEnd = [];
+  this.pdfTsSelezionato = false;
+  this.numeroClienteSelezionato = '';
+  this.pdfPrev = '';
+
   this.http
     .get(this.globalService.url + 'quotes/getAll', {
       headers: this.globalService.headers,
@@ -98,8 +135,50 @@ this.http
           });
 }
 
-navigateToEditQuote(numeroPreventivo: string){}
+navigateToEditQuote(numeroPreventivo: string){
+  const body = { numeroPreventivo: numeroPreventivo };
+this.http
+          .post(
+            this.globalService.url + 'quotes/getQuote',
+            body,
+            {
+              headers: this.globalService.headers,
+              responseType: 'text',
+            }
+          )
+          .subscribe((response) => {
+            if(response == 'Unauthorized') {
+              this.router.navigateByUrl('/')
+            }
+            else {
+              let quoteJson = (JSON.parse(response)[0]);
+              this.quoteModel.numeroPreventivo = quoteJson["numeroPreventivo"];
+              this.quoteModel.codiceOperatore = quoteJson["codiceOperatore"];
+              this.quoteModel.tipoPreventivo = quoteJson["tipoPreventivo"];
+              this.quoteModel.data = quoteJson["data"];
+              this.quoteModel.nominativo = quoteJson["nominativo"]
+              
+              this.router.navigateByUrl('/editQuote');
+            }
+          });
+}
 delete(numeroPreventivo: string){
-  
+  const body = { numeroPreventivo: numeroPreventivo };
+
+  this.http
+  .post(
+    this.globalService.url + 'quotes/delete',
+    body, {
+      headers: this.globalService.headers,
+      responseType: 'text',
+    })
+    .subscribe((response)=>{
+      if(response == 'Unauthorized') {
+        this.router.navigateByUrl('/')
+      }
+      else {
+      this.ngOnChanges();
+      }
+    })
 }
 }

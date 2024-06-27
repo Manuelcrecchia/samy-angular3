@@ -23,13 +23,6 @@ export class AddQuoteComponent {
           //INSERIRE UN ALERT PER AVVISARE DI IMMETERE IL CAMPO
     }
     else{
-      let serviziJson: string[] = [];
-        serviziJson.concat(this.quoteModelService.servizi[0]);
-    serviziJson.concat(this.quoteModelService.servizi[1]);
-
-    let interventiJson: string[] = [];
-    interventiJson.concat(this.quoteModelService.interventi[0]);
-    interventiJson.concat(this.quoteModelService.interventi[1]);
 
     let body = {
       codiceOperatore: this.globalService.userCode,
@@ -44,8 +37,8 @@ export class AddQuoteComponent {
       telefono: this.quoteModelService.telefono,
       referente: this.quoteModelService.referente,
       descrizioneImmobile: this.quoteModelService.descrizioneImmobile,
-      servizi: serviziJson[0],
-      interventi: interventiJson[0],
+      servizi: JSON.stringify(this.quoteModelService.servizi),
+      interventi: JSON.stringify(this.quoteModelService.interventi),
       imponibile: this.quoteModelService.imponibile,
       iva: this.quoteModelService.iva,
       pagamento: this.quoteModelService.pagamento,
@@ -58,7 +51,6 @@ export class AddQuoteComponent {
       })
       // ...
       .subscribe((response) => {
-        console.log(response);
         this.router.navigateByUrl('/quotesHome');
 
       });

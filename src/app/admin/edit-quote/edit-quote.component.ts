@@ -15,6 +15,7 @@ export class EditQuoteComponent {
   constructor(public quoteModelService: QuoteModelService, private http: HttpClient, private globalService: GlobalService, private router: Router) {}
 
   ngOnInit(){
+
   }
 
   editQuote(){

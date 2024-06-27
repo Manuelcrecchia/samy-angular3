@@ -15,7 +15,6 @@ export class HomesitoComponent {
   }
 
   navigateToPrivateArea() {
-    console.log("in");
     this.router.navigateByUrl('/loginPrivateArea');
   }
 }
