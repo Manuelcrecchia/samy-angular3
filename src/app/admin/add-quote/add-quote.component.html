@@ -40,7 +40,7 @@
   <form id="form" name="form">
     <mat-form-field appearance="fill">
       <mat-label>Selettore prefisso via</mat-label>
-      <mat-select name="tipoPreventivo" [(ngModel)]="this.quoteModelService.selettorePrefissoVia">
+      <mat-select name="selettorePrefissoVia" [(ngModel)]="this.quoteModelService.selettorePrefissoVia">
         <mat-option value="VIA">VIA</mat-option>
         <mat-option value="STRADA">STRADA</mat-option>
         <mat-option value="VIALE">VIALE</mat-option>
@@ -431,15 +431,29 @@
     <input matInput name="imponibile" maxlength="255" [(ngModel)]="this.quoteModelService.imponibile" />
   </mat-form-field>
 
-  <mat-form-field class="example-full-width">
-    <mat-label>Iva</mat-label>
-    <input matInput name="iva" maxlength="255" [(ngModel)]="this.quoteModelService.iva" />
-  </mat-form-field>
+  <form id="form" name="form">
+    <mat-form-field appearance="fill">
+      <mat-label>Iva</mat-label>
+      <mat-select name="iva" [(ngModel)]="this.quoteModelService.iva">
+        <mat-option value="N">N</mat-option>
+        <mat-option value="RC">RC</mat-option>
+        <mat-option value="SP">SP</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </form>
 
-  <mat-form-field class="example-full-width">
-    <mat-label>Pagamento</mat-label>
-    <input matInput name="pagamento" maxlength="255" [(ngModel)]="this.quoteModelService.pagamento" />
-  </mat-form-field>
+
+  <form id="form" name="form">
+    <mat-form-field appearance="fill">
+      <mat-label>Pagamento</mat-label>
+      <mat-select name="Pagamento" [(ngModel)]="this.quoteModelService.pagamento">
+        <mat-option value="C">C</mat-option>
+        <mat-option value="B">B</mat-option>
+        <mat-option value="E">E</mat-option>
+        <mat-option value=""></mat-option>
+      </mat-select>
+    </mat-form-field>
+  </form>
 
   <mat-form-field class="example-full-width">
     <mat-label>Note</mat-label>

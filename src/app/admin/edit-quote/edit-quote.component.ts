@@ -19,13 +19,18 @@ export class EditQuoteComponent {
   }
 
   editQuote(){
+
+
+    if(this.quoteModelService.tipoPreventivo == ''){
+      //INSERIRE UN ALERT PER AVVISARE DI IMMETERE IL CAMPO
+    }
+    else{
+
     let body = {
       codiceOperatore: this.globalService.userCode,
       tipoPreventivo: this.quoteModelService.tipoPreventivo,
-      numeropreventivo: this.quoteModelService.numeroPreventivo,
-      data: this.quoteModelService.data,
       nominativo: this.quoteModelService.nominativo,
-      codicefiscalepartitaiva: this.quoteModelService.cfpi,
+      cfpi: this.quoteModelService.cfpi,
       citta: this.quoteModelService.citta,
       selettoreprefissovia: this.quoteModelService.selettorePrefissoVia,
       via: this.quoteModelService.via,
@@ -33,19 +38,22 @@ export class EditQuoteComponent {
       email: this.quoteModelService.email,
       telefono: this.quoteModelService.telefono,
       referente: this.quoteModelService.referente,
-      descrizioneimmobile: this.quoteModelService.descrizioneImmobile,
-      servizi: this.quoteModelService.servizi,
+      descrizioneImmobile: this.quoteModelService.descrizioneImmobile,
+      servizi: JSON.stringify(this.quoteModelService.servizi),
+      interventi: JSON.stringify(this.quoteModelService.interventi),
       imponibile: this.quoteModelService.imponibile,
       iva: this.quoteModelService.iva,
       pagamento: this.quoteModelService.pagamento,
-       note: this.quoteModelService.note,
+      note : this.quoteModelService.note,
     }
     this.http
-      .post(this.globalService.url + 'admin/quotes/edit', body, {
+      .post(this.globalService.url + 'quotes/edit', body, {
         headers: this.globalService.headers,
         responseType: 'text',
       })
       .subscribe((response) => {
-        this.router.navigateByUrl('/quotesHome');      })
+        this.router.navigateByUrl('/quotesHome');
+       });
+      }
    }
   }
