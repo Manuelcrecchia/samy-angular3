@@ -29,9 +29,7 @@ export class QuotesHomeComponent   {@Input() color: any;
     private router: Router,
     private quoteModel: QuoteModelService,
    ){}
-   navigateToeditQuote(){
-     this.router.navigateByUrl('/editQuote');
-   }
+
 navigateToAddQuote(){
   this.router.navigateByUrl('/addQuote');
 }
@@ -156,7 +154,22 @@ this.http
               this.quoteModel.codiceOperatore = quoteJson["codiceOperatore"];
               this.quoteModel.tipoPreventivo = quoteJson["tipoPreventivo"];
               this.quoteModel.data = quoteJson["data"];
-              this.quoteModel.nominativo = quoteJson["nominativo"]
+              this.quoteModel.nominativo = quoteJson["nominativo"];
+              this.quoteModel.cfpi = quoteJson["cfpi"];
+              this.quoteModel.citta = quoteJson["citta"];
+              this.quoteModel.selettorePrefissoVia = quoteJson["selettorePrefissoVia"];
+              this.quoteModel.via = quoteJson["via"];
+              this.quoteModel.cap = quoteJson["cap"];
+              this.quoteModel.email = quoteJson["email"];
+              this.quoteModel.telefono = quoteJson["telefono"];
+              this.quoteModel.referente = quoteJson["referente"];
+              this.quoteModel.descrizioneImmobile = quoteJson["descrizioneImmobile"];
+              this.quoteModel.servizi = JSON.parse(quoteJson["servizi"]);
+              this.quoteModel.interventi = JSON.parse(quoteJson["interventi"]);
+              this.quoteModel.imponibile = quoteJson["imponibile"];
+              this.quoteModel.iva = quoteJson["nominivaativo"];
+              this.quoteModel.pagamento = quoteJson["pagamento"];
+              this.quoteModel.note = quoteJson["note"];
               
               this.router.navigateByUrl('/editQuote');
             }

@@ -30,7 +30,7 @@ export class AddQuoteComponent {
       nominativo: this.quoteModelService.nominativo,
       cfpi: this.quoteModelService.cfpi,
       citta: this.quoteModelService.citta,
-      selettoreprefissovia: this.quoteModelService.selettorePrefissoVia,
+      selettorePrefissoVia: this.quoteModelService.selettorePrefissoVia,
       via: this.quoteModelService.via,
       cap: this.quoteModelService.cap,
       email: this.quoteModelService.email,
