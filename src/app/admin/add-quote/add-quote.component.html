@@ -17,10 +17,9 @@
     </mat-select>
   </mat-form-field>
 
-  <mat-form-field appearance="fill" class="example-full-width">
     <mat-label>Codice Operatore</mat-label>
-    <input matInput name="codiceOperatore" pattern="^.{2}$" [(ngModel)]="this.globalService.userCode" />
-  </mat-form-field>
+    <mat-label>{{this.globalService.userCode}}</mat-label>
+  
 
   <mat-form-field appearance="fill" class="example-full-width">
     <mat-label>Nominativo</mat-label>

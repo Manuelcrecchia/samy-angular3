@@ -44,13 +44,19 @@
 [base64Src]="pdfPrev"
 useBrowserLocale="true"
 backgroundColor="#fffff"
-[showToolbar]="false"
+[customToolbar]="additionalButtons"
 [height]="'100%'"
-[handTool]="false"
-[showHandToolButton]="false"
-[textLayer]="false"
+[textLayer]="true"
 >
 </ngx-extended-pdf-viewer>
+
+<ng-template #additionalButtons>
+  <div id="toolbarViewer" style="background-color:white; margin-right: 200px;">
+    <div id="toolbarViewerRight">
+      <pdf-print></pdf-print>
+    </div>
+  </div>
+</ng-template>
 
 
 

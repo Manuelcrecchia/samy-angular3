@@ -61,16 +61,16 @@
     </style>
 </head>
 <body>
-    <div class="login-container">
+    <form class="login-container">
         <img src="https://www.samypulizie.it/wp-content/uploads/2020/01/logo.png" alt="Logo"> <!-- Aggiungi il tuo logo qui -->
         <h2>Login</h2>
         <label for="email">Email</label>
         <input #email type="email" id="email" placeholder="Email">
         <label for="password">Password</label>
         <input #password type="password" id="password" placeholder="Password">
-        <button (click)="loginFunction(email.value, password.value)">Accedi</button>
+        <button type="submit" (click)="loginFunction(email.value, password.value)">Accedi</button>
 
-    </div>
+    </form>
 </body>
 </html>
 

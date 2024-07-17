@@ -10,10 +10,9 @@
     </mat-select>
   </mat-form-field>
 
-  <mat-form-field appearance="fill" class="example-full-width">
     <mat-label>Codice operatore</mat-label>
-    <input matInput name="codiceOperatore" pattern="^.{2}$" [(ngModel)]="this.quoteModelService.codiceOperatore" />
-  </mat-form-field>
+    <mat-label>{{this.quoteModelService.codiceOperatore}}</mat-label>
+  
 
   <p>{{this.quoteModelService.data}}</p>
 
