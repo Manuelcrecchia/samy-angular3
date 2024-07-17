@@ -70,46 +70,6 @@ ngOnInit() {
     });
 }
 
-ngOnChanges(){
-  this.quotesFrEnd = [];
-  this.pdfTsSelezionato = false;
-  this.numeroClienteSelezionato = '';
-  this.pdfPrev = '';
-
-  this.http
-    .get(this.globalService.url + 'quotes/getAll', {
-      headers: this.globalService.headers,
-      responseType: 'text',
-    })
-    .subscribe((response) => {
-      this.quotesFrEnd = JSON.parse(response).reverse()
-
-      if (this.quotesFrEnd.length > 0) {
-        this.pdfTsSelezionato = true
-        this.numeroClienteSelezionato = this.quotesFrEnd[0].numeroPreventivo;
-        const body = { numeroPreventivo: this.quotesFrEnd[0].numeroPreventivo };
-        this.http
-          .post(
-            this.globalService.url + 'pdfs/sendQuote',
-            body,
-            {
-              headers: this.globalService.headers,
-              responseType: 'text',
-            }
-          )
-          .subscribe((response) => {
-            if(response == 'Unauthorized') {
-              this.router.navigateByUrl('/')
-            }
-            else {
-              this.pdfTsSelezionato = true;
-              this.pdfPrev = response;
-            }
-          });
-      }
-    });
-}
-
 changePdf(numeroPreventivo: string){
 
 const body = { numeroPreventivo: numeroPreventivo };
@@ -131,6 +91,31 @@ this.http
               this.pdfPrev = response;
             }
           });
+}
+
+searchNumeroPreventivo(value: string){
+
+  if(value == ""){
+    this.ngOnInit();
+  }
+  else{
+    
+    this.quotesFrEnd = this.quotesFrEnd.filter(quote => quote.numeroPreventivo.startsWith(value))
+    if(this.quotesFrEnd.length>0){
+    this.changePdf(this.quotesFrEnd[0].numeroPreventivo)} else {this.pdfPrev = ""}
+  }
+}
+
+searchNominativo(value: string){
+
+  if(value == ""){
+    this.ngOnInit();
+  }
+  else{
+    this.quotesFrEnd = this.quotesFrEnd.filter(quote => quote.nominativo.startsWith(value))
+    if(this.quotesFrEnd.length>0){
+      this.changePdf(this.quotesFrEnd[0].numeroPreventivo)} else {this.pdfPrev = ""}
+  }
 }
 
 navigateToEditQuote(numeroPreventivo: string){
@@ -167,7 +152,7 @@ this.http
               this.quoteModel.servizi = JSON.parse(quoteJson["servizi"]);
               this.quoteModel.interventi = JSON.parse(quoteJson["interventi"]);
               this.quoteModel.imponibile = quoteJson["imponibile"];
-              this.quoteModel.iva = quoteJson["nominivaativo"];
+              this.quoteModel.iva = quoteJson["iva"];
               this.quoteModel.pagamento = quoteJson["pagamento"];
               this.quoteModel.note = quoteJson["note"];
               
@@ -190,7 +175,28 @@ delete(numeroPreventivo: string){
         this.router.navigateByUrl('/')
       }
       else {
-      this.ngOnChanges();
+      this.ngOnInit();
+      }
+    })
+}
+
+conferm(numeroPreventivo: string){
+  const body = { numeroPreventivo: numeroPreventivo };
+
+  this.http
+  .post(
+    this.globalService.url + 'quotes/conferm',
+    body, {
+      headers: this.globalService.headers,
+      responseType: 'text',
+    })
+    .subscribe((response)=>{
+      if(response == 'Unauthorized') {
+        this.router.navigateByUrl('/')
+      }
+      else {
+        this.pdfPrev = '';
+      this.ngOnInit();
       }
     })
 }

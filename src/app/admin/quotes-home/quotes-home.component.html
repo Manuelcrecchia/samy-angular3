@@ -1,24 +1,25 @@
 
 <mat-toolbar class="example-toolbar">
-  <span>Preventivi</span>
-  <span class="example-spacer"></span>
-  <button (click)="navigateToAddQuote()" mat-icon-button class="example-icon">
-   <mat-icon>add</mat-icon>
- </button>
- <button mat-raised-button (click)="(inputNumeroCliente.value)">Cerca</button>
-
-<div class="example-spacer">
- <mat-form-field class="example-form-field">
-   <mat-label>Numero cliente</mat-label>
-           <input
-             #inputNumeroCliente
-             matInput>
- </mat-form-field>
- <div *ngIf="quotesFrEnd.length>0">
-</div>
-
-  </div>
-</mat-toolbar>
+    <span>Preventivi</span>
+    <span class="example-spacer"></span>
+    <button (click)="navigateToAddQuote()" mat-icon-button class="example-icon">
+      <mat-icon>add</mat-icon>
+    </button>
+  
+    <div class="example-spacer">
+      <mat-form-field class="example-form-field">
+        <mat-label>Numero cliente</mat-label>
+        <input #inputNumeroCliente matInput (input)="searchNumeroPreventivo(inputNumeroCliente.value)" />
+      </mat-form-field>
+  
+      <mat-form-field class="example-form-field">
+        <mat-label>Nominativo</mat-label>
+        <input #inputNominativo matInput (input)="searchNominativo(inputNominativo.value)" />
+      </mat-form-field>
+  
+      <div *ngIf="quotesFrEnd.length > 0"></div>
+    </div>
+  </mat-toolbar>
 
 <app-quote-list-prw [color] = "color"></app-quote-list-prw>
 <div class="quote-list">
@@ -33,6 +34,9 @@
       <button mat-raised-button (click)="delete(quote.numeroPreventivo)">
         <mat-icon aria-hidden="false" aria-label="Example delete icon">delete</mat-icon>
       </button>
+      <button mat-raised-button (click)="conferm(quote.numeroPreventivo)">
+        <mat-icon aria-hidden="false" aria-label="Example conferma icon">done_outline</mat-icon>
+      </button>
     </mat-list-item>
   </mat-list>
   </div>
@@ -42,21 +46,14 @@
 
 <ngx-extended-pdf-viewer class="ngx-extended-pdf-viewer"
 [base64Src]="pdfPrev"
-useBrowserLocale="true"
+useBrowserLocale="false"
 backgroundColor="#fffff"
-[customToolbar]="additionalButtons"
 [height]="'100%'"
-[textLayer]="true"
+[textLayer]="false"
+[showToolbar]="false"
+[showPrintButton]="true"
 >
 </ngx-extended-pdf-viewer>
-
-<ng-template #additionalButtons>
-  <div id="toolbarViewer" style="background-color:white; margin-right: 200px;">
-    <div id="toolbarViewerRight">
-      <pdf-print></pdf-print>
-    </div>
-  </div>
-</ng-template>
 
 
 

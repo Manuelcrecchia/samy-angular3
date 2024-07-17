@@ -21,6 +21,8 @@ button.mat-raised-button {
   width: 100%; /* Fai occupare al PDF l'intera larghezza */
   height: 100%; /* Fai occupare al PDF l'intera altezza della viewport */
   border: 1px solid #ffffff; /* Rosa scuro */
+  margin-top: 50px;
+  right: 60px;
 }
 .example-spacer {
   display: flex;
