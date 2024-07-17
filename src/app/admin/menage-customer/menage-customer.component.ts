@@ -6,11 +6,12 @@ import { GlobalService } from '../../service/global.service';
 import { QuoteModelService } from '../../service/quote-model.service';
 
 @Component({
-  selector: 'app-quotes-home',
-  templateUrl: './quotes-home.component.html',
-  styleUrl: './quotes-home.component.css'
+  selector: 'app-menage-customer',
+  templateUrl: './menage-customer.component.html',
+  styleUrl: './menage-customer.component.css'
 })
-export class QuotesHomeComponent   {@Input() color: any;
+export class MenageCustomerComponent {
+  @Input() color: any;
   numeroClienteSelezionato = '';
 
   quotesFrEnd: {
@@ -31,7 +32,7 @@ export class QuotesHomeComponent   {@Input() color: any;
    ){}
 
 navigateToAddQuote(){
-  this.router.navigateByUrl('/addQuote');
+  this.router.navigateByUrl('/addCustomer');
 }
 
 
@@ -135,11 +136,9 @@ this.http
             }
             else {
               let quoteJson = (JSON.parse(response)[0]);
-              this.quoteModel.numeroPreventivo = quoteJson["numeroPreventivo"];
-              this.quoteModel.codiceOperatore = quoteJson["codiceOperatore"];
-              this.quoteModel.tipoPreventivo = quoteJson["tipoPreventivo"];
-              this.quoteModel.data = quoteJson["data"];
-              this.quoteModel.nominativo = quoteJson["nominativo"];
+              this.quoteModel.numeroCliente = quoteJson["numeroCliente"];
+              this.quoteModel.tipoCliente= quoteJson["tipoCliente"];
+              this.quoteModel.nominativo= quoteJson["nominativo"];
               this.quoteModel.cfpi = quoteJson["cfpi"];
               this.quoteModel.citta = quoteJson["citta"];
               this.quoteModel.selettorePrefissoVia = quoteJson["selettorePrefissoVia"];
@@ -224,3 +223,4 @@ this.http
 
 
 }
+

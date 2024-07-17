@@ -39,6 +39,8 @@ import { EditQuoteComponent } from './admin/edit-quote/edit-quote.component';
 import { CaricaFileComponent } from './admin/carica-file/carica-file.component';
 import { FileDirective } from './file.directive';
 import { NgxExtendedPdfViewerModule } from 'ngx-extended-pdf-viewer';
+import { MenageCustomerComponent } from './admin/menage-customer/menage-customer.component';
+import { AddCustomerComponent } from './admin/add-customer/add-customer.component';
 
 
 
@@ -57,6 +59,8 @@ import { NgxExtendedPdfViewerModule } from 'ngx-extended-pdf-viewer';
     EditQuoteComponent,
     CaricaFileComponent,
     FileDirective,
+    MenageCustomerComponent,
+    AddCustomerComponent,
   ],
   imports: [
     BrowserModule,

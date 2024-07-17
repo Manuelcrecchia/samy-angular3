@@ -10,7 +10,7 @@ import { QuotesHomeComponent } from './admin/quotes-home/quotes-home.component';
 import { AddQuoteComponent } from './admin/add-quote/add-quote.component';
 import { EditQuoteComponent } from './admin/edit-quote/edit-quote.component';
 import { CaricaFileComponent } from './admin/carica-file/carica-file.component';
-
+import { MenageCustomerComponent } from './admin/menage-customer/menage-customer.component';
 
 
 const routes: Routes = [
@@ -24,6 +24,8 @@ const routes: Routes = [
   { path: 'addQuote', component: AddQuoteComponent },
   { path: 'editQuote', component: EditQuoteComponent }, // Fixed the component name to 'EditQuoteComponent'
   { path: 'caricaFile', component: CaricaFileComponent }, // Fixed the component name to 'EditQuoteComponent'
+  { path: 'menageCustomer', component: MenageCustomerComponent }, // Fixed the component name to 'EditQuoteComponent'
+
 ];
 
 
