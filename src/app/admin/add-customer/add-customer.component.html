@@ -11,7 +11,7 @@
     <form id="form" name="form">
   <mat-form-field appearance="fill">
     <mat-label>Tipo del cliente</mat-label>
-    <mat-select name="tipoCliente" [(ngModel)]="this.quoteModelService.tipoCliente">
+    <mat-select name="tipoCliente" [(ngModel)]="this.customerModelService.tipoCliente">
       <mat-option value="O">Ordinario</mat-option>
       <mat-option value="S">Straordinario</mat-option>
     </mat-select>
@@ -20,23 +20,23 @@
 
   <mat-form-field appearance="fill" class="example-full-width">
     <mat-label>Nominativo</mat-label>
-    <input matInput name="nominativo" maxlength="255" [(ngModel)]="this.quoteModelService.nominativo" />
+    <input matInput name="nominativo" maxlength="255" [(ngModel)]="this.customerModelService.nominativo" />
   </mat-form-field>
 
   <mat-form-field appearance="fill" class="example-full-width">
     <mat-label>Codice Fiscale Partita Iva</mat-label>
-    <input matInput name="cfpi" maxlength="255" [(ngModel)]="this.quoteModelService.cfpi" />
+    <input matInput name="cfpi" maxlength="255" [(ngModel)]="this.customerModelService.cfpi" />
   </mat-form-field>
 
   <mat-form-field appearance="fill" class="example-full-width">
     <mat-label>Città</mat-label>
-    <input matInput name="citta" maxlength="255" [(ngModel)]="this.quoteModelService.citta" />
+    <input matInput name="citta" maxlength="255" [(ngModel)]="this.customerModelService.citta" />
   </mat-form-field>
 
   <form id="form" name="form">
     <mat-form-field appearance="fill">
       <mat-label>Selettore prefisso via</mat-label>
-      <mat-select name="selettorePrefissoVia" [(ngModel)]="this.quoteModelService.selettorePrefissoVia">
+      <mat-select name="selettorePrefissoVia" [(ngModel)]="this.customerModelService.selettorePrefissoVia">
         <mat-option value="VIA">VIA</mat-option>
         <mat-option value="STRADA">STRADA</mat-option>
         <mat-option value="VIALE">VIALE</mat-option>
@@ -47,36 +47,36 @@
 
   <mat-form-field appearance="fill" class="example-full-width">
     <mat-label>Via</mat-label>
-    <input matInput name="via" maxlength="255" [(ngModel)]="this.quoteModelService.via" />
+    <input matInput name="via" maxlength="255" [(ngModel)]="this.customerModelService.via" />
   </mat-form-field>
 
   <mat-form-field appearance="fill" class="example-full-width">
     <mat-label>Cap</mat-label>
-    <input matInput name="cap" maxlength="255" [(ngModel)]="this.quoteModelService.cap" />
+    <input matInput name="cap" maxlength="255" [(ngModel)]="this.customerModelService.cap" />
   </mat-form-field>
 
 
   <mat-form-field appearance="fill" class="example-full-width">
     <mat-label>Email</mat-label>
-    <input matInput name="email" maxlength="255" [(ngModel)]="this.quoteModelService.email" />
+    <input matInput name="email" maxlength="255" [(ngModel)]="this.customerModelService.email" />
   </mat-form-field>
 
 
   <mat-form-field appearance="fill" class="example-full-width">
     <mat-label>Telefono</mat-label>
-    <input matInput name="telefono" maxlength="255" [(ngModel)]="this.quoteModelService.telefono" />
+    <input matInput name="telefono" maxlength="255" [(ngModel)]="this.customerModelService.telefono" />
   </mat-form-field>
 
 
   <mat-form-field appearance="fill" class="example-full-width">
     <mat-label>Referente</mat-label>
-    <input matInput name="referente" maxlength="255" [(ngModel)]="this.quoteModelService.referente" />
+    <input matInput name="referente" maxlength="255" [(ngModel)]="this.customerModelService.referente" />
   </mat-form-field>
 
 
   <mat-form-field appearance="fill" class="example-full-width">
     <mat-label>Descrizione Immobile</mat-label>
-    <input matInput name="descrizioneImmobile" maxlength="255" [(ngModel)]="this.quoteModelService.descrizioneImmobile" />
+    <input matInput name="descrizioneImmobile" maxlength="255" [(ngModel)]="this.customerModelService.descrizioneImmobile" />
   </mat-form-field>
 
 
@@ -85,12 +85,12 @@
 
   <mat-form-field class="example-full-width">
     <mat-label>Servizi1</mat-label>
-    <input matInput name="servizi1" maxlength="255" [(ngModel)]="this.quoteModelService.servizi[0]" />
+    <input matInput name="servizi1" maxlength="255" [(ngModel)]="this.customerModelService.servizi[0]" />
   </mat-form-field>
 
-  <mat-form-field *ngIf="this.quoteModelService.tipoPreventivo == 'O'" class="example-full-width">
+  <mat-form-field *ngIf="this.customerModelService.tipoCliente == 'O'" class="example-full-width">
     <mat-label>Interventi1</mat-label>
-    <mat-select name="Interventi1" [(ngModel)]="this.quoteModelService.interventi[0]">
+    <mat-select name="Interventi1" [(ngModel)]="this.customerModelService.interventi[0]">
       <mat-option value="G">G</mat-option>
       <mat-option value="1S">1S</mat-option>
       <mat-option value="2S">2S</mat-option>
@@ -108,12 +108,12 @@
   </mat-form-field>
   <mat-form-field class="example-full-width">
     <mat-label>Servizi2</mat-label>
-    <input matInput name="servizi2" maxlength="255" [(ngModel)]="this.quoteModelService.servizi[1]" />
+    <input matInput name="servizi2" maxlength="255" [(ngModel)]="this.customerModelService.servizi[1]" />
   </mat-form-field>
 
-  <mat-form-field *ngIf="this.quoteModelService.tipoPreventivo == 'O'" class="example-full-width">
+  <mat-form-field *ngIf="this.customerModelService.tipoCliente == 'O'" class="example-full-width">
     <mat-label>Interventi2</mat-label>
-    <mat-select name="Interventi2" [(ngModel)]="this.quoteModelService.interventi[1]">
+    <mat-select name="Interventi2" [(ngModel)]="this.customerModelService.interventi[1]">
       <mat-option value="G">G</mat-option>
       <mat-option value="1S">1S</mat-option>
       <mat-option value="2S">2S</mat-option>
@@ -132,12 +132,12 @@
 
   <mat-form-field class="example-full-width">
     <mat-label>Servizi3</mat-label>
-    <input matInput name="servizi3" maxlength="255" [(ngModel)]="this.quoteModelService.servizi[2]" />
+    <input matInput name="servizi3" maxlength="255" [(ngModel)]="this.customerModelService.servizi[2]" />
   </mat-form-field>
 
-  <mat-form-field *ngIf="this.quoteModelService.tipoPreventivo == 'O'" class="example-full-width">
+  <mat-form-field *ngIf="this.customerModelService.tipoCliente == 'O'" class="example-full-width">
     <mat-label>Interventi3</mat-label>
-    <mat-select name="Interventi3" [(ngModel)]="this.quoteModelService.interventi[2]">
+    <mat-select name="Interventi3" [(ngModel)]="this.customerModelService.interventi[2]">
       <mat-option value="G">G</mat-option>
       <mat-option value="1S">1S</mat-option>
       <mat-option value="2S">2S</mat-option>
@@ -156,12 +156,12 @@
 
   <mat-form-field class="example-full-width">
     <mat-label>Servizi4</mat-label>
-    <input matInput name="servizi4" maxlength="255" [(ngModel)]="this.quoteModelService.servizi[3]" />
+    <input matInput name="servizi4" maxlength="255" [(ngModel)]="this.customerModelService.servizi[3]" />
   </mat-form-field>
 
-  <mat-form-field *ngIf="this.quoteModelService.tipoPreventivo == 'O'" class="example-full-width">
+  <mat-form-field *ngIf="this.customerModelService.tipoCliente == 'O'" class="example-full-width">
     <mat-label>Interventi4</mat-label>
-    <mat-select name="Interventi4" [(ngModel)]="this.quoteModelService.interventi[3]">
+    <mat-select name="Interventi4" [(ngModel)]="this.customerModelService.interventi[3]">
       <mat-option value="G">G</mat-option>
       <mat-option value="1S">1S</mat-option>
       <mat-option value="2S">2S</mat-option>
@@ -180,12 +180,12 @@
 
   <mat-form-field class="example-full-width">
     <mat-label>Servizi5</mat-label>
-    <input matInput name="servizi5" maxlength="255" [(ngModel)]="this.quoteModelService.servizi[4]" />
+    <input matInput name="servizi5" maxlength="255" [(ngModel)]="this.customerModelService.servizi[4]" />
   </mat-form-field>
 
-  <mat-form-field *ngIf="this.quoteModelService.tipoPreventivo == 'O'" class="example-full-width">
+  <mat-form-field *ngIf="this.customerModelService.tipoCliente == 'O'" class="example-full-width">
     <mat-label>Interventi5</mat-label>
-    <mat-select name="Interventi5" [(ngModel)]="this.quoteModelService.interventi[4]">
+    <mat-select name="Interventi5" [(ngModel)]="this.customerModelService.interventi[4]">
       <mat-option value="G">G</mat-option>
       <mat-option value="1S">1S</mat-option>
       <mat-option value="2S">2S</mat-option>
@@ -204,12 +204,12 @@
 
   <mat-form-field class="example-full-width">
     <mat-label>Servizi6</mat-label>
-    <input matInput name="servizi6" maxlength="255" [(ngModel)]="this.quoteModelService.servizi[5]" />
+    <input matInput name="servizi6" maxlength="255" [(ngModel)]="this.customerModelService.servizi[5]" />
   </mat-form-field>
 
-  <mat-form-field *ngIf="this.quoteModelService.tipoPreventivo == 'O'" class="example-full-width">
+  <mat-form-field *ngIf="this.customerModelService.tipoCliente == 'O'" class="example-full-width">
     <mat-label>Interventi6</mat-label>
-    <mat-select name="Interventi6" [(ngModel)]="this.quoteModelService.interventi[5]">
+    <mat-select name="Interventi6" [(ngModel)]="this.customerModelService.interventi[5]">
       <mat-option value="G">G</mat-option>
       <mat-option value="1S">1S</mat-option>
       <mat-option value="2S">2S</mat-option>
@@ -228,12 +228,12 @@
 
   <mat-form-field class="example-full-width">
     <mat-label>Servizi7</mat-label>
-    <input matInput name="servizi7" maxlength="255" [(ngModel)]="this.quoteModelService.servizi[6]" />
+    <input matInput name="servizi7" maxlength="255" [(ngModel)]="this.customerModelService.servizi[6]" />
   </mat-form-field>
 
-  <mat-form-field *ngIf="this.quoteModelService.tipoPreventivo == 'O'" class="example-full-width">
+  <mat-form-field *ngIf="this.customerModelService.tipoCliente == 'O'" class="example-full-width">
     <mat-label>Interventi7</mat-label>
-    <mat-select name="Interventi7" [(ngModel)]="this.quoteModelService.interventi[6]">
+    <mat-select name="Interventi7" [(ngModel)]="this.customerModelService.interventi[6]">
       <mat-option value="G">G</mat-option>
       <mat-option value="1S">1S</mat-option>
       <mat-option value="2S">2S</mat-option>
@@ -252,12 +252,12 @@
 
   <mat-form-field class="example-full-width">
     <mat-label>Servizi8</mat-label>
-    <input matInput name="servizi8" maxlength="255" [(ngModel)]="this.quoteModelService.servizi[7]" />
+    <input matInput name="servizi8" maxlength="255" [(ngModel)]="this.customerModelService.servizi[7]" />
   </mat-form-field>
 
-  <mat-form-field *ngIf="this.quoteModelService.tipoPreventivo == 'O'" class="example-full-width">
+  <mat-form-field *ngIf="this.customerModelService.tipoCliente == 'O'" class="example-full-width">
     <mat-label>Interventi8</mat-label>
-    <mat-select name="Interventi8" [(ngModel)]="this.quoteModelService.interventi[7]">
+    <mat-select name="Interventi8" [(ngModel)]="this.customerModelService.interventi[7]">
       <mat-option value="G">G</mat-option>
       <mat-option value="1S">1S</mat-option>
       <mat-option value="2S">2S</mat-option>
@@ -276,12 +276,12 @@
 
   <mat-form-field class="example-full-width">
     <mat-label>Servizi9</mat-label>
-    <input matInput name="servizi9" maxlength="255" [(ngModel)]="this.quoteModelService.servizi[8]" />
+    <input matInput name="servizi9" maxlength="255" [(ngModel)]="this.customerModelService.servizi[8]" />
   </mat-form-field>
 
-  <mat-form-field *ngIf="this.quoteModelService.tipoPreventivo == 'O'" class="example-full-width">
+  <mat-form-field *ngIf="this.customerModelService.tipoCliente == 'O'" class="example-full-width">
     <mat-label>Interventi9</mat-label>
-    <mat-select name="Interventi9" [(ngModel)]="this.quoteModelService.interventi[8]">
+    <mat-select name="Interventi9" [(ngModel)]="this.customerModelService.interventi[8]">
       <mat-option value="G">G</mat-option>
       <mat-option value="1S">1S</mat-option>
       <mat-option value="2S">2S</mat-option>
@@ -300,12 +300,12 @@
 
   <mat-form-field class="example-full-width">
     <mat-label>Servizi10</mat-label>
-    <input matInput name="servizi10" maxlength="255" [(ngModel)]="this.quoteModelService.servizi[9]" />
+    <input matInput name="servizi10" maxlength="255" [(ngModel)]="this.customerModelService.servizi[9]" />
   </mat-form-field>
 
-  <mat-form-field *ngIf="this.quoteModelService.tipoPreventivo == 'O'" class="example-full-width">
+  <mat-form-field *ngIf="this.customerModelService.tipoCliente == 'O'" class="example-full-width">
     <mat-label>Interventi10</mat-label>
-    <mat-select name="Interventi10" [(ngModel)]="this.quoteModelService.interventi[9]">
+    <mat-select name="Interventi10" [(ngModel)]="this.customerModelService.interventi[9]">
       <mat-option value="G">G</mat-option>
       <mat-option value="1S">1S</mat-option>
       <mat-option value="2S">2S</mat-option>
@@ -324,12 +324,12 @@
 
   <mat-form-field class="example-full-width">
     <mat-label>Servizi11</mat-label>
-    <input matInput name="servizi11" maxlength="255" [(ngModel)]="this.quoteModelService.servizi[10]" />
+    <input matInput name="servizi11" maxlength="255" [(ngModel)]="this.customerModelService.servizi[10]" />
   </mat-form-field>
 
-  <mat-form-field *ngIf="this.quoteModelService.tipoPreventivo == 'O'" class="example-full-width">
+  <mat-form-field *ngIf="this.customerModelService.tipoCliente == 'O'" class="example-full-width">
     <mat-label>Interventi11</mat-label>
-    <mat-select name="Interventi11" [(ngModel)]="this.quoteModelService.interventi[10]">
+    <mat-select name="Interventi11" [(ngModel)]="this.customerModelService.interventi[10]">
       <mat-option value="G">G</mat-option>
       <mat-option value="1S">1S</mat-option>
       <mat-option value="2S">2S</mat-option>
@@ -348,12 +348,12 @@
 
   <mat-form-field class="example-full-width">
     <mat-label>Servizi12</mat-label>
-    <input matInput name="servizi12" maxlength="255" [(ngModel)]="this.quoteModelService.servizi[11]" />
+    <input matInput name="servizi12" maxlength="255" [(ngModel)]="this.customerModelService.servizi[11]" />
   </mat-form-field>
 
-  <mat-form-field *ngIf="this.quoteModelService.tipoPreventivo == 'O'" class="example-full-width">
+  <mat-form-field *ngIf="this.customerModelService.tipoCliente == 'O'" class="example-full-width">
     <mat-label>Interventi12</mat-label>
-    <mat-select name="Interventi12" [(ngModel)]="this.quoteModelService.interventi[11]">
+    <mat-select name="Interventi12" [(ngModel)]="this.customerModelService.interventi[11]">
       <mat-option value="G">G</mat-option>
       <mat-option value="1S">1S</mat-option>
       <mat-option value="2S">2S</mat-option>
@@ -372,12 +372,12 @@
 
   <mat-form-field class="example-full-width">
     <mat-label>Servizi13</mat-label>
-    <input matInput name="servizi13" maxlength="255" [(ngModel)]="this.quoteModelService.servizi[12]" />
+    <input matInput name="servizi13" maxlength="255" [(ngModel)]="this.customerModelService.servizi[12]" />
   </mat-form-field>
 
-  <mat-form-field *ngIf="this.quoteModelService.tipoPreventivo == 'O'" class="example-full-width">
+  <mat-form-field *ngIf="this.customerModelService.tipoCliente == 'O'" class="example-full-width">
     <mat-label>Interventi13</mat-label>
-    <mat-select name="Interventi13" [(ngModel)]="this.quoteModelService.interventi[12]">
+    <mat-select name="Interventi13" [(ngModel)]="this.customerModelService.interventi[12]">
       <mat-option value="G">G</mat-option>
       <mat-option value="1S">1S</mat-option>
       <mat-option value="2S">2S</mat-option>
@@ -396,12 +396,12 @@
 
   <mat-form-field class="example-full-width">
     <mat-label>Servizi14</mat-label>
-    <input matInput name="servizi14" maxlength="255" [(ngModel)]="this.quoteModelService.servizi[13]" />
+    <input matInput name="servizi14" maxlength="255" [(ngModel)]="this.customerModelService.servizi[13]" />
   </mat-form-field>
 
-  <mat-form-field *ngIf="this.quoteModelService.tipoPreventivo == 'O'" class="example-full-width">
+  <mat-form-field *ngIf="this.customerModelService.tipoCliente == 'O'" class="example-full-width">
     <mat-label>Interventi14</mat-label>
-    <mat-select name="Interventi14" [(ngModel)]="this.quoteModelService.interventi[13]">
+    <mat-select name="Interventi14" [(ngModel)]="this.customerModelService.interventi[13]">
       <mat-option value="G">G</mat-option>
       <mat-option value="1S">1S</mat-option>
       <mat-option value="2S">2S</mat-option>
@@ -424,13 +424,13 @@
 
   <mat-form-field class="example-full-width">
     <mat-label>Imponibile</mat-label>
-    <input matInput name="imponibile" maxlength="255" [(ngModel)]="this.quoteModelService.imponibile" />
+    <input matInput name="imponibile" maxlength="255" [(ngModel)]="this.customerModelService.imponibile" />
   </mat-form-field>
 
   <form id="form" name="form">
     <mat-form-field appearance="fill">
       <mat-label>Iva</mat-label>
-      <mat-select name="iva" [(ngModel)]="this.quoteModelService.iva">
+      <mat-select name="iva" [(ngModel)]="this.customerModelService.iva">
         <mat-option value="N">N</mat-option>
         <mat-option value="RC">RC</mat-option>
         <mat-option value="SP">SP</mat-option>
@@ -442,7 +442,7 @@
   <form id="form" name="form">
     <mat-form-field appearance="fill">
       <mat-label>Pagamento</mat-label>
-      <mat-select name="Pagamento" [(ngModel)]="this.quoteModelService.pagamento">
+      <mat-select name="Pagamento" [(ngModel)]="this.customerModelService.pagamento">
         <mat-option value="C">C</mat-option>
         <mat-option value="B">B</mat-option>
         <mat-option value="E">E</mat-option>
@@ -453,7 +453,7 @@
 
   <mat-form-field class="example-full-width">
     <mat-label>Note</mat-label>
-    <input matInput name="note" maxlength="255" [(ngModel)]="this.quoteModelService.note" />
+    <input matInput name="note" maxlength="255" [(ngModel)]="this.customerModelService.note" />
   </mat-form-field>
 
     </form>

@@ -1,9 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, Input } from '@angular/core';
 import { Router } from '@angular/router';
-import { NgxExtendedPdfViewerService } from 'ngx-extended-pdf-viewer';
 import { GlobalService } from '../../service/global.service';
-import { QuoteModelService } from '../../service/quote-model.service';
+import { CustomerModelService } from '../../service/customer-model.service';
 
 @Component({
   selector: 'app-menage-customer',
@@ -14,96 +13,47 @@ export class MenageCustomerComponent {
   @Input() color: any;
   numeroClienteSelezionato = '';
 
-  quotesFrEnd: {
-    numeroPreventivo: string;
+  customersFrEnd: {
+    numeroCliente: string;
     nominativo: string;
   }[] = [];
 
-  pdfPrev!: string;
-  pdfTsSelezionato = false;
-
-
-
   constructor(  private http: HttpClient,
-    private pdfService: NgxExtendedPdfViewerService,
     private globalService: GlobalService,
     private router: Router,
-    private quoteModel: QuoteModelService,
+    private customerModel: CustomerModelService,
    ){}
 
-navigateToAddQuote(){
+navigateToAddCustomer(){
   this.router.navigateByUrl('/addCustomer');
 }
 
 
 ngOnInit() {
   this.http
-    .get(this.globalService.url + 'quotes/getAll', {
+    .get(this.globalService.url + 'customer/getAll', {
       headers: this.globalService.headers,
       responseType: 'text',
     })
     .subscribe((response) => {
-      this.quotesFrEnd = JSON.parse(response).reverse()
+      this.customersFrEnd = JSON.parse(response).reverse()
 
-      if (this.quotesFrEnd.length > 0) {
-        this.pdfTsSelezionato = true
-        this.numeroClienteSelezionato = this.quotesFrEnd[0].numeroPreventivo;
-        const body = { numeroPreventivo: this.quotesFrEnd[0].numeroPreventivo };
-        this.http
-          .post(
-            this.globalService.url + 'pdfs/sendQuote',
-            body,
-            {
-              headers: this.globalService.headers,
-              responseType: 'text',
-            }
-          )
-          .subscribe((response) => {
-            if(response == 'Unauthorized') {
-              this.router.navigateByUrl('/')
-            }
-            else {
-              this.pdfTsSelezionato = true;
-              this.pdfPrev = response;
-            }
-          });
+      if (this.customersFrEnd.length > 0) {
+        this.numeroClienteSelezionato = this.customersFrEnd[0].numeroCliente;
+        const body = { numeroPreventivo: this.customersFrEnd[0].numeroCliente };
       }
     });
 }
 
-changePdf(numeroPreventivo: string){
 
-const body = { numeroPreventivo: numeroPreventivo };
-this.http
-          .post(
-            this.globalService.url + 'pdfs/sendQuote',
-            body,
-            {
-              headers: this.globalService.headers,
-              responseType: 'text',
-            }
-          )
-          .subscribe((response) => {
-            if(response == 'Unauthorized') {
-              this.router.navigateByUrl('/')
-            }
-            else {
-              this.pdfTsSelezionato = true;
-              this.pdfPrev = response;
-            }
-          });
-}
-
-searchNumeroPreventivo(value: string){
+searchNumeroCliente(value: string){
 
   if(value == ""){
     this.ngOnInit();
   }
   else{
 
-    this.quotesFrEnd = this.quotesFrEnd.filter(quote => quote.numeroPreventivo.startsWith(value))
-    if(this.quotesFrEnd.length>0){
-    this.changePdf(this.quotesFrEnd[0].numeroPreventivo)} else {this.pdfPrev = ""}
+    this.customersFrEnd = this.customersFrEnd.filter(customer => customer.numeroCliente.startsWith(value))
   }
 }
 
@@ -113,17 +63,16 @@ searchNominativo(value: string){
     this.ngOnInit();
   }
   else{
-    this.quotesFrEnd = this.quotesFrEnd.filter(quote => quote.nominativo.startsWith(value))
-    if(this.quotesFrEnd.length>0){
-      this.changePdf(this.quotesFrEnd[0].numeroPreventivo)} else {this.pdfPrev = ""}
+    this.customersFrEnd = this.customersFrEnd.filter(customer => customer.nominativo.startsWith(value))
+    
   }
 }
 
-navigateToEditQuote(numeroPreventivo: string){
-  const body = { numeroPreventivo: numeroPreventivo };
+navigateToEditCustomer(numeroCliente: string){
+  const body = { numeroCliente: numeroCliente };
 this.http
           .post(
-            this.globalService.url + 'quotes/getQuote',
+            this.globalService.url + 'quotes/getCustomer',
             body,
             {
               headers: this.globalService.headers,
@@ -135,36 +84,36 @@ this.http
               this.router.navigateByUrl('/')
             }
             else {
-              let quoteJson = (JSON.parse(response)[0]);
-              this.quoteModel.numeroCliente = quoteJson["numeroCliente"];
-              this.quoteModel.tipoCliente= quoteJson["tipoCliente"];
-              this.quoteModel.nominativo= quoteJson["nominativo"];
-              this.quoteModel.cfpi = quoteJson["cfpi"];
-              this.quoteModel.citta = quoteJson["citta"];
-              this.quoteModel.selettorePrefissoVia = quoteJson["selettorePrefissoVia"];
-              this.quoteModel.via = quoteJson["via"];
-              this.quoteModel.cap = quoteJson["cap"];
-              this.quoteModel.email = quoteJson["email"];
-              this.quoteModel.telefono = quoteJson["telefono"];
-              this.quoteModel.referente = quoteJson["referente"];
-              this.quoteModel.descrizioneImmobile = quoteJson["descrizioneImmobile"];
-              this.quoteModel.servizi = JSON.parse(quoteJson["servizi"]);
-              this.quoteModel.interventi = JSON.parse(quoteJson["interventi"]);
-              this.quoteModel.imponibile = quoteJson["imponibile"];
-              this.quoteModel.iva = quoteJson["iva"];
-              this.quoteModel.pagamento = quoteJson["pagamento"];
-              this.quoteModel.note = quoteJson["note"];
+              let customerJson = (JSON.parse(response)[0]);
+              this.customerModel.numeroCliente = customerJson["numeroCliente"];
+              this.customerModel.tipoCliente= customerJson["tipoCliente"];
+              this.customerModel.nominativo= customerJson["nominativo"];
+              this.customerModel.cfpi = customerJson["cfpi"];
+              this.customerModel.citta = customerJson["citta"];
+              this.customerModel.selettorePrefissoVia = customerJson["selettorePrefissoVia"];
+              this.customerModel.via = customerJson["via"];
+              this.customerModel.cap = customerJson["cap"];
+              this.customerModel.email = customerJson["email"];
+              this.customerModel.telefono = customerJson["telefono"];
+              this.customerModel.referente = customerJson["referente"];
+              this.customerModel.descrizioneImmobile = customerJson["descrizioneImmobile"];
+              this.customerModel.servizi = JSON.parse(customerJson["servizi"]);
+              this.customerModel.interventi = JSON.parse(customerJson["interventi"]);
+              this.customerModel.imponibile = customerJson["imponibile"];
+              this.customerModel.iva = customerJson["iva"];
+              this.customerModel.pagamento = customerJson["pagamento"];
+              this.customerModel.note = customerJson["note"];
 
-              this.router.navigateByUrl('/editQuote');
+              this.router.navigateByUrl('/editCustomer');
             }
           });
 }
-delete(numeroPreventivo: string){
-  const body = { numeroPreventivo: numeroPreventivo };
+delete(numeroCliente: string){
+  const body = { numeroCliente: numeroCliente };
 
   this.http
   .post(
-    this.globalService.url + 'quotes/delete',
+    this.globalService.url + 'customers/delete',
     body, {
       headers: this.globalService.headers,
       responseType: 'text',
@@ -178,49 +127,5 @@ delete(numeroPreventivo: string){
       }
     })
 }
-
-conferm(numeroPreventivo: string){
-  const body = { numeroPreventivo: numeroPreventivo };
-
-  this.http
-  .post(
-    this.globalService.url + 'quotes/conferm',
-    body, {
-      headers: this.globalService.headers,
-      responseType: 'text',
-    })
-    .subscribe((response)=>{
-      if(response == 'Unauthorized') {
-        this.router.navigateByUrl('/')
-      }
-      else {
-        this.pdfPrev = '';
-      this.ngOnInit();
-      }
-    })
-}
-
-
-invio(numeroPreventivo: string){
-  const body = { numeroPreventivo: numeroPreventivo };
-this.http
-  .post(
-    this.globalService.url + 'quotes/invio',
-    body, {
-      headers: this.globalService.headers,
-      responseType: 'text',
-    })
-    .subscribe((response)=>{
-      if(response == 'Unauthorized') {
-        this.router.navigateByUrl('/')
-      }
-      else {
-        this.pdfPrev = '';
-      this.ngOnInit();
-      }
-    })
-}
-
-
 }
 
