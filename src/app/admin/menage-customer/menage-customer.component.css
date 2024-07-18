@@ -1,20 +1,30 @@
 .parent-container {
-    display: table-column;
-    flex-direction: row;
-  }
-  
-  .container {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    margin-right: 20px; /* Adds space between the two containers */
-  }
-  
-  .container h1 {
-    margin: 0 10px;
-  }
-  
-  .container button {
-    margin: 0 10px;
-  }
-  
+  display: flex;
+  flex-direction: column;
+}
+
+.services-container {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap; /* Per gestire il wrapping degli elementi */
+}
+
+.service-container {
+
+  flex-direction: column;
+  align-items: center; /* Allinea verticalmente il contenuto */
+  margin-right: 20px; /* Margine tra i servizi */
+  margin-bottom: 10px; /* Margine inferiore */
+}
+
+.interventions-container {
+  margin-top: 20px; /* Spazio tra i servizi e gli interventi */
+}
+
+.intervention-container {
+  margin-bottom: 10px; /* Margine tra gli interventi */
+}
+.mat-raised-button {
+  display: flex;
+  flex-direction: column;
+}

@@ -1,13 +1,14 @@
 <div class="parent-container">
-    <div class="container" *ngFor="let service of customerModelService.servizi">
-        <h1>{{service}}</h1>
-        <button mat-raised-button>
-            <mat-icon aria-hidden="false" aria-label="Example conferma icon">check_circle_outline</mat-icon>
-        </button>
-    </div>
-  
-    <div class="container" *ngFor="let interventi of customerModelService.interventi">
-        <h1>{{interventi}}</h1>
-    </div>
+  <!-- Loop attraverso l'array servizi -->
+  <div class="container" *ngFor="let service of customerModelService.servizi">
+    <h1>{{ service }}</h1>
+    <button mat-raised-button>
+      <mat-icon aria-hidden="false" aria-label="Icona conferma esempio">check_circle_outline</mat-icon>
+    </button>
   </div>
-  
+
+  <!-- Loop attraverso l'array interventi -->
+  <div class="container" *ngFor="let intervento of customerModelService.interventi">
+    <h1>{{ intervento }}</h1>
+  </div>
+</div>
