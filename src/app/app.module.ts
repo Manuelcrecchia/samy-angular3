@@ -41,6 +41,7 @@ import { FileDirective } from './file.directive';
 import { NgxExtendedPdfViewerModule } from 'ngx-extended-pdf-viewer';
 import { MenageCustomerComponent } from './admin/menage-customer/menage-customer.component';
 import { AddCustomerComponent } from './admin/add-customer/add-customer.component';
+import { ListCustomerComponent } from './admin/list-customer/list-customer.component';
 
 
 
@@ -61,6 +62,7 @@ import { AddCustomerComponent } from './admin/add-customer/add-customer.componen
     FileDirective,
     MenageCustomerComponent,
     AddCustomerComponent,
+    ListCustomerComponent,
   ],
   imports: [
     BrowserModule,

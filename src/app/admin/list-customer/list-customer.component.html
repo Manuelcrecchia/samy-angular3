@@ -1,0 +1,60 @@
+<mat-toolbar class="example-toolbar">
+    <span>Gestione Clienti</span>
+    <span class="example-spacer"></span>
+    <button
+      (click)="navigateToAddCustomer()"
+      mat-icon-button
+      class="example-icon"
+    >
+      <mat-icon>add</mat-icon>
+    </button>
+  
+      
+  </mat-toolbar>
+  
+  <app-quote-list-prw [color]="color"></app-quote-list-prw>
+
+  <div class="main-container">
+    <div class="heading">
+        <mat-form-field class="example-form-field">
+            <mat-label>Numero cliente</mat-label>
+
+            <input
+              #inputNumeroCliente
+              matInput
+              (input)="searchNumeroCliente(inputNumeroCliente.value)"
+            />
+          </mat-form-field>
+      
+          <mat-form-field class="example-form-field">
+            <mat-label>Nominativo</mat-label>
+            <input
+              #inputNominativo
+              matInput
+              (input)="searchNominativo(inputNominativo.value)"
+            />
+          </mat-form-field>
+      
+          <div *ngIf="customersFrEnd.length > 0"></div>
+    </div>
+    <div *ngFor="let customer of customersFrEnd" class="cards">
+      <div (click)="navigateToMenageCustomer(customer.numeroCliente)"  class="card card-1">
+        <div  class="card__icon"><i class="fas fa-bolt"></i></div>
+        <h2 class="card__title">{{customer.numeroCliente}} {{customer.nominativo}}</h2>
+        
+      </div>
+
+
+
+  <!-- <div class="quote-list">
+    <mat-list role="list">
+      <mat-list-item *ngFor="let quote of customersFrEnd" role="listitem">
+        
+        <button (click)="navigateToMenageCustomer(quote.numeroCliente)">
+          {{ quote.numeroCliente }} {{ quote.nominativo }}
+        </button>
+      -->
+      <!-- </mat-list-item>
+    </mat-list> -->
+  </div>
+  

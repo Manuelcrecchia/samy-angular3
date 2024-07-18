@@ -1,57 +1,13 @@
-<mat-toolbar class="example-toolbar">
-  <span>Gestione Clienti</span>
-  <span class="example-spacer"></span>
-  <button
-    (click)="navigateToAddCustomer()"
-    mat-icon-button
-    class="example-icon"
-  >
-    <mat-icon>add</mat-icon>
-  </button>
-
-  <div class="example-spacer">
-    <mat-form-field class="example-form-field">
-      <mat-label>Numero cliente</mat-label>
-      <input
-        #inputNumeroCliente
-        matInput
-        (input)="searchNumeroCliente(inputNumeroCliente.value)"
-      />
-    </mat-form-field>
-
-    <mat-form-field class="example-form-field">
-      <mat-label>Nominativo</mat-label>
-      <input
-        #inputNominativo
-        matInput
-        (input)="searchNominativo(inputNominativo.value)"
-      />
-    </mat-form-field>
-
-    <div *ngIf="customersFrEnd.length > 0"></div>
+<div class="parent-container">
+    <div class="container" *ngFor="let service of customerModelService.servizi">
+        <h1>{{service}}</h1>
+        <button mat-raised-button>
+            <mat-icon aria-hidden="false" aria-label="Example conferma icon">check_circle_outline</mat-icon>
+        </button>
+    </div>
+  
+    <div class="container" *ngFor="let interventi of customerModelService.interventi">
+        <h1>{{interventi}}</h1>
+    </div>
   </div>
-</mat-toolbar>
-
-<app-quote-list-prw [color]="color"></app-quote-list-prw>
-<div class="quote-list">
-  <mat-list role="list">
-    <mat-list-item *ngFor="let quote of customersFrEnd" role="listitem">
-      <button mat-raised-button>
-        {{ quote.numeroCliente }} {{ quote.nominativo }}
-      </button>
-      <button
-        mat-raised-button
-        (click)="navigateToEditCustomer(quote.numeroCliente)"
-      >
-        <mat-icon aria-hidden="false" aria-label="Example edit icon"
-          >edit</mat-icon
-        >
-      </button>
-      <button mat-raised-button (click)="delete(quote.numeroCliente)">
-        <mat-icon aria-hidden="false" aria-label="Example delete icon"
-          >delete</mat-icon
-        >
-      </button>
-    </mat-list-item>
-  </mat-list>
-</div>
+  

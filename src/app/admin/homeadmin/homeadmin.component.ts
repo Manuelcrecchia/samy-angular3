@@ -38,8 +38,8 @@ export class HomeAdminComponent implements OnInit {
     this.router.navigateByUrl('/quotesHome')
   }
 
-  navigateToMenageCustomer() {
-    this.router.navigateByUrl('/menageCustomer')
+  navigateToListCustomer() {
+    this.router.navigateByUrl('/listCustomer')
   }
 
 

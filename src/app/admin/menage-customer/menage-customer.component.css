@@ -1,54 +1,20 @@
-mat-drawer-container {
-  background-color: #ffffff; /* Rosa chiaro */
-  color: #f8f8f8; /* Rosa scuro */
-  padding: 10px;
-}
-
-mat-slide-toggle.mat-primary {
-  color: #d712ff; /* Rosa scuro */
-}
-
-button.mat-raised-button {
-  background-color: #ffffff; /* Rosa scuro */
-  color: #ffffff; /* Bianco */
-  margin: 10px 0;
-}
-
-.ngx-extended-pdf-viewer {
-  position: absolute; /* Posiziona il PDF in alto alla pagina */
-  top: 100px;
-  left: 140px;
-  width: 100%; /* Fai occupare al PDF l'intera larghezza */
-  height: 100%; /* Fai occupare al PDF l'intera altezza della viewport */
-  border: 1px solid #ffffff; /* Rosa scuro */
-  margin-top: 50px;
-  right: 60px;
-}
-.example-spacer {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-top: 5px;
-  border-bottom: 1px solid #ffffff; /* Aggiunge una linea sotto il contenuto */
-}
-
-.example-form-field {
-  margin-right: 10px;
-  margin-top: 10px;
-}
-
-
-@media (max-width: 600px) {
-  .quote-list, .pdf-viewer {
-    display: block; /* Gli elementi sono disposti uno sopra l'altro */
-    width: 100%; /* Ogni elemento occupa l'intera larghezza */
+.parent-container {
+    display: table-column;
+    flex-direction: row;
   }
-  .ngx-extended-pdf-viewer {
-
-    top: 700px;
-    left: 140px;
-    width: 100%; /* Fai occupare al PDF l'intera larghezza */
-    height: 100%; /* Fai occupare al PDF l'intera altezza della viewport */
-    border: 1px solid #ffffff; /* Rosa scuro */
+  
+  .container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin-right: 20px; /* Adds space between the two containers */
   }
-}
+  
+  .container h1 {
+    margin: 0 10px;
+  }
+  
+  .container button {
+    margin: 0 10px;
+  }
+  
