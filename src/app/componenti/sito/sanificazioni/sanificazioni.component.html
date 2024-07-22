@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Galleria</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f9e6e6;
+        }
+        .header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: -10px 20px;
+    background-color:pink; /* Change this color as needed */
+    position: relative;;
+}
+.logo img {
+    max-height: 50px; /* Adjust this value as needed */
+    height: auto;
+    width: auto;
+    margin-left: 500px;
+
+}
+h4{
+
+                font-size: 20px;
+                align-items: center;
+                white-space: pre-line;
+                margin-top: -10px;
+                margin-right: 550px;
+            }
+h3{
+    margin: 0;
+    padding: 0;
+    color: rgb(0, 0, 0);
+    margin-left: 790px;
+    font-size: 20px;
+}
+h2{
+    margin: 0;
+    padding: 0;
+    color: rgb(0, 0, 0);
+    margin-right: 700px;
+    font-size: 30px;
+    white-space: nowrap;
+
+}
+        h1 {
+            margin: 0;
+            padding: 0;
+            color: rgb(0, 0, 0);
+            margin-right: 1000px;
+        }
+        .item {
+            margin-bottom: 10px;
+        }
+        .item img,
+        .item video {
+            width: 100%;
+            height: auto; /* Adjusted to maintain aspect ratio */
+            display: block;
+            border-radius: 15px;
+        }
+p{
+  margin-right: 700px;
+  margin-top: 20px;
+}
+        .paragraph {
+            text-align: right;
+            background-color: #f0f0f0;
+            height: 100px;
+            margin: 10px 100px; /* Adjusted margins */
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            padding: 10px;
+            font-size: 20px;
+
+        }
+        .container {
+            text-align: center;
+            margin-top: 20px; /* Adjusted margin */
+            margin-right:150px ;
+        }
+        .btn {
+            background-color: purple;
+            color: white;
+            padding: 10px 20px; /* Adjusted padding */
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            border-radius: 5px;
+        }
+        .dropdown {
+            position: absolute; /* Changed to absolute to overlay above header */
+            left: 0;
+            top: 0;
+            display: none;
+            margin: 10px; /* Adjusted margin */
+
+
+        }
+        .dropdown-btn {
+    background-color: purple; /* Verde */
+    color: white;
+    padding: 10px 20px;
+    font-size: 16px;
+    border: none;
+    cursor: pointer;
+}
+        .dropdown-content a {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+
+}
+.dropdown-content {
+    display: none; /* Nascondi per impostazione predefinita */
+    position: absolute;
+    background-color: #f9f9f9;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+
+}
+    h4{
+      margin-right: 650px;
+                font-size: 15px;
+                align-items: center;
+                white-space: pre-line;
+                margin-top: -10px;
+            }
+            .image-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 60%;
+}
+
+img {
+  border-radius: 15px;
+  height: 300px;
+  margin: 10px;
+}
+
+
+        /* Responsive Styles */
+        @media (max-width: 768px) {
+          .header {
+            flex-direction: column;
+            align-items: flex-start;
+          }
+
+            .logo img {
+                margin-left: 70px; /* Adjusted margin */
+            }
+
+            .paragraph {
+                margin: 20px 10px; /* Adjusted margins */
+            }
+            .container {
+                margin-top: 10px; /* Adjusted margin */
+            }
+            .dropdown {
+                margin: 0; /* Removed margin for better fit */
+                position: static; /* Changed to static for mobile view */
+            }
+            .dropdown-content {
+        min-width: 100%; /* Full width on smaller screens */
+    }
+
+            .dropdown-item {
+                padding: 10px; /* Adjusted padding for smaller screens */
+            }
+            h2{
+                margin-left: 70px;
+                font-size: 15px;
+                align-items: center;
+                white-space: nowrap;
+            }
+            h3{
+    margin: 0;
+    padding: 0;
+    color: rgb(0, 0, 0);
+    margin-right: 400px;
+    margin-left: 40px;
+    font-size: 20px;
+    white-space: nowrap;
+}
+
+            h1{
+
+                margin-left: 100px;
+
+            }
+            p{
+                margin-left: 10px;
+                font-size: 15px;
+                align-items: center;
+                white-space: nowrap;
+                margin-top: -10px;
+            }
+            h4{
+                margin-left: 0px;
+                font-size: 9px;
+                align-items: center;
+                white-space: nowrap;
+                margin-top: -10px;
+            }
+            .image-container {
+    display: flex;
+    flex-direction: column; /* posiziona le immagini una sotto l'altra */
+}
+
+img {
+    max-width: 100%; /* per adattare l'immagine alla larghezza del dispositivo */
+    height: auto; /* mantenere le proporzioni originali dell'immagine */
+    margin-bottom: 10px; /* margine inferiore per spaziare le immagini */
+}
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <div class="header">
+        <div class="dropdown">
+            <div class="dropdown-content">
+                <a href="index.html" class="dropdown-item">HOME</a>
+                <a href="condomini.html" class="dropdown-item">CONDOMINI</a>
+                <a href="uffici.html" class="dropdown-item">UFFICI</a>
+                <a href="galleria.html" class="dropdown-item">LAVORI SVOLTI</a>
+            </div>
+            <div style="font-size: 30px;">&#9776;</div>
+        </div>
+        <button (click)="navigateToHomeSito()" class="dropdown-btn">Home</button>
+        <div class="logo">
+            <img src="https://www.samypulizie.it/wp-content/uploads/2020/01/logo.png" alt="Logo">
+        </div>
+        <h1>SANIFICAZIONI</h1>
+    </div>
+
+
+
+    <!-- Paragraph -->
+    <div class="paragraph">
+        <h2>Servizio di Sanificazione a Pescara</h2>
+        <p>Siamo una Azienda autorizzata allo svolgimento di  </p>
+        <h4>operazioni di sanificazione ambientale e operiamo da anni nella provincia di Pescara. </h4>
+    </div>
+    <h3>Richiedi un preventivo</h3>
+    <!-- Container with Button -->
+    <div class="container">
+
+        <a href="https://forms.gle/Sp9NE5skntNeU9oq9" class="btn">Richiedi ora</a>
+    </div>
+
+      <div class="image-container">
+        <img src="https://media.istockphoto.com/id/1414982124/it/foto/%C3%A8infezione-di-locali-da-insetti-e-roditori-con-sostanze-chimiche.jpg?s=612x612&w=0&k=20&c=kr0b8UotftN3KKyh-mTjhI3JlkC8qjGhPS0nXFj4yrg=" alt="Immagine 1">
+        <img src="https://www.ilpost.it/wp-content/uploads/2020/05/sanificazione-coronavirus.jpg" alt="Immagine 2">
+      </div>
+
+</body>
+</html>
+
+

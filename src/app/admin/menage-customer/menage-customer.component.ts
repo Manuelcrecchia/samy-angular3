@@ -17,7 +17,7 @@ import {  OnInit } from '@angular/core';
 @Component({
   selector: 'app-menage-customer',
   templateUrl: './menage-customer.component.html',
-  styleUrl: './menage-customer.component.css'
+  styleUrls: ['./menage-customer.component.css']
 })
 export class MenageCustomerComponent {
 
@@ -62,6 +62,26 @@ interventi: ['Interventi1', 'Intervento 2'] // Esempio di array interventi
       })
 
       }
+
+
+
+      // blocco note
+
+
+    //   document.getElementById('saveNote').addEventListener('click', function() {
+    //     const noteText = document.getElementById('noteInput').value;
+    //     if (noteText.trim() !== '') {
+    //         // Qui dovresti inviare la nota al server per salvarla
+    //         // Questo esempio aggiunge semplicemente la nota all'HTML per visualizzazione
+    //         const noteElement = document.createElement('div');
+    //         noteElement.classList.add('note');
+    //         noteElement.textContent = noteText;
+    //         document.getElementById('notesList').appendChild(noteElement);
+    //         document.getElementById('noteInput').value = ''; // Pulisci l'input dopo il salvataggio
+    //     } else {
+    //         alert('La nota non può essere vuota!');
+    //     }
+    // });
   }
 
 

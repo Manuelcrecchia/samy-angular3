@@ -17,5 +17,14 @@ export class HomesitoComponent {
   navigateToPrivateArea() {
     this.router.navigateByUrl('/loginPrivateArea');
   }
+  navigateToSanificazioni() {
+    this.router.navigateByUrl('/sanificazioni');
+  }
+  navigateToUffici() {
+    this.router.navigateByUrl('/uffici');
+  }
+  navigateToCondomini1() {
+    this.router.navigateByUrl('/condomini1');
+  }
 }
 

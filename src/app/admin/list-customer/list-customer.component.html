@@ -8,10 +8,10 @@
     >
       <mat-icon>add</mat-icon>
     </button>
-  
-      
+
+
   </mat-toolbar>
-  
+
   <app-quote-list-prw [color]="color"></app-quote-list-prw>
 
   <div class="main-container">
@@ -25,7 +25,7 @@
               (input)="searchNumeroCliente(inputNumeroCliente.value)"
             />
           </mat-form-field>
-      
+
           <mat-form-field class="example-form-field">
             <mat-label>Nominativo</mat-label>
             <input
@@ -34,14 +34,17 @@
               (input)="searchNominativo(inputNominativo.value)"
             />
           </mat-form-field>
-      
+        </div>
+<div class="carta">
           <div *ngIf="customersFrEnd.length > 0"></div>
-    </div>
+
     <div *ngFor="let customer of customersFrEnd" class="cards">
       <div (click)="navigateToMenageCustomer(customer.numeroCliente)"  class="card card-1">
         <div  class="card__icon"><i class="fas fa-bolt"></i></div>
         <h2 class="card__title">{{customer.numeroCliente}} {{customer.nominativo}}</h2>
-        
+        <h3 class="card__subtitle"> {{customer.telefono}} </h3>
+        <h4 class="card__text"> {{customer.email}} </h4>
+      </div>
       </div>
 
 
@@ -49,7 +52,7 @@
   <!-- <div class="quote-list">
     <mat-list role="list">
       <mat-list-item *ngFor="let quote of customersFrEnd" role="listitem">
-        
+
         <button (click)="navigateToMenageCustomer(quote.numeroCliente)">
           {{ quote.numeroCliente }} {{ quote.nominativo }}
         </button>
@@ -57,4 +60,3 @@
       <!-- </mat-list-item>
     </mat-list> -->
   </div>
-  

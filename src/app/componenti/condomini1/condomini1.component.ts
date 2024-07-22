@@ -1,0 +1,20 @@
+
+import { Component } from '@angular/core';
+import { Router } from '@angular/router';
+
+@Component({
+  selector: 'app-condomini1',
+  templateUrl: './condomini1.component.html',
+  styleUrl: './condomini1.component.css'
+})
+
+
+export class Condomini1Component {
+  constructor(private router: Router) {}
+
+
+
+  navigateToHomeSito() {
+    this.router.navigateByUrl('/homeSito');
+  }
+}

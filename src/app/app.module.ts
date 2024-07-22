@@ -42,6 +42,11 @@ import { NgxExtendedPdfViewerModule } from 'ngx-extended-pdf-viewer';
 import { MenageCustomerComponent } from './admin/menage-customer/menage-customer.component';
 import { AddCustomerComponent } from './admin/add-customer/add-customer.component';
 import { ListCustomerComponent } from './admin/list-customer/list-customer.component';
+import { SanificazioniComponent } from './componenti/sito/sanificazioni/sanificazioni.component';
+import { UfficiComponent } from './componenti/sito/uffici/uffici.component';
+
+import { Condomini1Component } from './componenti/condomini1/condomini1.component';
+
 
 
 
@@ -63,6 +68,10 @@ import { ListCustomerComponent } from './admin/list-customer/list-customer.compo
     MenageCustomerComponent,
     AddCustomerComponent,
     ListCustomerComponent,
+    SanificazioniComponent,
+    UfficiComponent,
+    Condomini1Component,
+
   ],
   imports: [
     BrowserModule,

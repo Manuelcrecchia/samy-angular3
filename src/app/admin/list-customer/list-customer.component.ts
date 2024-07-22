@@ -15,6 +15,8 @@ export class ListCustomerComponent {
   customersFrEnd: {
     numeroCliente: string;
     nominativo: string;
+    email: string;
+    telefono: string;
   }[] = [];
 
   constructor(  private http: HttpClient,
@@ -63,7 +65,7 @@ searchNominativo(value: string){
   }
   else{
     this.customersFrEnd = this.customersFrEnd.filter(customer => customer.nominativo.startsWith(value))
-    
+
   }
 }
 
