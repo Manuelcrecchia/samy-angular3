@@ -2,6 +2,9 @@ mat-drawer-container {
     background-color: #ffffff; /* Rosa chiaro */
     color: #f8f8f8; /* Rosa scuro */
     padding: 10px;
+
+
+
   }
 
   mat-slide-toggle.mat-primary {
@@ -12,6 +15,7 @@ mat-drawer-container {
     background-color: #ffffff; /* Rosa scuro */
     color: #ffffff; /* Bianco */
     margin: 10px 0;
+    background-image: linear-gradient(to right, #ff0077, #ff00ff); /* Sostituisci con i tuoi colori */
   }
 
   .ngx-extended-pdf-viewer {
@@ -23,6 +27,7 @@ mat-drawer-container {
     border: 1px solid #ffffff; /* Rosa scuro */
     margin-top: 50px;
     right: 60px;
+    background-image: linear-gradient(to right, #ff0077, #ff00ff); /* Sostituisci con i tuoi colori */
   }
   .example-spacer {
     display: flex;
@@ -30,11 +35,13 @@ mat-drawer-container {
     justify-content: space-between;
     margin-top: 5px;
     border-bottom: 1px solid #ffffff; /* Aggiunge una linea sotto il contenuto */
+    background-image: linear-gradient(to right, #ff0077, #ff00ff); /* Sostituisci con i tuoi colori */
   }
 
   .example-form-field {
     margin-right: 10px;
     margin-top: 10px;
+
   }
 
 
@@ -45,10 +52,14 @@ mat-drawer-container {
     justify-content: space-around; /* Distribuisce lo spazio intorno alle card */
     align-items: flex-start; /* Allinea le card all'inizio del contenitore */
     margin-right: 100px;
+
+
   }
   .card {
     transition: transform 0.1s ease; /* Effetto di transizione fluido */
     cursor: pointer; /* Cambia il cursore in una mano per indicare che è cliccabile */
+
+    background-image: linear-gradient(to right, #ff0077, #ff00ff); /* Sostituisci con i tuoi colori */
   }
 
   .card:hover {
@@ -78,7 +89,9 @@ mat-drawer-container {
   }
 
 
-
+  .card-gradient {
+    background-image: linear-gradient(to right, #FFC0CB, #FFD700); /* Sostituisci con i tuoi colori */
+  }
 
 
 
