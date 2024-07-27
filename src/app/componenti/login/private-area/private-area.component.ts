@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { GlobalService } from '../../../service/global.service';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Router } from '@angular/router';
+import { PopupServiceService } from '../../popup/popup-service.service';
 
 
 @Component({
@@ -14,7 +15,7 @@ export class PrivateAreaComponent {
   nc = false;
   pe = false;
 
-constructor(private globalService: GlobalService, private http: HttpClient, private router: Router) { }
+constructor(private globalService: GlobalService, private http: HttpClient, private router: Router, private popup: PopupServiceService) { }
 
   loginFunction(email: string, password: string) {
     let res;
@@ -26,11 +27,15 @@ constructor(private globalService: GlobalService, private http: HttpClient, priv
       if(resp == "NON TROVATO") {
         this.nc = true;
         this.pe = false;
+        this.popup.text = "UTENTE NON TROVATO. EMAIL ERRATA."
+        this.popup.openPopup();
       }
       else{
         if(resp == "NO"){
           this.pe = true;
           this.nc = false;
+          this.popup.text = "PASSWORD ERRATA. SE HAI DIMENTICATO LA PASSWORD, BESTEMMIA."
+          this.popup.openPopup();
         }
         else{
           this.globalService.userCode = res["codiceOperatore"];

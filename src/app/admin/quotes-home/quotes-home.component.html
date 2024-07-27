@@ -34,9 +34,9 @@
       <button mat-raised-button (click)="delete(quote.numeroPreventivo)">
         <mat-icon aria-hidden="false" aria-label="Example delete icon">delete</mat-icon>
       </button>
-      <button mat-raised-button (click)="conferm(quote.numeroPreventivo)">
+      <!-- <button mat-raised-button (click)="conferm(quote.numeroPreventivo)">
         <mat-icon aria-hidden="false" aria-label="Example conferma icon">done_outline</mat-icon>
-      </button>
+      </button> -->
       <button mat-raised-button (click)="invio(quote.numeroPreventivo)">
         <mat-icon aria-hidden="false" aria-label="Example conferma icon">send</mat-icon>
       </button>
@@ -49,7 +49,7 @@
 
 <ngx-extended-pdf-viewer class="ngx-extended-pdf-viewer"
 [base64Src]="pdfPrev"
-useBrowserLocale="false"
+useBrowserLocale="true"
 backgroundColor="#fffff"
 [height]="'100%'"
 [textLayer]="false"

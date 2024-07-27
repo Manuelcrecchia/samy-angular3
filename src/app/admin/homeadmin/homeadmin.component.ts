@@ -1,5 +1,7 @@
-import { Component, OnInit, ElementRef } from '@angular/core';
+import { Component, OnInit, ElementRef, HostListener } from '@angular/core';
 import { Router } from '@angular/router';
+import { GlobalService } from '../../service/global.service';
+import { PopupServiceService } from '../../componenti/popup/popup-service.service';
 
 
 @Component({
@@ -9,7 +11,7 @@ import { Router } from '@angular/router';
 })
 export class HomeAdminComponent implements OnInit {
 
-  constructor(private el: ElementRef, private router: Router) { }
+  constructor(private el: ElementRef, private router: Router, private global: GlobalService, private popup: PopupServiceService) { }
 
   isMenuOpen: boolean = false;
 
@@ -26,9 +28,13 @@ export class HomeAdminComponent implements OnInit {
 
 
   navigateToUserSettings() {
-    this.router.navigateByUrl('/userSettings');
-
-  }
+    if(this.global.admin == "S")
+    {this.router.navigateByUrl('/userSettings');}
+      else {
+        this.popup.text = "NON SEI AUTORIZZATO AD ACCEDERE A QUESTA FUNZIONE";
+        this.popup.openPopup();
+      }
+    }
 
   navigateToEmployeesSettings() {
     this.router.navigateByUrl('/employeesSettings')
@@ -44,7 +50,12 @@ export class HomeAdminComponent implements OnInit {
 
 
 
-
+  @HostListener('window:popstate', ['$event'])
+  onBrowserBackBtnClose(event:Event){
+    event.preventDefault();
+    console.log('Back button pressedm');
+    this.router.navigateByUrl('/')
+  }
 
 
 }

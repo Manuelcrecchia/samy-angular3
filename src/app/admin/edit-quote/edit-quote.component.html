@@ -443,7 +443,7 @@
     ><mat-label>Imponibile</mat-label>
     <input
       matInput
-      name="imponibile" maxlength="255"
+      name="imponibile" pattern = '[0-9]+[.][0-9]+' maxlength="255"
       [(ngModel)]="this.quoteModelService.imponibile"
     />
   </mat-form-field>

@@ -1,8 +1,9 @@
 import { HttpClient } from '@angular/common/http';
-import { Component } from '@angular/core';
+import { Component, HostListener } from '@angular/core';
 import { Router } from '@angular/router';
 import { GlobalService } from '../../service/global.service';
 import { QuoteModelService } from '../../service/quote-model.service';
+import { PopupServiceService } from '../../componenti/popup/popup-service.service';
 
 @Component({
   selector: 'app-add-quote',
@@ -11,15 +12,15 @@ import { QuoteModelService } from '../../service/quote-model.service';
 })
 export class AddQuoteComponent {
 
-  constructor(public globalService: GlobalService, public quoteModelService: QuoteModelService, private http: HttpClient, private router: Router){}
+  constructor(public globalService: GlobalService, public quoteModelService: QuoteModelService, private http: HttpClient, private router: Router, private popup: PopupServiceService){}
 
   ngOnInit(){
   }
 
   addQuote(){
-    if(this.quoteModelService.tipoPreventivo == 
-      ''){
-          //INSERIRE UN ALERT PER AVVISARE DI IMMETERE IL CAMPO
+    if(this.quoteModelService.tipoPreventivo == ''){
+          this.popup.text = 'INSERISCI IL TIPO DI PREVENTIVO';
+          this.popup.openPopup();
     }
     else{
 
@@ -50,10 +51,19 @@ export class AddQuoteComponent {
       })
       // ...
       .subscribe((response) => {
+        this.quoteModelService.resetQuoteModel()
         this.router.navigateByUrl('/quotesHome');
 
       });
     }
    }
+
+   @HostListener('window:popstate', ['$event'])
+  onBrowserBackBtnClose(event:Event){
+    event.preventDefault();
+    console.log('Back button pressedm');
+    this.quoteModelService.resetQuoteModel();
+    this.router.navigateByUrl('/quotesHome');
+  }
 
 }

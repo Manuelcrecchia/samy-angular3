@@ -1,9 +1,10 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, Input } from '@angular/core';
+import { Component, HostListener, Input } from '@angular/core';
 import { Router } from '@angular/router';
 import { NgxExtendedPdfViewerService } from 'ngx-extended-pdf-viewer';
 import { GlobalService } from '../../service/global.service';
 import { QuoteModelService } from '../../service/quote-model.service';
+import { PopupServiceService } from '../../componenti/popup/popup-service.service';
 
 @Component({
   selector: 'app-quotes-home',
@@ -28,6 +29,7 @@ export class QuotesHomeComponent   {@Input() color: any;
     private globalService: GlobalService,
     private router: Router,
     private quoteModel: QuoteModelService,
+    private popup: PopupServiceService
    ){}
 
 navigateToAddQuote(){
@@ -206,7 +208,7 @@ invio(numeroPreventivo: string){
   const body = { numeroPreventivo: numeroPreventivo };
 this.http
   .post(
-    this.globalService.url + 'quotes/invio',
+    this.globalService.url + 'quotes/sendPdf',
     body, {
       headers: this.globalService.headers,
       responseType: 'text',
@@ -216,11 +218,24 @@ this.http
         this.router.navigateByUrl('/')
       }
       else {
-        this.pdfPrev = '';
-      this.ngOnInit();
+        if(response == 'NO'){
+          this.popup.text = 'NEL PREVENTIVO NON E PRESENTE LA MAIL';
+        this.popup.openPopup();
+        }
+        else {
+          this.popup.text = 'INVIO DELLE MAIL RIUSCITO';
+        this.popup.openPopup();
+        }
       }
     })
 }
+
+@HostListener('window:popstate', ['$event'])
+  onBrowserBackBtnClose(event:Event){
+    event.preventDefault();
+    console.log('Back button pressedm');
+    this.router.navigateByUrl('/homeAdmin')
+  }
 
 
 }

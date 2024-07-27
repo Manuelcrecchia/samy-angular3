@@ -202,15 +202,15 @@
   <button (click)="toggleMenu()" class="menu-toggle" ><i class="fas fa-cog"></i></button>
   <div *ngIf="isMenuOpen" class="menu">
       <a (click)="navigateToUserSettings()">Gestione Utenti</a>
-      <a (click)="navigateToEmployeesSettings()">Gestione Dipendenti</a>
-      <a (click)="navigateToCaricaFile()">Gestisci File</a>
+      <a (click)="null">Gestione Dipendenti</a>
+      <a (click)="null">Gestisci File</a>
   </div>
   <div class="logo">
       <img class="logo" src="https://www.samypulizie.it/wp-content/uploads/2020/01/logo.png" alt="Logo">
     </div>
       <div class="button-group-1">
           <button class="button">  <i class="fas fa-user"></i><br>Gestione Dipendenti</button>
-          <button (click)="navigateToListCustomer()" class="button"><i class="fas fa-restroom"></i><br>Gestione Clienti</button>
+          <button (click)="null" class="button"><i class="fas fa-restroom"></i><br>Gestione Clienti</button>
 
       </div>
       <div class="button-group-2">

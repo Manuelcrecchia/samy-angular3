@@ -44,8 +44,9 @@ import { AddCustomerComponent } from './admin/add-customer/add-customer.componen
 import { ListCustomerComponent } from './admin/list-customer/list-customer.component';
 import { SanificazioniComponent } from './componenti/sito/sanificazioni/sanificazioni.component';
 import { UfficiComponent } from './componenti/sito/uffici/uffici.component';
-
 import { Condomini1Component } from './componenti/condomini1/condomini1.component';
+import { PopupComponentComponent } from './componenti/popup/popup-component/popup-component.component';
+import { MatDialog } from '@angular/material/dialog';
 
 
 
@@ -71,6 +72,7 @@ import { Condomini1Component } from './componenti/condomini1/condomini1.componen
     SanificazioniComponent,
     UfficiComponent,
     Condomini1Component,
+    PopupComponentComponent,
 
   ],
   imports: [
@@ -107,7 +109,7 @@ import { Condomini1Component } from './componenti/condomini1/condomini1.componen
     MatSlideToggleModule,
     MatAutocompleteModule,
     MatExpansionModule,
-    NgxExtendedPdfViewerModule
+    NgxExtendedPdfViewerModule,
   ],
     providers: [
       GlobalService
