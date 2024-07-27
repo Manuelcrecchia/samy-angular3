@@ -14,12 +14,5 @@ export class GlobalService {
   admin: string = "";
   headers = new HttpHeaders({ 'Content-Type': 'application/json; charset=utf-8', 'Authorization': `${this.token}` });
 
-  //TEST
-
-  //url = "http://192.168.1.172:5000/";
-
-
-  //PROD
-
   url = "https://samipulizie.it:4000/";
 }
