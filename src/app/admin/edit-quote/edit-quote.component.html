@@ -5,7 +5,7 @@
       name="tipoPreventivo"
       [(ngModel)]="this.quoteModelService.tipoPreventivo"
     >
-      <mat-option value="O">ordinario</mat-option>
+      <mat-option value="O">Ordinario</mat-option>
       <mat-option value="S">Straordinario</mat-option>
     </mat-select>
   </mat-form-field>
@@ -452,7 +452,7 @@
     <mat-form-field appearance="fill">
       <mat-label>Iva</mat-label>
       <mat-select name="iva" [(ngModel)]="this.quoteModelService.iva">
-        <mat-option value="N">N</mat-option>
+        <mat-option value="N">22</mat-option>
         <mat-option value="RC">RC</mat-option>
         <mat-option value="SP">SP</mat-option>
       </mat-select>
@@ -464,9 +464,10 @@
     <mat-form-field appearance="fill">
       <mat-label>Pagamento</mat-label>
       <mat-select name="Pagamento" [(ngModel)]="this.quoteModelService.pagamento">
-        <mat-option value="C">C</mat-option>
-        <mat-option value="B">B</mat-option>
-        <mat-option value="E">E</mat-option>
+        <mat-option value="C">Contanti</mat-option>
+        <mat-option value="B">Bonifico bancario</mat-option>
+        <mat-option value="E">Elettronico</mat-option>
+        <mat-option value="A">Assegno</mat-option>
         <mat-option value=""></mat-option>
       </mat-select>
     </mat-form-field>

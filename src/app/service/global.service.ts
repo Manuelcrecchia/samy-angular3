@@ -16,5 +16,5 @@ export class GlobalService {
 
   //TEST
 
-  url = "http://192.168.1.172:5000/";
+  url = "http://192.168.1.187:5000/";
 }
