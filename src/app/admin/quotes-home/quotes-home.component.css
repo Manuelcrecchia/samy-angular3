@@ -1,54 +1,109 @@
-mat-drawer-container {
-  background-color: #ffffff; /* Rosa chiaro */
-  color: #f8f8f8; /* Rosa scuro */
-  padding: 10px;
+body {
+  margin: 0;
+  padding: 0;
+  font-family: Arial, sans-serif;
+  background-color: #f9f9f9;
+  color: #333;
 }
-
-mat-slide-toggle.mat-primary {
-  color: #d712ff; /* Rosa scuro */
-}
-
-button.mat-raised-button {
-  background-color: #ffffff; /* Rosa scuro */
-  color: #ffffff; /* Bianco */
-  margin: 10px 0;
-}
-
-.ngx-extended-pdf-viewer {
-  position: absolute; /* Posiziona il PDF in alto alla pagina */
-  top: 100px;
-  left: 140px;
-  width: 100%; /* Fai occupare al PDF l'intera larghezza */
-  height: 100%; /* Fai occupare al PDF l'intera altezza della viewport */
-  border: 1px solid #ffffff; /* Rosa scuro */
-  margin-top: 50px;
-  right: 60px;
-}
-.example-spacer {
+.example-toolbar {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-top: 5px;
-  border-bottom: 1px solid #ffffff; /* Aggiunge una linea sotto il contenuto */
-}
+  padding: 10px 20px;
+  background-color: #ff6f91;
+  color: white;
 
+}
+.example-spacer {
+  flex: 1;
+  margin-left: -1500px;
+  margin-top: 20px;
+}
+.example-icon {
+  transition: transform 0.3s ease;
+  margin-right: 1500px;
+}
+.example-icon:hover {
+  transform: scale(1.9);
+
+}
 .example-form-field {
-  margin-right: 10px;
-  margin-top: 10px;
+  margin: 0 10px;
 }
-
-
-@media (max-width: 600px) {
-  .quote-list, .pdf-viewer {
-    display: block; /* Gli elementi sono disposti uno sopra l'altro */
-    width: 100%; /* Ogni elemento occupa l'intera larghezza */
+.quote-list {
+  padding: 20px;
+}
+mat-list-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  background-color: #ffe0e9;
+  border-radius: 5px;
+  padding: 10px;
+  transition: background-color 0.3s ease;
+}
+mat-list-item:hover {
+  background-color: #ffb3c6;
+}
+button {
+  margin: 0 5px;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+button:hover {
+  background-color: #ff6f91;
+  color: white;
+  transform: scale(0.8);
+}
+@media (max-width: 768px) {
+  .example-toolbar {
+      flex-direction: column;
+      align-items: flex-start;
+      padding: 10px;
+  }
+  .example-spacer {
+      width: 50%;
+      margin: 10px 0;
+      margin-top: -30px;
+  }
+  .example-icon {
+    transition: transform 0.3s ease;
+    margin-left: 100px;
+    margin-bottom: 30px;
+  margin-top: -20px;  }
+  .example-form-field {
+      width: 100%;
+      margin: 10px 0;
+  }
+  .quote-list {
+      padding: 60px;
+      margin-left: -100px;
+  }
+  mat-list-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    background-color: #ffe0e9;
+    border-radius: 10px;
+    padding: 0px;
+    transition: background-color 0.3s ease;
+    margin-left: 25px;
+  }
+  mat-list-item:hover {
+    background-color: #ffb3c6;
+  }
+  button {
+    margin: 0 1px;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+  }
+  button:hover {
+    background-color: #ff6f91;
+    color: white;
+    transform: scale(0.8);
   }
   .ngx-extended-pdf-viewer {
-
-    top: 700px;
-    left: 140px;
-    width: 100%; /* Fai occupare al PDF l'intera larghezza */
-    height: 100%; /* Fai occupare al PDF l'intera altezza della viewport */
-    border: 1px solid #ffffff; /* Rosa scuro */
+      width: 100%;
+      height: 300px;
   }
 }
