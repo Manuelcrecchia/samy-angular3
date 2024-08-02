@@ -13,4 +13,13 @@ export class SanificazioniComponent {
   navigateToHomeSito() {
     this.router.navigateByUrl('/homeSito');
   }
+  navigateToSanificazioni() {
+    this.router.navigateByUrl('/sanificazioni');
+  }
+  navigateToUffici() {
+    this.router.navigateByUrl('/uffici');
+  }
+  navigateToCondomini1() {
+    this.router.navigateByUrl('/condomini1');
+  }
 }

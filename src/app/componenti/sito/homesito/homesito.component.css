@@ -1,231 +1,212 @@
-/* CSS per desktop */
+/* homesito.component.css */
+body {
+  background: url('/assets/Homesito.jpeg'); /* Specifica il percorso della tua immagine */
+  background-repeat: no-repeat;
+  background-position: center;
+  height: 100%;
+  width: 100%;
+  background-size: cover;
+  margin-top: 20px;
+  animation: fadeIn 2s ease-in-out;
+}
 
+@media (max-width: 600px) {
+  body {
+    background: none;
+    background-color: pink;
+    width: 100%;
+    height: 100%;
+  }
+}
 
-
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
 
 .navbar {
   display: flex;
   justify-content: space-between;
-  background-color: pink;
+  align-items: center;
+  background-color: rgba(255, 182, 193, 0.8); /* Rosa traslucido */
   padding: 10px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+
+
+
+/* Stile per il menu a tendina "contatti" */
+.menu-item.contatti {
+  position: relative;
+}
+
+.menu-item.contatti > a {
+  text-decoration: none;
+  color: white;
+  font-weight: bold;
+  padding: 10px 20px;
+  border-radius: 5px;
+  transition: background-color 0.3s;
+}
+
+.menu-item.contatti > a:hover {
+  background-color: rgba(255, 105, 180, 0.8); /* Rosa più scuro */
+}
+
+.menu-item.contatti .dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: rgba(255, 182, 193, 0.9); /* Rosa traslucido */
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  border-radius: 5px;
+  z-index: 1;
+  animation: slideDown 0.3s ease-in-out;
+  padding: 10px;
+}
+
+.menu-item.contatti:hover .dropdown-content {
+  display: block;
+}
+
+.menu-item.contatti .dropdown-content a {
+  display: block;
+  text-decoration: none;
+  color: white;
+  padding: 10px;
+  border-radius: 5px;
+  transition: background-color 0.3s;
+}
+
+.menu-item.contatti .dropdown-content a:hover {
+  background-color: rgba(255, 105, 180, 0.8); /* Rosa più scuro */
+}
+
+@keyframes slideDown {
+  from { transform: translateY(-10px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+
+
+.logo img {
   height: 50px;
-  transform: scale(1);
-  width: 100%; /* Ridimensiona l'intera barra del menu all'80% della sua dimensione originale */
-margin-top: -20px;
-}
-/* Stile per il bottone "Preventivi" */
-.button-preventivi {
-  display: inline-block;
-  font-size: 16px;
-  margin: 4px 2px;
-  cursor: pointer;
-  border-radius: 4px;
-  background: purple; /* Imposta il colore di sfondo del bottone a viola */
-  color: white; /* Imposta il colore del testo del bottone a bianco */
-  padding: 10px 20px; /* Aggiunge 10px di spazio sopra e sotto il testo del bottone e 20px di spazio ai lati */
-  text-decoration: none; /* Rimuove il sottolineamento dal testo del bottone */
-  transition: background 0.5s; /* Aggiunge un effetto di transizione al cambiamento del colore di sfondo del bottone */
 }
 
-/* Cambia il colore di sfondo del bottone quando si passa il mouse sopra */
-.button-preventivi:hover {
-  background: darkviolet; /* Cambia il colore di sfondo del bottone a un viola più scuro quando si passa il mouse sopra */
-}
-.logo {
-  order: -1;
-  transform: scale(0.4);
-  height: 40px;
-  width: 100px; /* Ridimensiona il logo all'80% della sua dimensione originale */
-}
-.menu-item {
-  list-style: none; /* Rimuove i punti elenco */
-}
-
-.menu {
-  display: flex;
-  transform: scale(0.8);
-  padding:10px;
-  ;/* Ridimensiona il menu all'80% della sua dimensione originale */
-}
-
-
-.dropdown:hover .dropdown-content {
+.menu-toggle-checkbox {
   display: none;
 }
 
+.menu-toggle {
+  display: none;
+  font-size: 30px;
+  cursor: pointer;
+}
 
+.menu {
+  list-style: none;
+  display: flex;
+  gap: 20px;
+}
 
+.menu-item {
+  position: relative;
+}
+
+.menu-item a {
+  text-decoration: none;
+  color: white;
+  font-weight: bold;
+  padding: 10px 20px;
+  border-radius: 5px;
+  transition: background-color 0.3s;
+}
+
+.menu-item a:hover {
+  background-color: rgba(255, 105, 180, 0.8); /* Rosa più scuro */
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: rgba(255, 182, 193, 0.9); /* Rosa traslucido */
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  border-radius: 5px;
+  z-index: 1;
+  animation: slideDown 0.3s ease-in-out;
+}
+
+@keyframes slideDown {
+  from { transform: translateY(-10px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+.menu-item:hover .dropdown-content {
+  display: block;
+}
 
 .button {
-  background-color: rgb(47, 0, 255);
+  background-color: rgba(255, 105, 180, 0.8); /* Rosa più scuro */
   color: white;
-  border: 30px;
-  padding: 15px 32px;
-  text-align: center;
-  text-decoration: none;
-  display: inline-block;
-  font-size: 16px;
-  margin: 4px 2px;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
   cursor: pointer;
-  border-radius: 4px;
-  background: linear-gradient(to right, rgb(47, 0, 255), rgb(213, 3, 255));
-  transition: background 0.5s;
-  margin-top: -30px;
-  margin-left: 100px;
+  transition: background-color 0.3s, transform 0.3s;
 }
 
 .button:hover {
-  background: linear-gradient(to right, rgb(158, 48, 255), rgb(255, 0, 234));
-}
-.menu-toggle-checkbox {
-  visibility: hidden; /* Nasconde il checkbox ma mantiene la sua funzionalità */
+  background-color: rgba(255, 20, 147, 0.8); /* Rosa ancora più scuro */
+  transform: scale(1.05);
 }
 
-.menu-toggle {
-  margin-right: 1000px;
-  display: none; /* Nascond0e il menu hamburger di default */
-}
-.dropdown-content {
-  text-align: center;
-  display: none; /* Nasconde il contenuto del dropdown di default */
-  position: absolute; /* Posiziona il dropdown rispetto al suo contenitore */
-  background-color: transparent; /* Rende il colore di sfondo del dropdown trasparente */
-  width: auto; /* Imposta la larghezza minima del dropdown */
-  padding: 10px; /* Aggiunge un po' di spazio intorno ai bottoni */
-  margin-top: -10px
-}
-.dropdown-content a {
+.button-preventivi {
   display: block;
-  border: 1px solid black;
-  margin: 40px 25px; /* Aggiunge 10px di spazio sopra e sotto ogni bottone e 5px di spazio ai lati */
-  padding: 75px;
-  background-color: transparent;
-  margin-top: -50px;
-}
-.dropdown:hover .dropdown-content {
-  text-align: center;
-  display: block; /* Mostra il contenuto del dropdown quando si passa il mouse sopra il suo contenitore */
-}
-.menu-item a {
-  background-color: rgb(255, 196, 0);
+  margin: 20px auto;
+  background-color: rgba(255, 105, 180, 0.8); /* Rosa più scuro */
   color: white;
   border: none;
-  padding: 15px 32px;
+  padding: 10px 20px;
+  border-radius: 5px;
   text-align: center;
   text-decoration: none;
-  display: inline-block;
-  font-size: 16px;
-  margin: 10px 50px;
-  cursor: pointer;
-  border-radius: 20px;
-  background: linear-gradient(to right, rgb(0, 132, 255), rgb(0, 0, 0));
-  transition: background 0.5s;
-  margin-top: -10px;
-}
-.menu-item a:hover {
-  background: linear-gradient(to right, rgb(158, 48, 255), rgb(47, 0, 255));
-}
-.dropdown-content li {
-  list-style: none; /* Rimuove i punti elenco */
+  transition: background-color 0.3s, transform 0.3s;
 }
 
-/* Il resto del tuo CSS va qui */
+.button-preventivi:hover {
+  background-color: rgba(255, 20, 147, 0.8); /* Rosa ancora più scuro */
+  transform: scale(1.05);
+}
 
-/* Il resto del tuo CSS va qui */
-/* CSS per dispositivi mobili */
-@media (max-width: 601px) {
-  body {
-    background-color: pink;
-  }
-
-  .navbar {
-    flex-direction: column;
-    height: auto;
-  }
-
+@media (max-width: 600px) {
   .menu {
     display: none;
-    margin-left: -90px;
+    flex-direction: column;
+    width: 100%;
   }
-
-  .menu-toggle-checkbox:checked ~ .menu {
-    display: block;
-  }
-
-  .button {
-    background-color: rgb(47, 0, 255);
-    color: white;
-    border: none;
-    padding: 15px 32px;
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
-    font-size: 16px;
-    margin: 4px 2px;
-    cursor: pointer;
-    border-radius: 4px;
-    background: linear-gradient(to right, rgb(47, 0, 255), rgb(158, 48, 255));
-    transition: background 0.5s;
-  }
-
-  .button:hover {
-    background: linear-gradient(to right, rgb(158, 48, 255), rgb(225, 0, 255));
-  }
- /* Stile base per i link del menu */
-.menu-item a {
-  display: block;
-  color: white;
-  text-align: center;
-  padding: 14px 16px;
-  text-decoration: none;
-  border-bottom: 1px solid white;
-  margin-right: 200px;
-}
-.menu-item {
-  float: none;
-
-}
 
   .menu-toggle {
-    display: block; /* Nasconde il menu hamburger di default */
+    display: block;
+  }
 
+  .menu-toggle-checkbox:checked + .menu-toggle + .menu {
+    display: flex;
   }
-  .dropdown:hover .dropdown-content {
-    display: block;
-  }
-  .dropdown:focus-within .dropdown-content {
-    display: block;
-  }
-  .dropdown-content {
-    margin-top: -70px;
-    height: 1600px;
-    left: 200px;
-    text-align: center;
-    display: none; /* Nasconde il contenuto del dropdown di default */
-    position: absolute; /* Posiziona il dropdown rispetto al suo contenitore */
-    background-color: transparent; /* Rende il colore di sfondo del dropdown trasparente */
-    width: auto; /* Imposta la larghezza minima del dropdown */
-    padding: 10px; /* Aggiunge un po' di spazio intorno ai bottoni */
-  }
-  .dropdown-content a {
-    display: block; /* Fa sì che ogni link occupi una propria riga */
-    border: 1px solid rgb(255, 255, 255); /* Aggiunge un bordo intorno a ogni link */
-    margin: 5px 0; /* Aggiunge un po' di spazio sopra e sotto ogni link */
-    padding: 5px; /* Aggiunge un po' di spazio intorno al testo di ogni link */
-    background-color: transparent; /* Rende il colore di sfondo di ogni link trasparente */
+
+  .menu-item {
+    width: 100%;
   }
 
   .menu-item a {
-    color: rgb(5, 5, 5); /* Imposta il colore del testo */
-    text-decoration: none; /* Rimuove le sottolineature */
-    font-size: 26px; /* Imposta la dimensione del font */
-    margin-left: 100px; /* Aggiunge un margine sinistro */
+    display: block;
+    width: 100%;
+    text-align: center;
   }
 
-
-  .dropdown-content li {
-    list-style: none; /* Rimuove i punti elenco */
+  .dropdown-content {
+    position: static;
+    box-shadow: none;
+    border-radius: 0;
   }
-
-  /* Il resto del tuo CSS va qui */
 }

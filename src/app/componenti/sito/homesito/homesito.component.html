@@ -7,17 +7,22 @@
 <body>
   <style>
     body {
-      background: url('assets/homesito1.jpeg');
+      background: url('/assets/Homesito.jpeg'); /* Specifica il percorso della tua immagine */
+
       background-repeat: no-repeat;
-      background-size: cover;
+background-position: center;
+      height: 100%;
+      width: 100%;
+      background-size: 100%;
+      margin-top: 0px;
+
     }
 
     @media (max-width: 600px) {
       body {
-        background: none;
+        background: url('/assets/Homesito.jpeg'); /* Specifica il percorso della tua immagine */
         background-color: pink;
-        width: 100%;
-        height: 100%;
+        background-size: 99%;
       }
     }
   </style>
@@ -31,7 +36,7 @@
       <div class="dropdown" id="myDropdown">
   <!-- Il tuo codice del dropdown va qui -->
 </div>
-      <li class="menu-item dropdown">
+      <li class="menu-item contatti">
         <a href="#">contatti</a>
         <ul class="dropdown-content"tabindex="0">
           <a href="tel:08554360">Call Center</a>
@@ -39,7 +44,7 @@
           <a href="https://www.google.com/maps/dir/Via+Tirino,+147,+65129+Pescara+PE/'45.59135,10.243048'/@44.0076457,10.8110617,8z/data=!3m1!4b1!4m11!4m10!1m5!1m1!1s0x1331a6223b8afae7:0xe0f8329b5888d54d!2m2!1d14.2181475!2d42.4462893!1m3!2m2!1d10.243048!2d45.59135?hl=it&entry=ttu">Sede Commerciale</a>
         </ul>
       </li>
-      <li class="menu-item dropdown"><a href="#">servizi</a>
+      <li class="menu-item contatti"><a href="#">servizi</a>
       <ul class="dropdown-content"tabindex="0">
         <li><a (click)="navigateToSanificazioni()" >Sanificazioni</a></li>
         <li><a (click)="navigateToUffici()" >uffici privati/pubblici</a></li>
