@@ -31,7 +31,7 @@ body {
   margin: 0 10px;
 }
 .quote-list {
-  padding: 20px;
+  padding: 50px;
 }
 mat-list-item {
   display: flex;
@@ -40,9 +40,12 @@ mat-list-item {
   margin-bottom: 10px;
   background-color: #ffe0e9;
   border-radius: 5px;
-  padding: 10px;
+  padding: 5px; /* Riduce il padding */
   transition: background-color 0.3s ease;
+  width: 600px; /* Imposta la larghezza dell'elemento */
+  height: 50px; /* Imposta l'altezza dell'elemento */
 }
+
 mat-list-item:hover {
   background-color: #ffb3c6;
 }
@@ -83,18 +86,42 @@ button:hover {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: 10px;
+    margin-bottom: 5px;
     background-color: #ffe0e9;
     border-radius: 10px;
-    padding: 0px;
+    padding: 10px;
     transition: background-color 0.3s ease;
-    margin-left: 25px;
+    margin-left: 45px;
   }
+
   mat-list-item:hover {
     background-color: #ffb3c6;
   }
+
+  .scrolling-button {
+    position: relative;
+    overflow: hidden; /* Nasconde il testo in eccesso */
+    white-space: nowrap; /* Impedisce al testo di andare a capo */
+    width: 100px; /* Imposta la larghezza del bottone */
+    height: 40px; /* Imposta l'altezza del bottone */
+  }
+
+  .scrolling-text {
+    display: inline-block;
+    animation: scroll-text 10s linear infinite;
+    font-size: 12px; /* Rimpicciolisce la scritta */
+  }
+
+  @keyframes scroll-text {
+    0% {
+      transform: translateX(100%);
+    }
+    100% {
+      transform: translateX(-100%);
+    }
+  }
   button {
-    margin: 0 1px;
+    margin: 20 7px;
     transition: background-color 0.3s ease, transform 0.3s ease;
   }
   button:hover {
