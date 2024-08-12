@@ -47,6 +47,28 @@
             border-radius: 12px;
             width: 100%;
         }
+
+        .indietro button {
+    background-color: #ff4081; /* Colore rosa acceso */
+    color: white;
+    font-weight: bold;
+    border: none;
+    border-radius: 4px;
+    padding: 10px 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s ease, transform 0.3s ease;
+    cursor: pointer;
+  }
+
+  .indietro button:hover {
+    background-color: #e91e63; /* Colore rosa più scuro */
+    transform: scale(1.05);
+  }
+
+  .indietro button:active {
+    background-color: #c2185b; /* Colore rosa ancora più scuro */
+    transform: scale(0.95);
+  }
         @media screen and (min-width: 600px) {
             body {
                 background-image: url('https://static.vecteezy.com/ti/vettori-gratis/p3/6580883-dipendenti-di-donna-di-un-impresa-di-pulizie-su-sfondo-bianco-governanti-illustrazione-vettoriale.jpg'); /* Sostituisci con il tuo URL dell'immagine di sfondo */
@@ -57,8 +79,37 @@
             .login-container {
                 width: 90%;
             }
+            .indietro {
+    text-align: center;
+    margin-top: -10px;
+    margin-left: 10px;
+  }
+
+  .indietro button {
+    background-color: #ff4081; /* Colore rosa acceso */
+    color: white;
+    font-weight: bold;
+    border: none;
+    border-radius: 4px;
+    padding: 10px 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s ease, transform 0.3s ease;
+    cursor: pointer;
+  }
+
+  .indietro button:hover {
+    background-color: #e91e63; /* Colore rosa più scuro */
+    transform: scale(1.05);
+  }
+
+  .indietro button:active {
+    background-color: #c2185b; /* Colore rosa ancora più scuro */
+    transform: scale(0.95);
+  }
+
         }
     </style>
+
 </head>
 <body>
     <form class="login-container">
@@ -71,6 +122,9 @@
         <button type="submit" (click)="loginFunction(email.value, password.value)">Accedi</button>
 
     </form>
+    <div class="indietro">
+      <button onclick="window.history.back()">Torna Indietro</button>
+    </div>
 </body>
 </html>
 

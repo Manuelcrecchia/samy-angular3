@@ -1,25 +1,21 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pagina di Preventivo - Gestionale Aziendale</title>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@angular/material/prebuilt-themes/indigo-pink.css">
-</head>
-<body>
-    <form id="form" name="form">
+<form>
   <mat-form-field appearance="fill">
     <mat-label>Tipo del preventivo</mat-label>
-    <mat-select name="tipoPreventivo" [(ngModel)]="this.quoteModelService.tipoPreventivo">
+    <mat-select
+      name="tipoPreventivo"
+      [(ngModel)]="this.quoteModelService.tipoPreventivo"
+    >
       <mat-option value="O">Ordinario</mat-option>
       <mat-option value="S">Straordinario</mat-option>
     </mat-select>
   </mat-form-field>
 
-    <mat-label>Codice Operatore</mat-label>
-    <mat-label>{{this.globalService.userCode}}</mat-label>
-  
+    <mat-label>Codice operatore</mat-label>
+    <mat-label>{{this.quoteModelService.codiceOperatore}}</mat-label>
+
+
+  <p>{{this.quoteModelService.data}}</p>
+
 
   <mat-form-field appearance="fill" class="example-full-width">
     <mat-label>Nominativo</mat-label>
@@ -27,60 +23,78 @@
   </mat-form-field>
 
   <mat-form-field appearance="fill" class="example-full-width">
-    <mat-label>Codice Fiscale Partita Iva</mat-label>
-    <input matInput name="cfpi" maxlength="255" [(ngModel)]="this.quoteModelService.cfpi" />
+    <mat-label>codice fiscale partita iva</mat-label>
+    <input
+      matInput
+      name="cfpi" maxlength="255"
+      [(ngModel)]="this.quoteModelService.cfpi"
+    />
   </mat-form-field>
 
   <mat-form-field appearance="fill" class="example-full-width">
-    <mat-label>Città</mat-label>
-    <input matInput name="citta" maxlength="255" [(ngModel)]="this.quoteModelService.citta" />
+    <mat-label>citta</mat-label>
+    <input
+      matInput
+      name="citta" maxlength="255"
+      [(ngModel)]="this.quoteModelService.citta"
+    />
   </mat-form-field>
 
   <form id="form" name="form">
-    <mat-form-field appearance="fill">
-      <mat-label>Selettore prefisso via</mat-label>
-      <mat-select name="selettorePrefissoVia" [(ngModel)]="this.quoteModelService.selettorePrefissoVia">
-        <mat-option value="VIA">VIA</mat-option>
-        <mat-option value="STRADA">STRADA</mat-option>
-        <mat-option value="VIALE">VIALE</mat-option>
-        <mat-option value="PIAZZA">PIAZZA</mat-option>
-      </mat-select>
-    </mat-form-field>
-  </form>
+  <mat-form-field appearance="fill" class="example-full-width">
+    <mat-label>Selettore Prefisso Via</mat-label>
+    <mat-select name="selettorePrefissoVia" [(ngModel)]="this.quoteModelService.selettorePrefissoVia">
+      <mat-option value="VIA">VIA</mat-option>
+      <mat-option value="STRADA">STRADA</mat-option>
+      <mat-option value="VIALE">VIALE</mat-option>
+      <mat-option value="PIAZZA">PIAZZA</mat-option>
+    </mat-select>
+  </mat-form-field>
+</form>
 
   <mat-form-field appearance="fill" class="example-full-width">
-    <mat-label>Via</mat-label>
-    <input matInput name="via" maxlength="255" [(ngModel)]="this.quoteModelService.via" />
+    <mat-label>via</mat-label>
+    <input
+      matInput
+      name="via" maxlength="255"
+      [(ngModel)]="this.quoteModelService.via"
+    />
   </mat-form-field>
 
   <mat-form-field appearance="fill" class="example-full-width">
     <mat-label>Cap</mat-label>
-    <input matInput name="cap" maxlength="255" [(ngModel)]="this.quoteModelService.cap" />
+    <input
+      matInput
+      name="cap" maxlength="255"
+      [(ngModel)]="this.quoteModelService.cap"
+    />
   </mat-form-field>
 
-
   <mat-form-field appearance="fill" class="example-full-width">
-    <mat-label>Email</mat-label>
+    <mat-label>email</mat-label>
     <input matInput name="email" maxlength="255" [(ngModel)]="this.quoteModelService.email" />
   </mat-form-field>
 
-
   <mat-form-field appearance="fill" class="example-full-width">
-    <mat-label>Telefono</mat-label>
-    <input matInput name="telefono" maxlength="255" [(ngModel)]="this.quoteModelService.telefono" />
+    <mat-label>telefono</mat-label>
+    <input
+      matInput
+      name="telefono" maxlength="255"
+      [(ngModel)]="this.quoteModelService.telefono"
+    />
   </mat-form-field>
 
 
   <mat-form-field appearance="fill" class="example-full-width">
-    <mat-label>Referente</mat-label>
+    <mat-label>referente</mat-label>
     <input matInput name="referente" maxlength="255" [(ngModel)]="this.quoteModelService.referente" />
   </mat-form-field>
 
-
   <mat-form-field appearance="fill" class="example-full-width">
-    <mat-label>Descrizione Immobile</mat-label>
+    <mat-label>descrizione Immobile</mat-label>
     <input matInput name="descrizioneImmobile" maxlength="255" [(ngModel)]="this.quoteModelService.descrizioneImmobile" />
   </mat-form-field>
+
 
 
 
@@ -425,9 +439,13 @@
 
 
 
-  <mat-form-field class="example-full-width">
-    <mat-label>Imponibile</mat-label>
-    <input matInput name="imponibile" pattern = '[0-9]+[.][0-9]+' maxlength="255" [(ngModel)]="this.quoteModelService.imponibile" />
+  <mat-form-field class="example-full-width"
+    ><mat-label>Imponibile</mat-label>
+    <input
+      matInput
+      name="imponibile" pattern = '[0-9]+[.][0-9]+' maxlength="255"
+      [(ngModel)]="this.quoteModelService.imponibile"
+    />
   </mat-form-field>
 
   <form id="form" name="form">
@@ -455,12 +473,18 @@
     </mat-form-field>
   </form>
 
-  <mat-form-field class="example-full-width">
-    <mat-label>Note</mat-label>
-    <input matInput name="note" maxlength="255" [(ngModel)]="this.quoteModelService.note" />
+  <mat-form-field class="example-full-width"
+    ><mat-label>Note</mat-label>
+    <input
+      matInput
+      name="note" maxlength="255"
+      [(ngModel)]="this.quoteModelService.note"
+    />
+
   </mat-form-field>
 
-    </form>
-    <button mat-raised-button color="primary" (click)="addQuote()">Salva</button>
-</body>
-</html>
+  <button mat-raised-button (click)="addQuote()">Salva</button>
+  <div class="indietro">
+    <button class="back-button" onclick="window.history.back()">Torna Indietro</button>
+  </div>
+</form>

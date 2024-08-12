@@ -81,6 +81,18 @@
             text-align: center;
             padding: 10px 0;
         }
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
         .button-preventivi {
   display: block;
   margin: 20px auto;
@@ -98,18 +110,6 @@
   background-color: rgba(255, 20, 147, 0.8); /* Rosa ancora più scuro */
   transform: scale(1.05);
 }
-        @keyframes fadeInDown {
-            from { opacity: 0; transform: translateY(-20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
         @media (max-width: 768px) {
           .header {
                 flex-direction: column;
@@ -129,6 +129,7 @@
             list-style: none;
             margin: 20px;
         }
+
             .main h1 {
                 font-size: 28px;
             }
@@ -145,36 +146,39 @@
 <body>
     <!-- Header -->
     <div class="header">
-      <div class="logo">
-          <img src="https://www.samypulizie.it/wp-content/uploads/2020/01/logo.png" alt="Logo">
-      </div>
-      <nav>
-          <a href="index.html">Home</a>
-      </nav>
-  </div>
+        <div class="logo">
+            <img src="https://www.samypulizie.it/wp-content/uploads/2020/01/logo.png" alt="Logo">
+        </div>
+        <nav>
+            <a href="index.html">Home</a>
+
+        </nav>
+    </div>
     <!-- Main Content -->
     <div class="main">
-        <h1>Servizio di Pulizie Condominiali  a Pescara</h1>
+        <h1>Servizio di Pulizia Domestica a Pescara</h1>
         <p>
 
+          Benvenuti nel nostro servizio di Pulize a Domicilio a Pescara.
 
+         I nostri servizi sono altamente qualificati e registrati sulla nostra piattaforma  Garantiamo Servizi di altà qualità.
+         Offriamo Servizi come quelli della totale pulizia della cucina , camere da letto pulizia completa del bagno , del soggiorno e molto altro accogliamo le vostre richieste
+         e ne facciamo la nostra forza .
 
-          Sei alla ricerca di un’impresa specializzata in pulizie condominiali a Pescara ma non sai dove andare? Cerchi una ditta con esperienza consolidata? La risposta giusta è l’impresa di pulizie SAMI
+         La tua felicita è la nostra priorità. se non siete soddisfatti, provvederemo all'istante per risolvere il problema.
 
-          L’azienda SAMI nasce nel 2012 a Pescara per offrire un servizio di pulizia personalizzato, completo ed efficiente di uffici, scuole, laboratori alimentari e sanitari e condomini.
-          Le pulizie condominiali Pescara della ditta SAMI
-
-          Grazie alla lunga esperienza nel settore siamo in grado di effettuare la pulizia di tutti gli spazi condominiali come rampe di scale, pavimenti, ascensori, cortili interni e portoni d’ingresso.
-
-          Utilizziamo prodotti e macchinari di ultimissima tecnologia per lavare, asciugare e lucidare le superfici.</p>
+          Richiedi il Tuo Preventivo Gratuito ora e goditi la tua casa pulita e profumata.
+          </p>
         <div class="image-container">
-            <img src="https://wips.plug.it/cips/paginegiallecasa/cms/2021/02/pulizie-condominiali.jpg?w=832&h=468&a=c" alt="Immagine 1">
-            <img src="https://st3.idealista.it/news/archivie/styles/fullwidth_xl/public/2024-04/images/80_6.png?VersionId=kXYeKMoaGdbMJPuR7sRGfLg4uBRLvBhk&itok=ldqQEaIF" alt="Immagine 2">
-            <img src="https://www.puliziemagica.it/wp-content/uploads/2017/02/img-condomini.jpg" alt="Immagine 3">
-            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRvJh_4mKXP0D3NhJsHvlAfaGI3eQRPqOOeAQ&s" alt="Immagine 4">
-        </div>
+            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSPwyGGj3hnGpAyOWlOVdbA8cuzC-tJYzgFYA&s" alt="Immagine 1">
+            <img src="https://www.pistoneservizi.it/wp-content/uploads/2018/03/pulizia-uffici-milano.jpg" alt="Immagine 2">
+
+            <img src="https://cavis.it/wp-content/uploads/2020/03/pulizia-uffici.jpg" alt="Immagine 4">
+
+            <img src="https://www.impresapulizie.it/wp-content/uploads/2019/09/pulizia-di-uffici.jpg" alt="Immagine 3">
+        </div>ontesto lavorativo.
     </div>
-    <!-- Footer --><a href="https://forms.gle/Sp9NE5skntNeU9oq9" class="button-preventivi">Richiedi il Tuo Preventivo Gratuito</a>
+<!-- Footer --><a href="https://forms.gle/Sp9NE5skntNeU9oq9" class="button-preventivi">Richiedi il Tuo Preventivo Gratuito</a>
     <iframe src="https://www.google.com/maps/embed?pb=!1m28!1m12!1m3!1d11774.409853163359!2d14.203068573204833!3d42.45747377002006!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!4m13!3e6!4m5!1s0x1331a60db9286477%3A0xa0b89e89b22cbfe2!2sPescara%2C%20Provincia%20di%20Pescara!3m2!1d42.4617624!2d14.2160321!4m5!1s0x1331a6223b8afae7%3A0xe0f8329b5888d54d!2sVia%20Tirino%2C%20147%2C%20Pescara%2C%20PE!3m2!1d42.4462893!2d14.218147499999999!5e0!3m2!1sit!2sit!4v1713538014550!5m2!1sit!2sit"  width="100%" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
 
     <div class="footer">
@@ -182,3 +186,5 @@
     </div>
 </body>
 </html>
+ontesto lavorativo.
+ontesto lavorativo.

@@ -47,6 +47,9 @@ import { UfficiComponent } from './componenti/sito/uffici/uffici.component';
 import { Condomini1Component } from './componenti/condomini1/condomini1.component';
 import { PopupComponentComponent } from './componenti/popup/popup-component/popup-component.component';
 import { MatDialog } from '@angular/material/dialog';
+import { PalestraComponent } from './componenti/sito/palestra/palestra.component';
+import { StraordinariaComponent } from './componenti/sito/straordinaria/straordinaria.component';
+import { DomesticaComponent } from './componenti/sito/domestica/domestica.component';
 
 
 
@@ -73,6 +76,9 @@ import { MatDialog } from '@angular/material/dialog';
     UfficiComponent,
     Condomini1Component,
     PopupComponentComponent,
+    PalestraComponent,
+    StraordinariaComponent,
+    DomesticaComponent,
 
   ],
   imports: [

@@ -17,6 +17,9 @@ import { ListCustomerComponent } from './admin/list-customer/list-customer.compo
 import { SanificazioniComponent} from './componenti/sito/sanificazioni/sanificazioni.component';
 import { UfficiComponent} from './componenti/sito/uffici/uffici.component';
 import { Condomini1Component } from './componenti/condomini1/condomini1.component';
+import { PalestraComponent } from './componenti/sito/palestra/palestra.component';
+import { StraordinariaComponent } from './componenti/sito/straordinaria/straordinaria.component';
+import { DomesticaComponent } from './componenti/sito/domestica/domestica.component';
 
 const routes: Routes = [
   { path: '', component: HomesitoComponent },
@@ -35,8 +38,10 @@ const routes: Routes = [
   { path: 'menageCustomer', component: MenageCustomerComponent }, // Fixed the component name to 'EditQuoteComponent'
   { path: 'sanificazioni', component: SanificazioniComponent }, // Fixed the component name to 'EditQuoteComponent'
   { path: 'uffici', component: UfficiComponent }, // Fixed the component name to 'EditQuoteComponent'
-  {path: 'condomini1', component: Condomini1Component}
-
+  {path: 'condomini1', component: Condomini1Component},
+  {path: 'palestra', component: PalestraComponent},
+  {path: 'straordinaria', component: StraordinariaComponent},
+  {path: 'domestica', component: DomesticaComponent}
 ];
 
 

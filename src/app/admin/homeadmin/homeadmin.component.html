@@ -195,9 +195,33 @@
                 margin-top: 350px; /* Alziamo i pulsanti */
                 margin-right: 300px; /* Spostiamo i pulsanti a destra */
             }
+            button (indietro) {
+    margin: 20 7px;  button:hover {
+      background-color: #e91e63; /* Colore rosa più scuro */
+      transform: scale(1.05);
+      margin-top: -2000px;
+    }
+
+    .indietro {
+      background-color: #c2185b; /* Colore rosa ancora più scuro */
+      transform: scale(0.95);
+      margin-top: -2000px;
+    }
+
+    .indietro{
+      margin-top: -2040px;
+      margin-bottom: 50px;
+    }
+    transform: scale(0.8);
+  }
         }
     </style>
+
 </head>
+<div class="indietro">
+  <button onclick="window.history.back()">Torna Indietro</button>
+  </div>
+
 <body>
   <button (click)="toggleMenu()" class="menu-toggle" ><i class="fas fa-cog"></i></button>
   <div *ngIf="isMenuOpen" class="menu">
@@ -221,6 +245,9 @@
   </div>
 </body>
 </html>
+
+
+
 
 
 
