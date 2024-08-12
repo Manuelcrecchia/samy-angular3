@@ -60,6 +60,11 @@ console.log(this.quoteModelService.numeroPreventivo)
        });
       }
    }
+
+   back(){
+    this.router.navigateByUrl('/quotesHome');
+   }
+
    @HostListener('window:popstate', ['$event'])
   onBrowserBackBtnClose(event:Event){
     event.preventDefault();

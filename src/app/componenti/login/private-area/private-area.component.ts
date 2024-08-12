@@ -48,6 +48,10 @@ constructor(private globalService: GlobalService, private http: HttpClient, priv
     });
     }
 
+    back(){
+      this.router.navigateByUrl('/');
+    }
+
 
 }
 

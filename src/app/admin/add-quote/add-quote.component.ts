@@ -58,6 +58,10 @@ export class AddQuoteComponent {
     }
    }
 
+   back(){
+    this.router.navigateByUrl('/quotesHome');
+   }
+
    @HostListener('window:popstate', ['$event'])
   onBrowserBackBtnClose(event:Event){
     event.preventDefault();

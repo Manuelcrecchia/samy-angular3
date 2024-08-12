@@ -48,6 +48,9 @@ export class HomeAdminComponent implements OnInit {
     this.router.navigateByUrl('/listCustomer')
   }
 
+back(){
+  this.router.navigateByUrl('/')
+}
 
 
   @HostListener('window:popstate', ['$event'])

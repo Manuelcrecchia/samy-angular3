@@ -11,7 +11,7 @@
   </mat-form-field>
 
     <mat-label>Codice operatore</mat-label>
-    <mat-label>{{this.quoteModelService.codiceOperatore}}</mat-label>
+    <mat-label>{{this.globalService.userCode}}</mat-label>
 
 
   <p>{{this.quoteModelService.data}}</p>
@@ -485,6 +485,6 @@
 
   <button mat-raised-button (click)="addQuote()">Salva</button>
   <div class="indietro">
-    <button class="back-button" onclick="window.history.back()">Torna Indietro</button>
+    <button class="back-button" (click)="back()">Torna Indietro</button>
   </div>
 </form>

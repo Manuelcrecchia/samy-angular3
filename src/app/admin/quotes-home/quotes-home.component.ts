@@ -230,6 +230,10 @@ this.http
     })
 }
 
+back(){
+  this.router.navigateByUrl('/homeAdmin') 
+}
+
 @HostListener('window:popstate', ['$event'])
   onBrowserBackBtnClose(event:Event){
     event.preventDefault();
