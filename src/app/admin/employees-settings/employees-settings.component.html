@@ -1,43 +1,65 @@
 
+<div *ngFor="let employees of employeess; let i = index">
+  <mat-label>{{employees.nome}}</mat-label>
+  <mat-label>{{employees.cognome}}</mat-label>
+  <mat-label>{{employees.email}}</mat-label>
+  <mat-label>{{employees.cellulare}}</mat-label>
+  <button mat-raised-button color="primary" (click)="deleteEmployees(i)">Elimina</button>
+</div>
 
-
-
-<div *ngFor="let employees of employeess;  let i = index">
-    <mat-label>{{employees.nome}}</mat-label>
-
-      <mat-label>{{employees.cognome}}</mat-label>
-
-      <mat-label>{{employees.email}}</mat-label>
-
-      <mat-label>{{employees.cellulare}}</mat-label>
-
-
-      <button mat-raised-button color="primary" (click)="deleteEmployees(i)">Elimina</button>
-
-    </div>
-
-
-  <div>
+<div>
   <mat-form-field>
-    <mat-label>Nome</mat-label>
-    <input matInput #input [(ngModel)]="employeesAdd.nome">
+      <mat-label>Nome</mat-label>
+      <input matInput #input [(ngModel)]="employeesAdd.nome">
   </mat-form-field>
 
   <mat-form-field>
       <mat-label>Cognome</mat-label>
       <input matInput #input [(ngModel)]="employeesAdd.cognome">
-    </mat-form-field>
+  </mat-form-field>
 
-    <mat-form-field>
+  <mat-form-field>
       <mat-label>Email</mat-label>
       <input matInput #input [(ngModel)]="employeesAdd.email">
-    </mat-form-field>
+  </mat-form-field>
 
-    <mat-form-field>
-        <mat-label>Cellulare</mat-label>
-        <input matInput #input [(ngModel)]="employeesAdd.cellulare">
-      </mat-form-field>
+  <mat-form-field>
+      <mat-label>Cellulare</mat-label>
+      <input matInput #input [(ngModel)]="employeesAdd.cellulare">
+  </mat-form-field>
 
-    <button mat-raised-button color="primary" (click)="addEmployees()">Aggiungi</button>
+  <button mat-raised-button color="primary" (click)="addEmployees()">Aggiungi</button>
+</div>
+<header>
+  <div class="indietro">
+    <button mat-raised-button color="accent" class="back-button" (click)="back()">Torna Indietro</button>
+  </div>
+<style>
+  .indietro {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+  }
 
-    </div>
+  .back-button {
+      background-color: #ff4081;
+      color: white;
+      font-weight: bold;
+      border: none;
+      border-radius: 4px;
+      padding: 10px 20px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      transition: background-color 0.3s ease, transform 0.3s ease;
+      cursor: pointer;
+  }
+
+  .back-button:hover {
+      background-color: #e91e63;
+      transform: scale(1.05);
+  }
+
+  .back-button:active {
+      background-color: #c2185b;
+      transform: scale(0.95);
+  }
+</style>

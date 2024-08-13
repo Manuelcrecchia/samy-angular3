@@ -51,6 +51,9 @@ export class HomeAdminComponent implements OnInit {
 back(){
   this.router.navigateByUrl('/')
 }
+navigateToCambiapassword() {
+  this.router.navigateByUrl('/cambiapassword')
+}
 
 
   @HostListener('window:popstate', ['$event'])

@@ -1,3 +1,7 @@
+<div class="indietro">
+  <button mat-raised-button color="accent" class="back-button" (click)="back()">Torna Indietro</button>
+</div>
+
 <div class="admin-list">
   <mat-card *ngFor="let admin of admins; let i = index" class="admin-card">
     <mat-card-content>
@@ -47,3 +51,37 @@
     </mat-card-content>
   </mat-card>
 </div>
+
+<style>
+  .indietro {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+  }
+
+  .back-button {
+      background-color: #ff4081;
+      color: white;
+      font-weight: bold;
+      border: none;
+      border-radius: 4px;
+      padding: 10px 20px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      transition: background-color 0.3s ease, transform 0.3s ease;
+      cursor: pointer;
+  }
+
+  .back-button:hover {
+      background-color: #e91e63;
+      transform: scale(1.05);
+  }
+
+  .back-button:active {
+      background-color: #c2185b;
+      transform: scale(0.95);
+  }
+
+  .admin-list {
+      margin-top: 80px; /* Adjust to ensure the back button doesn't overlap */
+  }
+</style>

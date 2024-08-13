@@ -50,6 +50,8 @@ import { MatDialog } from '@angular/material/dialog';
 import { PalestraComponent } from './componenti/sito/palestra/palestra.component';
 import { StraordinariaComponent } from './componenti/sito/straordinaria/straordinaria.component';
 import { DomesticaComponent } from './componenti/sito/domestica/domestica.component';
+import { PassworddimenticataComponent } from './componenti/login/passworddimenticata/passworddimenticata.component';
+import { CambiapasswordComponent } from './componenti/admin/cambiapassword/cambiapassword.component';
 
 
 
@@ -79,6 +81,8 @@ import { DomesticaComponent } from './componenti/sito/domestica/domestica.compon
     PalestraComponent,
     StraordinariaComponent,
     DomesticaComponent,
+    PassworddimenticataComponent,
+    CambiapasswordComponent,
 
   ],
   imports: [

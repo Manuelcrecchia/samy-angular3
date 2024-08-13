@@ -27,10 +27,7 @@ constructor(private globalService: GlobalService, private http: HttpClient, priv
       if(resp == "NON TROVATO") {
         this.nc = true;
         this.pe = false;
-        this.popup.text = "UTENTE NON TROVATO. EMAIL ERRATA."
-        this.popup.openPopup();
-      }
-      else{
+      } else {
         if(resp == "NO"){
           this.pe = true;
           this.nc = false;
@@ -52,6 +49,10 @@ constructor(private globalService: GlobalService, private http: HttpClient, priv
       this.router.navigateByUrl('/');
     }
 
+
+    navigateToPassworddimenticata() {
+      this.router.navigateByUrl('passworddimenticata');
+    }
 
 }
 

@@ -20,6 +20,11 @@ import { Condomini1Component } from './componenti/condomini1/condomini1.componen
 import { PalestraComponent } from './componenti/sito/palestra/palestra.component';
 import { StraordinariaComponent } from './componenti/sito/straordinaria/straordinaria.component';
 import { DomesticaComponent } from './componenti/sito/domestica/domestica.component';
+import { PassworddimenticataComponent } from './componenti/login/passworddimenticata/passworddimenticata.component';
+import { CambiapasswordComponent } from './componenti/admin/cambiapassword/cambiapassword.component';
+
+
+
 
 const routes: Routes = [
   { path: '', component: HomesitoComponent },
@@ -41,8 +46,11 @@ const routes: Routes = [
   {path: 'condomini1', component: Condomini1Component},
   {path: 'palestra', component: PalestraComponent},
   {path: 'straordinaria', component: StraordinariaComponent},
-  {path: 'domestica', component: DomesticaComponent}
+  {path: 'domestica', component: DomesticaComponent},
+  {path: 'passworddimenticata', component: PassworddimenticataComponent},
+  {path: 'cambiapassword', component: CambiapasswordComponent},
 ];
+
 
 
 @NgModule({

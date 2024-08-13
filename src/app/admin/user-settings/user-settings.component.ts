@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { GlobalService } from '../../service/global.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-user-settings',
@@ -15,6 +16,7 @@ export class UserSettingsComponent {
   constructor(
     private http: HttpClient,
     public globalService: GlobalService,
+    private router: Router
   ) {}
   ngOnInit() {
     this.http
@@ -32,7 +34,7 @@ export class UserSettingsComponent {
         }
       });
   }
-  
+
   ngOnChanges(){
     this.admins = []
     this.http
@@ -49,7 +51,7 @@ export class UserSettingsComponent {
         }
       });
   }
-  
+
    addAdmin() {
     let body = {
       nome: this.adminAdd.nome,
@@ -59,7 +61,7 @@ export class UserSettingsComponent {
       admin: this.adminAdd.admin
 
     };
-  
+
     this.http
       .post(this.globalService.url + 'admin/add', body, {
         headers: this.globalService.headers,
@@ -69,7 +71,7 @@ export class UserSettingsComponent {
       this.ngOnChanges()
      ;
   }
-  
+
    deleteAdmin(i: number)  {
     let body = { email: this.admins[i].email };
     this.http
@@ -79,7 +81,11 @@ export class UserSettingsComponent {
       }).subscribe((res)=> {
       })
       this.ngOnChanges();
-      
+
   }
-  
-  } 
+  back(){
+    this.router.navigateByUrl('/'); // Navigate to the back page
+  }
+
+
+  }
