@@ -31,7 +31,7 @@ constructor(private globalService: GlobalService, private http: HttpClient, priv
         if(resp == "NO"){
           this.pe = true;
           this.nc = false;
-          this.popup.text = "PASSWORD ERRATA. SE HAI DIMENTICATO LA PASSWORD, BESTEMMIA."
+          this.popup.text = "PASSWORD ERRATA. SE HAI DIMENTICATO LA PASSWORD, FAI IL SEGNO DELLA CROCE E RIPRISTINALA."
           this.popup.openPopup();
         }
         else{
@@ -43,6 +43,14 @@ constructor(private globalService: GlobalService, private http: HttpClient, priv
         }
       }
     });
+    }
+
+    togglePasswordVisibility(passwordInput: HTMLInputElement) {
+      if (passwordInput.type === 'password') {
+        passwordInput.type = 'text';
+      } else {
+        passwordInput.type = 'password';
+      }
     }
 
     back(){
