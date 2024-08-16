@@ -237,7 +237,6 @@ back(){
 @HostListener('window:popstate', ['$event'])
   onBrowserBackBtnClose(event:Event){
     event.preventDefault();
-    console.log('Back button pressedm');
     this.router.navigateByUrl('/homeAdmin')
   }
 

@@ -35,6 +35,7 @@ constructor(private globalService: GlobalService, private http: HttpClient, priv
           this.popup.openPopup();
         }
         else{
+          this.globalService.email = email;
           this.globalService.userCode = res["codiceOperatore"];
           this.globalService.token = res["token"];
           this.globalService.admin = res["admin"];
@@ -58,8 +59,18 @@ constructor(private globalService: GlobalService, private http: HttpClient, priv
     }
 
 
-    navigateToPassworddimenticata() {
-      this.router.navigateByUrl('passworddimenticata');
+    navigateToPassworddimenticata(email: string) {
+      if(email == ''){
+        this.popup.text = "Inserisci la tua email nell'apposito campo";
+        this.popup.openPopup();
+      }
+      else{
+        const body = {email: email};
+        this.globalService.email = email;
+        this.http.post(this.globalService.url + "admin/sendCode", body, {headers: this.globalService.headers, responseType: 'text'}).subscribe(response => {
+          this.router.navigateByUrl('passworddimenticata');
+        })
+      }
     }
 
 }

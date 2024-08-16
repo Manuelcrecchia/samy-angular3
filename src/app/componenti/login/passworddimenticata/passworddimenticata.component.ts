@@ -14,7 +14,18 @@ export class PassworddimenticataComponent {
 
 
 
-
+resetPassword(newPassword:string, code:string){
+  const body = {email: this.globalService.email, password: newPassword, code: code};
+        this.http.post(this.globalService.url + "admin/restorePassword", body, {headers: this.globalService.headers, responseType: 'text'}).subscribe(response => {
+          if(response == 'NOCODE'){
+            this.popup.text = "Il codice di conferma da te inserito è errato";
+            this.popup.openPopup();
+          }
+          else{
+            this.router.navigateByUrl('/loginPrivateArea');
+          }
+        })
+}
 
 
 

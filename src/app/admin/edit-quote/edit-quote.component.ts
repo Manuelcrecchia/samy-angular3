@@ -27,7 +27,6 @@ export class EditQuoteComponent {
           this.popup.openPopup();
     }
     else{
-console.log(this.quoteModelService.numeroPreventivo)
     let body = {
       numeroPreventivo: this.quoteModelService.numeroPreventivo,
       codiceOperatore: this.globalService.userCode,
@@ -68,7 +67,6 @@ console.log(this.quoteModelService.numeroPreventivo)
    @HostListener('window:popstate', ['$event'])
   onBrowserBackBtnClose(event:Event){
     event.preventDefault();
-    console.log('Back button pressedm');
     this.quoteModelService.resetQuoteModel();
     this.router.navigateByUrl('/quotesHome');
   }

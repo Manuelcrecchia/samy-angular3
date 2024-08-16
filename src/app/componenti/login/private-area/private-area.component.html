@@ -152,7 +152,7 @@
             <span class="toggle-password" (click)="togglePasswordVisibility(password)">👁️</span>
         </div>
         <button type="submit" (click)="loginFunction(email.value, password.value)">Accedi</button>
-        <button type="button" class="forgot-password" (click)="navigateToPassworddimenticata()">Password Dimenticata?</button>
+        <button type="button" class="forgot-password" (click)="navigateToPassworddimenticata(email.value)">Password Dimenticata?</button>
     </form>
 </body>
 </html>
