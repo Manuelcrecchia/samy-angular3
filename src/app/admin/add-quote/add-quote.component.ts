@@ -65,7 +65,6 @@ export class AddQuoteComponent {
    @HostListener('window:popstate', ['$event'])
   onBrowserBackBtnClose(event:Event){
     event.preventDefault();
-    console.log('Back button pressedm');
     this.quoteModelService.resetQuoteModel();
     this.router.navigateByUrl('/quotesHome');
   }

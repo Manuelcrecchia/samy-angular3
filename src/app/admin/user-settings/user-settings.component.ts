@@ -84,7 +84,7 @@ export class UserSettingsComponent {
 
   }
   back(){
-    this.router.navigateByUrl('/'); // Navigate to the back page
+    this.router.navigateByUrl('/homeAdmin'); // Navigate to the back page
   }
 
 

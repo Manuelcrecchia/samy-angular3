@@ -12,7 +12,12 @@ import { PopupServiceService } from '../../popup/popup-service.service';
 export class CambiapasswordComponent {
   constructor(private globalService: GlobalService, private http: HttpClient, private router: Router, private popup: PopupServiceService) { }
 
-
+changePassword(password: string){
+  const body = {email: this.globalService.email, password: password};
+        this.http.post(this.globalService.url + "admin/resetPassword", body, {headers: this.globalService.headers, responseType: 'text'}).subscribe(response => {
+            this.router.navigateByUrl('/loginPrivateArea');
+        })
+}
 
 
   back(){

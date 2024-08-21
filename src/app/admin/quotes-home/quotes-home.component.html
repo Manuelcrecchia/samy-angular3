@@ -54,11 +54,16 @@
 useBrowserLocale="true"
 backgroundColor="#fffff"
 [height]="'100%'"
-[textLayer]="false"
-[showToolbar]="false"
-[showPrintButton]="true"
+[customToolbar]="customToolbar"
 >
 </ngx-extended-pdf-viewer>
+
+<ng-template #customToolbar>
+  <div id="toolbarViewer">
+    <pdf-print></pdf-print>
+    <pdf-download></pdf-download>
+  </div>
+</ng-template>
 
 
 

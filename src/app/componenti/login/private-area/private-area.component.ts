@@ -31,10 +31,11 @@ constructor(private globalService: GlobalService, private http: HttpClient, priv
         if(resp == "NO"){
           this.pe = true;
           this.nc = false;
-          this.popup.text = "PASSWORD ERRATA. SE HAI DIMENTICATO LA PASSWORD, BESTEMMIA."
+          this.popup.text = "PASSWORD ERRATA. SE HAI DIMENTICATO LA PASSWORD, FAI IL SEGNO DELLA CROCE E RIPRISTINALA."
           this.popup.openPopup();
         }
         else{
+          this.globalService.email = email;
           this.globalService.userCode = res["codiceOperatore"];
           this.globalService.token = res["token"];
           this.globalService.admin = res["admin"];
@@ -45,13 +46,31 @@ constructor(private globalService: GlobalService, private http: HttpClient, priv
     });
     }
 
+    togglePasswordVisibility(passwordInput: HTMLInputElement) {
+      if (passwordInput.type === 'password') {
+        passwordInput.type = 'text';
+      } else {
+        passwordInput.type = 'password';
+      }
+    }
+
     back(){
       this.router.navigateByUrl('/');
     }
 
 
-    navigateToPassworddimenticata() {
-      this.router.navigateByUrl('passworddimenticata');
+    navigateToPassworddimenticata(email: string) {
+      if(email == ''){
+        this.popup.text = "Inserisci la tua email nell'apposito campo";
+        this.popup.openPopup();
+      }
+      else{
+        const body = {email: email};
+        this.globalService.email = email;
+        this.http.post(this.globalService.url + "admin/sendCode", body, {headers: this.globalService.headers, responseType: 'text'}).subscribe(response => {
+          this.router.navigateByUrl('passworddimenticata');
+        })
+      }
     }
 
 }
