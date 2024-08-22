@@ -1,0 +1,30 @@
+<dx-button (onClick)="goback()" >
+    Torna indietro
+</dx-button>
+
+<dx-scheduler
+    locale="it"
+    (onAppointmentAdding)="onAppointmentAdding($event)"
+    (onAppointmentUpdating)="onAppointmentUpdating($event)"
+    (onAppointmentDeleting)="onAppointmentDeleting($event)"
+    (onAppointmentFormOpening)="onAppointmentFormOpening($event)"
+    timeZone="Europe/Rome"
+    allDayExpr="dayLong"
+    [dataSource]="events"
+    recurrenceRuleExpr="recurrence"
+    [currentDate]="currentDate"
+    textExpr="title"
+    descriptionExpr="description"
+    currentView="month">
+    <dxi-view
+        type="day"
+        [startDayHour]="05"
+        [endDayHour]="22">
+    </dxi-view>
+    <dxi-view
+        type="week"
+        [startDayHour]="05"
+        [endDayHour]="22">
+    </dxi-view>
+    <dxi-view type="month"></dxi-view>
+</dx-scheduler>

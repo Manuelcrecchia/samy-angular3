@@ -6,6 +6,10 @@ import { GlobalService } from '../../service/global.service';
 import { QuoteModelService } from '../../service/quote-model.service';
 import { PopupServiceService } from '../../componenti/popup/popup-service.service';
 
+
+
+
+
 @Component({
   selector: 'app-quotes-home',
   templateUrl: './quotes-home.component.html',
@@ -22,15 +26,15 @@ export class QuotesHomeComponent   {@Input() color: any;
   pdfPrev!: string;
   pdfTsSelezionato = false;
 
-
-
   constructor(  private http: HttpClient,
     private pdfService: NgxExtendedPdfViewerService,
     private globalService: GlobalService,
     private router: Router,
     private quoteModel: QuoteModelService,
-    private popup: PopupServiceService
+    private popup: PopupServiceService,
+  
    ){}
+
 
 navigateToAddQuote(){
   this.router.navigateByUrl('/addQuote');

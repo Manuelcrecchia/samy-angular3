@@ -46,16 +46,21 @@ import { SanificazioniComponent } from './componenti/sito/sanificazioni/sanifica
 import { UfficiComponent } from './componenti/sito/uffici/uffici.component';
 import { Condomini1Component } from './componenti/condomini1/condomini1.component';
 import { PopupComponentComponent } from './componenti/popup/popup-component/popup-component.component';
-import { MatDialog } from '@angular/material/dialog';
+import { DxSchedulerModule } from 'devextreme-angular'; 
 import { PalestraComponent } from './componenti/sito/palestra/palestra.component';
 import { StraordinariaComponent } from './componenti/sito/straordinaria/straordinaria.component';
 import { DomesticaComponent } from './componenti/sito/domestica/domestica.component';
 import { PassworddimenticataComponent } from './componenti/login/passworddimenticata/passworddimenticata.component';
 import { CambiapasswordComponent } from './componenti/admin/cambiapassword/cambiapassword.component';
+import { CalendarHomeComponent } from './admin/calendar/calendar-home/calendar-home.component';
+import { DxButtonModule } from 'devextreme-angular';
+import { locale, loadMessages } from 'devextreme/localization';
+import * as itMessages from 'devextreme/localization/messages/it.json';
 
+import { MatDatepickerModule } from '@angular/material/datepicker';
 
-
-
+loadMessages(itMessages);
+locale('it');
 
 @NgModule({
   declarations: [
@@ -83,6 +88,8 @@ import { CambiapasswordComponent } from './componenti/admin/cambiapassword/cambi
     DomesticaComponent,
     PassworddimenticataComponent,
     CambiapasswordComponent,
+    CalendarHomeComponent,
+ 
 
   ],
   imports: [
@@ -120,6 +127,9 @@ import { CambiapasswordComponent } from './componenti/admin/cambiapassword/cambi
     MatAutocompleteModule,
     MatExpansionModule,
     NgxExtendedPdfViewerModule,
+    DxButtonModule,
+    DxSchedulerModule,
+    MatDatepickerModule
   ],
     providers: [
       GlobalService

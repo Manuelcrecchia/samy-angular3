@@ -26,6 +26,9 @@ export class HomeAdminComponent implements OnInit {
     this.router.navigateByUrl('/caricaFile')
   }
 
+  navigateToCalendarHome() {
+    this.router.navigateByUrl('/calendarHome')
+  }
 
   navigateToUserSettings() {
     if(this.global.admin == "S")
