@@ -1,11 +1,11 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { AppointmentModelService } from '../../../service/appointment-model.service';
-import { DxButtonModule, DxSchedulerModule, DxSchedulerComponent } from "devextreme-angular";
+import { DxSchedulerComponent } from "devextreme-angular";
 import { AppointmentAddingEvent, AppointmentDeletingEvent, AppointmentUpdatingEvent } from 'devextreme/ui/scheduler';
-import { Title } from '@angular/platform-browser';
 import { HttpClient } from '@angular/common/http';
 import { GlobalService } from '../../../service/global.service';
 import { Router } from '@angular/router';
+import { AutomaticAddInspectionToCalendarService } from '../../../service/automatic-add-inspection-to-calendar.service';
 
 @Component({
   selector: 'app-calendar-home',
@@ -15,8 +15,13 @@ import { Router } from '@angular/router';
 export class CalendarHomeComponent {
   events : AppointmentModelService[] = [];
   currentDate: Date = new Date();
-  scheduler!: DxSchedulerComponent;
-  constructor(private http: HttpClient, private globalService: GlobalService, private router: Router) {} // Inject HttpClient module
+  @ViewChild(DxSchedulerComponent, { static: false }) scheduler!: DxSchedulerComponent;  categories = [
+    { id: 'ordinario', text: 'ordinario' },
+    { id: 'straordinario', text: 'straordinario' },
+    { id: 'sopralluogo', text: 'sopralluogo' },
+    { id: 'altro', text: 'altro' }
+  ];
+  constructor(private http: HttpClient, private globalService: GlobalService, private router: Router, private automaticAddInspectionToCalendarservice: AutomaticAddInspectionToCalendarService) {} // Inject HttpClient module
   ngOnInit(){
     this.http
     .get(this.globalService.url + 'appointments/getAll', {
@@ -25,10 +30,14 @@ export class CalendarHomeComponent {
     })
     .subscribe((response) => {
       this.events = JSON.parse(response);
-      console.log(this.events); // Aggiungi questo log per verificare i dati ricevuti
-
+      if(this.automaticAddInspectionToCalendarservice.pass){
+        console.log(this.automaticAddInspectionToCalendarservice.pass);
+        this.automaticAddInspectionToCalendarservice.pass = false;
+        this.scheduler.instance.showAppointmentPopup({}, true);
+      }
     });
   }
+
 
   onAppointmentFormOpening(e: any) {
     const form = e.form;
@@ -36,7 +45,44 @@ export class CalendarHomeComponent {
     const endDate = new Date(startDate);
     endDate.setMinutes(endDate.getMinutes() + 30); // Imposta la data di fine 30 minuti dopo la data di inizio
     form.getEditor('endDate').option('value', endDate);
-  }
+    const categories = this.categories;
+  form.option('items', [
+    {
+      dataField: 'title',
+      editorType: 'dxTextBox',
+      label: { text: 'Title' }
+    },
+    {
+      dataField: 'description',
+      editorType: 'dxTextArea',
+      label: { text: 'Description' }
+    },
+    {
+      dataField: 'startDate',
+      editorType: 'dxDateBox',
+      label: { text: 'Start Date' }
+    },
+    {
+      dataField: 'endDate',
+      editorType: 'dxDateBox',
+      label: { text: 'End Date' }
+    },
+    {
+      dataField: 'categories',
+      editorType: 'dxSelectBox',
+      label: { text: 'Categories' },
+      editorOptions: {
+        items: categories,
+        displayExpr: 'text',
+        valueExpr: 'id'
+      }
+    },
+    {
+      dataField: 'recurrenceRule',
+      editorType: 'dxRecurrenceEditor',
+      label: { text: 'Recurrence' }
+    }
+  ])  }
 
   onAppointmentAdding (e: AppointmentAddingEvent) {
     let body = {
@@ -46,6 +92,7 @@ export class CalendarHomeComponent {
       recurrence: e.appointmentData['recurrence'],
       dayLong: e.appointmentData['dayLong'],
       description: e.appointmentData['description'],
+      categories: e.appointmentData['categories'],
     }
     this.http
         .post(this.globalService.url + 'appointments/add', body, {
@@ -67,6 +114,7 @@ export class CalendarHomeComponent {
       recurrence: e.newData['recurrence'],
       dayLong: e.newData['dayLong'],
       description: e.newData['description'],
+      categories: e.newData['categories'],
     }
     this.http
         .post(this.globalService.url + 'appointments/edit', body, {
@@ -90,8 +138,8 @@ export class CalendarHomeComponent {
         .subscribe((response) => {
           console.log(response);
         });
-      
   }
+
   goback(){
     this.router.navigateByUrl('homeAdmin');
    }

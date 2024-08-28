@@ -1,30 +1,40 @@
-<dx-button (onClick)="goback()" >
-    Torna indietro
-</dx-button>
+<dx-scheduler #scheduler
+  timeZone="Europe/Rome"
+  id="scheduler"
+  [dataSource]="events"
+  [views]="['day', 'week', 'month']"
+  currentView="month"
+  [startDayHour]="5"
+  [endDayHour]="22"
+  [showAllDayPanel]="false"
+  [currentDate]="currentDate"
+  [crossScrollingEnabled]="true"
+  [cellDuration]="30"
+  [height]="600"
+  appointmentTemplate="appointment-template"
+  appointmentTooltipTemplate="tooltip-template"
+  (onAppointmentFormOpening)="onAppointmentFormOpening($event)"
+  (onAppointmentAdding)="onAppointmentAdding($event)"
+  (onAppointmentUpdating)="onAppointmentUpdating($event)"
+  (onAppointmentDeleting)="onAppointmentDeleting($event)"
+>
+  <dxo-editing [allowAdding]="true"></dxo-editing>
 
-<dx-scheduler
-    locale="it"
-    (onAppointmentAdding)="onAppointmentAdding($event)"
-    (onAppointmentUpdating)="onAppointmentUpdating($event)"
-    (onAppointmentDeleting)="onAppointmentDeleting($event)"
-    (onAppointmentFormOpening)="onAppointmentFormOpening($event)"
-    timeZone="Europe/Rome"
-    allDayExpr="dayLong"
-    [dataSource]="events"
-    recurrenceRuleExpr="recurrence"
-    [currentDate]="currentDate"
-    textExpr="title"
-    descriptionExpr="description"
-    currentView="month">
-    <dxi-view
-        type="day"
-        [startDayHour]="05"
-        [endDayHour]="22">
-    </dxi-view>
-    <dxi-view
-        type="week"
-        [startDayHour]="05"
-        [endDayHour]="22">
-    </dxi-view>
-    <dxi-view type="month"></dxi-view>
+  <dxi-view type="day"></dxi-view>
+  <dxi-view type="week"></dxi-view>
+  <dxi-view type="month"></dxi-view>
+
+  <div *dxTemplate="let model of 'appointment-template'">
+    <div [ngClass]="'category-' + model.appointmentData.categories">
+      {{ model.appointmentData.title }}
+    </div>
+  </div>
+
+  <div *dxTemplate="let model of 'tooltip-template'">
+    <div class="tooltip-content">
+      <div>{{ model.appointmentData.title }}</div>
+      <div>{{ model.appointmentData.description }}</div>
+      <div>{{ model.appointmentData.categories }}</div>
+    </div>
+  </div>
 </dx-scheduler>

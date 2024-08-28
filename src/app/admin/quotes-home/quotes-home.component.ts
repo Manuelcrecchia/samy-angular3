@@ -1,14 +1,12 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, HostListener, Input } from '@angular/core';
+import { Component, HostListener, Input, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { NgxExtendedPdfViewerService } from 'ngx-extended-pdf-viewer';
 import { GlobalService } from '../../service/global.service';
 import { QuoteModelService } from '../../service/quote-model.service';
 import { PopupServiceService } from '../../componenti/popup/popup-service.service';
-import { MatDialog } from '@angular/material/dialog';
-import { PopUpComponent } from '../pop-up/pop-up.component';
-
-
+import { DxSchedulerComponent } from "devextreme-angular";
+import { AutomaticAddInspectionToCalendarService } from '../../service/automatic-add-inspection-to-calendar.service';
 
 
 
@@ -27,19 +25,21 @@ export class QuotesHomeComponent   {@Input() color: any;
 
   pdfPrev!: string;
   pdfTsSelezionato = false;
+  @ViewChild(DxSchedulerComponent, { static: false }) scheduler!: DxSchedulerComponent;
 
-  constructor(private dialogRef: MatDialog, private http: HttpClient,
+  constructor(private http: HttpClient,
     private pdfService: NgxExtendedPdfViewerService,
     private globalService: GlobalService,
     private router: Router,
     private quoteModel: QuoteModelService,
     private popup: PopupServiceService,
-
+    private automaticAddInspectionToCalendarService: AutomaticAddInspectionToCalendarService
    ){}
 
 openDialog() {
-  this.dialogRef.open(PopUpComponent);
-}
+  this.automaticAddInspectionToCalendarService.pass = true;
+  this.router.navigateByUrl('/calendarHome');
+;}
 
 navigateToAddQuote(){
   this.router.navigateByUrl('/addQuote');

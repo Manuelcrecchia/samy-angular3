@@ -1,3 +1,25 @@
 #scheduler {
     height: 600px;
 }
+
+.category-ordinario {
+    background-color: #ffcc00;
+  }
+  
+  .category-straordinario {
+    background-color: #00ccff;
+  }
+  
+  .category-sopralluogo {
+    background-color: #ff6666;
+  }
+  
+  .category-altro {
+    background-color: #66ff66;
+  }
+  
+  .tooltip-content {
+    padding: 10px;
+    background-color: #fff;
+    border: 1px solid #ccc;
+  }

@@ -11,6 +11,7 @@ export class AppointmentModelService {
   recurrence: string = "";
   dayLong: boolean = false;
   description: string = "";
+  categories: string = "";
 
   constructor() { }
 
