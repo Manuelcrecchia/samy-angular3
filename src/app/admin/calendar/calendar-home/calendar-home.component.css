@@ -3,21 +3,49 @@
 }
 
 .category-ordinario {
-    background-color: #ffcc00;
+  background-color: #ffeb3b !important;
+  color: black;
+  padding: 5px;
+  border-radius: 4px;
+  background-clip: border-box;
+  border: none !important;
+  margin-left: -10px;
+  margin-right: -10px;
   }
-  
+
   .category-straordinario {
-    background-color: #00ccff;
+    background-color: #0011fd !important;
+    color: white;
+    padding: 5px;
+    border-radius: 4px;
+    background-clip: border-box;
+    border: none !important;
+    margin-left: -10px;
+    margin-right: -10px;
   }
-  
+
+
   .category-sopralluogo {
-    background-color: #ff6666;
+    background-color: #ff4d4d !important;
+    color: white;
+    padding: 5px;
+    border-radius: 4px;
+    background-clip: border-box;
+    border: none !important;
+    margin-left: -10px;
+    margin-right: -10px;
   }
-  
-  .category-altro {
-    background-color: #66ff66;
+
+  .category-altro {  background-color: #4caf50 !important;
+    color: white;
+    padding: 5px;
+    border-radius: 4px;
+    background-clip: border-box;
+    border: none !important;
+    margin-left: -10px;
+    margin-right: -10px;
   }
-  
+
   .tooltip-content {
     padding: 10px;
     background-color: #fff;
