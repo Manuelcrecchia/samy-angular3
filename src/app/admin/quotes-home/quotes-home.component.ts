@@ -5,6 +5,8 @@ import { NgxExtendedPdfViewerService } from 'ngx-extended-pdf-viewer';
 import { GlobalService } from '../../service/global.service';
 import { QuoteModelService } from '../../service/quote-model.service';
 import { PopupServiceService } from '../../componenti/popup/popup-service.service';
+import { MatDialog } from '@angular/material/dialog';
+import { PopUpComponent } from '../pop-up/pop-up.component';
 
 
 
@@ -26,15 +28,18 @@ export class QuotesHomeComponent   {@Input() color: any;
   pdfPrev!: string;
   pdfTsSelezionato = false;
 
-  constructor(  private http: HttpClient,
+  constructor(private dialogRef: MatDialog, private http: HttpClient,
     private pdfService: NgxExtendedPdfViewerService,
     private globalService: GlobalService,
     private router: Router,
     private quoteModel: QuoteModelService,
     private popup: PopupServiceService,
-  
+
    ){}
 
+openDialog() {
+  this.dialogRef.open(PopUpComponent);
+}
 
 navigateToAddQuote(){
   this.router.navigateByUrl('/addQuote');
@@ -235,7 +240,7 @@ this.http
 }
 
 back(){
-  this.router.navigateByUrl('/homeAdmin') 
+  this.router.navigateByUrl('/homeAdmin')
 }
 
 @HostListener('window:popstate', ['$event'])
