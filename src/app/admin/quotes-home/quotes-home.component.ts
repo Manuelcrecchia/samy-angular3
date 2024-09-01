@@ -36,10 +36,22 @@ export class QuotesHomeComponent   {@Input() color: any;
     private automaticAddInspectionToCalendarService: AutomaticAddInspectionToCalendarService
    ){}
 
-openDialog() {
+addInspection(numeroPreventivo: string, nominativo: string) {
   this.automaticAddInspectionToCalendarService.pass = true;
-  this.router.navigateByUrl('/calendarHome');
-;}
+  this.automaticAddInspectionToCalendarService.nominativo = nominativo;
+  this.automaticAddInspectionToCalendarService.numeroPreventivo = numeroPreventivo;
+  let body = { numeroPreventivo: numeroPreventivo };
+  this.http
+    .post(this.globalService.url + 'quotes/getQuote', body,{
+      headers: this.globalService.headers,
+      responseType: 'text',
+    })
+    .subscribe((response) => {
+      let temp = JSON.parse(response)
+      this.automaticAddInspectionToCalendarService.telefono = temp[0].telefono;
+      this.router.navigateByUrl('/calendarHome');
+    }
+    );}
 
 navigateToAddQuote(){
   this.router.navigateByUrl('/addQuote');

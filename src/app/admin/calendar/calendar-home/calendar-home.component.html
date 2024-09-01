@@ -1,4 +1,5 @@
 <dx-scheduler #scheduler
+  locale="it"
   timeZone="Europe/Rome"
   id="scheduler"
   [dataSource]="events"
@@ -34,7 +35,6 @@
     <div class="tooltip-content">
       <div>{{ model.appointmentData.title }}</div>
       <div>{{ model.appointmentData.description }}</div>
-      <div>{{ model.appointmentData.categories }}</div>
     </div>
   </div>
 </dx-scheduler>

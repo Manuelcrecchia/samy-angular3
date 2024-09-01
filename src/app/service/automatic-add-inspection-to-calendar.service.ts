@@ -6,6 +6,9 @@ import { Injectable } from '@angular/core';
 export class AutomaticAddInspectionToCalendarService {
 
   pass=false;
+  numeroPreventivo: string = '';
+  telefono: string = '';
+  nominativo: string = '';
 
   constructor() { }
 }

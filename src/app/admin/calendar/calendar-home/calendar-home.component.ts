@@ -31,9 +31,18 @@ export class CalendarHomeComponent {
     .subscribe((response) => {
       this.events = JSON.parse(response);
       if(this.automaticAddInspectionToCalendarservice.pass){
-        console.log(this.automaticAddInspectionToCalendarservice.pass);
         this.automaticAddInspectionToCalendarservice.pass = false;
-        this.scheduler.instance.showAppointmentPopup({}, true);
+        const startDate = new Date();
+    const endDate = new Date();
+    endDate.setMinutes(endDate.getMinutes() + 30); // Imposta la data di fine 30 minuti dopo la data di inizio
+    let descrizione = 'Contatto' + this.automaticAddInspectionToCalendarservice.nominativo + '   Telefono: ' + this.automaticAddInspectionToCalendarservice.telefono;
+        this.scheduler.instance.showAppointmentPopup({
+          startDate: startDate,
+          endDate:endDate,
+          title: this.automaticAddInspectionToCalendarservice.numeroPreventivo,
+          description: descrizione,
+          categories: 'sopralluogo',
+        }, true);
       }
     });
   }
@@ -50,27 +59,35 @@ export class CalendarHomeComponent {
     {
       dataField: 'title',
       editorType: 'dxTextBox',
-      label: { text: 'Title' }
+      label: { text: 'Numero preventivo' }
     },
     {
       dataField: 'description',
       editorType: 'dxTextArea',
-      label: { text: 'Description' }
+      label: { text: 'Dettagli' }
     },
     {
       dataField: 'startDate',
       editorType: 'dxDateBox',
-      label: { text: 'Start Date' }
+      label: { text: 'Data di inizio' },
+      editorOptions: {
+        type: 'datetime',
+        displayFormat: 'yyyy-MM-dd HH:mm'
+      }
     },
     {
       dataField: 'endDate',
       editorType: 'dxDateBox',
-      label: { text: 'End Date' }
+      label: { text: 'Data di fine' },
+      editorOptions: {
+        type: 'datetime',
+        displayFormat: 'yyyy-MM-dd HH:mm'
+      }
     },
     {
       dataField: 'categories',
       editorType: 'dxSelectBox',
-      label: { text: 'Categories' },
+      label: { text: 'Categorie' },
       editorOptions: {
         items: categories,
         displayExpr: 'text',
@@ -80,16 +97,34 @@ export class CalendarHomeComponent {
     {
       dataField: 'recurrenceRule',
       editorType: 'dxRecurrenceEditor',
-      label: { text: 'Recurrence' }
+      label: { text: 'Ricorrenza' },
+      editorOptions: {
+        recurrenceRule: {
+          daily: true,
+          weekly: true,
+          monthly: true,        }
+      }
+    },
+    {
+      itemType: 'button',
+      horizontalAlignment: 'right',
+      buttonOptions: {
+        text: 'Cancella',
+        type: 'danger',
+        onClick: () => {
+          this.scheduler.instance.deleteAppointment(e.appointmentData)
+        }
+      }
     }
   ])  }
 
   onAppointmentAdding (e: AppointmentAddingEvent) {
-    let body = {
+    console.log(e);
+        let body = {
       title: e.appointmentData['title'],
       startDate: e.appointmentData['startDate'],
       endDate: e.appointmentData['endDate'],
-      recurrence: e.appointmentData['recurrence'],
+      recurrence: e.appointmentData['recurrenceRule'],
       dayLong: e.appointmentData['dayLong'],
       description: e.appointmentData['description'],
       categories: e.appointmentData['categories'],
