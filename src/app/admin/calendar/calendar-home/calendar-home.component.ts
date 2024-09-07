@@ -16,15 +16,17 @@ import { PopupServiceService } from '../../../componenti/popup/popup-service.ser
 export class CalendarHomeComponent {
   events : AppointmentModelService[] = [];
   currentDate: Date = new Date();
+  currentView: string = 'month';
+
   @ViewChild(DxSchedulerComponent, { static: false }) scheduler!: DxSchedulerComponent;  categories = [
-    { id: 'Ordinario', text: 'Ordinario' },
-    { id: 'Straordinario', text: 'Straordinario' },
-    { id: 'Sopralluogo', text: 'Sopralluogo' },
-    { id: 'Altro', text: 'Altro' }
+    { id: 'ordinario', text: 'Ordinario' },
+    { id: 'straordinario', text: 'Straordinario' },
+    { id: 'sopralluogo', text: 'Sopralluogo' },
+    { id: 'altro', text: 'Altro' }
   ];
   nPreventiviArray: string[] = [];
   descrizioneArray: string[] = [];
-  categoriaArray: string[] = []; 
+  categoriaArray: string[] = [];
 
   constructor(private http: HttpClient, private globalService: GlobalService, private router: Router, private automaticAddInspectionToCalendarservice: AutomaticAddInspectionToCalendarService, private popup: PopupServiceService) {} // Inject HttpClient module
   ngOnInit(){
@@ -44,9 +46,9 @@ export class CalendarHomeComponent {
         this.scheduler.instance.showAppointmentPopup({
           startDate: startDate,
           endDate:endDate,
-          title: this.automaticAddInspectionToCalendarservice.numeroPreventivo,
+          title: `${this.automaticAddInspectionToCalendarservice.numeroPreventivo} - ${this.automaticAddInspectionToCalendarservice.nominativo}`,
           description: descrizione,
-          categories: 'Sopralluogo',
+          categories: 'sopralluogo',
         }, true);
       }
       this.http
@@ -64,7 +66,10 @@ export class CalendarHomeComponent {
     });
   }
 
-
+  onCurrentViewChange(event: any) {
+    event.value == 'day' ? this.currentView = 'day' : event.value == 'week' ? this.currentView = 'week' : event.value == 'month' ? this.currentView = 'month' : null;
+    console.log(this.currentView);
+  }
 
 
   onAppointmentFormOpening(e: any) {
@@ -88,7 +93,7 @@ export class CalendarHomeComponent {
         if (selectedPreventivo) {
           const descrizione = this.descrizioneArray[this.nPreventiviArray.indexOf(selectedPreventivo)];
           let categoria = this.categoriaArray[this.nPreventiviArray.indexOf(selectedPreventivo)];
-          categoria == "O" ? categoria = "Ordinario" : categoria = "Straordinario";
+          categoria == "O" ? categoria = "ordinario" : categoria = "straordinario";
           console.log(categoria);
           form.getEditor('description').option('value', descrizione);
           form.getEditor('categories').option('value', categoria);
