@@ -8,7 +8,7 @@ export class AppointmentModelService {
   title: string = "";
   startDate!: Date;
   endDate!: Date;
-  recurrence: string = "";
+  recurrenceRule: string = "";
   dayLong: boolean = false;
   description: string = "";
   categories: string = "";
