@@ -26,7 +26,7 @@ export class CalendarHomeComponent {
   saveRecurrenceRule: string = '';
   recurrenceRuleisVisible: boolean = false;
   selectedDate: Date = new Date();
-  
+  aiutoPerSelezioneGiornoSettimana: boolean = false;
 
   @ViewChild(DxSchedulerComponent, { static: false })
   scheduler!: DxSchedulerComponent;
@@ -48,6 +48,9 @@ export class CalendarHomeComponent {
     private popup: PopupServiceService
   ) {} // Inject HttpClient module
   ngOnInit() {
+    this.saveRecurrenceRule = '';
+    this.recurrenceRuleisVisible = false;
+    this.aiutoPerSelezioneGiornoSettimana = false;
     this.http
       .get(this.globalService.url + 'appointments/getAll', {
         headers: this.globalService.headers,
@@ -76,7 +79,7 @@ export class CalendarHomeComponent {
             true
           );
         }
-        this.http
+        this.http //Carica l'array di preventivi per lautocompilazione del campo numero preventivo
           .get(this.globalService.url + 'quotes/getAll', {
             headers: this.globalService.headers,
             responseType: 'text',
@@ -139,7 +142,6 @@ export class CalendarHomeComponent {
             categoria == 'O'
               ? (categoria = 'ordinario')
               : (categoria = 'straordinario');
-            console.log(categoria);
             form.getEditor('description').option('value', descrizione);
             form.getEditor('categories').option('value', categoria);
           }
@@ -175,13 +177,25 @@ export class CalendarHomeComponent {
         },
 
         onValueChanged: (args: any) => {
+          console.log(args);
+          if (args.value.startsWith('FREQ=WEEKLY;')) {
+            if (!this.aiutoPerSelezioneGiornoSettimana) {
+              const dayOfWeek = this.selectedDate.getDay();
+              const recurrenceEditor = args.component;
+              recurrenceEditor.option(
+                'value',
+                `FREQ=WEEKLY;BYDAY=${
+                  ['SU', 'MO', 'TU', 'WE', 'TH', 'FR', 'SA'][dayOfWeek]
+                }`
+              );
+              this.aiutoPerSelezioneGiornoSettimana = true;
+            }
+          }
+
           this.saveRecurrenceRule = args.value;
         },
         onInitialized: (args: any) => {
-          const selectedDate = this.selectedDate; // Assumi che selectedDate contenga la data selezionata nel calendario
-          const dayOfWeek = selectedDate.getDay(); // Ottieni il giorno della settimana (0 = Domenica, 1 = Lunedì, ..., 6 = Sabato)
-          const recurrenceEditor = args.component;
-          recurrenceEditor.option('value', `FREQ=WEEKLY;BYDAY=${['SU', 'MO', 'TU', 'WE', 'TH', 'FR', 'SA'][dayOfWeek]}`);
+          this.saveRecurrenceRule = 'FREQ=DAILY';
         },
       },
     };
@@ -244,7 +258,6 @@ export class CalendarHomeComponent {
   }
 
   onAppointmentAdding(e: AppointmentAddingEvent) {
-    console.log(e);
     let body = {
       title: e.appointmentData['title'],
       startDate: e.appointmentData['startDate'],
@@ -253,6 +266,7 @@ export class CalendarHomeComponent {
       dayLong: e.appointmentData['dayLong'],
       description: e.appointmentData['description'],
       categories: e.appointmentData['categories'],
+      recurrenceException: e.appointmentData['recurrenceException'],
     };
     if (
       body.title == undefined ||
@@ -305,6 +319,7 @@ export class CalendarHomeComponent {
       dayLong: e.newData['dayLong'],
       description: e.newData['description'],
       categories: e.newData['categories'],
+      recurrenceException: e.newData['recurrenceException'],
     };
     this.http
       .post(this.globalService.url + 'appointments/edit', body, {
@@ -317,14 +332,37 @@ export class CalendarHomeComponent {
   }
 
   onAppointmentDeleting(e: AppointmentDeletingEvent) {
+    console.log(e);
+    if (e.appointmentData['recurrenceRule']) {
+      this.deleteSingleOccurrence(e.appointmentData);
+    } else {
+      let body = {
+        id: e.appointmentData['id'],
+      };
+      this.http
+        .post(this.globalService.url + 'appointments/delete', body, {
+          headers: this.globalService.headers,
+          responseType: 'text',
+        })
+        .subscribe((response) => {
+          this.ngOnInit();
+        });
+    }
+  }
+  deleteSingleOccurrence(appointmentData: any) {
     let body = {
-      id: e.appointmentData['id'],
+      id: appointmentData.id,
+      occurrenceDate: this.selectedDate,
     };
     this.http
-      .post(this.globalService.url + 'appointments/delete', body, {
-        headers: this.globalService.headers,
-        responseType: 'text',
-      })
+      .post(
+        this.globalService.url + 'appointments/deleteSingleOccurrence',
+        body,
+        {
+          headers: this.globalService.headers,
+          responseType: 'text',
+        }
+      )
       .subscribe((response) => {
         this.ngOnInit();
       });
