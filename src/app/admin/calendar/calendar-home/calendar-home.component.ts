@@ -332,10 +332,6 @@ export class CalendarHomeComponent {
   }
 
   onAppointmentDeleting(e: AppointmentDeletingEvent) {
-    console.log(e);
-    if (e.appointmentData['recurrenceRule']) {
-      this.deleteSingleOccurrence(e.appointmentData);
-    } else {
       let body = {
         id: e.appointmentData['id'],
       };
@@ -348,7 +344,7 @@ export class CalendarHomeComponent {
           this.ngOnInit();
         });
     }
-  }
+
   deleteSingleOccurrence(appointmentData: any) {
     let body = {
       id: appointmentData.id,
