@@ -332,6 +332,7 @@ export class CalendarHomeComponent {
   }
 
 
+
   onAppointmentDeleting(e: AppointmentDeletingEvent) {
       let body = {
         id: e.appointmentData['id'],
