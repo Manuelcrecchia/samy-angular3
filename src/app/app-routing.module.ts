@@ -22,6 +22,8 @@ import { StraordinariaComponent } from './componenti/sito/straordinaria/straordi
 import { DomesticaComponent } from './componenti/sito/domestica/domestica.component';
 import { PassworddimenticataComponent } from './componenti/login/passworddimenticata/passworddimenticata.component';
 import { CambiapasswordComponent } from './componenti/admin/cambiapassword/cambiapassword.component';
+import { CalendarHomeComponent } from './admin/calendar/calendar-home/calendar-home.component';
+
 
 
 
@@ -49,6 +51,8 @@ const routes: Routes = [
   {path: 'domestica', component: DomesticaComponent},
   {path: 'passworddimenticata', component: PassworddimenticataComponent},
   {path: 'cambiapassword', component: CambiapasswordComponent},
+  {path: 'calendarHome', component: CalendarHomeComponent},
+
 ];
 
 

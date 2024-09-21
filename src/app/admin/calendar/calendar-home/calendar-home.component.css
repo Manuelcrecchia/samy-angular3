@@ -1,0 +1,259 @@
+#scheduler {
+    height: 600px;
+}
+
+.category-ordinario {
+  background-color: #ffeb3b !important;
+  color: black;
+  padding: 5px;
+  border-radius: 4px;
+  background-clip: border-box;
+  border: none !important;
+  margin-left: -10px;
+  margin-right: -10px;
+  }
+
+  .category-straordinario {
+    background-color: #0011fd !important;
+    color: white;
+    padding: 5px;
+    border-radius: 4px;
+    background-clip: border-box;
+    border: none !important;
+    margin-left: -10px;
+    margin-right: -10px;
+  }
+
+
+  .category-sopralluogo {
+    background-color: #ff4d4d !important;
+    color: white;
+    padding: 5px;
+    border-radius: 4px;
+    background-clip: border-box;
+    border: none !important;
+    margin-left: -10px;
+    margin-right: -10px;
+  }
+
+  .category-altro {  background-color: #4caf50 !important;
+    color: white;
+    padding: 5px;
+    border-radius: 4px;
+    background-clip: border-box;
+    border: none !important;
+    margin-left: -10px;
+    margin-right: -10px;
+  }
+
+  .tooltip-content {
+    padding: 10px;
+    background-color: #fff;
+    border: 1px solid #ccc;
+  }
+
+/* Stile per il contenitore principale */
+.fullscreen-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.fullscreen-scheduler {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+
+.back-button {
+  background-color: #008CBA; /* Colore di sfondo */
+  border: none;
+  color: white;
+  padding: 7px 22px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 14px;
+  margin: 4px 2px;
+  cursor: pointer;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.back-button:hover {
+  background-color: #005f73; /* Colore di sfondo al passaggio del mouse */
+  transform: scale(1.05); /* Effetto di ingrandimento al passaggio del mouse */
+}
+
+
+
+
+
+/* Stile per la categoria "straordinario" nella vista giorno */
+.day-view-active .category-straordinario {
+  background-color: #0011fd !important;
+  color: white;
+  border-radius: 4px;
+  background-clip: border-box;
+  border: none !important;
+  margin-left: -10px;
+  margin-right: -10px;
+  margin-top: -9px;
+  padding: 24px;
+}
+
+/* Stile per la categoria "sopralluogo" nella vista giorno */
+.day-view-active .category-sopralluogo {
+  background-color: #dd0a0a !important;
+  color: white;
+  border-radius: 4px;
+  background-clip: border-box;
+  border: none !important;
+  margin-left: -10px;
+  margin-right: -10px;
+  margin-top: -9px;
+  padding: 24px;
+}
+
+
+/* Aggiungi altri stili per le altre categorie se necessario */
+.day-view-active .category-ordinario {
+  background-color: #ffeb3b !important;
+  color: black;
+  padding: 24px;
+  border-radius: 4px;
+  background-clip: border-box;
+  border: none !important;
+  margin-left: -10px;
+  margin-right: -10px;
+  margin-top: -9px;
+}
+
+.day-view-active .category-altro {
+  color: white;
+  padding: 24px;
+  border-radius: 4px;
+  background-clip: border-box;
+  border: none !important;
+  margin-left: -10px;
+  margin-right: -10px;
+  margin-top: -9px;
+}
+
+
+
+
+
+
+
+.day-view-week .category-straordinario {
+  background-color: #0011fd !important;
+  color: white;
+  border-radius: 4px;
+  background-clip: border-box;
+  border: none !important;
+  margin-left: -10px;
+  margin-right: -10px;
+  margin-top: -9px;
+  padding: 24px;
+}
+
+/* Stile per la categoria "sopralluogo" nella vista giorno */
+.day-view-week .category-sopralluogo {
+  background-color: #dd0a0a !important;
+  color: white;
+  border-radius: 4px;
+  background-clip: border-box;
+  border: none !important;
+  margin-left: -10px;
+  margin-right: -10px;
+  margin-top: -9px;
+  padding: 24px;
+}
+
+
+/* Aggiungi altri stili per le altre categorie se necessario */
+.day-view-week .category-ordinario {
+  background-color: #ffeb3b !important;
+  color: black;
+  border-radius: 4px;
+  background-clip: border-box;
+  border: none !important;
+  margin-left: -10px;
+  margin-right: -10px;
+  margin-top: -9px;
+  padding: 24px;
+}
+
+.day-view-week .category-altro {
+  color: white;
+  padding: 24px;
+  border-radius: 4px;
+  background-clip: border-box;
+  border: none !important;
+  margin-left: -10px;
+  margin-right: -10px;
+  margin-top: -9px;
+}
+
+
+
+/* Stile per il popup "Aggiungi Evento" */
+.dx-popup-content {
+  max-height: 90vh; /* Imposta un'altezza massima per il popup */
+  overflow-y: auto; /* Aggiungi lo scorrimento verticale se necessario */
+}
+
+.dx-popup-content .dx-form {
+  display: flex;
+  flex-direction: column;
+}
+
+.dx-popup-content .dx-form .dx-field-item-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.dx-popup-content .dx-form .dx-field-item-content .dx-recurrence-editor {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: visible; /* Assicurati che il contenuto non venga tagliato */
+}
+
+
+
+
+/* Media query per dispositivi con larghezza massima di 600px */
+@media (max-width: 600px) {
+  .fullscreen-container {
+    position: relative;
+    height: auto;
+  }
+
+  .fullscreen-scheduler {
+    height: auto;
+  }
+
+  .back-button {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+  }
+
+  .dx-scheduler {
+    width: 100%;
+    height: auto;
+  }
+
+  .dx-scheduler .dx-scheduler-header-panel-cell {
+    font-size: 12px;
+  }
+}

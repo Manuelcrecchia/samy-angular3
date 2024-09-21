@@ -1,10 +1,14 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, HostListener, Input } from '@angular/core';
+import { Component, HostListener, Input, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { NgxExtendedPdfViewerService } from 'ngx-extended-pdf-viewer';
 import { GlobalService } from '../../service/global.service';
 import { QuoteModelService } from '../../service/quote-model.service';
 import { PopupServiceService } from '../../componenti/popup/popup-service.service';
+import { DxSchedulerComponent } from "devextreme-angular";
+import { AutomaticAddInspectionToCalendarService } from '../../service/automatic-add-inspection-to-calendar.service';
+
+
 
 @Component({
   selector: 'app-quotes-home',
@@ -21,16 +25,33 @@ export class QuotesHomeComponent   {@Input() color: any;
 
   pdfPrev!: string;
   pdfTsSelezionato = false;
+  @ViewChild(DxSchedulerComponent, { static: false }) scheduler!: DxSchedulerComponent;
 
-
-
-  constructor(  private http: HttpClient,
+  constructor(private http: HttpClient,
     private pdfService: NgxExtendedPdfViewerService,
     private globalService: GlobalService,
     private router: Router,
     private quoteModel: QuoteModelService,
-    private popup: PopupServiceService
+    private popup: PopupServiceService,
+    private automaticAddInspectionToCalendarService: AutomaticAddInspectionToCalendarService
    ){}
+
+addInspection(numeroPreventivo: string, nominativo: string) {
+  this.automaticAddInspectionToCalendarService.pass = true;
+  this.automaticAddInspectionToCalendarService.nominativo = nominativo;
+  this.automaticAddInspectionToCalendarService.numeroPreventivo = numeroPreventivo;
+  let body = { numeroPreventivo: numeroPreventivo };
+  this.http
+    .post(this.globalService.url + 'quotes/getQuote', body,{
+      headers: this.globalService.headers,
+      responseType: 'text',
+    })
+    .subscribe((response) => {
+      let temp = JSON.parse(response)
+      this.automaticAddInspectionToCalendarService.telefono = temp[0].telefono;
+      this.router.navigateByUrl('/calendarHome');
+    }
+    );}
 
 navigateToAddQuote(){
   this.router.navigateByUrl('/addQuote');
@@ -231,7 +252,7 @@ this.http
 }
 
 back(){
-  this.router.navigateByUrl('/homeAdmin') 
+  this.router.navigateByUrl('/homeAdmin')
 }
 
 @HostListener('window:popstate', ['$event'])
