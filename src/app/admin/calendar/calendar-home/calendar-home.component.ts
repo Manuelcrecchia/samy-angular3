@@ -150,6 +150,7 @@ export class CalendarHomeComponent {
       label: { text: 'Numero preventivo' },
     };
 
+
     const switchConfig = {
       dataField: 'enableRecurrence',
       editorType: 'dxSwitch',
