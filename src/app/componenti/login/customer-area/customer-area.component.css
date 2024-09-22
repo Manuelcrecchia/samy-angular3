@@ -1,7 +1,4 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <style>
+
         body {
             display: flex;
             justify-content: center;
@@ -48,14 +45,3 @@
                 width: 90%;
             }
         }
-    </style>
-</head>
-<body>
-    <div class="login-container">
-        <input type="email" placeholder="Email">
-        <input type="password" placeholder="Password">
-        <button>Accedi</button>
-        <button>Registrati</button>
-    </div>
-</body>
-</html>
