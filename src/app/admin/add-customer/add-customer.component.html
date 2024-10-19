@@ -455,7 +455,9 @@
     <mat-label>Note</mat-label>
     <input matInput name="note" maxlength="255" [(ngModel)]="this.customerModelService.note" />
   </mat-form-field>
-
+  <div class="indietro">
+    <button (click)="back()">Torna Indietro</button>
+  </div>
     </form>
     <button mat-raised-button color="primary" (click)="addCustomer()">Salva</button>
 </body>

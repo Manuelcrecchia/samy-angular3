@@ -54,6 +54,7 @@ import { PassworddimenticataComponent } from './componenti/login/passworddimenti
 import { CambiapasswordComponent } from './componenti/admin/cambiapassword/cambiapassword.component';
 import { CalendarHomeComponent } from './admin/calendar/calendar-home/calendar-home.component';
 import { DxButtonModule } from 'devextreme-angular';
+import { DxAutocompleteModule } from 'devextreme-angular';
 import { locale, loadMessages } from 'devextreme/localization';
 
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
@@ -136,7 +137,8 @@ locale('it');
     DxButtonModule,
     DxSchedulerModule,
     MatDatepickerModule,
-    MatDialogModule
+    MatDialogModule,
+    DxAutocompleteModule
   ],
     providers: [
       GlobalService
