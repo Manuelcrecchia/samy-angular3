@@ -89,6 +89,7 @@ export class CalendarHomeComponent {
             this.nPreventiviArray = data.map(
               (item: any) => `${item.numeroPreventivo} - ${item.nominativo}`
             );
+            console.log(this.nPreventiviArray);
             this.descrizioneArray = data.map(
               (item: any) =>
                 `Contatto: ${item.nominativo} Telefono: ${item.telefono}`
