@@ -23,13 +23,15 @@ import { DomesticaComponent } from './componenti/sito/domestica/domestica.compon
 import { PassworddimenticataComponent } from './componenti/login/passworddimenticata/passworddimenticata.component';
 import { CambiapasswordComponent } from './componenti/admin/cambiapassword/cambiapassword.component';
 import { CalendarHomeComponent } from './admin/calendar/calendar-home/calendar-home.component';
+import { NewhomeComponent } from './componenti/sito/newhome/newhome.component';
 
 
 
 
 
 const routes: Routes = [
-  { path: '', component: HomesitoComponent },
+  {path: '', component: NewhomeComponent},
+  { path: '2', component: HomesitoComponent },
   { path: 'homeSito', component: HomesitoComponent },
   { path: 'loginCustomer', component: CustomerAreaComponent },
   { path: 'loginPrivateArea', component: PrivateAreaComponent },

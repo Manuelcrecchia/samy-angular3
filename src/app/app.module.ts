@@ -64,6 +64,7 @@ import * as itMessages from 'devextreme/localization/messages/it.json';
 
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { PopUpComponent } from './admin/pop-up/pop-up.component';
+import { NewhomeComponent } from './componenti/sito/newhome/newhome.component';
 
 loadMessages(itMessages);
 locale('it');
@@ -96,6 +97,7 @@ locale('it');
     CambiapasswordComponent,
     CalendarHomeComponent,
     PopUpComponent,
+    NewhomeComponent,
 
 
   ],
