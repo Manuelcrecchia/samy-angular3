@@ -11,18 +11,18 @@
     <aside>
         <nav>
         <ul>
-            
-                <li class="button-contatti">
-                    <a href="#">i nostri contatti</a>
+
+                <li class="button-Servizi">
+                    <a href="#"><mat-icon> textsms</mat-icon><span>Contatti</span></a>
                     <ul class="dropdown-content"tabindex="0">
                       <a href="tel:08554360">Call Center</a>
                       <a href="mailto:info@samypulizie.it">email</a>
                       <a href="https://www.google.com/maps/dir/Via+Tirino,+147,+65129+Pescara+PE/'45.59135,10.243048'/@44.0076457,10.8110617,8z/data=!3m1!4b1!4m11!4m10!1m5!1m1!1s0x1331a6223b8afae7:0xe0f8329b5888d54d!2m2!1d14.2181475!2d42.4462893!1m3!2m2!1d10.243048!2d45.59135?hl=it&entry=ttu">Sede Commerciale</a>
                     </ul>
                   </li>
-            
 
-                  <li class="button-servizi"><a href="#">i nostri servizi</a>
+                  <li class="button-Servizi">
+                  <a href="#"><mat-icon>info </mat-icon><span>Servizi</span></a>
                     <ul class="dropdown-content"tabindex="0">
                       <li><a (click)="navigateToSanificazioni()" >Sanificazioni</a></li>
                       <li><a (click)="navigateToUffici()" >uffici privati/pubblici</a></li>
@@ -30,18 +30,20 @@
                       <li><a (click)="navigateToPalestra()">Pulizia Palestre</a></li>
                       <li><a (click)="navigateToStraordinaria()">Pulizia Straordinaria</a></li>
                       <li><a (click)="navigateToDomestica()">Pulizie Domestica</a></li>
-              
+
                     </ul>
                   </li>
 
                   <div class="buttons">
-                     <button class=button (click)="navigateToCustomerArea()" >Area clienti</button> 
+                     <button class=button (click)="navigateToCustomerArea()" >Area clienti</button>
                     <button class=button (click)="navigateToPrivateArea()" >Area riservata</button>
-                    <button  href="https://forms.gle/Sp9NE5skntNeU9oq9" class="button-preventivi">Richiedi il tuo Preventivo </button>
+
                   </div>
-                 
+
         </ul>
         </nav>
         </aside>
-</body>
+        <a href="https://forms.gle/Sp9NE5skntNeU9oq9" class="button-preventivi">Richiedi il tuo Preventivo</a>
+      </body>
+
 </html>

@@ -15,7 +15,7 @@ aside {
     flex-direction: column;
     gap: 10px;
     height: 100vh;
-    width: 220px;
+    width: 260px;
     position: fixed;
     left: 0;
     top: 0;
@@ -46,7 +46,7 @@ aside li {
     position: relative; /* Needed for dropdown positioning */
 }
 aside a:hover {
-    
+
     color: white;
 }
 aside:not(:hover) a span {
@@ -73,7 +73,7 @@ aside li ul {
     left: 100%;
     top: 0;
     background: rgb(252,165,180);
-    padding: 30px;
+    padding: 40px;
     border-radius: 5px;
     box-shadow:none;
 }
@@ -144,22 +144,50 @@ button {
 .button-servizi:hover {
     background-color: #f300d3; /* Blu scuro */
 }
-/* Stylish button for Preventivo */
 
-/* Media query for mobile devices */
+
+
+.button-preventivi {
+  background-color: #ff009d; /* Blu */
+  border: none;
+  color: white;
+  padding: -5px 5px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  cursor: pointer;
+  border-radius: 12px;
+  transition: background-color 0.3s ease;
+  box-shadow: none; /* Rimuove il box-shadow */
+  margin-top: 500px;
+  margin-right: -300px;
+}
+
+.button-preventivi:hover {
+  background-color: #f300d3; /* Blu scuro */
+}
+
+
 @media (max-width: 600px) {
     .logo {
         width: 80px; /* Imposta la larghezza desiderata */
         height: -50px ;/* Mantiene le proporzioni dell'immagine */
-        margin-right: 200px;
+        margin-right: 70px;
+        transform: scale(0.5);
     }
     body {
-        background: url('/assets/Homesito.jpeg'); /* Specifica il percorso della tua immagine */
-        background-color: pink;
-        background-size: 100%;
-        height: 1000px;
-        width: 400px;
-      }
+      margin: 0;
+      background: url('/assets/Homesito.jpeg'); /* Specifica il percorso della tua immagine */
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: start;
+      align-items: center;
+      padding: 50px;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  }
     aside {
         width: 160px;
         height: 100%;
@@ -178,4 +206,26 @@ button {
         padding: 10px 20px;
         font-size: 0.9rem;
     }
+    .button-preventivi {
+      background-color: #ff009d; /* Blu */
+      border: none;
+      color: white;
+      padding: -5px 5px;
+      text-align: center;
+      text-decoration: none;
+      display: inline-block;
+      font-size: 16px;
+      margin: 4px 2px;
+      cursor: pointer;
+      border-radius: 12px;
+      transition: background-color 0.3s ease;
+      box-shadow: none; /* Rimuove il box-shadow */
+      margin-top: 500px;
+      margin-right: -150px;
+    }
+
+    .button-preventivi:hover {
+      background-color: #f300d3; /* Blu scuro */
+    }
+
 }

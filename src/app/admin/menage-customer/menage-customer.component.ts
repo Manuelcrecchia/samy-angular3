@@ -67,7 +67,7 @@ interventi: ['Interventi1', 'Intervento 2'] // Esempio di array interventi
       back(){
         this.router.navigateByUrl('listCustomer');
       }
-  
+
   }
 
 
