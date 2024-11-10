@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang="it">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Galleria</title>
     <style>
-         body {
+                    body {
             margin: 0;
             padding: 0;
             font-family: Arial, sans-serif;
@@ -23,28 +23,112 @@
         .logo img {
             max-height: 50px;
         }
-        nav {
-            display: flex;
-            align-items: center;
-        }
-        nav a {
-            color: white;
-            text-decoration: none;
-            margin: 0 10px;
-            font-size: 18px;
-            padding: 10px 20px;
-            background-color: #ff6f61;
-            border: 2px solid white;
-            border-radius: 5px;
-            transition: background-color 0.3s ease, color 0.3s ease;
-        }
-        nav a:hover {
-            background-color: white;
-            color: #ff6f61;
-        }
-        nav li {
-            list-style: none;
-        }
+      
+        .navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: rgba(255, 182, 193, 0.8); /* Rosa traslucido */
+  padding: 10px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+
+
+/* Stile per il menu a tendina "contatti" */
+.menu-item.contatti {
+  position: relative;
+}
+
+.menu-item.contatti > a {
+  text-decoration: none;
+  color: white;
+  font-weight: bold;
+  padding: 10px 20px;
+  border-radius: 5px;
+  transition: background-color 0.3s;
+}
+
+.menu-item.contatti > a:hover {
+  background-color: rgba(255, 105, 180, 0.8); /* Rosa più scuro */
+}
+
+.menu-item.contatti .dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: rgba(255, 182, 193, 0.9); /* Rosa traslucido */
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  border-radius: 5px;
+  z-index: 1;
+  animation: slideDown 0.3s ease-in-out;
+  padding: 10px;
+}
+
+.menu-item.contatti:hover .dropdown-content {
+  display: block;
+}
+
+.menu-item.contatti .dropdown-content a {
+  display: block;
+  text-decoration: none;
+  color: white;
+  padding: 10px;
+  border-radius: 5px;
+  transition: background-color 0.3s;
+}
+
+.menu-item.contatti .dropdown-content a:hover {
+  background-color: rgba(255, 105, 180, 0.8); /* Rosa più scuro */
+}
+
+
+.menu-toggle-checkbox {
+  display: none;
+}
+
+.menu-toggle {
+  display: none;
+  font-size: 30px;
+  cursor: pointer;
+}
+
+.menu {
+  list-style: none;
+  display: flex;
+  gap: 20px;
+}
+
+.menu-item {
+  position: relative;
+}
+
+.menu-item a {
+  text-decoration: none;
+  color: white;
+  font-weight: bold;
+  padding: 10px 20px;
+  border-radius: 5px;
+  transition: background-color 0.3s;
+}
+
+.menu-item a:hover {
+  background-color: rgba(255, 105, 180, 0.8); /* Rosa più scuro */
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: rgba(255, 182, 193, 0.9); /* Rosa traslucido */
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  border-radius: 5px;
+  z-index: 1;
+  animation: slideDown 0.3s ease-in-out;
+}
+
+
+
+
         .main {
             padding: 20px;
             text-align: center;
@@ -111,74 +195,129 @@
             to { opacity: 1; }
         }
         @media (max-width: 768px) {
-          .header {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-            nav {
-                margin-top: 10px;
-                flex-direction: column;
-                width: 100%;
-            }
-            nav a {
-                margin: 10px 0;
-                width: 100%;
-                text-align: center;
-            }
-            nav li {
-            list-style: none;
-            margin: 20px;
-        }
-            .main h1 {
-                font-size: 28px;
-            }
-            .main p {
-                font-size: 16px;
-            }
+    
+
+            .menu {
+    display: none;
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .menu-toggle {
+    display: block;
+  }
+
+  .menu-toggle-checkbox:checked + .menu-toggle + .menu {
+    display: flex;
+  }
+
+  .menu-item {
+    width: 100%;
+  }
+
+  .menu-item a {
+    display: block;
+    width: 100%;
+    text-align: center;
+  }
+
+  .dropdown-content {
+    position: static;
+    box-shadow: none;
+    border-radius: 0;
+  }
             .image-container img {
                 width: 100%;
                 max-width: 100%;
             }
         }
+      
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <!-- Header -->
-    <div class="header">
-      <div class="logo">
-          <img src="https://www.samypulizie.it/wp-content/uploads/2020/01/logo.png" alt="Logo">
-      </div>
-      <nav>
-          <a href="index.html">Home</a>
+    <nav class="navbar">
+        <div class="logo"><img src="https://www.samypulizie.it/wp-content/uploads/2020/01/logo.png" alt="Logo del sito"></div>
+        <input type="checkbox" id="menu-toggle-checkbox" class="menu-toggle-checkbox">
+        <label for="menu-toggle-checkbox" class="menu-toggle">☰</label>
+        <ul class="menu">
+          <div class="dropdown" id="myDropdown">
+      <!-- Il tuo codice del dropdown va qui -->
+    </div>
+          <li class="menu-item contatti">
+            <a href="#">contatti</a>
+            <ul class="dropdown-content"tabindex="0">
+              <a href="tel:08554360">Call Center</a>
+              <a href="mailto:info@samypulizie.it">email</a>
+              <a href="https://www.google.com/maps/dir/Via+Tirino,+147,+65129+Pescara+PE/'45.59135,10.243048'/@44.0076457,10.8110617,8z/data=!3m1!4b1!4m11!4m10!1m5!1m1!1s0x1331a6223b8afae7:0xe0f8329b5888d54d!2m2!1d14.2181475!2d42.4462893!1m3!2m2!1d10.243048!2d45.59135?hl=it&entry=ttu">Sede Commerciale</a>
+            </ul>
+          </li>
+          <li class="menu-item contatti"><a>servizi</a>
+          <ul class="dropdown-content"tabindex="0">
+            <li><a (click)="navigateToSanificazioni()" >Sanificazioni</a></li>
+            <li><a (click)="navigateToUffici()" >uffici privati/pubblici</a></li>
+            <li><a (click)="navigateToCondomini1()">Pulizia Condomini</a></li>
+            <li><a (click)="navigateToPalestra()">Pulizia Palestre</a></li>
+            <li><a (click)="navigateToStraordinaria()">Pulizia Straordinaria</a></li>
+            <li><a (click)="navigateToDomestica()">Pulizie Domestica</a></li>
+    
+          </ul>
+        </li>
+          <li class="menu-item"><a href="#">Galleria</a></li>
+        </ul>
       </nav>
-  </div>
-    <!-- Main Content -->
-    <div class="main">
-        <h1>Servizio di Pulizie Condominiali  a Pescara</h1>
+      <!-- Main Content -->
+      <div class="main">
+        <h1>Servizio di Pulizie Condominiali a Pescara</h1>
         <p>
-
-
-
-          Sei alla ricerca di un’impresa specializzata in pulizie condominiali a Pescara ma non sai dove andare? Cerchi una ditta con esperienza consolidata? La risposta giusta è l’impresa di pulizie SAMI
-
-          L’azienda SAMI nasce nel 2012 a Pescara per offrire un servizio di pulizia personalizzato, completo ed efficiente di uffici, scuole, laboratori alimentari e sanitari e condomini.
-          Le pulizie condominiali Pescara della ditta SAMI
-
-          Grazie alla lunga esperienza nel settore siamo in grado di effettuare la pulizia di tutti gli spazi condominiali come rampe di scale, pavimenti, ascensori, cortili interni e portoni d’ingresso.
-
-          Utilizziamo prodotti e macchinari di ultimissima tecnologia per lavare, asciugare e lucidare le superfici.</p>
+          Sei alla ricerca di un’impresa specializzata in pulizie condominiali a
+          Pescara ma non sai dove andare? Cerchi una ditta con esperienza
+          consolidata? La risposta giusta è l’impresa di pulizie SAMI L’azienda
+          SAMI nasce nel 2012 a Pescara per offrire un servizio di pulizia
+          personalizzato, completo ed efficiente di uffici, scuole, laboratori
+          alimentari e sanitari e condomini. Le pulizie condominiali Pescara
+          della ditta SAMI Grazie alla lunga esperienza nel settore siamo in
+          grado di effettuare la pulizia di tutti gli spazi condominiali come
+          rampe di scale, pavimenti, ascensori, cortili interni e portoni
+          d’ingresso. Utilizziamo prodotti e macchinari di ultimissima
+          tecnologia per lavare, asciugare e lucidare le superfici.
+        </p>
         <div class="image-container">
-            <img src="https://wips.plug.it/cips/paginegiallecasa/cms/2021/02/pulizie-condominiali.jpg?w=832&h=468&a=c" alt="Immagine 1">
-            <img src="https://st3.idealista.it/news/archivie/styles/fullwidth_xl/public/2024-04/images/80_6.png?VersionId=kXYeKMoaGdbMJPuR7sRGfLg4uBRLvBhk&itok=ldqQEaIF" alt="Immagine 2">
-            <img src="https://www.puliziemagica.it/wp-content/uploads/2017/02/img-condomini.jpg" alt="Immagine 3">
-            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRvJh_4mKXP0D3NhJsHvlAfaGI3eQRPqOOeAQ&s" alt="Immagine 4">
+          <img
+            src="https://wips.plug.it/cips/paginegiallecasa/cms/2021/02/pulizie-condominiali.jpg?w=832&h=468&a=c"
+            alt="Immagine 1"
+          />
+          <img
+            src="https://st3.idealista.it/news/archivie/styles/fullwidth_xl/public/2024-04/images/80_6.png?VersionId=kXYeKMoaGdbMJPuR7sRGfLg4uBRLvBhk&itok=ldqQEaIF"
+            alt="Immagine 2"
+          />
+          <img
+            src="https://www.puliziemagica.it/wp-content/uploads/2017/02/img-condomini.jpg"
+            alt="Immagine 3"
+          />
+          <img
+            src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRvJh_4mKXP0D3NhJsHvlAfaGI3eQRPqOOeAQ&s"
+            alt="Immagine 4"
+          />
         </div>
-    </div>
-    <!-- Footer --><a href="https://forms.gle/Sp9NE5skntNeU9oq9" class="button-preventivi">Richiedi il Tuo Preventivo Gratuito</a>
-    <iframe src="https://www.google.com/maps/embed?pb=!1m28!1m12!1m3!1d11774.409853163359!2d14.203068573204833!3d42.45747377002006!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!4m13!3e6!4m5!1s0x1331a60db9286477%3A0xa0b89e89b22cbfe2!2sPescara%2C%20Provincia%20di%20Pescara!3m2!1d42.4617624!2d14.2160321!4m5!1s0x1331a6223b8afae7%3A0xe0f8329b5888d54d!2sVia%20Tirino%2C%20147%2C%20Pescara%2C%20PE!3m2!1d42.4462893!2d14.218147499999999!5e0!3m2!1sit!2sit!4v1713538014550!5m2!1sit!2sit"  width="100%" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+      </div>
+      <!-- Footer --><a
+        href="https://forms.gle/Sp9NE5skntNeU9oq9"
+        class="button-preventivi"
+        >Richiedi il Tuo Preventivo Gratuito</a
+      >
+      <iframe
+        src="https://www.google.com/maps/embed?pb=!1m28!1m12!1m3!1d11774.409853163359!2d14.203068573204833!3d42.45747377002006!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!4m13!3e6!4m5!1s0x1331a60db9286477%3A0xa0b89e89b22cbfe2!2sPescara%2C%20Provincia%20di%20Pescara!3m2!1d42.4617624!2d14.2160321!4m5!1s0x1331a6223b8afae7%3A0xe0f8329b5888d54d!2sVia%20Tirino%2C%20147%2C%20Pescara%2C%20PE!3m2!1d42.4462893!2d14.218147499999999!5e0!3m2!1sit!2sit!4v1713538014550!5m2!1sit!2sit"
+        width="100%"
+        height="450"
+        style="border: 0"
+        allowfullscreen=""
+        loading="lazy"
+        referrerpolicy="no-referrer-when-downgrade"
+      ></iframe>
 
-    <div class="footer">
+      <div class="footer">
         <p>Contattaci: info&#64;samipulizie.it | 08554360</p>
-    </div>
-</body>
+      </div>
+  </body>
 </html>

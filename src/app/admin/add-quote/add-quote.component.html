@@ -473,6 +473,31 @@
     </mat-form-field>
   </form>
 
+  <form id="form" name="form">
+    <mat-form-field appearance="fill">
+      <mat-label>Data Inizio Contratto</mat-label>
+      <input
+        matInput
+        [matDatepicker]="picker"
+        name="dataInizioContratto"
+        [(ngModel)]="this.quoteModelService.dataInizioContratto"
+      />
+      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+      <mat-datepicker #picker></mat-datepicker>
+    </mat-form-field>
+  </form>
+  
+  <form id="form" name="form">
+    <mat-form-field appearance="fill">
+      <mat-label>Durata Contratto</mat-label>
+      <input
+        matInput
+        name="durataContratto"
+        [(ngModel)]="this.quoteModelService.durataContratto"
+      />
+    </mat-form-field>
+  </form>
+
   <mat-form-field class="example-full-width"
     ><mat-label>Note</mat-label>
     <input

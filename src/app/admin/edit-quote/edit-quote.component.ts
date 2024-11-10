@@ -4,7 +4,7 @@ import { GlobalService } from '../../service/global.service';
 import { QuoteModelService } from '../../service/quote-model.service';
 import { Router } from '@angular/router';
 import { PopupServiceService } from '../../componenti/popup/popup-service.service';
-
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-edit-quote',
@@ -13,7 +13,7 @@ import { PopupServiceService } from '../../componenti/popup/popup-service.servic
 })
 export class EditQuoteComponent {
 
-  constructor(public quoteModelService: QuoteModelService, private http: HttpClient, private globalService: GlobalService, private router: Router, private popup: PopupServiceService) {}
+  constructor(public quoteModelService: QuoteModelService, private datePipe: DatePipe, private http: HttpClient, private globalService: GlobalService, private router: Router, private popup: PopupServiceService) {}
 
   ngOnInit(){
 
@@ -43,9 +43,17 @@ export class EditQuoteComponent {
       descrizioneImmobile: this.quoteModelService.descrizioneImmobile,
       servizi: JSON.stringify(this.quoteModelService.servizi),
       interventi: JSON.stringify(this.quoteModelService.interventi),
-      imponibile: this.quoteModelService.imponibile,
+      imponibile: Number(this.quoteModelService.imponibile).toFixed(2),
       iva: this.quoteModelService.iva,
       pagamento: this.quoteModelService.pagamento,
+      dataInizioContratto:
+          this.quoteModelService.dataInizioContratto != ''
+            ? this.datePipe.transform(
+                this.quoteModelService.dataInizioContratto,
+                'dd/MM/yyyy'
+              )
+            : this.quoteModelService.dataInizioContratto,
+        durataContratto: this.quoteModelService.durataContratto,
       note : this.quoteModelService.note,
     }
     this.http

@@ -56,12 +56,13 @@ import { CalendarHomeComponent } from './admin/calendar/calendar-home/calendar-h
 import { DxButtonModule } from 'devextreme-angular';
 import { DxAutocompleteModule } from 'devextreme-angular';
 import { locale, loadMessages } from 'devextreme/localization';
+import { DatePipe } from '@angular/common';
 
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 
 import * as itMessages from 'devextreme/localization/messages/it.json';
 
-
+import { MatNativeDateModule } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { PopUpComponent } from './admin/pop-up/pop-up.component';
 
@@ -137,11 +138,12 @@ locale('it');
     DxButtonModule,
     DxSchedulerModule,
     DxAutocompleteModule,
+    MatNativeDateModule,
     MatDatepickerModule,
-    MatDialogModule
+    MatDialogModule,
   ],
     providers: [
-      GlobalService
+      GlobalService, DatePipe
     ],
     bootstrap: [AppComponent],
     schemas: [

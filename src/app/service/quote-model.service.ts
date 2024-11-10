@@ -24,6 +24,8 @@ export class QuoteModelService {
   imponibile = "0.00";
   iva= "N";
   pagamento = "";
+  dataInizioContratto = "";
+  durataContratto = "";
   note= '';
 
   constructor() {}

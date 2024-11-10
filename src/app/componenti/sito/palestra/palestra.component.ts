@@ -24,4 +24,13 @@ export class PalestraComponent {
   navigateToCondomini1() {
     this.router.navigateByUrl('/condomini1');
   }
+  navigateToPalestra() {
+    this.router.navigateByUrl('/palestra');
+  }
+  navigateToStraordinaria() {
+    this.router.navigateByUrl('/straordinaria');
+  }
+  navigateToDomestica() {
+    this.router.navigateByUrl('/domestica');
+  }
 }
