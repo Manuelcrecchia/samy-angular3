@@ -1,120 +1,158 @@
+/* Stile generale */
+body {
+  font-family: 'Arial', sans-serif;
+  background-color: #f0f0f0;
+  color: #333;
+  margin: 0;
+  padding: 0;
+}
+
+/* Stile per il mat-drawer-container */
 mat-drawer-container {
-    background-color: #ffffff; /* Rosa chiaro */
-    color: #f8f8f8; /* Rosa scuro */
-    padding: 10px;
+  background-color: #ffffff;
+  color: #333;
+  padding: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
 
+/* Stile per il mat-slide-toggle */
+mat-slide-toggle.mat-primary {
+  color: #d712ff;
+}
 
+/* Stile per i pulsanti */
+button.mat-raised-button {
+  background-color: #ff0077;
+  color: #ffffff;
+  margin: 10px 0;
+  background-image: linear-gradient(to right, #ff0077, #ff00ff);
+  border: none;
+  border-radius: 4px;
+  padding: 10px 20px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.3s ease, transform 0.3s ease;
+  cursor: pointer;
+}
 
+button.mat-raised-button:hover {
+  background-color: #e91e63;
+  transform: scale(1.05);
+}
+
+button.mat-raised-button:active {
+  background-color: #c2185b;
+  transform: scale(0.95);
+}
+
+/* Stile per ngx-extended-pdf-viewer */
+.ngx-extended-pdf-viewer {
+  position: absolute;
+  top: 100px;
+  left: 140px;
+  width: calc(100% - 200px);
+  height: calc(100% - 200px);
+  border: 1px solid #000000;
+  margin-top: 50px;
+  background-color: #ff0000;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Stile per example-spacer */
+.example-spacer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 5px;
+  border-bottom: 1px solid #000000;
+  padding: 10px;
+  background-color: #ffffff;
+}
+
+/* Stile per example-form-field */
+.example-form-field {
+  margin-right: 10px;
+  margin-top: 10px;
+}
+
+/* Stile per carta */
+.carta {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  align-items: flex-start;
+  margin-right: 100px;
+}
+
+/* Stile per card */
+.card {
+  transition: transform 0.1s ease;
+  cursor: pointer;
+  background-color: #ff0095;
+  border: 1px solid #000000;
+  border-radius: 20px;
+  margin: 10px;
+  padding: 20px;
+  text-align: center;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.card:hover {
+  transform: scale(1.05);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+/* Stile per card__icon */
+.card__icon {
+  font-size: 64px;
+  margin-bottom: 10px;
+}
+
+/* Stile per card__title */
+.card__title {
+  margin: 0;
+  color: #333;
+}
+
+/* Stile per card-gradient */
+.card-gradient {
+  background-image: linear-gradient(to right, #FFC0CB, #FFD700);
+}
+
+/* Stile per il pulsante indietro */
+.indietro button {
+  background-color: #ff4081;
+  color: white;
+  font-weight: bold;
+  border: none;
+  border-radius: 4px;
+  padding: 10px 20px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.3s ease, transform 0.3s ease;
+  cursor: pointer;
+  margin-right: 1400px;
+}
+
+.indietro button:hover {
+  background-color: #e91e63;
+  transform: scale(1.05);
+}
+
+.indietro button:active {
+  background-color: #c2185b;
+  transform: scale(0.95);
+}
+
+/* Stile per media query */
+@media (max-width: 600px) {
+  .quote-list, .pdf-viewer {
+      display: block;
+      width: 100%;
   }
-
-  mat-slide-toggle.mat-primary {
-    color: #d712ff; /* Rosa scuro */
-  }
-
-  button.mat-raised-button {
-    background-color: #ffffff; /* Rosa scuro */
-    color: #ffffff; /* Bianco */
-    margin: 10px 0;
-    background-image: linear-gradient(to right, #ff0077, #ff00ff); /* Sostituisci con i tuoi colori */
-  }
-
   .ngx-extended-pdf-viewer {
-    position: absolute; /* Posiziona il PDF in alto alla pagina */
-    top: 100px;
-    left: 140px;
-    width: 100%; /* Fai occupare al PDF l'intera larghezza */
-    height: 100%; /* Fai occupare al PDF l'intera altezza della viewport */
-    border: 1px solid #ffffff; /* Rosa scuro */
-    margin-top: 50px;
-    right: 60px;
-    background-image: linear-gradient(to right, #ff0077, #ff00ff); /* Sostituisci con i tuoi colori */
-  }
-  .example-spacer {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-top: 5px;
-    border-bottom: 1px solid #ffffff; /* Aggiunge una linea sotto il contenuto */
-    background-image: linear-gradient(to right, #ff0077, #ff00ff); /* Sostituisci con i tuoi colori */
-  }
-
-  .example-form-field {
-    margin-right: 10px;
-    margin-top: 10px;
-
-  }
-
-
-
-  .carta {
-    display: flex; /* Imposta il layout del contenitore su flex */
-    flex-wrap: wrap; /* Permette agli elementi di andare a capo se non c'è abbastanza spazio */
-    justify-content: space-around; /* Distribuisce lo spazio intorno alle card */
-    align-items: flex-start; /* Allinea le card all'inizio del contenitore */
-    margin-right: 100px;
-
-
-  }
-  .card {
-    transition: transform 0.1s ease; /* Effetto di transizione fluido */
-    cursor: pointer; /* Cambia il cursore in una mano per indicare che è cliccabile */
-
-    background-image: linear-gradient(to right, #ff0077, #ff00ff); /* Sostituisci con i tuoi colori */
-  }
-
-  .card:hover {
-    transform: scale(1.50); /* Ingrandisce la card del 5% */
-    box-shadow: 200px 100px 150px rgba(0, 0, 0, 0.2); /* Aggiunge un'ombra per migliorare l'effetto */
-  }
-
-  /* Stili aggiuntivi per migliorare l'aspetto delle card */
-  .card {
-    display: inline-block; /* Permette alle card di essere affiancate */
-    margin: 10px; /* Aggiunge spazio intorno alle card */
-    padding: 70px; /* Aggiunge spazio all'interno delle card */
-    border-radius: 20px; /* Bordi arrotondati */
-    background-color: #ffffff; /* Sfondo bianco */
-    border: 1px solid #ddd; /* Bordo sottile */
-    text-align: center; /* Centra il testo all'interno della card */
-  }
-
-  .card__icon {
-    font-size: 104px; /* Aumenta la dimensione dell'icona */
-    margin-bottom: 10px; /* Spazio tra l'icona e il titolo */
-  }
-
-  .card__title {
-    margin: 0; /* Rimuove il margine di default */
-    color: #333; /* Colore del testo scuro per contrasto */
-  }
-
-
-  .card-gradient {
-    background-image: linear-gradient(to right, #FFC0CB, #FFD700); /* Sostituisci con i tuoi colori */
-  }
-
-
-
-
-
-
-
-
-
-
-
-
-  @media (max-width: 600px) {
-    .quote-list, .pdf-viewer {
-      display: block; /* Gli elementi sono disposti uno sopra l'altro */
-      width: 100%; /* Ogni elemento occupa l'intera larghezza */
-    }
-    .ngx-extended-pdf-viewer {
-
       top: 700px;
-      left: 140px;
-      width: 100%; /* Fai occupare al PDF l'intera larghezza */
-      height: 100%; /* Fai occupare al PDF l'intera altezza della viewport */
-      border: 1px solid #ffffff; /* Rosa scuro */
-    }
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border: 1px solid #ddd;
   }
+}

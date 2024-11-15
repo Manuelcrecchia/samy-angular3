@@ -53,4 +53,7 @@ export class AddCustomerComponent {
       });
     }
    }
+   back(){
+    this.router.navigateByUrl('listCustomer');
+  }
 }

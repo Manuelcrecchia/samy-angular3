@@ -19,6 +19,7 @@ export class GlobalService {
 
   url = "http://192.168.1.4:5000/";
 
+
   //https://betterprogramming.pub/how-to-convert-your-angular-application-to-a-native-mobile-app-android-and-ios-c212b38976df
 
 }

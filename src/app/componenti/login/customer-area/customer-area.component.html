@@ -10,6 +10,7 @@
             margin: 0;
             background-color: #f8f8f8;
             font-family: Arial, sans-serif;
+            position: relative;
         }
         .login-container {
             display: flex;
@@ -21,6 +22,7 @@
             border-radius: 12px;
             width: 100%;
             max-width: 400px;
+            animation: fadeIn 1s ease-in-out;
         }
         .login-container img {
             width: 300px;
@@ -28,10 +30,14 @@
         }
         .login-container input {
             width: 100%;
-            padding: 25px;
-            margin: 5px 0 10px 0;
+            padding: 15px;
+            margin: 10px 0;
             border: none;
             border-radius: 4px;
+            transition: box-shadow 0.3s ease;
+        }
+        .login-container input:focus {
+            box-shadow: 0 0 10px rgba(255, 105, 180, 0.5);
         }
         .login-container button {
             background-color: #ff69b4;
@@ -46,10 +52,80 @@
             cursor: pointer;
             border-radius: 12px;
             width: 100%;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+        .login-container button:hover {
+            background-color: #e91e63;
+            transform: scale(1.05);
+        }
+        .login-container button:active {
+            background-color: #c2185b;
+            transform: scale(0.95);
+        }
+        .indietro {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+        }
+        .indietro button {
+            background-color: #ff4081;
+            color: white;
+            font-weight: bold;
+            border: none;
+            border-radius: 4px;
+            padding: 10px 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: background-color 0.3s ease, transform 0.3s ease;
+            cursor: pointer;
+            margin-top: 600px;
+        }
+        .indietro button:hover {
+            background-color: #e91e63;
+            transform: scale(1.05);
+        }
+        .indietro button:active {
+            background-color: #c2185b;
+            transform: scale(0.95);
+        }
+        .forgot-password {
+            background-color: transparent;
+            border: none;
+            color: #ff4081;
+            text-decoration: underline;
+            cursor: pointer;
+            font-size: 14px;
+            margin-top: 10px;
+        }
+        .forgot-password:hover {
+            color: #e91e63;
+        }
+        .password-container {
+            position: relative;
+            width: 100%;
+            margin-left: -30px;
+        }
+        .password-container input {
+            padding-right: 40px;
+        }
+        .toggle-password {
+            position: absolute;
+            top: 50%;
+            right: 10px;
+            transform: translateY(-50%);
+            cursor: pointer;
+            animation: blink 1.5s infinite;
+        }
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
         @media screen and (min-width: 600px) {
             body {
-                background-image: url('https://static.vecteezy.com/ti/vettori-gratis/p3/6580883-dipendenti-di-donna-di-un-impresa-di-pulizie-su-sfondo-bianco-governanti-illustrazione-vettoriale.jpg'); /* Sostituisci con il tuo URL dell'immagine di sfondo */
+                background-image: url('https://static.vecteezy.com/ti/vettori-gratis/p3/6580883-dipendenti-di-donna-di-un-impresa-di-pulizie-su-sfondo-bianco-governanti-illustrazione-vettoriale.jpg');
                 background-size: cover;
             }
         }
@@ -57,19 +133,30 @@
             .login-container {
                 width: 90%;
             }
+            body{
+            margin-top: -600px;
+          }
         }
     </style>
 </head>
 <body>
-    <div class="login-container">
-        <img src="https://www.samypulizie.it/wp-content/uploads/2020/01/logo.png" alt="Logo"> <!-- Aggiungi il tuo logo qui -->
+    <header>
+        <div class="indietro">
+            <button (click)="back()">Torna Indietro</button>
+        </div>
+    </header>
+    <form class="login-container">
+        <img src="https://www.samypulizie.it/wp-content/uploads/2020/01/logo.png" alt="Logo">
         <h2>Login</h2>
         <label for="email">Email</label>
-        <input type="email" id="email" placeholder="Email">
+        <input #email type="email" id="email" placeholder="Email">
         <label for="password">Password</label>
-        <input type="password" id="password" placeholder="Password">
-        <button>Accedi</button>
-
-    </div>
+        <div class="password-container">
+            <input #password type="password" id="password" placeholder="Password">
+            <span class="toggle-password" (click)="togglePasswordVisibility(password)">👁️</span>
+        </div>
+        <button type="submit" (click)="loginFunction(email.value, password.value)">Accedi</button>
+        <button type="button" class="forgot-password" (click)="navigateToPassworddimenticata(email.value)">Password Dimenticata?</button>
+    </form>
 </body>
 </html>

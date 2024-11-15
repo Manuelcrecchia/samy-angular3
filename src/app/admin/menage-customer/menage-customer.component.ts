@@ -64,24 +64,10 @@ interventi: ['Interventi1', 'Intervento 2'] // Esempio di array interventi
       }
 
 
+      back(){
+        this.router.navigateByUrl('listCustomer');
+      }
 
-      // blocco note
-
-
-    //   document.getElementById('saveNote').addEventListener('click', function() {
-    //     const noteText = document.getElementById('noteInput').value;
-    //     if (noteText.trim() !== '') {
-    //         // Qui dovresti inviare la nota al server per salvarla
-    //         // Questo esempio aggiunge semplicemente la nota all'HTML per visualizzazione
-    //         const noteElement = document.createElement('div');
-    //         noteElement.classList.add('note');
-    //         noteElement.textContent = noteText;
-    //         document.getElementById('notesList').appendChild(noteElement);
-    //         document.getElementById('noteInput').value = ''; // Pulisci l'input dopo il salvataggio
-    //     } else {
-    //         alert('La nota non può essere vuota!');
-    //     }
-    // });
   }
 
 
