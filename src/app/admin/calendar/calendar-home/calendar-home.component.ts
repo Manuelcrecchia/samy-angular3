@@ -89,7 +89,6 @@ export class CalendarHomeComponent {
             this.nPreventiviArray = data.map(
               (item: any) => `${item.numeroPreventivo} - ${item.nominativo}`
             );
-            console.log(this.nPreventiviArray);
             this.descrizioneArray = data.map(
               (item: any) =>
                 `Contatto: ${item.nominativo} Telefono: ${item.telefono}`
@@ -151,14 +150,15 @@ export class CalendarHomeComponent {
       label: { text: 'Numero preventivo' },
     };
 
-
     const switchConfig = {
       dataField: 'enableRecurrence',
       editorType: 'dxSwitch',
       label: { text: 'Abilita Ricorrenza' },
       editorOptions: {
         onValueChanged: (args: any) => {
+          console.log(args);
           this.recurrenceRuleisVisible = args.value;
+          !this.recurrenceRuleisVisible ?  this.saveRecurrenceRule = '' : null;
           form.itemOption('recurrenceRule', 'visible', args.value);
         },
       },
@@ -270,7 +270,6 @@ export class CalendarHomeComponent {
       categories: e.appointmentData['categories'],
       recurrenceException: e.appointmentData['recurrenceException'],
     };
-    console.log(body);
     if (
       body.title == undefined ||
       body.startDate == undefined ||
