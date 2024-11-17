@@ -270,6 +270,7 @@ export class CalendarHomeComponent {
       categories: e.appointmentData['categories'],
       recurrenceException: e.appointmentData['recurrenceException'],
     };
+    console.log(body);
     if (
       body.title == undefined ||
       body.startDate == undefined ||

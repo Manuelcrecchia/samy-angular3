@@ -24,19 +24,19 @@
       <form class="add-admin-form">
         <mat-form-field appearance="outline">
           <mat-label>Nome</mat-label>
-          <input matInput [(ngModel)]="adminAdd.nome" name="nome">
+          <input matInput [(ngModel)]="adminAdd.nome" name="nome" pattern="[\D ]+">
         </mat-form-field>
         <mat-form-field appearance="outline">
           <mat-label>Cognome</mat-label>
-          <input matInput [(ngModel)]="adminAdd.cognome" name="cognome">
+          <input matInput [(ngModel)]="adminAdd.cognome" name="cognome" pattern="[\D ]+">
         </mat-form-field>
         <mat-form-field appearance="outline">
           <mat-label>Email</mat-label>
-          <input matInput [(ngModel)]="adminAdd.email" name="email">
+          <input matInput [(ngModel)]="adminAdd.email" name="email" pattern="\w+@\w+\.\D{2,}">
         </mat-form-field>
         <mat-form-field appearance="outline">
           <mat-label>Codice operatore</mat-label>
-          <input matInput [(ngModel)]="adminAdd.codiceOperatore" name="codiceOperatore">
+          <input matInput [(ngModel)]="adminAdd.codiceOperatore" name="codiceOperatore" pattern="[A-Z][A-Z]|[0-9][0-9]">
         </mat-form-field>
         <mat-form-field appearance="outline">
           <mat-label>Admin</mat-label>

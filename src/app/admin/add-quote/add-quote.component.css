@@ -24,6 +24,11 @@ input:focus {
   box-shadow: 0 0 10px #FF1493; /* Rosa scuro */
 }
 
+input:invalid {
+  border: 10px solid red; /* Rosso accentuato */
+}
+
+
 mat-label {
   color: #FF1493; /* Rosa scuro */
 }

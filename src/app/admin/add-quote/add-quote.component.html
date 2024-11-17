@@ -5,6 +5,9 @@
       name="tipoPreventivo"
       [(ngModel)]="this.quoteModelService.tipoPreventivo"
     >
+    <mat-error *ngIf="this.quoteModelService.tipoPreventivo && !this.quoteModelService.tipoPreventivo.match('O|S')">
+      Tipo preventivo non valido
+    </mat-error>
       <mat-option value="O">Ordinario</mat-option>
       <mat-option value="S">Straordinario</mat-option>
     </mat-select>
@@ -19,7 +22,7 @@
 
   <mat-form-field appearance="fill" class="example-full-width">
     <mat-label>Nominativo</mat-label>
-    <input matInput name="nominativo" maxlength="255" [(ngModel)]="this.quoteModelService.nominativo" />
+    <input matInput name="nominativo" maxlength="255" [(ngModel)]="this.quoteModelService.nominativo" pattern="[\D ]+"/>
   </mat-form-field>
 
   <mat-form-field appearance="fill" class="example-full-width">
@@ -27,7 +30,7 @@
     <input
       matInput
       name="cfpi" maxlength="255"
-      [(ngModel)]="this.quoteModelService.cfpi"
+      [(ngModel)]="this.quoteModelService.cfpi"  pattern="[A-Z]{6}\d{2}[A-z]\d{2}[A-Z]\d{3}[A-Z]|\d{11}"
     />
   </mat-form-field>
 
@@ -36,7 +39,7 @@
     <input
       matInput
       name="citta" maxlength="255"
-      [(ngModel)]="this.quoteModelService.citta"
+      [(ngModel)]="this.quoteModelService.citta"pattern="[\D ]+"
     />
   </mat-form-field>
 
@@ -57,7 +60,7 @@
     <input
       matInput
       name="via" maxlength="255"
-      [(ngModel)]="this.quoteModelService.via"
+      [(ngModel)]="this.quoteModelService.via"pattern="(.+);"
     />
   </mat-form-field>
 
@@ -66,13 +69,13 @@
     <input
       matInput
       name="cap" maxlength="255"
-      [(ngModel)]="this.quoteModelService.cap"
+      [(ngModel)]="this.quoteModelService.cap" pattern="\d{5}"
     />
   </mat-form-field>
 
   <mat-form-field appearance="fill" class="example-full-width">
     <mat-label>email</mat-label>
-    <input matInput name="email" maxlength="255" [(ngModel)]="this.quoteModelService.email" />
+    <input matInput name="email" maxlength="255" [(ngModel)]="this.quoteModelService.email" pattern="\w+@\w+\.\D{2,}" />
   </mat-form-field>
 
   <mat-form-field appearance="fill" class="example-full-width">
@@ -80,19 +83,19 @@
     <input
       matInput
       name="telefono" maxlength="255"
-      [(ngModel)]="this.quoteModelService.telefono"
+      [(ngModel)]="this.quoteModelService.telefono" pattern="\+?\d{0,13}"
     />
   </mat-form-field>
 
 
   <mat-form-field appearance="fill" class="example-full-width">
     <mat-label>referente</mat-label>
-    <input matInput name="referente" maxlength="255" [(ngModel)]="this.quoteModelService.referente" />
+    <input matInput name="referente" maxlength="255" [(ngModel)]="this.quoteModelService.referente" pattern="[\D ]+"/>
   </mat-form-field>
 
   <mat-form-field appearance="fill" class="example-full-width">
     <mat-label>descrizione Immobile</mat-label>
-    <input matInput name="descrizioneImmobile" maxlength="255" [(ngModel)]="this.quoteModelService.descrizioneImmobile" />
+    <input matInput name="descrizioneImmobile" maxlength="255" [(ngModel)]="this.quoteModelService.descrizioneImmobile" pattern="(.+)" />
   </mat-form-field>
 
 
@@ -444,7 +447,7 @@
     <input
       matInput
       name="imponibile" pattern = '[0-9]+[.][0-9]+' maxlength="255"
-      [(ngModel)]="this.quoteModelService.imponibile"
+      [(ngModel)]="this.quoteModelService.imponibile" pattern="\d+\.\d{2}"
     />
   </mat-form-field>
 
@@ -480,20 +483,20 @@
         matInput
         [matDatepicker]="picker"
         name="dataInizioContratto"
-        [(ngModel)]="this.quoteModelService.dataInizioContratto"
+        [(ngModel)]="this.quoteModelService.dataInizioContratto" pattern="\d{2}\/\d{2}\/\d{4}"
       />
       <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
       <mat-datepicker #picker></mat-datepicker>
     </mat-form-field>
   </form>
-  
+
   <form id="form" name="form">
     <mat-form-field appearance="fill">
       <mat-label>Durata Contratto</mat-label>
       <input
         matInput
         name="durataContratto"
-        [(ngModel)]="this.quoteModelService.durataContratto"
+        [(ngModel)]="this.quoteModelService.durataContratto" pattern="(.+)"
       />
     </mat-form-field>
   </form>
@@ -503,7 +506,7 @@
     <input
       matInput
       name="note" maxlength="255"
-      [(ngModel)]="this.quoteModelService.note"
+      [(ngModel)]="this.quoteModelService.note" pattern="(.+)"
     />
 
   </mat-form-field>

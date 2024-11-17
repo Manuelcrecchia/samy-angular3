@@ -27,6 +27,8 @@ constructor(private globalService: GlobalService, private http: HttpClient, priv
       if(resp == "NON TROVATO") {
         this.nc = true;
         this.pe = false;
+        this.popup.text = "UTENTE NON TROVATO."
+          this.popup.openPopup();
       } else {
         if(resp == "NO"){
           this.pe = true;
