@@ -24,3 +24,6 @@
     flex-direction: column;
     gap: 16px;
   }
+  input:invalid {
+    border: 10px solid red; /* Rosso accentuato */
+  }
