@@ -1,0 +1,8 @@
+<h1 mat-dialog-title>Conferma</h1>
+   <div mat-dialog-content>
+     <p>Vuoi cancellare solo l'evento nella data selezionata?</p>
+   </div>
+   <div mat-dialog-actions>
+     <button mat-button (click)="onCancel()">Cancella tutti gli eventi</button>
+     <button mat-button color="warn" (click)="onConfirm()">Cancella solo questo evento</button>
+   </div>

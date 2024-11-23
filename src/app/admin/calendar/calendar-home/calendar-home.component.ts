@@ -3,7 +3,7 @@ import { AppointmentModelService } from '../../../service/appointment-model.serv
 import { DxSchedulerComponent } from 'devextreme-angular';
 import {
   AppointmentAddingEvent,
-  AppointmentDeletingEvent,
+  AppointmentDeletedEvent,
   AppointmentUpdatingEvent,
 } from 'devextreme/ui/scheduler';
 import { HttpClient } from '@angular/common/http';
@@ -11,8 +11,8 @@ import { GlobalService } from '../../../service/global.service';
 import { Router } from '@angular/router';
 import { AutomaticAddInspectionToCalendarService } from '../../../service/automatic-add-inspection-to-calendar.service';
 import { PopupServiceService } from '../../../componenti/popup/popup-service.service';
-import { on } from 'devextreme/events';
-import value from 'globalize';
+import { MatDialog } from '@angular/material/dialog';
+import { QuestionPopupComponent } from '../../../componenti/popup/question-popup/question-popup.component';
 
 @Component({
   selector: 'app-calendar-home',
@@ -26,7 +26,6 @@ export class CalendarHomeComponent {
   saveRecurrenceRule: string = '';
   recurrenceRuleisVisible: boolean = false;
   selectedDate: Date = new Date();
-  aiutoPerSelezioneGiornoSettimana: boolean = false;
 
   @ViewChild(DxSchedulerComponent, { static: false })
   scheduler!: DxSchedulerComponent;
@@ -45,12 +44,12 @@ export class CalendarHomeComponent {
     private globalService: GlobalService,
     private router: Router,
     private automaticAddInspectionToCalendarservice: AutomaticAddInspectionToCalendarService,
-    private popup: PopupServiceService
+    private popup: PopupServiceService,
+    private dialog: MatDialog
   ) {} // Inject HttpClient module
   ngOnInit() {
     this.saveRecurrenceRule = '';
     this.recurrenceRuleisVisible = false;
-    this.aiutoPerSelezioneGiornoSettimana = false;
     this.http
       .get(this.globalService.url + 'appointments/getAll', {
         headers: this.globalService.headers,
@@ -98,6 +97,22 @@ export class CalendarHomeComponent {
       });
   }
 
+   convertDateToICSFormat(date: Date) {
+    // Crea un oggetto Date a partire dalla stringa fornita
+    const parsedDate = new Date(date);
+  
+    // Estrai le componenti della data
+    const year = parsedDate.getUTCFullYear();
+    const month = String(parsedDate.getUTCMonth() + 1).padStart(2, '0'); // I mesi sono zero-indexed, quindi +1
+    const day = String(parsedDate.getUTCDate()).padStart(2, '0');
+    const hours = String(parsedDate.getUTCHours()).padStart(2, '0');
+    const minutes = String(parsedDate.getUTCMinutes()).padStart(2, '0');
+    const seconds = String(parsedDate.getUTCSeconds()).padStart(2, '0');
+  
+    // Crea la stringa nel formato desiderato
+    return `${year}${month}${day}T${hours}${minutes}${seconds}Z`;
+  }
+
   onCurrentViewChange(event: any) {
     event.value == 'day'
       ? (this.currentView = 'day')
@@ -108,8 +123,28 @@ export class CalendarHomeComponent {
       : null;
   }
 
+
   onAppointmentFormOpening(e: any) {
     const form = e.form;
+
+    const popup = e.popup;
+
+    // Modifica il comportamento del pulsante "Annulla" esistente
+    const toolbarItems = popup.option('toolbarItems');
+    toolbarItems.forEach((item: any) => {
+      if (item.shortcut === 'cancel') {
+        this.currentDate = new Date();
+  this.currentView = 'month';
+  this.recurrenceRuleisVisible = false;
+  this.saveRecurrenceRule = '';
+          form.itemOption('recurrenceRule', 'visible', false);
+        };
+      
+    });
+  
+    // Assicurati di aggiornare la toolbar con le modifiche
+    popup.option('toolbarItems', toolbarItems);
+
     const startDate = form.getEditor('startDate').option('value');
     this.selectedDate = new Date(startDate);
     const endDate = new Date(startDate);
@@ -156,9 +191,7 @@ export class CalendarHomeComponent {
       label: { text: 'Abilita Ricorrenza' },
       editorOptions: {
         onValueChanged: (args: any) => {
-          console.log(args);
           this.recurrenceRuleisVisible = args.value;
-          !this.recurrenceRuleisVisible ?  this.saveRecurrenceRule = '' : null;
           form.itemOption('recurrenceRule', 'visible', args.value);
         },
       },
@@ -167,7 +200,7 @@ export class CalendarHomeComponent {
     const recurrenceRuleConfig = {
       dataField: 'recurrenceRule',
       editorType: 'dxRecurrenceEditor',
-      value: this.saveRecurrenceRule,
+      value: this.recurrenceRuleisVisible,
       label: { text: 'Ricorrenza' },
       visible: false,
       editorOptions: {
@@ -179,22 +212,25 @@ export class CalendarHomeComponent {
         },
 
         onValueChanged: (args: any) => {
-          console.log(args);
-          if (args.value.startsWith('FREQ=WEEKLY;')) {
-            if (!this.aiutoPerSelezioneGiornoSettimana) {
+          console.log(args)
+          if (args.value != null && args.value.startsWith('FREQ=WEEKLY;')) {
               const dayOfWeek = this.selectedDate.getDay();
+              console.log(args.value)
+
               const recurrenceEditor = args.component;
+              this.saveRecurrenceRule = args.value;
               recurrenceEditor.option(
                 'value',
                 `FREQ=WEEKLY;BYDAY=${
                   ['SU', 'MO', 'TU', 'WE', 'TH', 'FR', 'SA'][dayOfWeek]
                 }`
               );
-              this.aiutoPerSelezioneGiornoSettimana = true;
-            }
+              
+          }else{
+            this.saveRecurrenceRule = ''
+
           }
 
-          this.saveRecurrenceRule = args.value;
         },
         onInitialized: (args: any) => {
           this.saveRecurrenceRule = 'FREQ=DAILY';
@@ -311,7 +347,6 @@ export class CalendarHomeComponent {
   }
 
   onAppointmentUpdating(e: AppointmentUpdatingEvent) {
-    console.log(e);
     let body = {
       id: e.oldData['id'],
       title: e.newData['title'],
@@ -333,26 +368,30 @@ export class CalendarHomeComponent {
       });
   }
 
+  onAppointmentDeletedQuestion(e: AppointmentDeletedEvent) {
+    const appointmentData = e.appointmentData;
+    console.log(appointmentData);
+    // Controlla se l'evento ha una regola di ricorrenza
+    if (appointmentData.recurrenceRule && appointmentData.recurrenceRule.trim() !== '') {
+        // Se ha una regola di ricorrenza, chiama appointmentsDeleted
+        this.appointmentsDeleted(e);
+    } else {
+      if(appointmentData.recurrenceRule){
+        this.appointmentsDeleted(e);
 
+      }
+      else{
+        this.appointmentDeleted(e);
 
-  onAppointmentDeleting(e: AppointmentDeletingEvent) {
-      let body = {
-        id: e.appointmentData['id'],
-      };
-      this.http
-        .post(this.globalService.url + 'appointments/delete', body, {
-          headers: this.globalService.headers,
-          responseType: 'text',
-        })
-        .subscribe((response) => {
-          this.ngOnInit();
-        });
+      }
+        // Altrimenti, chiama appointmentDeleted
     }
+  }
 
-  deleteSingleOccurrence(appointmentData: any) {
+  appointmentDeleted(e: AppointmentDeletedEvent) {
     let body = {
-      id: appointmentData.id,
-      occurrenceDate: this.selectedDate,
+      id: e.appointmentData['id'],
+      occurrenceDate: this.convertDateToICSFormat(this.selectedDate),
     };
     this.http
       .post(
@@ -363,6 +402,20 @@ export class CalendarHomeComponent {
           responseType: 'text',
         }
       )
+      .subscribe((response) => {
+        this.ngOnInit();
+      });
+  }
+
+  appointmentsDeleted(e: AppointmentDeletedEvent) {
+    let body = {
+      id: e.appointmentData['id'],
+    };
+    this.http
+      .post(this.globalService.url + 'appointments/delete', body, {
+        headers: this.globalService.headers,
+        responseType: 'text',
+      })
       .subscribe((response) => {
         this.ngOnInit();
       });

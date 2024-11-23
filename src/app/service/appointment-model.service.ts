@@ -5,6 +5,7 @@ import { Injectable } from '@angular/core';
 })
 export class AppointmentModelService {
 
+id: string = "";
   title: string = "";
   startDate!: Date;
   endDate!: Date;
@@ -12,6 +13,7 @@ export class AppointmentModelService {
   dayLong: boolean = false;
   description: string = "";
   categories: string = "";
+  recurrenceExpection: string = "";
 
   constructor() { }
 
