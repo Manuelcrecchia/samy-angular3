@@ -370,21 +370,14 @@ export class CalendarHomeComponent {
 
   onAppointmentDeletedQuestion(e: AppointmentDeletedEvent) {
     const appointmentData = e.appointmentData;
-    console.log(appointmentData);
+    console.log(appointmentData)
     // Controlla se l'evento ha una regola di ricorrenza
     if (appointmentData.recurrenceRule && appointmentData.recurrenceRule.trim() !== '') {
         // Se ha una regola di ricorrenza, chiama appointmentsDeleted
         this.appointmentsDeleted(e);
     } else {
-      if(appointmentData.recurrenceRule){
-        this.appointmentsDeleted(e);
-
-      }
-      else{
-        this.appointmentDeleted(e);
-
-      }
         // Altrimenti, chiama appointmentDeleted
+        this.appointmentDeleted(e);
     }
   }
 
