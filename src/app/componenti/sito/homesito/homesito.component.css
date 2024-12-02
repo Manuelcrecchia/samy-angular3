@@ -10,30 +10,27 @@ body {
   animation: fadeIn 2s ease-in-out;
 }
 
-@media (max-width: 600px) {
-  body {
-    background: none;
-    background-color: pink;
-    width: 100%;
-    height: 100%;
-  }
-}
-
 @keyframes fadeIn {
   from { opacity: 0; }
   to { opacity: 1; }
 }
 
 .navbar {
+  position: fixed; /* Rende la navbar fissa */
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 70px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: rgba(255, 182, 193, 0.8); /* Rosa traslucido */
+  background-color: rgba(255, 182, 193, 0.8); /* Rosa traslucido iniziale */
   padding: 10px;
   border-radius: 10px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
 }
-
 
 
 
@@ -163,7 +160,7 @@ body {
 
 .button-preventivi {
   display: block;
-  margin: 20px auto;
+  margin: 0px auto;
   background-color: rgba(255, 105, 180, 0.8); /* Rosa più scuro */
   color: white;
   border: none;
@@ -172,6 +169,7 @@ body {
   text-align: center;
   text-decoration: none;
   transition: background-color 0.3s, transform 0.3s;
+  margin-top: 90px;
 }
 
 .button-preventivi:hover {
@@ -179,13 +177,21 @@ body {
   transform: scale(1.05);
 }
 
+
+
+
 @media (max-width: 600px) {
   .menu {
     display: none;
     flex-direction: column;
     width: 100%;
   }
-
+  body {
+    background: url('/assets/Tavola\ da\ disegno\ 1.png'); /* Specifica il percorso della tua immagine */
+    background-color: pink;
+    background-size: 120%;
+    height: 35%;
+}
   .menu-toggle {
     display: block;
   }
@@ -208,5 +214,70 @@ body {
     position: static;
     box-shadow: none;
     border-radius: 0;
+  }
+  .navbar {
+    flex-direction: column;
+    padding: 10px;
+  }
+
+  .menu {
+    display: none;
+    width: 100%;
+    flex-direction: column;
+    margin-top: 10px;
+  }
+
+  .menu-item a {
+    padding: 15px;
+    width: 100%;
+    text-align: center;
+    background-color: rgba(255, 105, 180, 0.8);
+    margin: 2px 0;
+  }
+
+  .menu-toggle-checkbox:checked + .menu-toggle + .menu {
+    display: flex;
+  }
+
+  .menu-item.contatti .dropdown-content {
+    display: none;
+  }
+
+  /* Bottone Preventivi mobile */
+  .button-preventivi {
+    top: 150px; /* Distanza dal top */
+  }
+
+  /* Immagini con testo sovrapposto */
+  .image-section {
+    padding: 10px;
+    font-size: 1rem;
+  }
+
+  .image-section h2, .image-section h3 {
+    font-size: 1.5rem;
+  }
+
+  .image-section p {
+    font-size: 1rem;
+
+  }
+
+  .image-section h2,
+  .image-section h3 {
+    font-size: 1.5rem;
+  }
+
+  .text-overlay p {
+    font-size: 0.9rem;
+  }
+
+  .content-container {
+    padding: 40px 10px; /* Adatta la spaziatura su dispositivi mobili */
+  }
+
+  .text-overlay {
+    width: 100%; /* Aumenta la larghezza del testo su dispositivi mobili */
+    padding: 15px; /* Diminuisce il padding per ottimizzare lo spazio */
   }
 }

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
   <link rel="stylesheet" type="text/html" href="homesito.component.css">
 </head>
 <body>
@@ -11,6 +11,7 @@
     margin: 0;
     padding: 0;
     background-color: #f4f4f4;
+    bottom: 1000px;
 }
     .content-container {
     display: flex;
@@ -20,181 +21,96 @@
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     margin: 20px;
     border-radius: 8px;
+
 }
+
 
 .image-section {
-    flex: 1;
-    text-align: center;
-    margin-right: 20px;
+  position: relative;
+  width: 100%;
+  height: 600px; /* Altezza della sezione */
+  background-size: cover;
+  background-position: center;
 }
 
-.image-section h2 {
-    font-size: 24px;
-    color: #333;
-    margin-bottom: 10px;
+h2 {
+  position: absolute;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: white;
+  font-size: 2em;
+  margin: 0;
+  padding: 10px 15px;
+  border: 2px solid white; /* Bordo bianco intorno al titolo */
+  background-color: rgba(0, 0, 0, 0.5); /* Fonde con il fondo per migliorare la visibilità */
+  text-align: center;
+  border-radius: 5px;
+}
+h3 {
+  position: absolute;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: white;
+  font-size: 2em;
+  margin: 0;
+  padding: 10px 15px;
+  border: 2px solid white; /* Bordo bianco intorno al titolo */
+  background-color: rgba(0, 0, 0, 0.5); /* Fonde con il fondo per migliorare la visibilità */
+  text-align: center;
+  border-radius: 5px;
 }
 
-.image-section img {
-    max-width: 100%;
-    height: auto;
-    border-radius: 8px;
-}
-
-
-.text-section {
-    flex: 2;
-    padding: 20px;
-    background-color:  #ff00f2;
-    border-radius: 8px;
-    margin-top: 100px;
-    margin-right: 20px;
-    width: 20%; /* Imposta una larghezza fissa o percentuale */
-}
-
-.text-section p {
-    font-size: 18px;
-    line-height: 1.6;
-    color: #0f0f0f;
-}
-
-
-
-
-
-
-
-
-
-.content-container1 {
-    display: flex;
-    align-items: flex-start;
-    padding: 20px;
-    background-color: #fff;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    margin: 20px;
-    border-radius: 8px;
-}
-
-.image-section1 {
-    flex: 1;
-    text-align: center;
-    margin-left: 20px;
-}
-
-.image-section1 h2 {
-    font-size: 24px;
-    color: #333;
-    margin-bottom: 10px;
-}
-
-.image-section1 img {
-    max-width: 100%;
-    height: auto;
-    border-radius: 8px;
-}
-
-.text-section1 {
-    flex: 2;
-    padding: 20px;
-    background-color:  #ff00f2;
-    border-radius: 8px;
-    margin-left: 60px;
-    margin-top: 100px;
-}
-
-.text-section1 p {
-    font-size: 18px;
-    line-height: 1.6;
-    color: #000000;
-}
-
-
-.text-section2 {
-    flex: 2;
-    padding: 20px;
-    background-color: #ff00f2;
-    border-radius: 8px;
-    margin-left: 60px;
-    margin-top: 200px;
-}
-.text-section3 {
-    flex: 2;
-    padding: 20px;
-    background-color: #ff00f2;
-    border-radius: 8px;
-    margin-left: 60px;
-    margin-top: 100px;
+/* Testo sovrapposto */
+.text-overlay {
+  position: absolute;
+  top: 70%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
+  text-align: center;
+  padding: 20px;
+  background: rgba(0, 0, 0, 0.5); /* Sovrapposizione semitrasparente per il testo */
+  border-radius: 8px;
+  max-width: 90%;
+  box-sizing: border-box;
 }
 
 
 
-@media (min-width: 768px) {
-    .content-container {
-        flex-direction: row;
-        align-items: flex-start;
-    }
 
-    .image-section {
-        flex: 1;
-        margin-right: 20px;
-        margin-bottom: 0;
-    }
-
-    .text-section {
-        flex: 2;
-        margin-top: 0;
-        margin-right: 20px;
-        width: auto;
-    }
-    .text-section1{
-        flex: 2;
-        margin-top: 0;
-        margin-right: 20px;
-        width: auto;
-    }
-    .text-section3 {
-        flex: 2;
-        margin-top: 0;
-        margin-right: 20px;
-        width: auto;
-    }
+.scroll-down-container {
+  text-align: center;
+  margin-top: 800px;
+  font-size: 18px;
+  color: #fff;
 }
 
-@media (max-width: 600px) {
-    body {
-        background: url('/assets/Tavola\ da\ disegno\ 1.png'); /* Specifica il percorso della tua immagine */
-        background-color: pink;
-        background-size: 120%;
-        height: 35%;
-    }
-
-    .content-container {
-        flex-direction: column;
-        align-items: center;
-    }
-
-    .image-section {
-        margin-left: 0;
-        margin-bottom: 20px;
-    }
-
-    .text-section {
-        margin-right: 0;
-        width: 100%;
-    }
-      .text-section1{
-        flex: 2;
-        margin-top: 0;
-        margin-right: 20px;
-        width: auto;
-    }
-    .text-section3 {
-        flex: 2;
-        margin-top: 0;
-        margin-right: 20px;
-        width: auto;
-    }
+.scroll-down {
+  font-size: 40px;
+  color: #ffffff;
+  animation: bounce 1.5s infinite;
+  display: block;
+  margin-top: 10px;
 }
+
+@keyframes bounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(10px);
+  }
+}
+
+
+
+
+
+
+
+
   </style>
     <!-- Il contenuto del tuo sito web va qui -->
 
@@ -236,124 +152,104 @@
   <a href="https://forms.gle/Sp9NE5skntNeU9oq9" target="_blank" class="button-preventivi">Preventivi</a>
 
 
+  <div class="scroll-down-container">
+    <p>Scorri sotto</p>
+    <i class="fas fa-chevron-down scroll-down"></i>
+  </div>
 
   </body>
 
 
-  <div class="content-container">
+  <div class="content-container"style="background-image: url('https://cavis.it/wp-content/uploads/2020/03/pulizia-uffici.jpg');">
     <div class="image-section">
-        <h2>Servizio di Pulizia Domestica</h2>
-        <img src="https://rbservizi.net/wp-content/uploads/2020/10/Tempo-pulizia-appartamento.png"  alt="Immagine di pulizia">
+      <h2>Servizio di Pulizia Domestica</h2>
+      <div class="text-overlay">
+        <p>Benvenuti nel nostro servizio di Pulizia a Domicilio. I nostri servizi sono altamente qualificati e registrati sulla nostra piattaforma. Garantiamo servizi di alta qualità. Offriamo servizi come la totale pulizia della cucina, camere da letto, pulizia completa del bagno, del soggiorno e molto altro. Accogliamo le vostre richieste e le facciamo la nostra forza. La tua felicità è la nostra priorità. <strong>Richiedi un nostro sopralluogo gratuito e senza impegno!</strong></p>
+      </div>
     </div>
-    <div class="text-section1">
-        <p>Benvenuti nel nostro servizio di Pulize a Domicilio . I nostri servizi sono
-          altamente qualificati e registrati sulla nostra piattaforma Garantiamo Servizi di
-          altà qualità. Offriamo Servizi come quelli della totale pulizia della cucina ,
-          camere da letto pulizia completa del bagno , del soggiorno e molto altro
-          accogliamo le vostre richieste e ne facciamo la nostra forza . La tua felicita è la
-          nostra priorità.<strong> Richiedi un nostro sopralluogo gratuito e senza impegno</strong>  !!</p>
-    </div>
-</div>
-<div class="content-container">
-  <div class="image-section1">
-      <h2>Servizio di Pulizia Palestre</h2>
-      <img src="https://pulizie.roma.it/wp-content/uploads/foto-di-donna-che-svolge-pulizia-palestre.jpg"alt="Immagine di pulizia">
   </div>
-  <div class="text-section3">
-      <p>
-        La nostra è un'impresa professionale di pulizie a Pescara, che propone diversi servizi, in particolare per materiali e ambienti che richiedono un intervento specializzato.
 
-        Il nostro servizio di pulizia dispone, infatti, di una divisione specializzata che può agire nella pulizia di piscine, trattamenti per ambienti SPA, pulizia pavimenti in pietra e pavimenti pensati per il bordo piscina o gli ambienti sportivi.
-        Nella pulizia piscine, in particolare, sappiamo come eseguire lavori di disinfezione e sanificazione accurati, per eliminare batteri e agenti patogeni, umidità e condizioni igieniche tipiche degli spazi umidi come vasche e piscine.
 
-        I pavimenti in pietra, similmente, richiedono prodotti specifici e personale qualificato per la detersione accurata, che non danneggia i pavimenti e mantiene viva la bellezza della pietra.
 
-        Rivolgiti ai nostri esperti di pulizie per piscine e pavimentazioni in pietra a Pescara: non ti pentirai di un servizio così preciso di manutenzione delle diverse palestre!.<strong> Richiedi un nostro sopralluogo gratuito e senza impegno</strong></p>
-  </div>
-</div>
-<div class="content-container">
-  <div class="image-section1">
+
+
+
+
+
+
+  <div class="content-container">
+    <div class="image-section" style="background-image: url('https://www.puliziemagica.it/wp-content/uploads/2017/02/img-condomini.jpg');">
       <h2>Servizio di Pulizia Condomini</h2>
-      <img src="https://www.puliziemagica.it/wp-content/uploads/2017/02/img-condomini.jpg"alt="Immagine di pulizia">
+      <div class="text-overlay">
+        <p>
+          Sei alla ricerca di un’impresa specializzata in pulizie condominiali ma non sai a
+          chi rivolgerti? Cerchi un'impresa con esperienza consolidata? La risposta
+          giusta è l’impresa di pulizie S.A.M.Y. PULIZIE. L’azienda nasce nel 2012 per
+          offrire un servizio di pulizia personalizzato, completo ed efficiente di uffici,
+          scuole, laboratori alimentari e sanitari e condomini. S.A.M.Y. PULIZIE, grazie
+          alla lunga esperienza nel settore delle pulizie condominiali, è in grado di
+          effettuare la pulizia di tutti gli spazi condominiali come rampe di scale, pavimenti,
+          ascensori, cortili interni e portoni d’ingresso e garantire i più alti livelli
+          qualitativi di igiene e disinfezione. Utilizziamo prodotti e macchinari di ultimissima
+          tecnologia per lavare, asciugare e lucidare le superfici, rilasciando ambienti
+          arieggiati, sanificati e con gradevoli odori. <strong>Richiedi un nostro sopralluogo gratuito e senza impegno</strong>!!
+        </p>
+      </div>
+    </div>
   </div>
-  <div class="text-section3">
-      <p>
-        Sei alla ricerca di un’impresa specializzata in pulizie condominiali ma non sai a
-        chi rivolgerti? Cerchi un'impresa con esperienza consolidata? La risposta
-        giusta è l’impresa di pulizie S.A.M.Y. PULIZIE . L’azienda nasce nel 2012 per
-        offrire un servizio di pulizia personalizzato, completo ed efficiente di uffici,
-        scuole, laboratori alimentari e sanitari e condomini. S.A.M.Y. PULIZIE Grazie
-        alla lunga esperienza nel settore delle pulizie condominiali , è in grado di
-        effettuare la pulizia di tutti gli spazi condominiali come rampe di scale, pavimenti,
-        ascensori, cortili interni e portoni d’ingresso e garantire i più alti livelli qualitativi di igiene e disinfezione . Utilizziamo prodotti e macchinari di ultimissima
-        tecnologia per lavare, asciugare e lucidare le superfici rilasciando ambienti
-        arieggiati , sanificati e con gradevoli odori .<strong> Richiedi un nostro sopralluogo gratuito e senza impegno</strong>!!</p>
-  </div>
-</div>
-<div class="content-container">
-  <div class="image-section1">
+
+  <div class="content-container">
+    <div class="image-section" style="background-image: url('https://i0.wp.com/giammariniconsulenza.com/wp-content/uploads/2020/07/derattizzazione.jpg?resize=1038%2C576&ssl=1');">
       <h2>Servizio di Pulizia Sanificazione</h2>
-      <img src="https://i0.wp.com/giammariniconsulenza.com/wp-content/uploads/2020/07/derattizzazione.jpg?resize=1038%2C576&ssl=1"alt="Immagine di pulizia">
+      <div class="text-overlay">
+        <p>
+          Samy Pulizie propone il Servizio di Sanificazione Professionale degli Ambienti, un servizio tagliato su misura per le singole esigenze di ogni spazio abitativo o lavorativo.
+          Un servizio pensato per gli amministratori di condominio, i manager, gli imprenditori e tutti coloro che hanno la responsabilità dei luoghi dove le persone vivono o passano la maggior parte della loro giornata.
+          Un’impresa di pulizie di lunga esperienza come S.A.M.Y. Pulizie, può fornire questo tipo di servizio ad aziende di qualunque dimensione, dalla piccola attività familiare alla grande industria. <strong>Richiedi un nostro sopralluogo gratuito e senza impegno</strong>
+        </p>
+      </div>
+    </div>
   </div>
-  <div class="text-section3">
-      <p>
-        Samy Pulizie propone  il Servizio di Sanificazione Professionale degli Ambienti, un servizio tagliato su misura per le singole esigenze di ogni spazio abitativo o lavorativo.
 
-        Un servizio pensato per gli amministratori di condominio, i manager, gli imprenditori e tutti coloro che hanno la responsabilità dei luoghi dove le persone vivono o passano la maggior parte della loro giornata.
-
-        Un’impresa di pulizie di lunga esperienza come S.A.M.Y. Pulizie , può fornire questo tipo di servizio ad aziende di qualunque dimensione, dalla piccola attività familiare alla grande industria.<strong> Richiedi un nostro sopralluogo gratuito e senza impegno</strong></p>
-  </div>
-</div>
-<div class="content-container">
-  <div class="image-section1">
+  <div class="content-container">
+    <div class="image-section" style="background-image: url('https://www.marazzi.it/app/uploads/2023/10/import-blog_lavaggio-di-fine-cantiere-cose-e-come-si-esegue-1.jpg');">
       <h2>Servizio di Pulizia Straordinaria e Post Cantiere</h2>
-      <img src="https://www.marazzi.it/app/uploads/2023/10/import-blog_lavaggio-di-fine-cantiere-cose-e-come-si-esegue-1.jpg"alt="Immagine di pulizia">
+      <div class="text-overlay">
+        <p>
+          S.A.M.Y. PULIZIE vanta tecnici e operatori professionali e sempre attenti ai
+          bisogni del cliente, ogni nostro trattamento è mirato e specifico e ha come scopo
+          quello di garantire benessere e pulizia. Eseguiamo sgrossature e pulizie di fondo
+          per locali, uffici, capannoni e abitazioni private, in ambienti sottoposti a grosse
+          fonti di sporcizia, come appunto, in seguito a lavori di fine cantiere o
+          ristrutturazioni. Con l’aiuto di macchinari professionali e detergenti specifici,
+          riusciamo a pulire a fondo ogni tipo di superficie, togliendo macchie ostinate
+          come residui di cemento o grasso incrostato.<strong> Richiedi un nostro sopralluogo gratuito e senza impegno</strong> !!
+        </p>
+      </div>
+    </div>
   </div>
-  <div class="text-section3">
-      <p>
 
-
-        S.A.M.Y. PULIZIE vanta tecnici e operatori professionali e sempre attenti ai
-        bisogni del cliente, ogni nostro trattamento è mirato e specifico e ha come scopo
-        quello di garantire benessere e pulizia. Eseguiamo sgrossature e pulizie di fondo
-        per locali, uffici, capannoni e abitazioni private, in ambienti sottoposti a grosse
-        fonti di sporcizia, come appunto, in seguito a lavori di fine cantiere o
-        ristrutturazioni. Con l’aiuto di macchinari professionali e detergenti specifici,
-        riusciamo a pulire a fondo ogni tipo di superficie, togliendo macchie ostinate
-        come residui di cemento o grasso incrostato.<strong> Richiedi un nostro sopralluogo gratuito e senza impegno</strong> !!
-  </div>
-</div>
-
-<div class="content-container">
-  <div class="image-section1">
+  <div class="content-container">
+    <div class="image-section" style="background-image: url('https://cavis.it/wp-content/uploads/2020/03/pulizia-uffici.jpg');">
       <h2>Servizio di Pulizia Uffici Privati/Pubblici</h2>
-      <img src="https://cavis.it/wp-content/uploads/2020/03/pulizia-uffici.jpg"alt="Immagine di pulizia">
+      <div class="text-overlay">
+        <p>
+          Sei alla ricerca di una ditta specializzata nelle pulizie di uffici e ambienti di lavoro
+          ma non sai a chi rivolgerti? Cerchi un’impresa di pulizie con elevati standard di
+          qualità e sicurezza ? La risposta giusta è l’impresa di pulizie S.A.M.Y. PULIZIE
+          L’azienda S.AM.Y. nasce nel 2012 per offrire un servizio di pulizia completo,
+          personalizzato ed efficiente di uffici, scuole, laboratori alimentari e sanitari e
+          condomini. Li interventi di pulizia Spot o strutturati garantiscono risultati che
+          rispondono ai piu alti standard di igiene e sicurezza sui luoghi di lavoro , i
+          prodotti detergenti utilizzati e il materiale di consumo sono conformi alla
+          normativa sulla Sicurezza , rispettano l'ambiente come da protocollo Ecolabel , e
+          garantiscono un azione detergente , sanificante e germicida , l'alta
+          professionalità del personale impiegato e la continua formazione garantisco i
+          massimi standard di sanificazione . <strong> Richiedi un nostro sopralluogo gratuito e senza impegno</strong>!!
+        </p>
+      </div>
+    </div>
   </div>
-  <div class="text-section3">
-      <p>
-
-        Sei alla ricerca di una ditta specializzata nelle pulizie di uffici e ambienti di lavoro
-        ma non sai a chi rivolgerti? Cerchi un’impresa di pulizie con elevati standard di
-        qualità e sicurezza ? La risposta giusta è l’impresa di pulizie S.A.M.Y. PULIZIE
-        L’azienda S.AM.Y. nasce nel 2012 per offrire un servizio di pulizia completo,
-        personalizzato ed efficiente di uffici, scuole, laboratori alimentari e sanitari e
-        condomini. Li interventi di pulizia Spot o strutturati garantiscono risultati che
-        rispondono ai piu alti standard di igiene e sicurezza sui luoghi di lavoro , i
-        prodotti detergenti utilizzati e il materiale di consumo sono conformi alla
-        normativa sulla Sicurezza , rispettano l'ambiente come da protocollo Ecolabel , e
-        garantiscono un azione detergente , sanificante e germicida , l'alta
-        professionalità del personale impiegato e la continua formazione garantisco i
-        massimi standard di sanificazione . <strong> Richiedi un nostro sopralluogo gratuito e senza impegno</strong>!!
-  </div>
-</div>
-
-
-
-
-
-  <iframe src="https://www.google.com/maps/embed?pb=!1m28!1m12!1m3!1d11774.409853163359!2d14.203068573204833!3d42.45747377002006!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!4m13!3e6!4m5!1s0x1331a60db9286477%3A0xa0b89e89b22cbfe2!2sPescara%2C%20Provincia%20di%20Pescara!3m2!1d42.4617624!2d14.2160321!4m5!1s0x1331a6223b8afae7%3A0xe0f8329b5888d54d!2sVia%20Tirino%2C%20147%2C%20Pescara%2C%20PE!3m2!1d42.4462893!2d14.218147499999999!5e0!3m2!1sit!2sit!4v1713538014550!5m2!1sit!2sit"  width="100%" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
-  </html>
-
 
 
 
