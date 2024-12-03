@@ -251,6 +251,29 @@ this.http
     })
 }
 
+saveCustomer(numeroPreventivo: string){
+  const body = { numeroPreventivo: numeroPreventivo };
+this.http
+  .post(
+    this.globalService.url + 'customers/addWithQuote',
+    body, {
+      headers: this.globalService.headers,
+      responseType: 'text',
+    })
+    .subscribe((response)=>{
+      if(response == 'Unauthorized') {
+        this.router.navigateByUrl('/')
+      }
+      else {
+        if(response == "Mail vuota") {
+          this.popup.text = "Cliente creato senza credenziali, mail assente";
+          this.popup.openPopup();
+        } else{
+        this.router.navigateByUrl('/listCustomer')
+      }}
+    })
+}
+
 back(){
   this.router.navigateByUrl('/homeAdmin')
 }
