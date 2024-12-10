@@ -23,6 +23,9 @@ import { DomesticaComponent } from './componenti/sito/domestica/domestica.compon
 import { PassworddimenticataComponent } from './componenti/login/passworddimenticata/passworddimenticata.component';
 import { CambiapasswordComponent } from './componenti/admin/cambiapassword/cambiapassword.component';
 import { CalendarHomeComponent } from './admin/calendar/calendar-home/calendar-home.component';
+import { PrivacyComponent } from './sito/privacy/privacy.component';
+import { PreventiviComponent } from './sito/preventivi/preventivi.component';
+
 
 
 
@@ -52,6 +55,9 @@ const routes: Routes = [
   {path: 'passworddimenticata', component: PassworddimenticataComponent},
   {path: 'cambiapassword', component: CambiapasswordComponent},
   {path: 'calendarHome', component: CalendarHomeComponent},
+  {path: 'privacy', component: PrivacyComponent},
+  {path: 'preventivi', component: PreventiviComponent}
+
 
 ];
 

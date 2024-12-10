@@ -3,11 +3,11 @@ body {
   background: url('/assets/Tavola\ da\ disegno\ 1.png'); /* Specifica il percorso della tua immagine */
   background-repeat: no-repeat;
   background-position: center;
-  height: 100%;
   width: 100%;
   background-size: cover;
   margin-top: 20px;
   animation: fadeIn 2s ease-in-out;
+  text-decoration: none;
 }
 
 @keyframes fadeIn {
@@ -39,7 +39,7 @@ body {
   position: relative;
 }
 
-.menu-item.contatti > a {
+.menu-item.contatti  a {
   text-decoration: none;
   color: white;
   font-weight: bold;
@@ -159,7 +159,7 @@ body {
 }
 
 .button-preventivi {
-  display: block;
+  display: fixed;
   margin: 0px auto;
   background-color: rgba(255, 105, 180, 0.8); /* Rosa più scuro */
   color: white;
@@ -170,14 +170,113 @@ body {
   text-decoration: none;
   transition: background-color 0.3s, transform 0.3s;
   margin-top: 90px;
+  z-index: 10000;
 }
 
 .button-preventivi:hover {
-  background-color: rgba(255, 20, 147, 0.8); /* Rosa ancora più scuro */
-  transform: scale(1.05);
+  background-color: rgba(77, 0, 41, 0.8); /* Rosa ancora più scuro */
+  transform: scale(1.09);
 }
 
 
+
+
+
+.footer-content {
+  background-color: #ff00bf;
+  padding: 20px;
+}
+
+.footer-content-center {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
+.footer-content-center div {
+  flex: 1;
+  margin: 10px;
+}
+
+.footer-content-center ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.footer-content-center li {
+  margin-bottom: 10px;
+}
+
+.footer-content-center a {
+  text-decoration: none;
+  color: #000000;
+}
+
+.footer-fluid {
+  background-color: #ffffff;
+  padding: 20px;
+  text-align: center;
+}
+
+.footer-content-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.footer-content-bottom .logo img {
+  max-width: 150px;
+}
+
+.footer-content-bottom .content-creatore {
+  margin: 10px 0;
+}
+
+.footer-content-bottom .social ul {
+  list-style-type: none;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+}
+
+.footer-content-bottom .social li {
+  margin: 0 10px;
+}
+
+.footer-content-bottom .social a {
+  color: #333;
+  font-size: 24px;
+}
+.footer-content a:hover{
+  opacity: 1;
+  text-decoration: underline;
+  text-transform: uppercase;
+}
+.footer-content-center li:nth-of-type(1) a {
+  font-size: 18px;
+  text-transform: uppercase;
+  pointer-events: none;
+ opacity: 1;
+}
+.user {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 20px 0;
+}
+
+.user .fa-whatsapp {
+  font-size: 24px;
+  margin-right: 10px;
+}
+
+.user .box-user {
+  background-color: #25d366;
+  color: white;
+  padding: 10px;
+  border-radius: 5px;
+}
 
 
 @media (max-width: 600px) {
@@ -191,6 +290,7 @@ body {
     background-color: pink;
     background-size: 120%;
     height: 35%;
+    top: 0;
 }
   .menu-toggle {
     display: block;
@@ -280,4 +380,25 @@ body {
     width: 100%; /* Aumenta la larghezza del testo su dispositivi mobili */
     padding: 15px; /* Diminuisce il padding per ottimizzare lo spazio */
   }
+  .footer-content-center {
+    flex-direction: column;
+    align-items: center;
+}
+
+.footer-content-bottom {
+    flex-direction: column;
+    align-items: center;
+}
+
+.footer-content-bottom .logo img {
+    max-width: 120px;
+}
+
+.footer-content-bottom .social ul {
+    flex-direction: column;
+}
+
+.footer-content-bottom .social li {
+    margin: 5px 0;
+}
 }

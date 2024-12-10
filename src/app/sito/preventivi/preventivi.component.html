@@ -1,0 +1,29 @@
+<link rel="stylesheet" type="text/html" href="preventivi.component.css">
+
+<li class="menu-item"><a href="#">Home</a></li>
+<div class="form-container">
+  <div class="logo">
+      <img src="https://www.samypulizie.it/wp-content/uploads/2020/01/logo.png" alt="Samy Logo">
+  </div>
+  <form action="/submit-preventivo" method="post">
+      <label for="nome">Nome:</label>
+      <input type="text" id="nome" name="nome" required>
+
+      <label for="cognome">Cognome:</label>
+      <input type="text" id="cognome" name="cognome" required>
+
+      <label for="indirizzo">Indirizzo:</label>
+      <input type="text" id="indirizzo" name="indirizzo" required>
+
+      <label for="email">Email:</label>
+      <input type="email" id="email" name="email" required>
+
+      <label for="telefono">Numero di Telefono:</label>
+      <input type="tel" id="telefono" name="telefono" required>
+
+      <label for="descrizione">Descrizione Immobile:</label>
+      <textarea id="descrizione" name="descrizione" required></textarea>
+
+      <button type="submit">Invia</button>
+  </form>
+</div>

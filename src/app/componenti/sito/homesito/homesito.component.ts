@@ -35,5 +35,11 @@ export class HomesitoComponent {
   navigateToDomestica() {
     this.router.navigateByUrl('/domestica');
   }
+  navigateToPrivacy() {
+    this.router.navigateByUrl('/privacy');
+  }
+  navigateToPreventivi() {
+    this.router.navigateByUrl('/preventivi');
+  }
 }
 

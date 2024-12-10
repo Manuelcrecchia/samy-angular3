@@ -66,6 +66,9 @@ import { MatNativeDateModule } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { PopUpComponent } from './admin/pop-up/pop-up.component';
 import { QuestionPopupComponent } from './componenti/popup/question-popup/question-popup.component';
+import { PrivacyComponent } from './sito/privacy/privacy.component';
+import { PreventiviComponent } from './sito/preventivi/preventivi.component';
+
 
 loadMessages(itMessages);
 locale('it');
@@ -99,6 +102,9 @@ locale('it');
     CalendarHomeComponent,
     PopUpComponent,
     QuestionPopupComponent,
+    PrivacyComponent,
+    PreventiviComponent,
+
 
 
   ],

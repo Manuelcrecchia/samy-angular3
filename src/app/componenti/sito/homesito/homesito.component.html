@@ -28,7 +28,7 @@
 .image-section {
   position: relative;
   width: 100%;
-  height: 600px; /* Altezza della sezione */
+  height: 800px; /* Altezza della sezione */
   background-size: cover;
   background-position: center;
 }
@@ -123,14 +123,14 @@ h3 {
   <!-- Il tuo codice del dropdown va qui -->
 </div>
       <li class="menu-item contatti">
-        <a href="#">contatti</a>
+        <a href="#">Contatti</a>
         <ul class="dropdown-content"tabindex="0">
           <a href="tel:08554360">Call Center</a>
           <a href="mailto:info@samypulizie.it">email</a>
           <a href="https://www.google.com/maps/dir/Via+Tirino,+147,+65129+Pescara+PE/'45.59135,10.243048'/@44.0076457,10.8110617,8z/data=!3m1!4b1!4m11!4m10!1m5!1m1!1s0x1331a6223b8afae7:0xe0f8329b5888d54d!2m2!1d14.2181475!2d42.4462893!1m3!2m2!1d10.243048!2d45.59135?hl=it&entry=ttu">Sede Commerciale</a>
         </ul>
       </li>
-      <li class="menu-item contatti"><a href="#">servizi</a>
+      <li class="menu-item contatti"><a href="#">Servizi</a>
       <ul class="dropdown-content"tabindex="0">
         <li><a (click)="navigateToSanificazioni()" >Sanificazioni</a></li>
         <li><a (click)="navigateToUffici()" >uffici privati/pubblici</a></li>
@@ -141,7 +141,7 @@ h3 {
 
       </ul>
     </li>
-      <li class="menu-item"><a href="#">Galleria</a></li>
+      <li class="menu-item"><a (click)="navigateToPreventivi()">Richiedi il tuo Preventivo</a></li>
       <div class="buttons">
         <!-- <button class=button (click)="navigateToCustomerArea()" >Area clienti</button> -->
         <button class=button (click)="navigateToPrivateArea()" >Area riservata</button>
@@ -149,23 +149,25 @@ h3 {
     </ul>
   </nav>
 
-  <a href="https://forms.gle/Sp9NE5skntNeU9oq9" target="_blank" class="button-preventivi">Preventivi</a>
+  <a href="https://forms.gle/Sp9NE5skntNeU9oq9" target="_blank" class="button-preventivi"></a>
 
 
   <div class="scroll-down-container">
-    <p>Scorri sotto</p>
+
     <i class="fas fa-chevron-down scroll-down"></i>
   </div>
 
   </body>
 
 
-  <div class="content-container"style="background-image: url('https://cavis.it/wp-content/uploads/2020/03/pulizia-uffici.jpg');">
+  <div class="content-container"style="background-image: url('https://www.lg.com/content/dam/channel/wcms/it/images/lg-magazine/2024/list/come-pulire-casa-al-rientro-dalle-vacanze.jpg');">
     <div class="image-section">
+      <a (click)="navigateToDomestica()">
       <h2>Servizio di Pulizia Domestica</h2>
       <div class="text-overlay">
         <p>Benvenuti nel nostro servizio di Pulizia a Domicilio. I nostri servizi sono altamente qualificati e registrati sulla nostra piattaforma. Garantiamo servizi di alta qualità. Offriamo servizi come la totale pulizia della cucina, camere da letto, pulizia completa del bagno, del soggiorno e molto altro. Accogliamo le vostre richieste e le facciamo la nostra forza. La tua felicità è la nostra priorità. <strong>Richiedi un nostro sopralluogo gratuito e senza impegno!</strong></p>
       </div>
+    </a>
     </div>
   </div>
 
@@ -179,6 +181,7 @@ h3 {
 
   <div class="content-container">
     <div class="image-section" style="background-image: url('https://www.puliziemagica.it/wp-content/uploads/2017/02/img-condomini.jpg');">
+      <a (click)="navigateToCondomini1()">
       <h2>Servizio di Pulizia Condomini</h2>
       <div class="text-overlay">
         <p>
@@ -195,11 +198,14 @@ h3 {
           arieggiati, sanificati e con gradevoli odori. <strong>Richiedi un nostro sopralluogo gratuito e senza impegno</strong>!!
         </p>
       </div>
+      </a>
     </div>
   </div>
 
   <div class="content-container">
     <div class="image-section" style="background-image: url('https://i0.wp.com/giammariniconsulenza.com/wp-content/uploads/2020/07/derattizzazione.jpg?resize=1038%2C576&ssl=1');">
+
+      <a (click)="navigateToSanificazioni()">
       <h2>Servizio di Pulizia Sanificazione</h2>
       <div class="text-overlay">
         <p>
@@ -208,11 +214,13 @@ h3 {
           Un’impresa di pulizie di lunga esperienza come S.A.M.Y. Pulizie, può fornire questo tipo di servizio ad aziende di qualunque dimensione, dalla piccola attività familiare alla grande industria. <strong>Richiedi un nostro sopralluogo gratuito e senza impegno</strong>
         </p>
       </div>
+      </a>
     </div>
   </div>
 
   <div class="content-container">
     <div class="image-section" style="background-image: url('https://www.marazzi.it/app/uploads/2023/10/import-blog_lavaggio-di-fine-cantiere-cose-e-come-si-esegue-1.jpg');">
+      <a (click)="navigateToStraordinaria()">
       <h2>Servizio di Pulizia Straordinaria e Post Cantiere</h2>
       <div class="text-overlay">
         <p>
@@ -226,11 +234,13 @@ h3 {
           come residui di cemento o grasso incrostato.<strong> Richiedi un nostro sopralluogo gratuito e senza impegno</strong> !!
         </p>
       </div>
+      </a>
     </div>
   </div>
 
   <div class="content-container">
     <div class="image-section" style="background-image: url('https://cavis.it/wp-content/uploads/2020/03/pulizia-uffici.jpg');">
+      <a (click)="navigateToUffici()">
       <h2>Servizio di Pulizia Uffici Privati/Pubblici</h2>
       <div class="text-overlay">
         <p>
@@ -248,8 +258,63 @@ h3 {
           massimi standard di sanificazione . <strong> Richiedi un nostro sopralluogo gratuito e senza impegno</strong>!!
         </p>
       </div>
+      </a>
     </div>
   </div>
+  <iframe src="https://www.google.com/maps/embed?pb=!1m28!1m12!1m3!1d11774.409853163359!2d14.203068573204833!3d42.45747377002006!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!4m13!3e6!4m5!1s0x1331a60db9286477%3A0xa0b89e89b22cbfe2!2sPescara%2C%20Provincia%20di%20Pescara!3m2!1d42.4617624!2d14.2160321!4m5!1s0x1331a6223b8afae7%3A0xe0f8329b5888d54d!2sVia%20Tirino%2C%20147%2C%20Pescara%2C%20PE!3m2!1d42.4462893!2d14.218147499999999!5e0!3m2!1sit!2sit!4v1713538014550!5m2!1sit!2sit"  width="100%" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+  <footer class="footer-content">
+    <div class="footer-content-center">
+        <div>
+            <ul>
+                <li><a >Contatti</a></li>
+                <li><a class="nullo">Via Tirino 145, Pescara 65125</a></li>
+                <li><a class="nullo">Telefono 08554360</a></li>
+                <li><a class="nullo">E-mail info&#64;samypulizie.it</a></li>
+            </ul>
+        </div>
 
+        <div>
+            <ul>
+                <li><a>Orario Ufficio</a></li>
+                <li><a class="nullo">08:30 12:30 / 15:00 - 19:00</a></li>
+
+            </ul>
+        </div>
+
+
+    <div>
+        <ul>
+            <li><a>link utili</a></li>
+            <li><a href="#">home</a></li>
+            <li><a (click)="navigateToPrivacy()">Privacy</a></li>
+
+
+        </ul>
+    </div>
+    </div>
+   <div class="footer-fluid">
+    <div class="footer-content-bottom">
+        <div class="logo">
+       <a href="#"> <img src="https://www.samypulizie.it/wp-content/uploads/2020/01/logo.png"></a>
+    </div>
+    <p  class="content-creatore
+    ">creato Da Manuel Crecchia - Alessio Veratti</p>
+    <div class="social">
+
+        <ul>
+            <li><a href="#"><i class="fa-brands fa-facebook"></i></a></li>
+            <li><a href="#"><i class="fa-brands fa-instagram"></i></a></li>
+
+        </ul>
+    </div>
+    </div>
+   </div>
+</footer>
+<div class="user">
+ <i class="fa-brands fa-whatsapp"></i>
+  <div class="box-user">
+      <p>351 503 4934</p>
+  </div>
+</div>
 
 
