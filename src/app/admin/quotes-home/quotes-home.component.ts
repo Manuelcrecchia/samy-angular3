@@ -174,9 +174,10 @@ this.http
               this.quoteModel.descrizioneImmobile = quoteJson["descrizioneImmobile"];
               this.quoteModel.servizi = JSON.parse(quoteJson["servizi"]);
               this.quoteModel.interventi = JSON.parse(quoteJson["interventi"]);
-              this.quoteModel.imponibile = quoteJson["imponibile"];
+              this.quoteModel.imponibile = parseFloat(quoteJson["imponibile"]).toFixed(2);
               this.quoteModel.iva = quoteJson["iva"];
               this.quoteModel.pagamento = quoteJson["pagamento"];
+              this.quoteModel.tempistica = quoteJson["tempistica"];
               this.quoteModel.note = quoteJson["note"];
 
               this.router.navigateByUrl('/editQuote');
@@ -250,6 +251,33 @@ this.http
       }
     })
 }
+
+// invioWhatsApp(numeroPreventivo: string) {
+//   const body = { numeroPreventivo: numeroPreventivo };
+//   this.http
+//     .post(
+//       this.globalService.url + 'quotes/sendWhatsApp',
+//       body,
+//       {
+//         headers: this.globalService.headers,
+//         responseType: 'text',
+//       }
+//     )
+//     .subscribe((response) => {
+//       if (response == 'Unauthorized') {
+//         this.router.navigateByUrl('/');
+//       } else {
+//         if (response == 'NO') {
+//           this.popup.text = 'NEL PREVENTIVO NON È PRESENTE UN NUMERO DI TELEFONO';
+//           this.popup.openPopup();
+//         } else {
+//           this.popup.text = 'INVIO SU WHATSAPP RIUSCITO';
+//           this.popup.openPopup();
+//         }
+//       }
+//     });
+// }
+
 
 back(){
   this.router.navigateByUrl('/homeAdmin')

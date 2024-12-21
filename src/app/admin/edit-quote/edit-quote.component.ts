@@ -46,6 +46,7 @@ export class EditQuoteComponent {
       imponibile: Number(this.quoteModelService.imponibile).toFixed(2),
       iva: this.quoteModelService.iva,
       pagamento: this.quoteModelService.pagamento,
+      tempistica: this.quoteModelService.tempistica,
       dataInizioContratto:
           this.quoteModelService.dataInizioContratto != ''
             ? this.datePipe.transform(

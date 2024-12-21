@@ -476,6 +476,11 @@
     </mat-form-field>
   </form>
 
+  <mat-form-field appearance="fill" class="example-full-width">
+    <mat-label>Tempistica</mat-label>
+    <input matInput name="tempistica" maxlength="255" [(ngModel)]="this.quoteModelService.tempistica" pattern="(.+)"/>
+  </mat-form-field>
+
   <form id="form" name="form">
     <mat-form-field appearance="fill">
       <mat-label>Data Inizio Contratto</mat-label>

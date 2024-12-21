@@ -4,13 +4,23 @@
   </div>
   <div [ngClass]="{ 'day-view-active': currentView === 'day' }">
     <div [ngClass]="{ 'day-view-week': currentView === 'week' }">
+      <div class="filter-container">
+        <label for="eventFilter">Filtra eventi:</label>
+        <select id="eventFilter" class="dropdown-button" (change)="onFilterChange($event)">
+          <option value="all">Tutti</option>
+          <option value="sopralluogo">Sopralluoghi</option>
+          <option value="ordinario">Lavori Ordinari</option>
+          <option value="straordinario">Lavori Straordinari</option>
+          <option value="altro">Altro</option>
+        </select>
+      </div>
       <dx-scheduler
         #scheduler
         class="fullscreen-scheduler"
         locale="it"
         timeZone="Europe/Rome"
         id="scheduler"
-        [dataSource]="events"
+        [dataSource]="filteredEvents"
         [views]="['day', 'week', 'month']"
         currentView="month"
         [startDayHour]="5"

@@ -21,6 +21,7 @@ import { QuestionPopupComponent } from '../../../componenti/popup/question-popup
 })
 export class CalendarHomeComponent {
   events: AppointmentModelService[] = [];
+  filteredEvents: AppointmentModelService[] = [];
   currentDate: Date = new Date();
   currentView: string = 'month';
   saveRecurrenceRule: string = '';
@@ -57,6 +58,7 @@ export class CalendarHomeComponent {
       })
       .subscribe((response) => {
         this.events = JSON.parse(response);
+        this.filteredEvents = this.events;
         if (this.automaticAddInspectionToCalendarservice.pass) {
           this.automaticAddInspectionToCalendarservice.pass = false;
           const startDate = new Date();
@@ -459,6 +461,22 @@ export class CalendarHomeComponent {
       .subscribe((response) => {
         this.ngOnInit();
       });
+  }
+
+  onFilterChange(event: any) {
+    const filterType = event.target.value;
+  
+    console.log('Filtro selezionato:', filterType); // Debug
+  
+    if (filterType === 'all') {
+      // Ripristina tutti gli eventi senza alterare l'array originale
+      this.filteredEvents = this.events;
+    } else {
+      // Filtra eventi in base al tipo
+      this.filteredEvents = this.events.filter((event) => {
+        return event.categories === filterType;
+      });
+    }
   }
 
   goBack() {

@@ -104,9 +104,6 @@ locale('it');
     QuestionPopupComponent,
     PrivacyComponent,
     PreventiviComponent,
-
-
-
   ],
   imports: [
     BrowserModule,

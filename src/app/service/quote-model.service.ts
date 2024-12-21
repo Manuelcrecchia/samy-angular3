@@ -24,6 +24,7 @@ export class QuoteModelService {
   imponibile = "0.00";
   iva= "N";
   pagamento = "";
+  tempistica = "";
   dataInizioContratto = "";
   durataContratto = "";
   note= '';
@@ -50,6 +51,7 @@ export class QuoteModelService {
     this.imponibile = '0.00';
     this.iva = 'N';
     this.pagamento = '';
+    this.tempistica = '';
     this.note = '';
   }
 }
