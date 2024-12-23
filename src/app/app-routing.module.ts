@@ -25,7 +25,7 @@ import { CambiapasswordComponent } from './componenti/admin/cambiapassword/cambi
 import { CalendarHomeComponent } from './admin/calendar/calendar-home/calendar-home.component';
 import { PrivacyComponent } from './sito/privacy/privacy.component';
 import { PreventiviComponent } from './sito/preventivi/preventivi.component';
-
+import { NavbarComponent } from './sito/navbar/navbar.component';
 
 
 
@@ -56,9 +56,8 @@ const routes: Routes = [
   {path: 'cambiapassword', component: CambiapasswordComponent},
   {path: 'calendarHome', component: CalendarHomeComponent},
   {path: 'privacy', component: PrivacyComponent},
-  {path: 'preventivi', component: PreventiviComponent}
-
-
+  {path: 'preventivi', component: PreventiviComponent},
+  {path:  'navbar', component: NavbarComponent}
 ];
 
 

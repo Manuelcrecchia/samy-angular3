@@ -8,6 +8,8 @@ body {
   margin-top: 20px;
   animation: fadeIn 2s ease-in-out;
   text-decoration: none;
+  height: 700px;
+  margin-top: 90px
 }
 
 @keyframes fadeIn {
@@ -30,6 +32,7 @@ body {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   z-index: 1000;
   transition: background-color 0.3s ease, box-shadow 0.3s ease;
+
 }
 
 
@@ -37,6 +40,7 @@ body {
 /* Stile per il menu a tendina "contatti" */
 .menu-item.contatti {
   position: relative;
+
 }
 
 .menu-item.contatti  a {
@@ -46,10 +50,12 @@ body {
   padding: 10px 20px;
   border-radius: 5px;
   transition: background-color 0.3s;
+
 }
 
 .menu-item.contatti > a:hover {
   background-color: rgba(255, 105, 180, 0.8); /* Rosa più scuro */
+
 }
 
 .menu-item.contatti .dropdown-content {
@@ -158,26 +164,170 @@ body {
   transform: scale(1.05);
 }
 
-.button-preventivi {
-  display: fixed;
-  margin: 0px auto;
-  background-color: rgba(255, 105, 180, 0.8); /* Rosa più scuro */
-  color: white;
-  border: none;
+.buttons {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.buttons a {
+  display: inline-block;
   padding: 10px 20px;
-  border-radius: 5px;
-  text-align: center;
+  background-color: rgba(255, 105, 180, 0.8); /* Rosa più scuro */
+  color: #fff;
   text-decoration: none;
+  border-radius: 5px;
   transition: background-color 0.3s, transform 0.3s;
-  margin-top: 90px;
-  z-index: 10000;
 }
 
-.button-preventivi:hover {
-  background-color: rgba(77, 0, 41, 0.8); /* Rosa ancora più scuro */
-  transform: scale(1.09);
+.buttons a:hover {
+  background-color: rgba(255, 20, 147, 0.8); /* Rosa ancora più scuro */
+  transform: translateY(-2px);
 }
 
+.buttons a:active {
+  background-color: #ff00ea;
+  transform: translateY(0);
+}
+
+.content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 20px;
+  width: 100%;
+}
+
+.box-content {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.titolo {
+  font-size: 30px;
+  font-weight: bold;
+  margin-bottom: 30px;
+}
+
+.sottotitolo {
+  font-size: 14px;
+  margin-bottom: 5px;
+}
+
+
+.container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  padding: 20px;
+}
+
+.carta {
+  flex: 1 1 calc(25% - 40px);
+  box-sizing: border-box;
+  margin: 20px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  overflow: hidden;
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.carta img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.paragrafo-bianco {
+  background-color: #fff;
+  padding: 10px;
+}
+
+.paragrafo {
+  text-align: center;
+}
+
+.paragrafo a {
+  text-decoration: none;
+  color: #333;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.carta:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.containers {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+
+.carts {
+  flex: 1 1 calc(50% - 40px);
+  box-sizing: border-box;
+  margin: 20px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  overflow: hidden;
+  transition: transform 0.3s, box-shadow 0.3s;
+  max-width: 400px;
+}
+
+.carts img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.paragrafs-bianco {
+  background-color: #fff;
+  padding: 10px;
+}
+
+.paragrafs {
+  text-align: center;
+}
+
+.paragrafs a {
+  text-decoration: none;
+  color: #333;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.carts:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+
+.users{
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  width: 44px;
+  height: 44px;
+  background-color: #25d366;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.2);
+  transition: transform 0.3s;
+  border: #000000 2px solid;
+  z-index: 9999;
+}
+.users i{
+  width: 10px;
+  height: 10px;
+}
+.users :hover{
+  transform: scale(1.1);
+}
 
 
 
@@ -348,38 +498,25 @@ body {
     top: 150px; /* Distanza dal top */
   }
 
+
+
+  .titolo {
+    font-size: 20px;
+}
+
+.sottotitolo {
+    font-size: 16px;
+}
   /* Immagini con testo sovrapposto */
-  .image-section {
-    padding: 10px;
-    font-size: 1rem;
-  }
 
-  .image-section h2, .image-section h3 {
-    font-size: 1.5rem;
-  }
+  .carta {
+    flex: 1 1 calc(100% - 40px);
+}
+.carts {
+  flex: 1 1 100%;
+  max-width: 100%;
+}
 
-  .image-section p {
-    font-size: 1rem;
-
-  }
-
-  .image-section h2,
-  .image-section h3 {
-    font-size: 1.5rem;
-  }
-
-  .text-overlay p {
-    font-size: 0.9rem;
-  }
-
-  .content-container {
-    padding: 40px 10px; /* Adatta la spaziatura su dispositivi mobili */
-  }
-
-  .text-overlay {
-    width: 100%; /* Aumenta la larghezza del testo su dispositivi mobili */
-    padding: 15px; /* Diminuisce il padding per ottimizzare lo spazio */
-  }
   .footer-content-center {
     flex-direction: column;
     align-items: center;

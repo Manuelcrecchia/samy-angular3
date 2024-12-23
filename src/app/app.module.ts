@@ -68,6 +68,7 @@ import { PopUpComponent } from './admin/pop-up/pop-up.component';
 import { QuestionPopupComponent } from './componenti/popup/question-popup/question-popup.component';
 import { PrivacyComponent } from './sito/privacy/privacy.component';
 import { PreventiviComponent } from './sito/preventivi/preventivi.component';
+import { NavbarComponent } from './sito/navbar/navbar.component';
 
 
 loadMessages(itMessages);
@@ -104,6 +105,7 @@ locale('it');
     QuestionPopupComponent,
     PrivacyComponent,
     PreventiviComponent,
+    NavbarComponent,
   ],
   imports: [
     BrowserModule,
