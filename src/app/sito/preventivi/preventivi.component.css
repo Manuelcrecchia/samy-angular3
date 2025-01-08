@@ -6,7 +6,6 @@
   margin: 0 auto;
   text-align: left;
   margin-top: 40px;
-  margin-left: 600px;
 }
 
 .form-container .logo {
@@ -44,6 +43,7 @@
 .form-container button:hover {
   background-color: #ff1493;
 }
+
 .menu-item {
   list-style: none;
   display: inline-block;
@@ -63,3 +63,12 @@
 .menu-item a:hover {
   background-color: #2980b9;
 }
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+  .form-container {
+    padding: 15px;
+    margin: 20px;
+    margin-top: 20px;
+    margin-left: auto;
+    margin-right: auto;

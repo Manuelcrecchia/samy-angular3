@@ -1,69 +1,56 @@
-
 <mat-toolbar class="example-toolbar">
-    <span>Preventivi</span>
-    <span class="example-spacer"></span>
-    <div class="indietro">
-      <button (click)="back()">Torna Indietro</button>
-    </div>
-    <button (click)="navigateToAddQuote()" mat-icon-button class="example-icon">
-     <mat-icon>add</mat-icon>
-    </button>
+  <span>Preventivi</span>
+  <span class="example-spacer"></span>
+  <div class="indietro">
+    <button (click)="back()">Torna Indietro</button>
+  </div>
+  <button (click)="navigateToAddQuote()" mat-icon-button class="example-icon">
+    <mat-icon>add</mat-icon>
+  </button>
+  <div class="example-spacer">
+    <mat-form-field class="example-form-field">
+      <mat-label>Numero cliente</mat-label>
+      <input #inputNumeroCliente matInput (input)="searchNumeroPreventivo(inputNumeroCliente.value)" />
+    </mat-form-field>
+    <mat-form-field class="example-form-field">
+      <mat-label>Nominativo</mat-label>
+      <input #inputNominativo matInput (input)="searchNominativo(inputNominativo.value)" />
+    </mat-form-field>
+    <div *ngIf="quotesFrEnd.length > 0"></div>
+  </div>
+</mat-toolbar>
 
-    <div class="example-spacer">
-      <mat-form-field class="example-form-field">
-        <mat-label>Numero cliente</mat-label>
-        <input #inputNumeroCliente matInput (input)="searchNumeroPreventivo(inputNumeroCliente.value)" />
-      </mat-form-field>
-
-      <mat-form-field class="example-form-field">
-        <mat-label>Nominativo</mat-label>
-        <input #inputNominativo matInput (input)="searchNominativo(inputNominativo.value)" />
-      </mat-form-field>
-
-      <div *ngIf="quotesFrEnd.length > 0"></div>
-    </div>
-  </mat-toolbar>
-
-<app-quote-list-prw [color] = "color"></app-quote-list-prw>
-<div class="quote-list">
-  <mat-list role="list">
-
-    <mat-list-item *ngFor="let quote of quotesFrEnd" role="listitem">
-      <button mat-raised-button class="scrolling-button" (click)="changePdf(quote.numeroPreventivo)">
-        <span class="scrolling-text">{{ quote.numeroPreventivo }}  {{quote.nominativo}}</span>
-      </button>
-      <button mat-raised-button (click)="navigateToEditQuote(quote.numeroPreventivo)">
-        <mat-icon aria-hidden="false" aria-label="Example edit icon">edit</mat-icon>
-      </button>
-      <button mat-raised-button (click)="delete(quote.numeroPreventivo)">
-        <mat-icon aria-hidden="false" aria-label="Example delete icon">delete</mat-icon>
-      </button>
-      <button mat-raised-button (click)="invio(quote.numeroPreventivo)">
-        <mat-icon aria-hidden="false" aria-label="Example conferma icon">send</mat-icon>
-      </button>
-      <!-- <button mat-raised-button (click)="invioWhatsApp(quote.numeroPreventivo)">
-        <mat-icon aria-hidden="false" aria-label="Example conferma icon">share</mat-icon>
-      </button> -->
-      <button mat-raised-button (click)="addInspection(quote.numeroPreventivo, quote.nominativo)"pop up>
-         <mat-icon aria-hidden="false" aria-label="Calendar icon">calendar_today</mat-icon>
-      </button>
-
-    </mat-list-item>
-
-  </mat-list>
+<div class="content-container">
+  <div class="quote-list">
+    <mat-list role="list">
+      <mat-list-item *ngFor="let quote of quotesFrEnd" role="listitem">
+        <button mat-raised-button class="scrolling-button" (click)="changePdf(quote.numeroPreventivo)">
+          <span class="scrolling-text">{{ quote.numeroPreventivo }}  {{quote.nominativo}}</span>
+        </button>
+        <button mat-raised-button (click)="navigateToEditQuote(quote.numeroPreventivo)">
+          <mat-icon aria-hidden="false" aria-label="Example edit icon">edit</mat-icon>
+        </button>
+        <button mat-raised-button (click)="delete(quote.numeroPreventivo)">
+          <mat-icon aria-hidden="false" aria-label="Example delete icon">delete</mat-icon>
+        </button>
+        <button mat-raised-button (click)="invio(quote.numeroPreventivo)">
+          <mat-icon aria-hidden="false" aria-label="Example conferma icon">send</mat-icon>
+        </button>
+        <button mat-raised-button (click)="addInspection(quote.numeroPreventivo, quote.nominativo)">
+          <mat-icon aria-hidden="false" aria-label="Calendar icon">calendar_today</mat-icon>
+        </button>
+      </mat-list-item>
+    </mat-list>
   </div>
 
-
-
-
-<ngx-extended-pdf-viewer class="ngx-extended-pdf-viewer"
-[base64Src]="pdfPrev"
-useBrowserLocale="true"
-backgroundColor="#fffff"
-[height]="'100%'"
-[customToolbar]="customToolbar"
->
-</ngx-extended-pdf-viewer>
+  <ngx-extended-pdf-viewer class="ngx-extended-pdf-viewer"
+    [base64Src]="pdfPrev"
+    useBrowserLocale="true"
+    backgroundColor="#fffff"
+    [height]="'100%'"
+    [customToolbar]="customToolbar">
+  </ngx-extended-pdf-viewer>
+</div>
 
 <ng-template #customToolbar>
   <div id="toolbarViewer">
@@ -71,15 +58,3 @@ backgroundColor="#fffff"
     <pdf-download></pdf-download>
   </div>
 </ng-template>
-
-
-
-
-
-
-
-
-
-
-
-

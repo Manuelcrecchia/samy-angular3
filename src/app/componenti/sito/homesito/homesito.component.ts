@@ -38,8 +38,8 @@ export class HomesitoComponent {
   navigateToPrivacy() {
     this.router.navigateByUrl('/privacy');
   }
-  navigateToPreventivi() {
-    this.router.navigateByUrl('/preventivi');
+  navigateToNavbar() {
+    this.router.navigateByUrl('/navbar');
   }
 }
 

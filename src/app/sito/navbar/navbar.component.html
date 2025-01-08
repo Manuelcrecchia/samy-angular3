@@ -1,123 +1,125 @@
 <style>
-  body {
-margin: 0;
-padding: 0;
-font-family: Arial, sans-serif;
-background-color: #f9f9f9;
-color: #333;
+ body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    background-color: #f9f9f9;
+    color: #333;
 }
+
 .header {
-display: flex;
-align-items: center;
-justify-content: space-between;
-padding: 10px 20px;
-background-color: #ff6f61;
-color: white;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 20px;
+    background-color: #ff6f61;
+    color: white;
 }
+
 .logo img {
-max-height: 50px;
+    max-height: 50px;
 }
 
 .navbar {
-display: flex;
-justify-content: space-between;
-align-items: center;
-background-color: rgba(255, 182, 193, 0.8); /* Rosa traslucido */
-padding: 10px;
-border-radius: 10px;
-box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: rgba(255, 182, 193, 0.8); /* Rosa traslucido */
+    padding: 10px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
-
-
-
-/* Stile per il menu a tendina "contatti" */
-.menu-item.contatti {
-position: relative;
-}
-
-.menu-item.contatti > a {
-text-decoration: none;
-color: white;
-font-weight: bold;
-padding: 10px 20px;
-border-radius: 5px;
-transition: background-color 0.3s;
-}
-
-.menu-item.contatti > a:hover {
-background-color: rgba(255, 105, 180, 0.8); /* Rosa più scuro */
-}
-
-.menu-item.contatti .dropdown-content {
-display: none;
-position: absolute;
-background-color: rgba(255, 182, 193, 0.9); /* Rosa traslucido */
-box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-border-radius: 5px;
-z-index: 1;
-animation: slideDown 0.3s ease-in-out;
-padding: 10px;
-}
-
-.menu-item.contatti:hover .dropdown-content {
-display: block;
-}
-
-.menu-item.contatti .dropdown-content a {
-display: block;
-text-decoration: none;
-color: white;
-padding: 10px;
-border-radius: 5px;
-transition: background-color 0.3s;
-}
-
-.menu-item.contatti .dropdown-content a:hover {
-background-color: rgba(255, 105, 180, 0.8); /* Rosa più scuro */
-}
-
 
 .menu-toggle-checkbox {
-display: none;
+    display: none;
 }
 
 .menu-toggle {
-display: none;
-font-size: 30px;
-cursor: pointer;
+    display: none;
+    font-size: 30px;
+    cursor: pointer;
 }
 
 .menu {
-list-style: none;
-display: flex;
-gap: 20px;
+    list-style: none;
+    display: flex;
+    gap: 20px;
 }
 
 .menu-item {
-position: relative;
+    position: relative;
 }
 
 .menu-item a {
-text-decoration: none;
-color: white;
-font-weight: bold;
-padding: 10px 20px;
-border-radius: 5px;
-transition: background-color 0.3s;
+    text-decoration: none;
+    color: white;
+    font-weight: bold;
+    padding: 10px 20px;
+    border-radius: 5px;
+    transition: background-color 0.3s;
 }
 
 .menu-item a:hover {
-background-color: rgba(255, 105, 180, 0.8); /* Rosa più scuro */
+    background-color: rgba(255, 105, 180, 0.8); /* Rosa più scuro */
 }
 
 .dropdown-content {
-display: none;
-position: absolute;
-background-color: rgba(255, 182, 193, 0.9); /* Rosa traslucido */
-box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-border-radius: 5px;
-z-index: 1;
-animation: slideDown 0.3s ease-in-out;
+    display: none;
+    position: absolute;
+    background-color: rgba(255, 182, 193, 0.9); /* Rosa traslucido */
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    border-radius: 5px;
+    z-index: 1;
+    animation: slideDown 0.3s ease-in-out;
+}
+
+.menu-item.contatti:hover .dropdown-content {
+    display: block;
+}
+
+.menu-item.contatti .dropdown-content a {
+    display: block;
+    text-decoration: none;
+    color: white;
+    padding: 10px;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+}
+
+.menu-item.contatti .dropdown-content a:hover {
+    background-color: rgba(255, 105, 180, 0.8); /* Rosa più scuro */
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+    .navbar {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .menu-toggle {
+        display: block;
+    }
+
+    .menu {
+        flex-direction: column;
+        width: 100%;
+        display: none;
+    }
+
+    .menu-item {
+        width: 100%;
+    }
+
+    .menu-item a {
+        display: block;
+        width: 100%;
+        padding: 10px;
+    }
+
+    .menu-toggle-checkbox:checked + .menu-toggle + .menu {
+        display: flex;
+    }
 }
 </style>
 
@@ -156,3 +158,5 @@ animation: slideDown 0.3s ease-in-out;
     <li class="menu-item"><a href="#">Home</a></li>
   </ul>
 </nav>
+<app-preventivi></app-preventivi>
+<iframe src="https://www.google.com/maps/embed?pb=!1m28!1m12!1m3!1d11774.409853163359!2d14.203068573204833!3d42.45747377002006!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!4m13!3e6!4m5!1s0x1331a60db9286477%3A0xa0b89e89b22cbfe2!2sPescara%2C%20Provincia%20di%20Pescara!3m2!1d42.4617624!2d14.2160321!4m5!1s0x1331a6223b8afae7%3A0xe0f8329b5888d54d!2sVia%20Tirino%2C%20147%2C%20Pescara%2C%20PE!3m2!1d42.4462893!2d14.218147499999999!5e0!3m2!1sit!2sit!4v1713538014550!5m2!1sit!2sit"  width="100%" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>

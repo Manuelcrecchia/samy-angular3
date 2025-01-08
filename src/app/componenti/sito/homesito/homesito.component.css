@@ -1,11 +1,11 @@
 /* homesito.component.css */
 body {
-  background: url('/assets/Tavola\ da\ disegno\ 1.png'); /* Specifica il percorso della tua immagine */
+  background: url('/assets/grafica\ basic\(1\).png'); /* Specifica il percorso della tua immagine */
   background-repeat: no-repeat;
   background-position: center;
   width: 100%;
   background-size: cover;
-  margin-top: 20px;
+  margin-top: 40px;
   animation: fadeIn 2s ease-in-out;
   text-decoration: none;
   height: 700px;
@@ -436,9 +436,9 @@ body {
     width: 100%;
   }
   body {
-    background: url('/assets/Tavola\ da\ disegno\ 1.png'); /* Specifica il percorso della tua immagine */
+    background: url('/assets/grafica\ basic\(1\).png'); /* Specifica il percorso della tua immagine */
     background-color: pink;
-    background-size: 120%;
+    background-size: 109%;
     height: 35%;
     top: 0;
 }
