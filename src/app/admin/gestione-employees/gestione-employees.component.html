@@ -1,0 +1,34 @@
+<div class="employees-container">
+    <!-- Titolo -->
+    <h1>Gestione Dipendenti</h1>
+  
+    <!-- Lista dipendenti -->
+    <div class="employees-list">
+      <h2>Lista Dipendenti</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Nome</th>
+            <th>Ruolo</th>
+            <th>Email</th>
+            <th>Telefono</th>
+            <th>Azioni</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let employee of employees">
+            <td>{{ employee.nome }}</td>
+            <td>{{ employee.ruolo }}</td>
+            <td>{{ employee.email }}</td>
+            <td>{{ employee.telefono }}</td>
+            <td>
+              <button class="edit-button" (click)="editEmployee(employee)">Modifica</button>
+              <button class="delete-button" (click)="deleteEmployee(employee)">Elimina</button>
+              <button class="payslip-button" (click)="sendPayslip(employee)">Invia Busta Paga</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  

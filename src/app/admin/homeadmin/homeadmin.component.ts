@@ -39,8 +39,8 @@ export class HomeAdminComponent implements OnInit {
       }
     }
 
-  navigateToEmployeesSettings() {
-    this.router.navigateByUrl('/employeesSettings')
+  navigateToSettingsEmployees() {
+    this.router.navigateByUrl('/settingsemployees')
   }
 
   navigateToQuotesHome() {
@@ -56,6 +56,9 @@ back(){
 }
 navigateToCambiapassword() {
   this.router.navigateByUrl('/cambiapassword')
+}
+navigateToGestioneemployees() {
+  this.router.navigateByUrl('/gestioneemployees')
 }
 
 

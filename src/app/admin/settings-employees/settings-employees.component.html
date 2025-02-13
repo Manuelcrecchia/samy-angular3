@@ -1,0 +1,39 @@
+<div class="indietro">
+    <button mat-raised-button color="accent" class="back-button" (click)="back()">Torna Indietro</button>
+  </div>
+<div class="container">
+    <div class="form-container">
+      <div *ngFor="let employees of employeess; let i = index">
+        <mat-label>{{employees.nome}}</mat-label>
+        <mat-label>{{employees.cognome}}</mat-label>
+        <mat-label>{{employees.email}}</mat-label>
+        <mat-label>{{employees.cellulare}}</mat-label>
+        <button mat-raised-button color="primary" (click)="deleteEmployees(i)">Elimina</button>
+      </div>
+      
+      <div>
+        <mat-form-field>
+          <mat-label>Nome</mat-label>
+          <input matInput #input [(ngModel)]="employeesAdd.nome">
+        </mat-form-field>
+        
+        <mat-form-field>
+          <mat-label>Cognome</mat-label>
+          <input matInput #input [(ngModel)]="employeesAdd.cognome">
+        </mat-form-field>
+        
+        <mat-form-field>
+          <mat-label>Email</mat-label>
+          <input matInput #input [(ngModel)]="employeesAdd.email">
+        </mat-form-field>
+        
+        <mat-form-field>
+          <mat-label>Cellulare</mat-label>
+          <input matInput #input [(ngModel)]="employeesAdd.cellulare">
+        </mat-form-field>
+        
+        <button mat-raised-button color="primary" (click)="addEmployees()">Aggiungi</button>
+      </div>
+    </div>
+  </div>
+  

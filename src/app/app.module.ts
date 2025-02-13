@@ -31,7 +31,6 @@ import {MatCheckboxModule} from '@angular/material/checkbox';
 import {MatAutocompleteModule} from '@angular/material/autocomplete';
 import {MatExpansionModule} from '@angular/material/expansion';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { EmployeesSettingsComponent } from './admin/employees-settings/employees-settings.component';
 import { HomesitoComponent } from './componenti/sito/homesito/homesito.component';
 import { QuotesHomeComponent } from './admin/quotes-home/quotes-home.component';
 import { AddQuoteComponent } from './admin/add-quote/add-quote.component';
@@ -69,6 +68,8 @@ import { QuestionPopupComponent } from './componenti/popup/question-popup/questi
 import { PrivacyComponent } from './sito/privacy/privacy.component';
 import { PreventiviComponent } from './sito/preventivi/preventivi.component';
 import { NavbarComponent } from './sito/navbar/navbar.component';
+import { GestioneEmployeesComponent } from './admin/gestione-employees/gestione-employees.component';
+import { SettingsEmployeesComponent } from './admin/settings-employees/settings-employees.component';
 
 
 loadMessages(itMessages);
@@ -81,7 +82,6 @@ locale('it');
     PrivateAreaComponent,
     HomeAdminComponent,
     UserSettingsComponent,
-    EmployeesSettingsComponent,
     HomesitoComponent,
     QuotesHomeComponent,
     AddQuoteComponent,
@@ -106,6 +106,8 @@ locale('it');
     PrivacyComponent,
     PreventiviComponent,
     NavbarComponent,
+    GestioneEmployeesComponent,
+    SettingsEmployeesComponent,
   ],
   imports: [
     BrowserModule,
