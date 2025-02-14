@@ -71,7 +71,6 @@ import { NavbarComponent } from './sito/navbar/navbar.component';
 import { GestioneEmployeesComponent } from './admin/gestione-employees/gestione-employees.component';
 import { SettingsEmployeesComponent } from './admin/settings-employees/settings-employees.component';
 
-
 loadMessages(itMessages);
 locale('it');
 

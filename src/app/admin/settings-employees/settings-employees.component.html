@@ -1,39 +1,78 @@
-<div class="indietro">
-    <button mat-raised-button color="accent" class="back-button" (click)="back()">Torna Indietro</button>
-  </div>
 <div class="container">
-    <div class="form-container">
-      <div *ngFor="let employees of employeess; let i = index">
-        <mat-label>{{employees.nome}}</mat-label>
-        <mat-label>{{employees.cognome}}</mat-label>
-        <mat-label>{{employees.email}}</mat-label>
-        <mat-label>{{employees.cellulare}}</mat-label>
-        <button mat-raised-button color="primary" (click)="deleteEmployees(i)">Elimina</button>
-      </div>
-      
-      <div>
-        <mat-form-field>
-          <mat-label>Nome</mat-label>
-          <input matInput #input [(ngModel)]="employeesAdd.nome">
-        </mat-form-field>
-        
-        <mat-form-field>
-          <mat-label>Cognome</mat-label>
-          <input matInput #input [(ngModel)]="employeesAdd.cognome">
-        </mat-form-field>
-        
-        <mat-form-field>
-          <mat-label>Email</mat-label>
-          <input matInput #input [(ngModel)]="employeesAdd.email">
-        </mat-form-field>
-        
-        <mat-form-field>
-          <mat-label>Cellulare</mat-label>
-          <input matInput #input [(ngModel)]="employeesAdd.cellulare">
-        </mat-form-field>
-        
-        <button mat-raised-button color="primary" (click)="addEmployees()">Aggiungi</button>
-      </div>
+  <h2>Aggiungi Dipendente</h2>
+  <form (ngSubmit)="addEmployees()">
+    <div class="form-group">
+      <label for="nome">Nome:</label>
+      <input
+        type="text"
+        id="nome"
+        [(ngModel)]="employeesAdd.nome"
+        name="nome"
+        class="form-control"
+        required
+      />
     </div>
-  </div>
-  
+    <div class="form-group">
+      <label for="cognome">Cognome:</label>
+      <input
+        type="text"
+        id="cognome"
+        [(ngModel)]="employeesAdd.cognome"
+        name="cognome"
+        class="form-control"
+        required
+      />
+    </div>
+    <div class="form-group">
+      <label for="email">Email:</label>
+      <input
+        type="email"
+        id="email"
+        [(ngModel)]="employeesAdd.email"
+        name="email"
+        class="form-control"
+        required
+      />
+    </div>
+    <div class="form-group">
+      <label for="cellulare">Cellulare:</label>
+      <input
+        type="text"
+        id="cellulare"
+        [(ngModel)]="employeesAdd.cellulare"
+        name="cellulare"
+        class="form-control"
+        required
+      />
+    </div>
+    <button type="submit" class="btn btn-primary">Aggiungi Dipendente</button>
+  </form>
+
+  <h2>Lista Dipendenti</h2>
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Nome</th>
+        <th>Cognome</th>
+        <th>Email</th>
+        <th>Cellulare</th>
+        <th>Azioni</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let emp of employeess; let i = index">
+        <td>{{ emp.nome }}</td>
+        <td>{{ emp.cognome }}</td>
+        <td>{{ emp.email }}</td>
+        <td>{{ emp.cellulare }}</td>
+        <td>
+          <button (click)="deleteEmployees(i)" class="btn btn-danger">
+            Elimina
+          </button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <button (click)="back()" class="btn btn-secondary">Torna alla Home</button>
+</div>

@@ -17,7 +17,7 @@ export class GlobalService {
 
   //url = "https://samipulizie.it:4000/";
 
-  url = "http://127.0.0.1:5000/";
+  url = "http://192.168.1.15:5000/";
 
   //https://betterprogramming.pub/how-to-convert-your-angular-application-to-a-native-mobile-app-android-and-ios-c212b38976df
 

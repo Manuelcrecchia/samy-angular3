@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { GlobalService } from '../../service/global.service';
 import { Router } from '@angular/router';
+import { EmployeeService } from '../../services/employee.service'; // Importa il servizio
 
 interface Employee {
   nome: string;
@@ -13,20 +14,21 @@ interface Employee {
 @Component({
   selector: 'app-settings-employees',
   templateUrl: './settings-employees.component.html',
-  styleUrls: ['./settings-employees.component.css']
+  styleUrls: ['./settings-employees.component.css'],
 })
 export class SettingsEmployeesComponent implements OnInit {
-  employeesAdd: Employee = { nome: '', cognome: '', email: '', cellulare: '' };
-  employeess: Employee[] = [];
+  employeesAdd: Employee = { nome: '', cognome: '', email: '', cellulare: '' }; // Oggetto per il form
+  employeess: Employee[] = []; // Array per memorizzare i dipendenti
 
   constructor(
     private http: HttpClient,
     public globalService: GlobalService,
-    private router: Router
+    private router: Router,
+    private employeeService: EmployeeService // Inietta il servizio
   ) {}
 
   ngOnInit() {
-    this.fetchEmployees();
+    this.fetchEmployees(); // Carica i dipendenti all'inizio
   }
 
   fetchEmployees() {
@@ -36,7 +38,7 @@ export class SettingsEmployeesComponent implements OnInit {
     }).subscribe({
       next: (response) => {
         let data = JSON.parse(response);
-        this.employeess = data;
+        this.employeess = data; // Assegna i dati alla proprietà employeess
       },
       error: (error) => {
         console.error('Errore durante il recupero dei dipendenti:', error);
@@ -58,15 +60,14 @@ export class SettingsEmployeesComponent implements OnInit {
     }).subscribe({
       next: (res) => {
         console.log('Dipendente aggiunto con successo:', res);
-        this.employeesAdd = { nome: '', cognome: '', email: '', cellulare: '' };
-        this.fetchEmployees();
+        this.employeeService.addEmployee(body); // Aggiungi il dipendente al servizio
+        this.employeesAdd = { nome: '', cognome: '', email: '', cellulare: '' }; // Resetta il form
       },
       error: (error) => {
         console.error('Errore durante l\'aggiunta del dipendente:', error);
       }
     });
   }
-
   deleteEmployees(i: number) {
     let body = { email: this.employeess[i].email };
     this.http.post(this.globalService.url + 'employees/delete', body, {
@@ -75,7 +76,7 @@ export class SettingsEmployeesComponent implements OnInit {
     }).subscribe({
       next: (res) => {
         console.log('Dipendente eliminato con successo:', res);
-        this.employeess.splice(i, 1);
+        this.employeess.splice(i, 1); // Rimuovi il dipendente dall'array
       },
       error: (error) => {
         console.error('Errore durante l\'eliminazione del dipendente:', error);
