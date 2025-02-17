@@ -10,36 +10,41 @@ import { EmployeeService } from '../../services/employee.service';
 export class GestioneEmployeesComponent implements OnInit {
   employees: any[] = [];
 
-  constructor(private employeeService: EmployeeService, private http: HttpClient) {} // Add 'http' as a dependency
+  constructor(
+    private employeeService: EmployeeService,
+    private http: HttpClient
+  ) {}
 
   ngOnInit(): void {
     this.employeeService.employees$.subscribe((data) => {
-      console.log('Dipendenti ricevuti:', data); // Debug
       this.employees = data;
     });
 
     this.employeeService.loadEmployees();
   }
-  // Funzione per modificare un dipendente
-  editEmployee(employee: any) {
-    console.log('Modifica dipendente:', employee);
-    // Implementa la logica per la modifica
+
+  // Metodo per gestire la selezione del file
+  onFileSelected(event: any, employee: any) {
+    const file: File = event.target.files[0];
+    if (file) {
+      this.sendPayslip(file, employee);
+    }
   }
 
-  // Funzione per eliminare un dipendente
-  deleteEmployee(employee: any) {
-    this.employeeService.deleteEmployee(employee.email); // Rimuovi il dipendente
-  }
+  // Metodo per inviare la busta paga
+  sendPayslip(file: File, employee: any) {
+    const formData = new FormData();
+    formData.append('payslip', file);
+    formData.append('email', employee.email);
 
-  // Funzione per inviare la busta paga
-  sendPayslip(employee: any) {
-    const apiUrl = `https://tuo-server/api/employees/${employee.id}/sendPayslip`;
-    this.http.post(apiUrl, {}).subscribe(
-      () => {
-        console.log('Busta paga inviata a:', employee.nome);
+    this.http.post('http://localhost:5000/send-payslip', formData).subscribe(
+      (response: any) => {
+        console.log('Busta paga inviata con successo:', response);
+        alert('Busta paga inviata con successo!');
       },
       (error) => {
         console.error('Errore durante l\'invio della busta paga:', error);
+        alert('Errore durante l\'invio della busta paga');
       }
     );
   }

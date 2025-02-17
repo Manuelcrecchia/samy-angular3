@@ -15,13 +15,13 @@
         <td>{{ emp.cognome }}</td>
         <td>{{ emp.email }}</td>
         <td>
-          <button (click)="editEmployee(emp)" class="btn btn-warning">
-            Modifica
-          </button>
-          <button (click)="deleteEmployee(emp)" class="btn btn-danger">
-            Elimina
-          </button>
-          <button (click)="sendPayslip(emp)" class="btn btn-success">
+          <input
+            type="file"
+            #fileInput
+            style="display: none;"
+            (change)="onFileSelected($event, emp)"
+          />
+          <button (click)="fileInput.click()" class="btn btn-success">
             Invia Busta Paga
           </button>
         </td>
