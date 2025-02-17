@@ -27,6 +27,7 @@ import { PreventiviComponent } from './sito/preventivi/preventivi.component';
 import { NavbarComponent } from './sito/navbar/navbar.component';
 import { GestioneEmployeesComponent } from './admin/gestione-employees/gestione-employees.component';
 import { SettingsEmployeesComponent } from './admin/settings-employees/settings-employees.component';
+import { PayslipsComponent } from './admin/payslips/payslips.component';
 
 
 
@@ -59,7 +60,8 @@ const routes: Routes = [
   {path: 'preventivi', component: PreventiviComponent},
   {path:  'navbar', component: NavbarComponent},
   {path:  'gestioneemployees', component: GestioneEmployeesComponent},
-  {path:  'settingsemployees', component: SettingsEmployeesComponent}
+  {path:  'settingsemployees', component: SettingsEmployeesComponent},
+  { path: 'employee/:id/payslips',component: PayslipsComponent},
 
 ];
 

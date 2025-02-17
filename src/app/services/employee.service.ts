@@ -34,4 +34,10 @@ export class EmployeeService {
     );
     this.employeesSubject.next(currentEmployees);
   }
+
+  // Aggiungi un nuovo metodo per ottenere le buste paga di un dipendente
+  getPayslipsByEmployeeId(empId: string) {
+    const apiUrl = `https://tuo-server/api/payslips/${empId}`;  // Cambia con il tuo endpoint backend
+    return this.http.get<any[]>(apiUrl);  // Restituisce un array di buste paga
+  }
 }

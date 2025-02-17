@@ -1,0 +1,24 @@
+<div class="container">
+  <h3>Buste Paga di {{ empId }}</h3>
+
+  <div *ngIf="payslips.length > 0">
+    <ul>
+      <li *ngFor="let payslip of payslips">
+        <p>{{ payslip.filename }}</p>
+        <p>Data: {{ payslip.date | date }}</p>
+
+        <!-- Usa ng2-pdf-viewer per visualizzare il PDF -->
+        <pdf-viewer
+          [src]="payslip.path"
+          [render-text]="true"
+          style="display: block; width: 100%; height: 500px;">
+        </pdf-viewer>
+      </li>
+    </ul>
+  </div>
+
+  <div *ngIf="payslips.length === 0">
+    <p>Nessuna busta paga inviata.</p>
+  </div>
+</div>
+
