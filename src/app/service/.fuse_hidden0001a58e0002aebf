@@ -1,0 +1,34 @@
+import { Injectable } from "@angular/core";
+import { HttpClient } from "@angular/common/http";
+import { Observable } from "rxjs";
+import { GlobalService } from "../service/global.service";
+
+@Injectable({
+  providedIn: "root"
+})
+export class PayslipService {
+  constructor(private http: HttpClient, private globalService: GlobalService) {}
+
+  uploadPayslip(formData: FormData): Observable<any> {
+    return this.http.post(
+      this.globalService.url + "payslips/upload",
+      formData,
+      { headers: this.globalService.headers }
+    );
+  }
+
+  getPayslips(employeeId: number): Observable<any> {
+    return this.http.post(
+      this.globalService.url + "pdfs/list",
+      { employeeId },
+      { headers: this.globalService.headers }
+    );
+  }
+
+  downloadPayslip(employeeId: number, filename: string): Observable<Blob> {
+    return this.http.get(
+      this.globalService.url + "pdfs/download?employeeId=" + employeeId + "&filename=" + filename,
+      { responseType: "blob", headers: this.globalService.headers }
+    );
+  }
+}
