@@ -1,6 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import { GlobalService } from "../../service/global.service";
+import { Router } from '@angular/router';
 
 @Component({
   selector: "app-gestione-employees",
@@ -12,7 +13,8 @@ export class GestioneEmployeesComponent implements OnInit {
 
   constructor(
     private http: HttpClient,
-    public globalService: GlobalService
+    public globalService: GlobalService,
+    private router: Router,
   ) {}
 
   ngOnInit(): void {
@@ -66,19 +68,8 @@ export class GestioneEmployeesComponent implements OnInit {
   
 
   // Ottiene la lista di buste paga di un dipendente
-  viewPayslips(employeeId: number): void {
-    this.http.post(this.globalService.url + "pdfs/list", { employeeId }, {
-      headers: this.globalService.headers,
-      responseType: "text"
-    }).subscribe({
-      next: (response) => {
-        console.log("Buste paga caricate:", response);
-        // Se vuoi, fai JSON.parse(response) se il server restituisce un JSON
-      },
-      error: (error) => {
-        console.error("Errore nel recupero delle buste paga:", error);
-      }
-    });
+  goToPayslips(empEmail: string): void {
+    this.router.navigate(["/payslips", empEmail]);
   }
 
   // (Facoltativo) Download di una singola busta paga

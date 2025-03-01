@@ -1,0 +1,45 @@
+.example-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 20px;
+    background-color: #ff6f91;
+    color: white;
+  }
+  
+  .example-spacer {
+    flex: 1;
+    margin-left: -1400px;
+    margin-top: 20px;
+  }
+  
+  .content-container {
+    display: flex;
+    justify-content: space-between;
+    padding: 20px;
+  }
+  
+  .quote-list {
+    width: 40%;
+    padding: 20px;
+  }
+  
+  mat-list-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    background-color: #ffe0e9;
+    border-radius: 5px;
+    padding: 5px;
+    transition: background-color 0.3s ease;
+    width: 100%;
+  }
+  
+  .ngx-extended-pdf-viewer {
+    width: 55%;
+    height: 100vh;
+  }
+  
+  /* ... e così via, copiando lo stile desiderato */
+  

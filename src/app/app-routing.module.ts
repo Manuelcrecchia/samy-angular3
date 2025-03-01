@@ -61,7 +61,7 @@ const routes: Routes = [
   {path:  'navbar', component: NavbarComponent},
   {path:  'gestioneemployees', component: GestioneEmployeesComponent},
   {path:  'settingsemployees', component: SettingsEmployeesComponent},
-  { path: 'employee/:id/payslips',component: PayslipsComponent},
+  { path: "payslips/:empEmail", component: PayslipsComponent},
 
 ];
 
