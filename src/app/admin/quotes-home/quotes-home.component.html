@@ -43,15 +43,23 @@
     </mat-list>
   </div>
 
-  <ngx-extended-pdf-viewer class="ngx-extended-pdf-viewer"
-    [base64Src]="pdfPrev"
+
+   <ngx-extended-pdf-viewer class="ngx-extended-pdf-viewer"
+  [textLayer]="true"
+  [showFindButton]="true"
+  [showPagingButtons]="true"
+  [useBrowserLocale]="true"
+  [height]="'100vh'"
+  [showPresentationModeButton]="true"
+  [showPrintButton]="true"
+  [showDownloadButton]="true"
+  [base64Src]="pdfPrev"
     useBrowserLocale="true"
     backgroundColor="#fffff"
     [height]="'100%'"
     [customToolbar]="customToolbar">
   </ngx-extended-pdf-viewer>
 </div>
-
 <ng-template #customToolbar>
   <div id="toolbarViewer">
     <pdf-print></pdf-print>

@@ -13,6 +13,61 @@
     .carousel-control-next-icon {
         background-color: black;
     }
+    /* Animazione di apparizione */
+.fade-in {
+  animation: fadeIn 2s ease-in-out;
+}
+
+/* Animazione di scorrimento per le card */
+.card {
+  opacity: 0;
+  animation: fadeUp 1.5s forwards;
+}
+
+/* Sequenza per ogni card */
+.card:nth-child(1) {
+  animation-delay: 0.5s;
+}
+.card:nth-child(2) {
+  animation-delay: 1s;
+}
+.card:nth-child(3) {
+  animation-delay: 1.5s;
+}
+
+/* Animazioni */
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeUp {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Cambia il colore delle frecce del carosello in nero */
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
+  background-color: black;
+}
+
+/* Effetto hover sulle card */
+.card:hover {
+  transform: scale(1.05);
+  transition: transform 0.3s ease-in-out;
+}
+
 </style>
 
 <body>
@@ -111,7 +166,7 @@
 </div>
 
 <!-- Sezione banner e ricerca servizi Samy -->
-<section class="container-fluid mt-4">
+<section class="container-xl mt-4">
 <p class="text-center fw-bold fs-3">Ricerca Servizi Samy Pulizie</p>
 <p class="text-center fs-5 mt-1 pt-0">con Samy Pulizie, scegliere il vostro servizio è un'operazione semplicissima.
 
@@ -119,7 +174,7 @@ Con oltre 13 anni di esperienza, Samy Pulizie dispone delle conoscenze e delle r
 
 degli ottimi servizi con tutta tranquillità</p>
 </section>
-<div class="container-xxl px-0">
+<div class="container-xl px-0">
   <div id="carouselServices" class="carousel slide" data-bs-ride="carousel">
     <div class="carousel-inner">
       <div class="carousel-item active">
@@ -176,7 +231,7 @@ degli ottimi servizi con tutta tranquillità</p>
           </div>
           <div class="col mt-3">
             <div class="card border-primary">
-              <img src="assets/pulizia palestre.jpg" class="card-img-top">
+              <img src="/src/assets/pulizia straordinaria.jpg" class="card-img-top">
               <div class="card-body">
                 <h2 class="card-title fw-bold fs-5">Pulizia Straordinaria</h2>
                 <a (click)="navigateToStraordinaria()" class="btn btn-secondary stretched-link">INFORMAZIONI</a>
@@ -265,7 +320,7 @@ degli ottimi servizi con tutta tranquillità</p>
 <!-- WhatsApp Floating Icon -->
 <div class="position-fixed bottom-0 end-0 mb-4 me-4">
   <a href="https://wa.me/3515034934" target="_blank" aria-label="Chatta su WhatsApp" class="btn btn-success rounded-circle btn-sm">
-    <i class="fa-brands fa-whatsapp fa-1x"></i>
+    <i class="fa-brands fa-whatsapp fa-2x"></i>
   </a>
 </div>
 
