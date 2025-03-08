@@ -6,190 +6,273 @@
 </head>
 <body>
 
-  <nav class="navbar">
-    <div class="logo"><a href="homesito.component.html."><img src="https://www.samypulizie.it/wp-content/uploads/2020/01/logo.png" alt="Logo del sito"></a></div>
-    <input type="checkbox" id="menu-toggle-checkbox" class="menu-toggle-checkbox">
-    <label for="menu-toggle-checkbox" class="menu-toggle">☰</label>
-    <ul class="menu">
-      <div class="dropdown" id="myDropdown">
-  <!-- Il tuo codice del dropdown va qui -->
-</div>
-      <li class="menu-item contatti">
-        <a href="#">Contatti</a>
-        <ul class="dropdown-content"tabindex="0">
-          <a href="tel:08554360">Call Center</a>
-          <a href="mailto:info@samypulizie.it">email</a>
-          <a href="https://www.google.com/maps/dir/Via+Tirino,+147,+65129+Pescara+PE/'45.59135,10.243048'/@44.0076457,10.8110617,8z/data=!3m1!4b1!4m11!4m10!1m5!1m1!1s0x1331a6223b8afae7:0xe0f8329b5888d54d!2m2!1d14.2181475!2d42.4462893!1m3!2m2!1d10.243048!2d45.59135?hl=it&entry=ttu">Sede Commerciale</a>
-        </ul>
-      </li>
-      <li class="menu-item contatti"><a href="#">Servizi</a>
-      <ul class="dropdown-content"tabindex="0">
-        <li><a (click)="navigateToSanificazioni()" >Sanificazioni</a></li>
-        <li><a (click)="navigateToUffici()" >uffici privati/pubblici</a></li>
-        <li><a (click)="navigateToCondomini1()">Pulizia Condomini</a></li>
-        <li><a (click)="navigateToPalestra()">Pulizia Palestre</a></li>
-        <li><a (click)="navigateToStraordinaria()">Pulizia Straordinaria</a></li>
-        <li><a (click)="navigateToDomestica()">Pulizie Domestica</a></li>
 
-      </ul>
-    </li>
-      <li class="buttons"><a (click)="navigateToNavbar()">Richiedi il tuo Preventivo</a></li>
-      <div class="buttons">
-        <!-- <button class=button (click)="navigateToCustomerArea()" >Area clienti</button> -->
-        <button class=button (click)="navigateToPrivateArea()" >Area riservata</button>
-      </div>
-    </ul>
-  </nav>
+  <style>
+    /* Cambia il colore delle frecce del carosello in nero */
+    .carousel-control-prev-icon,
+    .carousel-control-next-icon {
+        background-color: black;
+    }
+</style>
 
-  </body>
-
-<div class="content">
-  <div class="box-content">
-    <p class="titolo">Ricerca Servizi Samy Pulizie</p>
-    <p class="sottotitolo"> con Samy Pulizie, scegliere il vostro servizio è un'operazione semplicissima.</p>
-     <p class="sottotitolo">Con oltre 13 anni di esperienza, Samy Pulizie dispone delle conoscenze e delle risorse necessarire per garantire</p>
-     <p class="sottotitolo">degli ottimi servizi con tutta tranquilità</p>
-  </div>
-</div>
-
-<div class="container">
-  <div class="carta">
-    <a (click)="navigateToCondomini1()">
-      <img src="https://wips.plug.it/cips/paginegiallecasa/cms/2021/02/pulizie-condominiali.jpg?w=832&h=468&a=c" alt="">
-    </a>
-    <div class="paragrafo-bianco">
-      <div class="paragrafo">
-        <a (click)="navigateToCondomini1()"><p>Pulizia Condomini</p></a>
-      </div>
-    </div>
-  </div>
-  <div class="carta">
-    <a (click)="navigateToUffici()">
-      <img src="https://cavis.it/wp-content/uploads/2020/03/pulizia-uffici.jpg" alt="">
-    </a>
-    <div class="paragrafo-bianco">
-      <div class="paragrafo">
-        <a (click)="navigateToUffici()"><p>Pulizia Uffici</p></a>
-      </div>
-    </div>
-  </div>
-    <div class="carta">
-      <a (click)="navigateToDomestica()">
-        <img src="https://www.ilfont.it/wp-content/uploads/2024/04/pulizia-domestica.jpg" alt="">
-      </a>
-      <div class="paragrafo-bianco">
-        <div class="paragrafo">
-          <a (click)="navigateToDomestica()"><p>Pulizia Domestica</p></a>
-        </div>
-      </div>
-    </div>
-    <div class="carta">
-      <a (click)="navigateToSanificazioni()">
-        <img src="https://igeam.it/wp-content/uploads/2020/05/Sanificazione-ambienti-lavoro-covid-19-small.jpg" alt="">
-      </a>
-      <div class="paragrafo-bianco">
-        <div class="paragrafo">
-          <a (click)="navigateToSanificazioni()"><p>Sanificazioni</p></a>
-        </div>
-      </div>
-    </div>
-</div>
-<div class="containers">
-  <div class="carts">
-    <a (click)="navigateToPalestra()">
-      <img src="https://www.econsorzio.com/wp-content/uploads/come-pulire-una-palestra.png" alt="">
-    </a>
-    <div class="paragrafs-bianco">
-      <div class="paragrafs">
-        <a (click)="navigateToPalestra()"><p>Pulizia Palestre</p></a>
-      </div>
-      </div>
-    </div>
-      <div class="carts">
-        <a (click)="navigateToStraordinaria()">
-          <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR5pVMUbidART9drQZEKDhVvkhUcmyP2K8Erw&s" alt="">
+<body>
+  <header class="container-xxl px-xl-5">
+    <nav class="navbar navbar-expand-xl navbar-light bg-light position-fixed top-0 start-0 w-100 shadow" style="z-index: 1050;">
+      <div class="container-md px-0">
+        <!-- Logo ingrandito -->
+        <a class="navbar-brand logo l-logo" href="#">
+          <img src="assets/logo.png" class="w-50 h-auto"> <!-- Logo ingrandito -->
         </a>
-        <div class="paragrafs-bianco">
-          <div class="paragrafs">
-            <a (click)="navigateToStraordinaria()"><p>Pulizia Straordinaria</p></a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse ps-3" id="navbarSupportedContent">
+          <ul class="navbar-nav ms-auto mb-2 mb-lg-0 mx-auto">
+            <!-- Dropdown Contatti -->
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                Contatti
+              </a>
+              <ul class="dropdown-menu">
+                <li><a class="dropdown-item" href="tel:08554360">Call Center</a></li>
+                <li><a class="dropdown-item" href="mailto:info@samypulizie.it">Email</a></li>
+                <li><a class="dropdown-item" href="https://www.google.com/maps/dir/Via+Tirino,+147,+65129+Pescara+PE/'45.59135,10.243048'/@44.0076457,10.8110617,8z/data=!3m1!4b1!4m11!4m10!1m5!1m1!1s0x1331a6223b8afae7:0xe0f8329b5888d54d!2m2!1d14.2181475!2d42.4462893!1m3!2m2!1d10.243048!2d45.59135?hl=it&entry=ttu">Sede Commerciale</a></li>
+              </ul>
+            </li>
+            <!-- Dropdown Servizi -->
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                Servizi
+              </a>
+              <ul class="dropdown-menu">
+                <li><a class="dropdown-item" (click)="navigateToSanificazioni()">Sanificazioni</a></li>
+                <li><a class="dropdown-item" (click)="navigateToUffici()">uffici privati/pubblici</a></li>
+                <li><a class="dropdown-item" (click)="navigateToCondomini1()">Pulizia Condomini</a></li>
+                <li><a class="dropdown-item" (click)="navigateToPalestra()">Pulizia Palestre</a></li>
+                <li><a class="dropdown-item" (click)="navigateToStraordinaria()">Pulizia Straordinaria</a></li>
+                <li><a class="dropdown-item" (click)="navigateToDomestica()">Pulizie Domestica</a></li>
+              </ul>
+            </li>
+          </ul>
+          <!-- Bottone e link a destra -->
+          <ul class="navbar-nav ms-auto">
+            <!-- Pulsante rosso fisso -->
+            <li class="nav-item">
+              <a class=" btn btn-danger me-2" (click)="navigateToPreventivi()">RICHIEDI IL TUO PREVENTIVO</a> <!-- Pulsante rosso fisso -->
+            </li>
+            <!-- Link con bordo bianco fisso -->
+            <li class="nav-item">
+              <a class="nav-link border border-primary rounded-3 p-1" (click)="navigateToPrivateArea()">AREA PERSONALE</a> <!-- Link con bordo bianco fisso -->
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+  </header>
+  
+  <!-- Contenuto della pagina -->
+  <div class="container mt-5 pt-5">
+    <!-- Il contenuto della tua pagina va qui -->
+  </div>
+  
+
+<!-- Carosello (ripristinato sopra) -->
+<div class="container-fluid px-0">
+<div id="carouselExampleCaptions" class="carousel slide">
+<div class="carousel-indicators">
+  <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+  <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="1" aria-label="Slide 2"></button>
+  <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="2" aria-label="Slide 3"></button>
+  <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="3" aria-label="Slide 4"></button>
+</div>
+<div class="carousel-inner">
+  <div class="carousel-item active">
+    <img src="assets/home-principalesamy.jpg" class="d-block w-100" alt="...">
+    <div class="carousel-caption d-none d-lg-block"></div>
+  </div>
+  <div class="carousel-item">
+    <img src="assets/monospazzola-pavimento copia.jpg" class="d-block w-100" alt="...">
+    <div class="carousel-caption d-none d-lg-block"></div>
+  </div>
+  <div class="carousel-item">
+    <img src="assets/imop-pavimento.jpg" class="d-block w-100" alt="...">
+    <div class="carousel-caption d-none d-lg-block"></div>
+  </div>
+</div>
+<button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="prev">
+  <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+  <span class="visually-hidden">Previous</span>
+</button>
+<button class="carousel-control-next" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="next">
+  <span class="carousel-control-next-icon" aria-hidden="true"></span>
+  <span class="visually-hidden">Next</span>
+</button>
+</div>
+</div>
+
+<!-- Sezione banner e ricerca servizi Samy -->
+<section class="container-fluid mt-4">
+<p class="text-center fw-bold fs-3">Ricerca Servizi Samy Pulizie</p>
+<p class="text-center fs-5 mt-1 pt-0">con Samy Pulizie, scegliere il vostro servizio è un'operazione semplicissima.
+
+Con oltre 13 anni di esperienza, Samy Pulizie dispone delle conoscenze e delle risorse necessarie per garantire
+
+degli ottimi servizi con tutta tranquillità</p>
+</section>
+<div class="container-xxl px-0">
+  <div id="carouselServices" class="carousel slide" data-bs-ride="carousel">
+    <div class="carousel-inner">
+      <div class="carousel-item active">
+        <div class="row row-cols-1 row-cols-md-3">
+          <div class="col mt-3">
+            <div class="card border-primary">
+              <img src="assets/pulizia-condominio.jpg" class="card-img-top">
+              <div class="card-body">
+                <h2 class="card-title fw-bold fs-5">Pulizia Condomini</h2>
+                <a (click)="navigateToCondomini1()" class="btn btn-secondary stretched-link">INFORMAZIONI</a>
+              </div>
+            </div>
           </div>
+          <div class="col mt-3">
+            <div class="card border-primary">
+              <img src="assets/pulizia ufficio.jpg" class="card-img-top">
+              <div class="card-body">
+                <h2 class="card-title fw-bold fs-5">Pulizia uffici privati/pubblici</h2>
+                <a (click)="navigateToUffici()" class="btn btn-secondary stretched-link">INFORMAZIONI</a>
+              </div>
+            </div>
+          </div>
+          <div class="col mt-3">
+            <div class="card border-primary">
+              <img src="assets/pulizia domestica.jpg" class="card-img-top">
+              <div class="card-body">
+                <h2 class="card-title fw-bold fs-5">Pulizia Domestica</h2>
+                <a (click)="navigateToDomestica()" class="btn btn-secondary stretched-link">INFORMAZIONI</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="carousel-item">
+        <div class="row row-cols-1 row-cols-md-3">
+          <div class="col mt-3">
+            <div class="card border-primary">
+              <img src="assets/sanificazione.jpg" class="card-img-top">
+              <div class="card-body">
+                <h2 class="card-title fw-bold fs-5">Sanificazioni</h2>
+                <a (click)="navigateToSanificazioni()" class="btn btn-secondary stretched-link">INFORMAZIONI</a>
+              </div>
+            </div>
+          </div>
+          <div class="col mt-3">
+            <div class="card border-primary">
+              <img src="assets/pulizia palestre.jpg" class="card-img-top">
+              <div class="card-body">
+                <h2 class="card-title fw-bold fs-5">Pulizia Palestre</h2>
+                <a (click)="navigateToPalestra()" class="btn btn-secondary stretched-link">INFORMAZIONI</a>
+              </div>
+            </div>
+          </div>
+          <div class="col mt-3">
+            <div class="card border-primary">
+              <img src="assets/pulizia palestre.jpg" class="card-img-top">
+              <div class="card-body">
+                <h2 class="card-title fw-bold fs-5">Pulizia Straordinaria</h2>
+                <a (click)="navigateToStraordinaria()" class="btn btn-secondary stretched-link">INFORMAZIONI</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
+
+    <!-- Frecce di navigazione per il carosello delle card -->
+    <button class="carousel-control-prev position-absolute top-50 start-0 translate-middle-y ms-4" type="button" data-bs-target="#carouselServices" data-bs-slide="prev">
+      <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+      <span class="visually-hidden">Previous</span>
+    </button>
+    <button class="carousel-control-next position-absolute top-50 end-0 translate-middle-y me-4" type="button" data-bs-target="#carouselServices" data-bs-slide="next">
+      <span class="carousel-control-next-icon" aria-hidden="true"></span>
+      <span class="visually-hidden">Next</span>
+    </button>
   </div>
 </div>
 
 
 
-<a href="https://wa.me/3515034934" target="_blank" aria-label="Chatta su WhatsApp"> <div class="users">
-<img src="https://www.poliambulatoriopcm.it/wp-content/uploads/2021/08/WhatsApp-icon-PNG.png" alt="">
 
-</div>
-</a>
+<section class="container-fluid mt-4">
+  <div class="row justify-content-center">
+    <div class="col-12">
+      <iframe src="https://www.google.com/maps/embed?pb=!1m28!1m12!1m3!1d11774.409853163359!2d14.203068573204833!3d42.45747377002006!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!4m13!3e6!4m5!1s0x1331a60db9286477%3A0xa0b89e89b22cbfe2!2sPescara%2C%20Provincia%20di%20Pescara!3m2!1d42.4617624!2d14.2160321!4m5!1s0x1331a6223b8afae7%3A0xe0f8329b5888d54d!2sVia%20Tirino%2C%20147%2C%20Pescara%2C%20PE!3m2!1d42.4462893!2d14.218147499999999!5e0!3m2!1sit!2sit!4v1713538014550!5m2!1sit!2sit" width="100%" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+    </div>
+  </div>
+</section>
 
-
-
-
-
-
-
-  <iframe src="https://www.google.com/maps/embed?pb=!1m28!1m12!1m3!1d11774.409853163359!2d14.203068573204833!3d42.45747377002006!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!4m13!3e6!4m5!1s0x1331a60db9286477%3A0xa0b89e89b22cbfe2!2sPescara%2C%20Provincia%20di%20Pescara!3m2!1d42.4617624!2d14.2160321!4m5!1s0x1331a6223b8afae7%3A0xe0f8329b5888d54d!2sVia%20Tirino%2C%20147%2C%20Pescara%2C%20PE!3m2!1d42.4462893!2d14.218147499999999!5e0!3m2!1sit!2sit!4v1713538014550!5m2!1sit!2sit"  width="100%" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
-  <footer class="footer-content">
-    <div class="footer-content-center">
-        <div>
-            <ul>
-                <li><a >Contatti</a></li>
-                <li><a class="nullo">Via Tirino 145, Pescara 65125</a></li>
-                <li><a class="nullo">Telefono 08554360</a></li>
-                <li><a class="nullo">E-mail info&#64;samypulizie.it</a></li>
-            </ul>
-        </div>
-
-        <div>
-            <ul>
-                <li><a>Orario Ufficio</a></li>
-                <li><a class="nullo">08:30 12:30 / 15:00 - 19:00</a></li>
-
-            </ul>
-        </div>
-
-
-    <div>
-        <ul>
-            <li><a>link utili</a></li>
-            <li><a href="#">home</a></li>
-            <li><a (click)="navigateToPrivacy()">Privacy</a></li>
-
-
+<!-- Footer -->
+<!-- Logo nel footer -->
+<footer class="bg-dark text-light py-4 mt-4">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-4">
+        <ul class="list-unstyled">
+          <li><a href="#" class="text-light">Contatti</a></li>
+          <li><a href="#" class="text-light">Via Tirino 145, Pescara 65125</a></li>
+          <li><a href="tel:08554360" class="text-light">Telefono: 08554360</a></li>
+          <li><a href="mailto:info@samypulizie.it" class="text-light">E-mail: info&#64;samypulizie.it</a></li>
         </ul>
-    </div>
-    </div>
-   <div class="footer-fluid">
-    <div class="footer-content-bottom">
-        <div class="logo">
-       <a href="#"> <img src="https://www.samypulizie.it/wp-content/uploads/2020/01/logo.png"></a>
-    </div>
-    <p  class="content-creatore
-    ">Realizzato Da Manuel Crecchia - Alessio Veratti</p>
-    <div class="social">
-
-        <ul>
-            <li><a href="https://www.facebook.com/profile.php?id=61570800623568&locale=it_IT"><i class="fa-brands fa-facebook"></i></a></li>
-            <li><a href="https://www.instagram.com/samy_pulizie/?next=%2F"><i class="fa-brands fa-instagram"></i></a></li>
-
+      </div>
+      <div class="col-md-4">
+        <ul class="list-unstyled">
+          <li><a href="#" class="text-light">Orario Ufficio</a></li>
+          <li><a href="#" class="text-light">08:30 - 12:30 / 15:00 - 19:00</a></li>
         </ul>
+      </div>
+      <div class="col-md-4 text-center">
+        <ul class="list-unstyled">
+          <li><a href="#" class="text-light">Link utili</a></li>
+          <li><a href="#" class="text-light">Home</a></li>
+          <li><a href="#" class="text-light">Privacy</a></li>
+        </ul>
+        <!-- Logo con dimensione controllata da Bootstrap -->
+        <a href="#" class="d-inline-block">
+          <img src="https://www.samypulizie.it/wp-content/uploads/2020/01/logo.png" alt="Logo" class="img-fluid w-50 l-logo">
+        </a>
+      </div>
     </div>
+  </div>
+
+  <!-- Footer Bottom -->
+  <div class="bg-secondary py-2">
+    <div class="container text-center">
+      <p class="text-light small">Realizzato Da Manuel Crecchia - Alessio Veratti</p>
     </div>
-   </div>
+  </div>
+
+  <!-- Social Icons -->
+  <div class="bg-dark py-2">
+    <div class="container text-center">
+      <ul class="list-unstyled d-flex justify-content-center">
+        <li><a href="https://www.facebook.com/profile.php?id=61570800623568&locale=it_IT" class="text-light mx-3"><i class="fa-brands fa-facebook"></i></a></li>
+        <li><a href="https://www.instagram.com/samy_pulizie/?next=%2F" class="text-light mx-3"><i class="fa-brands fa-instagram"></i></a></li>
+      </ul>
+    </div>
+  </div>
 </footer>
-<div class="user">
-  <!-- Icona per WhatsApp -->
-  <a href="https://wa.me/3515034934" target="_blank" aria-label="Chatta su WhatsApp">
-      <i class="fa-brands fa-whatsapp"></i>
+
+
+<!-- WhatsApp Floating Icon -->
+<div class="position-fixed bottom-0 end-0 mb-4 me-4">
+  <a href="https://wa.me/3515034934" target="_blank" aria-label="Chatta su WhatsApp" class="btn btn-success rounded-circle btn-sm">
+    <i class="fa-brands fa-whatsapp fa-1x"></i>
   </a>
-  <!-- Numero di telefono per chiamata -->
-  <div class="box-user">
-      <a href="tel:3515034934">351 503 4934</a>
-  </div>
 </div>
+
+
+
+</body>
+
 
 
 

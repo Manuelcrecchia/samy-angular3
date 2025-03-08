@@ -1,37 +1,57 @@
-<div class="container">
-  <h2>Gestione Dipendenti</h2>
-  <table class="table">
-    <thead>
-      <tr>
-        <th>Nome</th>
-        <th>Cognome</th>
-        <th>Email</th>
-        <th>Azioni</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let emp of employees">
-        <td>{{ emp.nome }}</td>
-        <td>{{ emp.cognome }}</td>
-        <td>{{ emp.email }}</td>
-        <td>
-          <input
-            type="file"
-            #fileInput
-            style="display: none;"
-            (change)="onFileSelected($event, emp.email)"
-          />
-          <button (click)="fileInput.click()" class="btn btn-success">
-            Invia Busta Paga
-          </button>
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Gestione Dipendenti</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
 
-          <!-- Bottone per visualizzare le buste paga -->
-          <button (click)="goToPayslips(emp.email)" class="btn btn-primary">
-            Visualizza Buste Paga
-          </button>
+<div class="container py-4">
+    <h2 class="mb-4">Gestione Dipendenti</h2>
 
-        </td>
-      </tr>
-    </tbody>
-  </table>
+    <!-- Tabella -->
+    <table class="table table-striped table-bordered">
+        <thead class="table-dark">
+            <tr>
+                <th>Nome</th>
+                <th>Cognome</th>
+                <th>Email</th>
+                <th>Azioni</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let emp of employees">
+                <td>{{ emp.nome }}</td>
+                <td>{{ emp.cognome }}</td>
+                <td>{{ emp.email }}</td>
+                <td>
+                    <!-- Input file nascosto -->
+                    <input
+                        type="file"
+                        #fileInput
+                        class="d-none"
+                        (change)="onFileSelected($event, emp.email)"
+                    />
+                    <!-- Bottone per inviare la busta paga -->
+                    <button (click)="fileInput.click()" class="btn btn-success btn-sm">
+                        Invia Busta Paga
+                    </button>
+
+                    <!-- Bottone per visualizzare le buste paga -->
+                    <button (click)="goToPayslips(emp.email)" class="btn btn-primary btn-sm ms-2">
+                        Visualizza Buste Paga
+                    </button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
 </div>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

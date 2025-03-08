@@ -41,5 +41,8 @@ export class HomesitoComponent {
   navigateToNavbar() {
     this.router.navigateByUrl('/navbar');
   }
+  navigateToPreventivi() {
+    this.router.navigateByUrl('/preventivi');
+  }
 }
 

@@ -1,256 +1,72 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-
-    <!-- ... altre cose ... -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
-      <!-- ... altre cose ... -->
-      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
-
-
-    <!-- ... altre cose ... -->
-
-
+    <!-- Meta e collegamenti esterni -->
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <style>
-        body {
-            position: relative;-regular
-            display: block;
-            overflow: hidden;
-            margin: 0;
-            font-family: Arial, sans-serif;
-            background-color: #f0f0f0;
+    <title>Gestione Utenti</title>
+    
+    <!-- Font Awesome per le icone -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
 
-        }
-        -regular
-        .menu-toggle {
-            position: absolute;
-            top: 20px;
-            right: 80px;
-            border: none;
-            color: white;
-            background-color: #ff69b4;
-            padding: 20px;
-            text-align: center;
-            text-decoration: none;
-            font-size: 104px;
-            margin: 4px 2px;
-            cursor: pointer;
-            border-radius: 10px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-        }
-
-        .menu-toggle:hover {
-            background-color: #ff1493;-regular
-        }
-
-        .menu a {
-            display: block;
-            padding: 15px 20px;
-            text-decoration: none;
-            color: #333;
-            transition: background-color 0.3s ease;
-        }
-
-
-
-
-        .button {
-            background-color: #ff69b4;
-            border: none;
-            color: white;
-            padding: 25px 40px;
-            text-align: center;
-            text-decoration: none;
-            font-size: 18px;
-            margin: 20px 0;
-            cursor: pointer;
-            border-radius: 10px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-            transition: background-color 0.3s ease;
-            margin-top: 30px
-        }
-
-        .button:hover {
-            background-color: #ff1493;
-        }
-
-        .logo {
-            width: 250px;
-
-            margin-top: -400;
-        }
-        .button i {
-    font-size: 54px; /* Cambia questo valore per modificare la dimensione delle icone */
-}
-.button-group-1,
-.button-group-2 {
-    display: flex;
-    flex-direction: row;
-
-
-}
-.menu-toggle {
-                right: 30px;
-            }
-            .button {
-    margin-right: 20px; /* Aggiungi un margine a destra di ogni bottone */
-}
-
-.button:last-child {
-    margin-right: 0; /* Rimuovi il margine dal ultimo bottone */
-}
-
-
-/* CSS */
-/* CSS */
-#big-button {
-  background-color: #ff69b4;
-            border: none;
-            color: white;
-            padding: 25px 40px;
-            text-align: center;
-            text-decoration: none;
-            font-size: 18px;
-            margin: 20px 0;
-            cursor: pointer;
-            border-radius: 10px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-            transition: background-color 0.3s ease;
-            margin-top: 30px
-}
-@media (max-width: 600px) {
-
-    .menu-toggle i {
-        font-size: 40px; /* Ingrandisci l'icona del menu toggle */
-    }
-}
-
-        @media (min-width: 1024px)
-
-{
-  .button {
-    margin-right: 20px; /* Aggiungi un margine a destra di ogni bottone */
-}
-
-.button:last-child {
-    margin-right: 0; /* Rimuovi il margine dal ultimo bottone */
-}
-
-/* CSS */
-#big-button {
-  background-color: #ff69b4;
-  border: none;
-  color: white;
-  padding: 30px 60px; /* Usa 'em' o 'rem' per un layout reattivo */
-  text-align: center;
-  text-decoration: none;
-  font-size: 20px; /* Usa 'em' o 'rem' per un layout reattivo */
-  margin: 1em 0;
-  cursor: pointer;
-  border-radius: 10px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-  transition: background-color 0.3s ease;
-  margin-top: 30px; /* Usa 'em' o 'rem' per un layout reattivo */
-}
-          .menu {background-color: #ffffff;
-            border-right:5px solid black;
-            color: rgb(0, 0, 0);
-            padding: 15px 20px;
-            text-decoration: none;
-            font-size: 18px;
-            margin: 0px 0;
-            cursor: pointer;
-            border-radius: 10px solid black;
-            width: 8%;
-            border-right: 5px;
-}
-.menu-toggle i {
-    font-size: 44px; /* Cambia questo valore per modificare la dimensione delle icone */
-}
-.button i {
-    font-size: 74px; /* Cambia questo valore per modificare la dimensione delle icone */
-}
-.button-group-1,
-    .button-group-2 {
-        flex-direction: row;
-        margin-left: 700px;
-        margin-top: -20px;
-        margin-bottom: 0px;
-    }
-            body {
-                background-image: url('https://static.vecteezy.com/ti/vettori-gratis/p1/6580883-dipendenti-di-donna-di-un-impresa-di-pulizie-su-sfondo-bianco-governanti-illustrazione-vettoriale.jpg');
-                background-size: 70%;
-                background-position: center;
-                height: 100%;
-                width: 100%;
-            }
-
-            .logo {
-                width: 500px;
-                margin-top: 50px; /* Alziamo la scritta "Samy" */
-                margin-left: 300px; /* Spostiamo la scritta "Samy" a destra */
-            }
-
-            .menu-container {
-                margin-top: 350px; /* Alziamo i pulsanti */
-                margin-right: 300px; /* Spostiamo i pulsanti a destra */
-            }
-            button (indietro) {
-    margin: 20 7px;  button:hover {
-      background-color: #e91e63; /* Colore rosa più scuro */
-      transform: scale(1.05);
-      margin-top: -2000px;
-    }
-
-    .indietro {
-      background-color: #c2185b; /* Colore rosa ancora più scuro */
-      transform: scale(0.95);
-      margin-top: -2000px;
-    }
-
-    .indietro{
-      margin-top: -2040px;
-      margin-bottom: 50px;
-    }
-    transform: scale(0.8);
-  }
-        }
-    </style>
-
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
-<div class="indietro">
-  <button (click)="back()">Torna Indietro</button>
-  </div>
+<body class="bg-light min-vh-100 d-flex flex-column">
+    <div class="container py-3 flex-grow-1">
+        <!-- Button per tornare indietro -->
+        <div class="mb-3">
+            <button class="btn btn-secondary w-100" (click)="back()">Torna Indietro</button>
+        </div>
 
-<body>
-  <button (click)="toggleMenu()" class="menu-toggle" ><i class="fas fa-cog"></i></button>
-  <div *ngIf="isMenuOpen" class="menu">
-      <a (click)="navigateToUserSettings()">Aggiungi utenti</a>
-      <a (click)="navigateToSettingsEmployees()">Aggiungi Dipendenti</a>
-      <a (click)="null">Gestisci File</a>
-      <a (click)="navigateToCambiapassword()">Cambia Password</a>
-  </div>
-  <div class="logo">
-      <img class="logo" src="https://www.samypulizie.it/wp-content/uploads/2020/01/logo.png" alt="Logo">
+        <!-- Menu Toggle -->
+        <button class="btn btn-light menu-toggle w-100 p-3" (click)="toggleMenu()">
+            <i class="fas fa-cog"></i>
+        </button>
+        
+        <!-- Menu laterale (visibile quando è aperto) -->
+        <div *ngIf="isMenuOpen" class="menu position-absolute bg-white border shadow-sm rounded p-3">
+            <a href="#" class="d-block text-dark mb-2" (click)="navigateToUserSettings()">Aggiungi utenti</a>
+            <a href="#" class="d-block text-dark mb-2" (click)="navigateToSettingsEmployees()">Aggiungi Dipendenti</a>
+            <a href="#" class="d-block text-dark mb-2">Gestisci File</a>
+            <a href="#" class="d-block text-dark" (click)="navigateToCambiapassword()">Cambia Password</a>
+        </div>
+
+        <!-- Logo -->
+        <div class="text-center mb-4">
+            <img class="img-fluid" src="https://www.samypulizie.it/wp-content/uploads/2020/01/logo.png" alt="Logo">
+        </div>
+
+        <!-- Gruppo di bottoni (Gestione dipendenti e clienti) -->
+        <div class="row g-3 mb-4">
+            <div class="col-6">
+                <button class="btn btn-pink w-100 p-4 d-flex flex-column align-items-center justify-content-center rounded-3 shadow-sm" style="background-color: #e83e8c; border: none; color: white; transition: background-color 0.3s, transform 0.3s;" onmouseover="this.style.backgroundColor='#d6336c'" onmouseout="this.style.backgroundColor='#e83e8c'" (click)="navigateToGestioneemployees()">
+                    <i class="fas fa-user fa-2x"></i><br>Gestione Dipendenti
+                </button>
+            </div>
+            <div class="col-6">
+                <button class="btn btn-pink w-100 p-4 d-flex flex-column align-items-center justify-content-center rounded-3 shadow-sm" style="background-color: #e83e8c; border: none; color: white; transition: background-color 0.3s, transform 0.3s;" onmouseover="this.style.backgroundColor='#d6336c'" onmouseout="this.style.backgroundColor='#e83e8c'" (click)="null">
+                    <i class="fas fa-restroom fa-2x"></i><br>Gestione Clienti
+                </button>
+            </div>
+        </div>
+
+        <!-- Gruppo di bottoni (Gestione preventivi e calendario) -->
+        <div class="row g-3">
+            <div class="col-6">
+                <button class="btn btn-pink w-100 p-4 d-flex flex-column align-items-center justify-content-center rounded-3 shadow-sm" style="background-color: #e83e8c; border: none; color: white; transition: background-color 0.3s, transform 0.3s;" onmouseover="this.style.backgroundColor='#d6336c'" onmouseout="this.style.backgroundColor='#e83e8c'" (click)="navigateToQuotesHome()">
+                    <i class="fas fa-folder fa-2x"></i><br>Gestione Preventivi
+                </button>
+            </div>
+            <div class="col-6">
+                <button class="btn btn-pink w-100 p-4 d-flex flex-column align-items-center justify-content-center rounded-3 shadow-sm" id="big-button" style="background-color: #e83e8c; border: none; color: white; transition: background-color 0.3s, transform 0.3s;" onmouseover="this.style.backgroundColor='#d6336c'" onmouseout="this.style.backgroundColor='#e83e8c'" (click)="navigateToCalendarHome()">
+                    <i class="fas fa-calendar fa-3x"></i><br>Calendario
+                </button>
+            </div>
+        </div>
     </div>
-      <div class="button-group-1">
-          <button (click)="navigateToGestioneemployees()"class="button">  <i class="fas fa-user"></i><br>Gestione Dipendenti</button>
-          <button (click)="null" class="button"><i class="fas fa-restroom"></i><br>Gestione Clienti</button>
 
-      </div>
-      <div class="button-group-2">
-          <button (click)="navigateToQuotesHome()" class="button"><i class="fas fa-folder"></i><br>Gestione Preventivi</button>
-          <button (click)="navigateToCalendarHome()" id="big-button"><i class="fas fa-calendar fa-3x"></i><br>Calendario </button>
-
-
-  </div>
+    <!-- Bootstrap JS (opzionale, per funzionalità come modals, dropdowns, ecc.) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
-
-
-
-
-
-
-<!-- HTML -->
