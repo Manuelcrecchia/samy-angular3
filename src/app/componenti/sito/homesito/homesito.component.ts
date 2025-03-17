@@ -8,6 +8,7 @@ import { Router } from '@angular/router';
   styleUrls: ['./homesito.component.css']
 })
 export class HomesitoComponent {
+services: any;
   constructor(private router: Router) {}
 
   navigateToCustomerArea() {

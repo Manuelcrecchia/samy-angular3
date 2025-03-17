@@ -56,7 +56,7 @@ import { DxButtonModule } from 'devextreme-angular';
 import { DxAutocompleteModule } from 'devextreme-angular';
 import { locale, loadMessages } from 'devextreme/localization';
 import { DatePipe } from '@angular/common';
-
+import { CommonModule } from '@angular/common'; // IMPORTA QUESTO
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 
 import * as itMessages from 'devextreme/localization/messages/it.json';
@@ -71,6 +71,7 @@ import { NavbarComponent } from './sito/navbar/navbar.component';
 import { GestioneEmployeesComponent } from './admin/gestione-employees/gestione-employees.component';
 import { SettingsEmployeesComponent } from './admin/settings-employees/settings-employees.component';
 import { PayslipsComponent } from './admin/payslips/payslips.component';
+import { ViewPdfComponent } from './admin/view-pdf/view-pdf.component';
 
 loadMessages(itMessages);
 locale('it');
@@ -109,6 +110,7 @@ locale('it');
     GestioneEmployeesComponent,
     SettingsEmployeesComponent,
     PayslipsComponent,
+    ViewPdfComponent,
   ],
   imports: [
     BrowserModule,
@@ -151,6 +153,7 @@ locale('it');
     MatNativeDateModule,
     MatDatepickerModule,
     MatDialogModule,
+    CommonModule // IMPORTA QUESTO PER *ngFor
   ],
     providers: [
       GlobalService, DatePipe
