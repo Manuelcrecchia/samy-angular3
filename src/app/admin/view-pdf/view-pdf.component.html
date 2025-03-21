@@ -1,1 +1,15 @@
-<p>view-pdf works!</p>
+<button class="btn-back" (click)="back()">Torna Indietro</button>
+<ngx-extended-pdf-viewer class="ngx-extended-pdf-viewer"
+[base64Src]="pdfPrev"
+useBrowserLocale="true"
+backgroundColor="#fffff"
+[height]="'100%'"
+[customToolbar]="customToolbar">
+</ngx-extended-pdf-viewer>
+
+<ng-template #customToolbar>
+<div id="toolbarViewer">
+<pdf-print></pdf-print>
+<pdf-download></pdf-download>
+</div>
+</ng-template>

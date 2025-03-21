@@ -5,6 +5,7 @@ import { GlobalService } from '../../service/global.service';
 import { QuoteModelService } from '../../service/quote-model.service';
 import { PopupServiceService } from '../../componenti/popup/popup-service.service';
 import { DatePipe } from '@angular/common';
+import { Location } from '@angular/common';
 @Component({
   selector: 'app-add-quote',
   templateUrl: './add-quote.component.html',
@@ -17,7 +18,8 @@ export class AddQuoteComponent {
     public quoteModelService: QuoteModelService,
     private http: HttpClient,
     private router: Router,
-    private popup: PopupServiceService
+    private popup: PopupServiceService,
+    private location: Location
   ) {}
 
   ngOnInit() {}
@@ -74,9 +76,10 @@ export class AddQuoteComponent {
   }
 
   @HostListener('window:popstate', ['$event'])
-  onBrowserBackBtnClose(event: Event) {
+  onBrowserBackBtnClose(event: Event): void {
     event.preventDefault();
     this.quoteModelService.resetQuoteModel();
+    this.location.replaceState('/quotesHome');
     this.router.navigateByUrl('/quotesHome');
   }
 }

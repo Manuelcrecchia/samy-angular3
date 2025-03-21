@@ -73,6 +73,9 @@ import { SettingsEmployeesComponent } from './admin/settings-employees/settings-
 import { PayslipsComponent } from './admin/payslips/payslips.component';
 import { ViewPdfComponent } from './admin/view-pdf/view-pdf.component';
 
+import { HTTP_INTERCEPTORS } from '@angular/common/http';
+import { AuthInterceptorService } from './auth-interceptor.service';
+
 loadMessages(itMessages);
 locale('it');
 
@@ -156,6 +159,7 @@ locale('it');
     CommonModule // IMPORTA QUESTO PER *ngFor
   ],
     providers: [
+      { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptorService, multi: true },
       GlobalService, DatePipe
     ],
     bootstrap: [AppComponent],

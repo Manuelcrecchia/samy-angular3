@@ -25,6 +25,7 @@
     "cors": "^2.8.5",
     "devextreme": "^24.1.5",
     "devextreme-angular": "24.1.5",
+    "jwt-decode": "^4.0.0",
     "material": "^0.9.11",
     "material-icons": "^1.13.12",
     "ng2-pdf-viewer": "^10.4.0",

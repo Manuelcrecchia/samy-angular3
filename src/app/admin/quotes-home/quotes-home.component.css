@@ -1,216 +1,121 @@
-body {
+/* Reset e impostazioni generali */
+* {
+  box-sizing: border-box;
   margin: 0;
   padding: 0;
-  font-family: Arial, sans-serif;
-  background-color: #f9f9f9;
-  color: #333;
 }
 
+body {
+  font-family: 'Roboto', sans-serif;
+  background-color: #f8f9fa;
+  color: #333;
+  margin: 0;
+  padding: 0;
+}
+
+/* Toolbar */
 .example-toolbar {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  padding: 10px 20px;
-  background-color: #ff6f91;
-  color: white;
+  background-color: pink; /* Blu Material */
+  color: #fff;
+  padding: 0 16px;
+  min-height: 64px;
 }
 
 .example-spacer {
   flex: 1;
-  margin-left: -1400px;
-  margin-top: 20px;
 }
 
+/* Pulsante "Torna Indietro" */
+.indietro button {
+  background: transparent;
+  border: none;
+  color: #fff;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+/* Icon button */
 .example-icon {
-  transition: transform 0.3s ease;
-  margin-right: 1500px;
+  margin-left: 8px;
 }
 
-.example-icon:hover {
-  transform: scale(1.9);
-}
-
+/* Mat-form-field all'interno della toolbar */
 .example-form-field {
-  margin: 0 10px;
+  margin: 0 8px;
+  width: 200px;
 }
 
+@media (max-width: 600px) {
+  .example-form-field {
+    width: 150px;
+    margin: 0 4px;
+  }
+}
+
+/* Container principale */
 .content-container {
-  display: flex;
-  justify-content: space-between;
-  padding: 20px;
+  padding: 16px;
+  margin: 0 auto;
+  max-width: 1200px;
 }
 
+/* Lista dei preventivi */
 .quote-list {
-  width: 40%;
-  padding: 20px;
+  margin-top: 16px;
 }
 
-mat-list-item {
+.quote-list mat-list-item {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 10px;
-  background-color: #ffe0e9;
-  border-radius: 5px;
-  padding: 5px;
-  transition: background-color 0.3s ease;
-  width: 100%;
+  border-bottom: 1px solid #ddd;
+  padding: 8px 0;
 }
 
-mat-list-item:hover {
-  background-color: #ffb3c6;
+/* Bottone per visualizzare il preventivo */
+.scrolling-button {
+  background-color: #fff;
+  border: 1px solid pink;
+  color: pink;
+  transition: background-color 0.3s, color 0.3s;
 }
 
-button {
-  margin: 0 5px;
-  transition: background-color 0.3s ease, transform 0.3s ease;
+.scrolling-button:hover {
+  background-color: pink;
+  color: #fff;
 }
 
-button:hover {
-  background-color: #ff6f91;
-  color: white;
-  transform: scale(0.8);
+/* Testo all'interno del bottone: ellissi se troppo lungo */
+.scrolling-text {
+  display: inline-block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 150px;
 }
 
-.indietro {
-  text-align: center;
-  margin-top: -10px;
-  margin-left: 400px;
+@media (min-width: 768px) {
+  .scrolling-text {
+    max-width: 250px;
+  }
 }
 
-.indietro button {
-  background-color: #ff4081;
-  color: white;
-  font-weight: bold;
-  border: none;
-  border-radius: 4px;
-  padding: 10px 20px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  transition: background-color 0.3s ease, transform 0.3s ease;
-  cursor: pointer;
+@media (min-width: 1024px) {
+  .scrolling-text {
+    max-width: 400px;
+  }
 }
 
-.indietro button:hover {
-  background-color: #e91e63;
-  transform: scale(1.05);
-}
-
-.indietro button:active {
-  background-color: #c2185b;
-  transform: scale(0.95);
-}
-
-.ngx-extended-pdf-viewer {
-  width: 55%;
-  height: 100vh;
-}
-
-@media (max-width: 768px) {
+/* Adattamenti per schermi piccoli */
+@media (max-width: 600px) {
   .example-toolbar {
-    flex-direction: column;
-    align-items: flex-start;
-    padding: 10px;
+    padding: 0 8px;
+    flex-wrap: wrap;
   }
-
-  .example-spacer {
-    width: 50%;
-    margin: 10px 0;
-    margin-top: -30px;
-  }
-
-  .example-icon {
-    transition: transform 0.3s ease;
-    margin-left: 100px;
-    margin-bottom: 30px;
-    margin-top: -45px;
-  }
-
   .example-form-field {
     width: 100%;
-    margin: 10px 0;
-  }
-
-  .content-container {
-    flex-direction: column;
-    padding: 10px;
-  }
-
-  .quote-list {
-    width: 100%;
-    padding: 10px;
-    margin-top: 80px;
-    margin-right:0px;
-  }
-
-  .ngx-extended-pdf-viewer {
-    width: 100%;
-    height: 300px;
-  }
-
-  mat-list-item {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 5px;
-    background-color: #ffe0e9;
-    border-radius: 10px;
-    padding: 10px;
-    transition: background-color 0.3s ease;
-    margin-left: 0px;
-  }
-
-  mat-list-item:hover {
-    background-color: #ffb3c6;
-  }
-
-  .scrolling-button {
-    position: relative;
-    overflow: hidden;
-    white-space: nowrap;
-    width: 100px;
-    height: 40px;
-  }
-
-  .scrolling-text {
-    display: inline-block;
-    animation: scroll-text 10s linear infinite;
-    font-size: 12px;
-  }
-
-  @keyframes scroll-text {
-    0% {
-      transform: translateX(100%);
-    }
-    100% {
-      transform: translateX(-100%);
-    }
-  }
-
-  .indietro {
-    text-align: center;
-    margin-top: -10px;
-    margin-left: 150px;
-  }
-
-  .indietro button {
-    background-color: #ff4081;
-    color: white;
-    font-weight: bold;
-    border: none;
-    border-radius: 4px;
-    padding: 10px 20px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    transition: background-color 0.3s ease, transform 0.3s ease;
-    cursor: pointer;
-  }
-
-  .indietro button:hover {
-    background-color: #e91e63;
-    transform: scale(1.05);
-  }
-
-  .indietro button:active {
-    background-color: #c2185b;
-    transform: scale(0.95);
+    margin: 4px 0;
   }
 }

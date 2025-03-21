@@ -24,7 +24,7 @@
   <div class="quote-list">
     <mat-list role="list">
       <mat-list-item *ngFor="let quote of quotesFrEnd" role="listitem">
-        <button mat-raised-button class="scrolling-button" (click)="changePdf(quote.numeroPreventivo)">
+        <button mat-raised-button class="scrolling-button" (click)="viewPdf(quote.numeroPreventivo)">
           <span class="scrolling-text">{{ quote.numeroPreventivo }}  {{quote.nominativo}}</span>
         </button>
         <button mat-raised-button (click)="navigateToEditQuote(quote.numeroPreventivo)">
@@ -42,27 +42,3 @@
       </mat-list-item>
     </mat-list>
   </div>
-
-
-   <ngx-extended-pdf-viewer class="ngx-extended-pdf-viewer"
-  [textLayer]="true"
-  [showFindButton]="true"
-  [showPagingButtons]="true"
-  [useBrowserLocale]="true"
-  [height]="'100vh'"
-  [showPresentationModeButton]="true"
-  [showPrintButton]="true"
-  [showDownloadButton]="true"
-  [base64Src]="pdfPrev"
-    useBrowserLocale="true"
-    backgroundColor="#fffff"
-    [height]="'100%'"
-    [customToolbar]="customToolbar">
-  </ngx-extended-pdf-viewer>
-</div>
-<ng-template #customToolbar>
-  <div id="toolbarViewer">
-    <pdf-print></pdf-print>
-    <pdf-download></pdf-download>
-  </div>
-</ng-template>

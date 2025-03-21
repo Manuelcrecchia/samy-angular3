@@ -7,7 +7,7 @@ import { QuoteModelService } from '../../service/quote-model.service';
 import { PopupServiceService } from '../../componenti/popup/popup-service.service';
 import { DxSchedulerComponent } from "devextreme-angular";
 import { AutomaticAddInspectionToCalendarService } from '../../service/automatic-add-inspection-to-calendar.service';
-
+import { Location } from '@angular/common';
 
 
 @Component({
@@ -33,7 +33,8 @@ export class QuotesHomeComponent   {@Input() color: any;
     private router: Router,
     private quoteModel: QuoteModelService,
     private popup: PopupServiceService,
-    private automaticAddInspectionToCalendarService: AutomaticAddInspectionToCalendarService
+    private automaticAddInspectionToCalendarService: AutomaticAddInspectionToCalendarService,
+    private location: Location
    ){}
 
 addInspection(numeroPreventivo: string, nominativo: string) {
@@ -70,51 +71,12 @@ ngOnInit() {
       if (this.quotesFrEnd.length > 0) {
         this.pdfTsSelezionato = true
         this.numeroClienteSelezionato = this.quotesFrEnd[0].numeroPreventivo;
-        const body = { numeroPreventivo: this.quotesFrEnd[0].numeroPreventivo };
-        this.http
-          .post(
-            this.globalService.url + 'pdfs/sendQuote',
-            body,
-            {
-              headers: this.globalService.headers,
-              responseType: 'text',
-            }
-          )
-          .subscribe((response) => {
-            if(response == 'Unauthorized') {
-              this.router.navigateByUrl('/')
-            }
-            else {
-              this.pdfTsSelezionato = true;
-              this.pdfPrev = response;
-            }
-          });
       }
     });
 }
 
-changePdf(numeroPreventivo: string){
-
-const body = { numeroPreventivo: numeroPreventivo };
-this.http
-          .post(
-            this.globalService.url + 'pdfs/sendQuote',
-            body,
-            {
-              headers: this.globalService.headers,
-              responseType: 'text',
-            }
-          )
-          .subscribe((response) => {
-            if(response == 'Unauthorized') {
-              this.router.navigateByUrl('/')
-            }
-            else {
-              this.pdfTsSelezionato = true;
-              this.pdfPrev = response;
-            }
-          });
-}
+viewPdf(numeroPreventivo:string){   
+  this.router.navigate(['/view-pdf'], { queryParams: { numeroPreventivo } });}
 
 searchNumeroPreventivo(value: string){
 
@@ -124,8 +86,6 @@ searchNumeroPreventivo(value: string){
   else{
 
     this.quotesFrEnd = this.quotesFrEnd.filter(quote => quote.numeroPreventivo.startsWith(value))
-    if(this.quotesFrEnd.length>0){
-    this.changePdf(this.quotesFrEnd[0].numeroPreventivo)} else {this.pdfPrev = ""}
   }
 }
 
@@ -136,8 +96,6 @@ searchNominativo(value: string){
   }
   else{
     this.quotesFrEnd = this.quotesFrEnd.filter(quote => quote.nominativo.startsWith(value))
-    if(this.quotesFrEnd.length>0){
-      this.changePdf(this.quotesFrEnd[0].numeroPreventivo)} else {this.pdfPrev = ""}
   }
 }
 
@@ -284,9 +242,10 @@ back(){
 }
 
 @HostListener('window:popstate', ['$event'])
-  onBrowserBackBtnClose(event:Event){
+  onBrowserBackBtnClose(event: Event): void {
     event.preventDefault();
-    this.router.navigateByUrl('/homeAdmin')
+    this.location.replaceState('/homeAdmin');
+    this.router.navigateByUrl('/homeAdmin');
   }
 
 

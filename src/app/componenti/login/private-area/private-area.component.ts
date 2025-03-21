@@ -41,7 +41,6 @@ constructor(private globalService: GlobalService, private http: HttpClient, priv
           this.globalService.userCode = res["codiceOperatore"];
           this.globalService.token = res["token"];
           this.globalService.admin = res["admin"];
-          this.globalService.headers = new HttpHeaders({'Content-Type':'application/json; charset=utf-8','Authorization': `${this.globalService.token}`});
           this.router.navigateByUrl('/homeAdmin');
         }
       }
