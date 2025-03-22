@@ -29,21 +29,10 @@
                 <td>{{ emp.cognome }}</td>
                 <td>{{ emp.email }}</td>
                 <td>
-                    <!-- Input file nascosto -->
-                    <input
-                        type="file"
-                        #fileInput
-                        class="d-none"
-                        (change)="onFileSelected($event, emp.email)"
-                    />
-                    <!-- Bottone per inviare la busta paga -->
-                    <button (click)="fileInput.click()" class="btn btn-success btn-sm">
-                        Invia Busta Paga
-                    </button>
-
+                    
                     <!-- Bottone per visualizzare le buste paga -->
-                    <button (click)="goToPayslips(emp.email)" class="btn btn-primary btn-sm ms-2">
-                        Visualizza Buste Paga
+                    <button (click)="goToDocument(emp.email)" class="btn btn-primary btn-sm ms-2">
+                        Visualizza documenti
                     </button>
                 </td>
             </tr>

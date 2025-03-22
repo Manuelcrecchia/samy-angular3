@@ -34,6 +34,7 @@ export class CalendarHomeComponent {
     { id: 'ordinario', text: 'Ordinario' },
     { id: 'straordinario', text: 'Straordinario' },
     { id: 'sopralluogo', text: 'Sopralluogo' },
+    { id: 'lavoriSvolti', text: 'Lavori svolti' },
     { id: 'altro', text: 'Altro' },
   ];
   nPreventiviArray: string[] = [];

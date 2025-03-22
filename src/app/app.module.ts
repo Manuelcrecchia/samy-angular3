@@ -70,7 +70,7 @@ import { PreventiviComponent } from './sito/preventivi/preventivi.component';
 import { NavbarComponent } from './sito/navbar/navbar.component';
 import { GestioneEmployeesComponent } from './admin/gestione-employees/gestione-employees.component';
 import { SettingsEmployeesComponent } from './admin/settings-employees/settings-employees.component';
-import { PayslipsComponent } from './admin/payslips/payslips.component';
+import { DocumentManagerComponent } from './admin/document-manager/document-manager.component';
 import { ViewPdfComponent } from './admin/view-pdf/view-pdf.component';
 
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
@@ -112,8 +112,8 @@ locale('it');
     NavbarComponent,
     GestioneEmployeesComponent,
     SettingsEmployeesComponent,
-    PayslipsComponent,
     ViewPdfComponent,
+    DocumentManagerComponent,
   ],
   imports: [
     BrowserModule,

@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { PayslipsComponent } from './payslips.component';
+import { DocumentManagerComponent } from './document-manager.component';
 
-describe('PayslipsComponent', () => {
-  let component: PayslipsComponent;
-  let fixture: ComponentFixture<PayslipsComponent>;
+describe('DocumentManagerComponent', () => {
+  let component: DocumentManagerComponent;
+  let fixture: ComponentFixture<DocumentManagerComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [PayslipsComponent]
+      declarations: [DocumentManagerComponent]
     })
     .compileComponents();
     
-    fixture = TestBed.createComponent(PayslipsComponent);
+    fixture = TestBed.createComponent(DocumentManagerComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

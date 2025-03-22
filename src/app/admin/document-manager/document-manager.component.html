@@ -1,0 +1,66 @@
+<mat-toolbar color="primary">
+    <span>Gestione Documenti</span>
+    <span class="spacer"></span>
+    <button mat-button (click)="back()">Torna Indietro</button>
+  </mat-toolbar>
+  
+  <div class="container">
+    <!-- Sidebar: Gestione Cartelle -->
+    <div class="sidebar">
+      <h3>Cartelle</h3>
+      <mat-list>
+        <mat-list-item *ngFor="let folder of folders">
+          <button mat-button (click)="selectFolder(folder)" [class.selected]="folder === selectedFolder">
+            {{ folder }}
+          </button>
+          <button mat-icon-button color="warn" (click)="deleteFolder(folder)" matTooltip="Elimina cartella">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </mat-list-item>
+      </mat-list>
+      <div class="new-folder">
+        <mat-form-field appearance="fill">
+          <mat-label>Nuova Cartella</mat-label>
+          <input matInput [(ngModel)]="newFolderName" placeholder="Inserisci nome">
+        </mat-form-field>
+        <button mat-raised-button color="accent" (click)="createFolder()">Crea</button>
+      </div>
+    </div>
+  
+    <!-- Main area: File e PDF Viewer -->
+    <div class="main">
+      <h3 *ngIf="selectedFolder">File in "{{ selectedFolder }}"</h3>
+      <div class="file-upload" *ngIf="selectedFolder">
+        <input type="file" #fileInput (change)="uploadFile($event)" class="d-none" />
+        <button mat-raised-button color="primary" (click)="fileInput.click()">Carica File</button>
+      </div>
+      <mat-list *ngIf="selectedFolder">
+        <mat-list-item *ngFor="let file of files">
+          <button mat-button (click)="selectFile(file.filename)">{{ file.filename }}</button>
+          <button mat-icon-button color="primary" (click)="downloadFile(file.filename)" matTooltip="Download">
+            <mat-icon>download</mat-icon>
+          </button>
+          <button mat-icon-button color="warn" (click)="deleteFile(file.filename)" matTooltip="Elimina">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </mat-list-item>
+      </mat-list>
+  
+      <!-- PDF Viewer (mostra il file selezionato) -->
+      <div *ngIf="pdfBase64" class="pdf-viewer">
+        <ngx-extended-pdf-viewer
+          [base64Src]="pdfBase64"
+          useBrowserLocale="true"
+          [height]="'100%'"
+          [customToolbar]="customToolbar">
+        </ngx-extended-pdf-viewer>
+        <ng-template #customToolbar>
+          <div id="toolbarViewer">
+            <pdf-print></pdf-print>
+            <pdf-download></pdf-download>
+          </div>
+        </ng-template>
+      </div>
+    </div>
+  </div>
+  

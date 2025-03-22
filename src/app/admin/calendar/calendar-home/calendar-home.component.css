@@ -24,6 +24,17 @@
     margin-right: -10px;
   }
 
+  .category-lavoriSvolti {
+    background-color: #fd00b1 !important;
+    color: white;
+    padding: 5px;
+    border-radius: 4px;
+    background-clip: border-box;
+    border: none !important;
+    margin-left: -10px;
+    margin-right: -10px;
+  }
+
 
   .category-sopralluogo {
     background-color: #ff4d4d !important;
@@ -108,6 +119,18 @@
   padding: 24px;
 }
 
+.day-view-active .category-lavoriSvolti {
+  background-color: #fd00b1 !important;
+  color: white;
+  border-radius: 4px;
+  background-clip: border-box;
+  border: none !important;
+  margin-left: -10px;
+  margin-right: -10px;
+  margin-top: -9px;
+  padding: 24px;
+}
+
 /* Stile per la categoria "sopralluogo" nella vista giorno */
 .day-view-active .category-sopralluogo {
   background-color: #dd0a0a !important;
@@ -154,6 +177,18 @@
 
 .day-view-week .category-straordinario {
   background-color: #0011fd !important;
+  color: white;
+  border-radius: 4px;
+  background-clip: border-box;
+  border: none !important;
+  margin-left: -10px;
+  margin-right: -10px;
+  margin-top: -9px;
+  padding: 24px;
+}
+
+.day-view-week .category-lavoriSvolti {
+  background-color: #fd00b1 !important;
   color: white;
   border-radius: 4px;
   background-clip: border-box;

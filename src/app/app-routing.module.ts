@@ -26,7 +26,7 @@ import { PreventiviComponent } from './sito/preventivi/preventivi.component';
 import { NavbarComponent } from './sito/navbar/navbar.component';
 import { GestioneEmployeesComponent } from './admin/gestione-employees/gestione-employees.component';
 import { SettingsEmployeesComponent } from './admin/settings-employees/settings-employees.component';
-import { PayslipsComponent } from './admin/payslips/payslips.component';
+import { DocumentManagerComponent } from './admin/document-manager/document-manager.component';
 import { AuthGuard } from './auth.guard';
 import { ViewPdfComponent } from './admin/view-pdf/view-pdf.component';
 
@@ -59,7 +59,7 @@ const routes: Routes = [
   { path: 'navbar', component: NavbarComponent },
   { path: 'gestioneemployees', component: GestioneEmployeesComponent, canActivate: [AuthGuard] },
   { path: 'settingsemployees', component: SettingsEmployeesComponent, canActivate: [AuthGuard] },
-  { path: 'payslips/:empEmail', component: PayslipsComponent, canActivate: [AuthGuard] },
+  { path: 'documenti/:empEmail', component: DocumentManagerComponent, canActivate: [AuthGuard] },
   { path: 'view-pdf', component: ViewPdfComponent, canActivate: [AuthGuard] },
 
 ];

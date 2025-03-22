@@ -1,0 +1,45 @@
+.container {
+    display: flex;
+    height: calc(100vh - 64px); /* sottrai l'altezza della toolbar */
+  }
+  
+  .sidebar {
+    width: 250px;
+    padding: 1rem;
+    border-right: 1px solid #ccc;
+    overflow-y: auto;
+  }
+  
+  .main {
+    flex: 1;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .spacer {
+    flex: 1 1 auto;
+  }
+  
+  .new-folder {
+    margin-top: 1rem;
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+  }
+  
+  .mat-list-item button.selected {
+    font-weight: bold;
+    color: #1976d2;
+  }
+  
+  .file-upload {
+    margin-bottom: 1rem;
+  }
+  
+  .pdf-viewer {
+    flex: 1;
+    border: 1px solid #ccc;
+    margin-top: 1rem;
+  }
+  
