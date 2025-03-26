@@ -75,6 +75,9 @@ import { ViewPdfComponent } from './admin/view-pdf/view-pdf.component';
 
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { AuthInterceptorService } from './auth-interceptor.service';
+import { BlogComponent } from './componenti/sito/blog/blog.component';
+import { ConvenzioniPromozioniComponent } from './componenti/sito/convenzioni-promozioni/convenzioni-promozioni.component';
+
 
 loadMessages(itMessages);
 locale('it');
@@ -114,6 +117,8 @@ locale('it');
     SettingsEmployeesComponent,
     ViewPdfComponent,
     DocumentManagerComponent,
+    BlogComponent,
+    ConvenzioniPromozioniComponent,
   ],
   imports: [
     BrowserModule,

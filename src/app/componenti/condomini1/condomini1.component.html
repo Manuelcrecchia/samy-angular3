@@ -1,121 +1,111 @@
 <!DOCTYPE html>
 <html lang="it">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Servizio di Pulizie Condominiali a Pescara</title>
-    <!-- Link a Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-      .img-fluid {
-        height: 250px;
-        object-fit: cover;
-        border-radius: 15px;
-      }
-      .footer {
-        background-color: #f8f9fa;
-        padding: 20px 0;
-        text-align: center;
-      }
-      .navbar {
-        background-color: #ffffff; /* Navbar bianca */
-      }
-      .navbar .navbar-brand img {
-        height: 40px;
-      }
-      .navbar-nav .nav-item .nav-link {
-        color: #343a40 !important; /* Colore testo scuro per contrastare lo sfondo bianco */
-      }
-      .navbar-nav .nav-item .nav-link:hover {
-        color: #007bff !important; /* Colore al passaggio del mouse */
-      }
-    </style>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Servizi professionali di pulizie condominiali a Pescara. Samy Pulizie offre igiene, qualità e sopralluoghi gratuiti per il tuo condominio.">
+  <meta name="keywords" content="pulizie condominiali Pescara, impresa di pulizie, igiene condomini, scale, portoni, sanificazione">
+  <meta name="author" content="Samy Pulizie">
+  <meta property="og:title" content="Pulizie Condominiali a Pescara - Servizio Professionale | Samy Pulizie">
+  <meta property="og:description" content="Scopri il nostro servizio di pulizia per condomini: rampe, ascensori, portoni. Pulizie di qualità a Pescara.">
+  <meta property="og:image" content="https://www.samypulizie.it/wp-content/uploads/2020/01/logo.png">
+  <meta property="og:url" content="https://www.samypulizie.it/condomini">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://www.samypulizie.it/condomini" />
+  <title>Pulizie Condominiali a Pescara - Servizio Professionale | Samy Pulizie</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <style>
+    .img-fluid {
+      height: 250px;
+      object-fit: cover;
+      border-radius: 15px;
+    }
+    .btn-preventivo {
+      background-color: #ffb6c1;
+      color: white;
+      border: none;
+      font-weight: bold;
+      padding: 12px 30px;
+      border-radius: 8px;
+      transition: background-color 0.3s ease-in-out;
+    }
+    .btn-preventivo:hover {
+      background-color: #ff99aa;
+    }
+  </style>
+</head>
+<body>
 
-
-  </head>
-  <body>
-    <!-- Header con navbar -->
-    <nav class="navbar navbar-expand-lg navbar-light">
-      <div class="container-xxl">
-        <a class="navbar-brand" href="#">
-          <img src="https://www.samypulizie.it/wp-content/uploads/2020/01/logo.png" alt="Logo del sito" class="d-inline-block align-text-top" height="40">
-        </a>
-        <h1 class="d-none d-lg-block text-center w-100">Servizio di Pulizia Condominiali</h1>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-          <ul class="navbar-nav ms-auto">
-            <li class="nav-item dropdown order-1">
-              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                  Servizi
-              </a>
-              <ul class="dropdown-menu">
-                <li><a class="dropdown-item" (click)="navigateToSanificazioni()">Sanificazioni</a></li>
-                <li><a class="dropdown-item" (click)="navigateToUffici()">uffici privati/pubblici</a></li>
-                <li><a class="dropdown-item" (click)="navigateToCondomini1()">Pulizia Condomini</a></li>
-                <li><a class="dropdown-item" (click)="navigateToPalestra()">Pulizia Palestre</a></li>
-                <li><a class="dropdown-item" (click)="navigateToStraordinaria()">Pulizia Straordinaria</a></li>
-                <li><a class="dropdown-item" (click)="navigateToDomestica()">Pulizie Domestica</a></li>
-              </ul>
-          </li>
-          <li class="nav-item order-2">
-              <a class="nav-link" href="#">Home</a>
-          </li>
-          <ul class="dropdown-menu">
-              <li><a class="dropdown-item" href="tel:08554360">Call Center</a></li>
-              <li><a class="dropdown-item" href="mailto:info@samipulizie.it">Email</a></li>
-              <li><a class="dropdown-item" href="https://www.google.com/maps/dir/Via+Tirino,+147,+65129+Pescara+PE/'45.59135,10.243048'/@44.0076457,10.8110617,8z/data=!3m1!4b1!4m11!4m10!1m5!1m1!1s0x1331a6223b8afae7:0xe0f8329b5888d54d!2m2!1d14.2181475!2d42.4462893!1m3!2m2!1d10.243048!2d45.59135?hl=it&entry=ttu">Sede Commerciale</a></li>
+  <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
+    <div class="container-xxl">
+      <a class="navbar-brand" href="/">
+        <img src="https://www.samypulizie.it/wp-content/uploads/2020/01/logo.png" alt="Logo Samy Pulizie" class="d-inline-block align-text-top" height="40">
+      </a>
+      <h1 class="d-none d-lg-block text-center w-100 fs-5 fw-bold">Pulizie Condominiali a Pescara</h1>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">Servizi</a>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" (click)="navigateToSanificazioni()">Sanificazioni</a></li>
+              <li><a class="dropdown-item" (click)="navigateToUffici()">uffici privati/pubblici</a></li>
+              <li><a class="dropdown-item" (click)="navigateToCondomini1()">Pulizia Condomini</a></li>
+              <li><a class="dropdown-item" (click)="navigateToPalestra()">Pulizia Palestre</a></li>
+              <li><a class="dropdown-item" (click)="navigateToStraordinaria()">Pulizia Straordinaria</a></li>
+              <li><a class="dropdown-item" (click)="navigateToDomestica()">Pulizie Domestica</a></li>
             </ul>
-          </ul>
-        </div>
+          </li>
+          <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+        </ul>
       </div>
-    </nav>
+    </div>
+  </nav>
 
-    <!-- Contenuto principale -->
-    <div class="container py-5">
-      <p>
-        Sei alla ricerca di un’impresa specializzata in pulizie condominiali ma non sai a chi rivolgerti? Cerchi un'impresa con esperienza consolidata? La risposta giusta è l’impresa di pulizie S.A.M.Y. PULIZIE. 
-        L’azienda nasce nel 2012 per offrire un servizio di pulizia personalizzato, completo ed efficiente di uffici, scuole, laboratori alimentari e sanitari e condomini. 
-        S.A.M.Y. PULIZIE, grazie alla lunga esperienza nel settore delle pulizie condominiali, è in grado di effettuare la pulizia di tutti gli spazi condominiali come rampe di scale, pavimenti, ascensori, cortili interni e portoni d’ingresso, garantendo i più alti livelli qualitativi di igiene e disinfezione. 
-        Utilizziamo prodotti e macchinari di ultimissima tecnologia per lavare, asciugare e lucidare le superfici, rilasciando ambienti arieggiati, sanificati e con gradevoli odori.
-        <strong>Richiedi un nostro sopralluogo gratuito e senza impegno!</strong>
+  <main class="container py-5">
+    <section class="text-center mb-4">
+      <h2 class="fs-3 fw-bold">Servizio di Pulizia Condominiale a Pescara</h2>
+      <p class="mt-3">
+        S.A.M.Y. Pulizie è specializzata nella pulizia di spazi condominiali a Pescara: scale, ascensori, cortili, androni, portoni e molto altro. Offriamo servizi efficaci e programmabili su misura con prodotti professionali e personale altamente qualificato. <strong>Richiedi subito il tuo sopralluogo gratuito!</strong>
       </p>
+    </section>
 
-      <!-- Galleria immagini -->
-      <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4">
-        <div class="col">
-          <img src="https://wips.plug.it/cips/paginegiallecasa/cms/2021/02/pulizie-condominiali.jpg?w=832&h=468&a=c" alt="Immagine 1" class="img-fluid">
-        </div>
-        <div class="col">
-          <img src="https://st3.idealista.it/news/archivie/styles/fullwidth_xl/public/2024-04/images/80_6.png?VersionId=kXYeKMoaGdbMJPuR7sRGfLg4uBRLvBhk&itok=ldqQEaIF" alt="Immagine 2" class="img-fluid">
-        </div>
-        <div class="col">
-          <img src="https://www.puliziemagica.it/wp-content/uploads/2017/02/img-condomini.jpg" alt="Immagine 3" class="img-fluid">
-        </div>
-        <div class="col">
-          <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRvJh_4mKXP0D3NhJsHvlAfaGI3eQRPqOOeAQ&s" alt="Immagine 4" class="img-fluid">
-        </div>
+    <section class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4">
+      <div class="col">
+        <img src="https://wips.plug.it/cips/paginegiallecasa/cms/2021/02/pulizie-condominiali.jpg?w=832&h=468&a=c" alt="Pulizia scale condominio" class="img-fluid">
       </div>
-    </div>
+      <div class="col">
+        <img src="https://st3.idealista.it/news/archivie/styles/fullwidth_xl/public/2024-04/images/80_6.png" alt="Pulizia androne e ascensore" class="img-fluid">
+      </div>
+      <div class="col">
+        <img src="https://www.puliziemagica.it/wp-content/uploads/2017/02/img-condomini.jpg" alt="Pulizia cortili condominiali" class="img-fluid">
+      </div>
+      <div class="col">
+        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRvJh_4mKXP0D3NhJsHvlAfaGI3eQRPqOOeAQ&s" alt="Dettagli intervento pulizia condominio" class="img-fluid">
+      </div>
+    </section>
 
-    <!-- Mappa (iframe) -->
-    <div class="container py-5">
-      <iframe src="https://www.google.com/maps/embed?pb=!1m28!1m12!1m3!1d11774.409853163359!2d14.203068573204833!3d42.45747377002006!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!4m13!3e6!4m5!1s0x1331a60db9286477%3A0xa0b89e89b22cbfe2!2sPescara%2C%20Provincia%20di%20Pescara!3m2!1d42.4617624!2d14.2160321!4m5!1s0x1331a6223b8afae7%3A0xe0f8329b5888d54d!2sVia%20Tirino%2C%20147%2C%20Pescara%2C%20PE!3m2!1d42.4462893!2d14.218147499999999!5e0!3m2!1sit!2sit!4v1713538014550!5m2!1sit!2sit" width="100%" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
-  </div>
+   
+  </main>
 
+  <section class="container py-5">
+    <iframe src="https://www.google.com/maps/embed?pb=!1m28!1m12!1m3!1d11774.409853163359!2d14.203068573204833!3d42.45747377002006!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!4m13!3e6!4m5!1s0x1331a60db9286477%3A0xa0b89e89b22cbfe2!2sPescara!3m2!1d42.4617624!2d14.2160321!4m5!1s0x1331a6223b8afae7%3A0xe0f8329b5888d54d!2sVia%20Tirino%2C%20147%2C%20Pescara!3m2!1d42.4462893!2d14.218147499999999!5e0!3m2!1sit!2sit!4v1713538014550!5m2!1sit!2sit"
+      width="100%" height="450" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+  </section>
 
-  <div class="container py-5">
+  <section class="container py-5">
     <app-preventivi></app-preventivi>
-</div>
+  </section>
 
-    <!-- Footer -->
-    <div class="footer">
-      <p>&copy; 2025 S.A.M.Y. Pulizie - Servizio di Pulizie Condominiali a Pescara</p>
+  <footer class="bg-light py-4">
+    <div class="container text-center small">
+      <p>Contattaci: <a href="mailto:info@samipulizie.it">info&#64;samipulizie.it</a> | Tel: <a href="tel:08554360">08554360</a></p>
+      <p>&copy; 2025 Samy Pulizie - Tutti i diritti riservati</p>
     </div>
+  </footer>
 
-    <!-- Script di Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
-  </body>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
 </html>

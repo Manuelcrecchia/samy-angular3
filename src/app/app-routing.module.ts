@@ -29,7 +29,8 @@ import { SettingsEmployeesComponent } from './admin/settings-employees/settings-
 import { DocumentManagerComponent } from './admin/document-manager/document-manager.component';
 import { AuthGuard } from './auth.guard';
 import { ViewPdfComponent } from './admin/view-pdf/view-pdf.component';
-
+import { BlogComponent } from './componenti/sito/blog/blog.component';
+import { ConvenzioniPromozioniComponent } from './componenti/sito/convenzioni-promozioni/convenzioni-promozioni.component';
 
 const routes: Routes = [
   { path: '', component: HomesitoComponent },
@@ -61,7 +62,9 @@ const routes: Routes = [
   { path: 'settingsemployees', component: SettingsEmployeesComponent, canActivate: [AuthGuard] },
   { path: 'documenti/:empEmail', component: DocumentManagerComponent, canActivate: [AuthGuard] },
   { path: 'view-pdf', component: ViewPdfComponent, canActivate: [AuthGuard] },
-
+  { path: 'blog', component: BlogComponent },
+  { path: 'convenzioni-promozioni', component: ConvenzioniPromozioniComponent}
+  
 ];
 
 @NgModule({

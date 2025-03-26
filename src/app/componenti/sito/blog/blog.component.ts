@@ -1,13 +1,11 @@
-
-import { Component,  } from '@angular/core';
+import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-
 @Component({
-  selector: 'app-homesito',
-  templateUrl: './homesito.component.html',
-  styleUrls: ['./homesito.component.css']
+  selector: 'app-blog',
+  templateUrl: './blog.component.html',
+  styleUrl: './blog.component.css'
 })
-export class HomesitoComponent {
+export class BlogComponent {
   services: any;
   constructor(private router: Router) {}
 
@@ -48,8 +46,6 @@ export class HomesitoComponent {
   navigateToBlog() {
     this.router.navigateByUrl('/blog');
   }
-  navigateToConvenzioniPromozioni() {
-    this.router.navigateByUrl('/convenzionipromozioni');
-  }
 }
+
 

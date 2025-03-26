@@ -1,104 +1,105 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Galleria</title>
-    <!-- Aggiungi il CSS di Bootstrap -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        .img-fluid {
-            height: 250px;
-            object-fit: cover;
-            border-radius: 15px;
-        }
-    </style>
-
-
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Galleria fotografica del servizio di sanificazione offerto da Samy Pulizie a Pescara. Interventi certificati per ambienti sicuri e igienizzati.">
+  <meta name="keywords" content="sanificazione ambienti Pescara, pulizia professionale, impresa di pulizie, igienizzazione, covid-19, disinfezione uffici">
+  <meta name="author" content="Samy Pulizie">
+  <meta property="og:title" content="Sanificazione Ambienti a Pescara - Galleria Interventi | Samy Pulizie">
+  <meta property="og:description" content="Scopri gli interventi di sanificazione professionale con immagini reali del nostro operato a Pescara.">
+  <meta property="og:image" content="https://www.samypulizie.it/wp-content/uploads/2020/01/logo.png">
+  <meta property="og:url" content="https://www.samypulizie.it/galleria">
+  <meta name="robots" content="index, follow">
+  <title>Sanificazione Ambienti a Pescara - Galleria Interventi | Samy Pulizie</title>
+  <link rel="canonical" href="https://www.samypulizie.it/galleria">
+  <link rel="icon" href="https://www.samypulizie.it/wp-content/uploads/2020/01/logo.png" type="image/png">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    .img-fluid {
+      height: 250px;
+      object-fit: cover;
+      border-radius: 15px;
+    }
+    .btn-preventivo {
+      background-color: #ffb6c1;
+      color: white;
+      border: none;
+      font-weight: bold;
+      padding: 12px 30px;
+      border-radius: 8px;
+      transition: background-color 0.3s ease-in-out;
+    }
+    .btn-preventivo:hover {
+      background-color: #ff99aa;
+    }
+  </style>
 </head>
 <body>
 
-    <!-- Header con navbar -->
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <div class="container-xxl">
-            <a class="navbar-brand" href="#">
-                <img src="https://www.samypulizie.it/wp-content/uploads/2020/01/logo.png" alt="Logo del sito" style="height: 40px;">
-            </a>
-            <h1 class="d-none d-lg-block text-center w-100">Servizio di Sanificazione a Pescara</h1>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    
-                    <li class="nav-item dropdown order-1">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            Servizi
-                        </a>
-                        <ul class="dropdown-menu">
-                          <li><a class="dropdown-item" (click)="navigateToSanificazioni()">Sanificazioni</a></li>
-                          <li><a class="dropdown-item" (click)="navigateToUffici()">uffici privati/pubblici</a></li>
-                          <li><a class="dropdown-item" (click)="navigateToCondomini1()">Pulizia Condomini</a></li>
-                          <li><a class="dropdown-item" (click)="navigateToPalestra()">Pulizia Palestre</a></li>
-                          <li><a class="dropdown-item" (click)="navigateToStraordinaria()">Pulizia Straordinaria</a></li>
-                          <li><a class="dropdown-item" (click)="navigateToDomestica()">Pulizie Domestica</a></li>
-                        </ul>
-                    </li>
-                    <li class="nav-item order-2">
-                        <a class="nav-link" href="#">Home</a>
-                    </li>
-                    <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="tel:08554360">Call Center</a></li>
-                        <li><a class="dropdown-item" href="mailto:info@samipulizie.it">Email</a></li>
-                        <li><a class="dropdown-item" href="https://www.google.com/maps/dir/Via+Tirino,+147,+65129+Pescara+PE/'45.59135,10.243048'/@44.0076457,10.8110617,8z/data=!3m1!4b1!4m11!4m10!1m5!1m1!1s0x1331a6223b8afae7:0xe0f8329b5888d54d!2m2!1d14.2181475!2d42.4462893!1m3!2m2!1d10.243048!2d45.59135?hl=it&entry=ttu">Sede Commerciale</a></li>
-                      </ul>
-                </ul>
-            </div>
-        </div>
-    </nav>
-
-    <!-- Main Content -->
-    <div class="container py-5">
-        <p>
-            Samy Pulizie propone il Servizio di Sanificazione Professionale degli Ambienti, un servizio tagliato su misura per le singole esigenze di ogni spazio abitativo o lavorativo. Un servizio pensato per gli amministratori di condominio, i manager, gli imprenditori e tutti coloro che hanno la responsabilità dei luoghi dove le persone vivono o passano la maggior parte della loro giornata.
-            Un’impresa di pulizie di lunga esperienza come S.A.M.Y. Pulizie, può fornire questo tipo di servizio ad aziende di qualunque dimensione, dalla piccola attività familiare alla grande industria. <strong>Richiedi un nostro sopralluogo gratuito e senza impegno.</strong>
-        </p>
-
-        <!-- Galleria immagini con altezza uniforme e border-radius -->
-        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4">
-            <div class="col">
-                <img src="https://paolovaresi.it/wp-content/uploads/2020/05/sanificazione-750x500.jpg" alt="Immagine 1" class="img-fluid">
-            </div>
-            <div class="col">
-                <img src="https://igeam.it/wp-content/uploads/2020/05/Sanificazione-ambienti-lavoro-covid-19-small.jpg" alt="Immagine 2" class="img-fluid">
-            </div>
-            <div class="col">
-                <img src="https://www.eliotec.net/wp-content/uploads/2022/05/SANIFICAZIONE-2.5ff211b2-e1676647696692.png" alt="Immagine 3" class="img-fluid">
-            </div>
-            <div class="col">
-                <img src="https://i0.wp.com/giammariniconsulenza.com/wp-content/uploads/2020/07/derattizzazione.jpg?resize=1038%2C576&ssl=1" alt="Immagine 4" class="img-fluid">
-            </div>
-        </div>
+  <nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm">
+    <div class="container-xxl">
+      <a class="navbar-brand" href="/">
+        <img src="https://www.samypulizie.it/wp-content/uploads/2020/01/logo.png" alt="Logo Samy Pulizie" style="height: 40px;">
+      </a>
+      <h1 class="d-none d-lg-block text-center w-100 fs-4 fw-bold">Servizio di Sanificazione a Pescara</h1>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">Servizi</a>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" (click)="navigateToSanificazioni()">Sanificazioni</a></li>
+              <li><a class="dropdown-item" (click)="navigateToUffici()">uffici privati/pubblici</a></li>
+              <li><a class="dropdown-item" (click)="navigateToCondomini1()">Pulizia Condomini</a></li>
+              <li><a class="dropdown-item" (click)="navigateToPalestra()">Pulizia Palestre</a></li>
+              <li><a class="dropdown-item" (click)="navigateToStraordinaria()">Pulizia Straordinaria</a></li>
+              <li><a class="dropdown-item" (click)="navigateToDomestica()">Pulizie Domestica</a></li>
+            </ul>
+          </li>
+          <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+        </ul>
+      </div>
     </div>
+  </nav>
 
-    <!-- Form preventivo -->
-    <div class="container py-5">
-        <app-preventivi></app-preventivi>
+  <main class="container py-5">
+    <section class="text-center">
+      <h2 class="fs-3 fw-bold mb-3">Sanificazione Ambienti Professionale a Pescara</h2>
+      <p>
+        Samy Pulizie propone un servizio di sanificazione ambienti professionale su misura, ideale per condomini, aziende, uffici, palestre e abitazioni. Affidati a un'impresa certificata con anni di esperienza per ambienti sicuri, igienizzati e a norma.
+      </p>
+    </section>
+
+    <section class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4 mt-4">
+      <div class="col"><img src="https://paolovaresi.it/wp-content/uploads/2020/05/sanificazione-750x500.jpg" alt="Sanificazione uffici" class="img-fluid"></div>
+      <div class="col"><img src="https://igeam.it/wp-content/uploads/2020/05/Sanificazione-ambienti-lavoro-covid-19-small.jpg" alt="Sanificazione ambienti covid-19" class="img-fluid"></div>
+      <div class="col"><img src="https://www.eliotec.net/wp-content/uploads/2022/05/SANIFICAZIONE-2.5ff211b2-e1676647696692.png" alt="Macchinari per sanificazione" class="img-fluid"></div>
+      <div class="col"><img src="https://i0.wp.com/giammariniconsulenza.com/wp-content/uploads/2020/07/derattizzazione.jpg?resize=1038%2C576&ssl=1" alt="Intervento di sanificazione e derattizzazione" class="img-fluid"></div>
+    </section>
+
+   
+  </main>
+
+  <section class="container py-5">
+    <iframe src="https://www.google.com/maps/embed?pb=!1m28!1m12!1m3!1d11774.409853163359!2d14.203068573204833!3d42.45747377002006!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!4m13!3e6!4m5!1s0x1331a60db9286477%3A0xa0b89e89b22cbfe2!2sPescara!3m2!1d42.4617624!2d14.2160321!4m5!1s0x1331a6223b8afae7%3A0xe0f8329b5888d54d!2sVia%20Tirino%2C%20147%2C%20Pescara!3m2!1d42.4462893!2d14.218147499999999!5e0!3m2!1sit!2sit!4v1713538014550!5m2!1sit!2sit"
+      width="100%" height="450" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+  </section>
+
+  <section class="container py-5">
+    <app-preventivi></app-preventivi>
+  </section>
+
+
+  <footer class="bg-light py-4 mt-5">
+    <div class="container text-center small">
+      <p>Contattaci: <a href="mailto:info@samipulizie.it">info&#64;samipulizie.it</a> | Tel: <a href="tel:08554360">08554360</a></p>
+      <p>&copy; 2024 Samy Pulizie - Tutti i diritti riservati</p>
     </div>
+  </footer>
 
-    <!-- Mappa (iframe) -->
-    <div class="container py-5">
-        <iframe src="https://www.google.com/maps/embed?pb=!1m28!1m12!1m3!1d11774.409853163359!2d14.203068573204833!3d42.45747377002006!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!4m13!3e6!4m5!1s0x1331a60db9286477%3A0xa0b89e89b22cbfe2!2sPescara%2C%20Provincia%20di%20Pescara!3m2!1d42.4617624!2d14.2160321!4m5!1s0x1331a6223b8afae7%3A0xe0f8329b5888d54d!2sVia%20Tirino%2C%20147%2C%20Pescara%2C%20PE!3m2!1d42.4462893!2d14.218147499999999!5e0!3m2!1sit!2sit!4v1713538014550!5m2!1sit!2sit" width="100%" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
-    </div>
-
-    <!-- Footer -->
-    <div class="bg-light py-3">
-        <div class="container text-center">
-            <p>Contattaci: info&#64;samipulizie.it | 08554360</p>
-        </div>
-    </div>
-
-    <!-- Aggiungi il JS di Bootstrap -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

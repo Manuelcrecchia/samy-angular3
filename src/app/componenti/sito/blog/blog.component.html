@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Scopri articoli utili sulla pulizia professionale: costi, consigli, differenze tra sanificazioni e igienizzazioni, e molto altro. Blog ufficiale Samy Pulizie.">
+  <meta name="keywords" content="pulizie Pescara, blog pulizie, sanificazione, igienizzazione, pulizie ordinarie, costi pulizie, impresa pulizie">
+  <meta name="author" content="Samy Pulizie">
+  <title>Blog Pulizie Professionali - Samy Pulizie</title>
+  <link rel="canonical" href="https://www.samypulizie.it/blog">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css">
+  <style>
+    .blog-post-card {
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      padding: 20px;
+      transition: box-shadow 0.3s;
+      background-color: #fff;
+    }
+    .blog-post-card:hover {
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    .blog-image {
+      max-height: 200px;
+      object-fit: cover;
+      border-radius: 8px;
+    }
+    h2 {
+      font-size: 1.25rem;
+    }
+    .blog-post-card {
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #fff;
+    transition: transform 0.2s ease;
+    font-size: 0.9rem;
+  }
+
+  .blog-post-card:hover {
+    transform: scale(1.02);
+  }
+
+  .blog-image {
+    max-width: 100%;
+    height: auto;
+    border-radius: 5px;
+  }
+
+  .w-80 {
+    width: 80%; /* Personalizzata, non di Bootstrap */
+  }
+
+  @media (min-width: 768px) {
+    .blog-post-card {
+      font-size: 0.85rem;
+    }
+  }
+  </style>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Blog",
+    "name": "Samy Pulizie - Blog",
+    "url": "https://www.samypulizie.it/blog",
+    "description": "Approfondimenti e consigli pratici sul mondo delle pulizie professionali."
+  }
+  </script>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container-xxl">
+          <a class="navbar-brand" href="/">
+            <img src="https://www.samypulizie.it/wp-content/uploads/2020/01/logo.png" alt="Logo Samy Pulizie" style="height: 40px;">
+          </a>
+          <h1 class="d-none d-lg-block text-center w-100 fs-5 fw-bold">Blog Pulizie Pescara</h1>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">Servizi</a>
+                <ul class="dropdown-menu">
+                    <li><a class="dropdown-item" (click)="navigateToSanificazioni()">Sanificazioni</a></li>
+                    <li><a class="dropdown-item" (click)="navigateToUffici()">uffici privati/pubblici</a></li>
+                    <li><a class="dropdown-item" (click)="navigateToCondomini1()">Pulizia Condomini</a></li>
+                    <li><a class="dropdown-item" (click)="navigateToPalestra()">Pulizia Palestre</a></li>
+                    <li><a class="dropdown-item" (click)="navigateToStraordinaria()">Pulizia Straordinaria</a></li>
+                    <li><a class="dropdown-item" (click)="navigateToDomestica()">Pulizie Domestica</a></li>
+                  </ul>
+              </li>
+              <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+            </ul>
+          </div>
+        </div>
+      </nav>
+    
+
+      <div class="container py-4">
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+      
+          <div class="col">
+            <div class="blog-post-card">
+              <img src="assets/quanto-costa-la-pulizia.png" alt="Costo pulizie appartamento" class="blog-image mx-auto w-100">
+              <h5>Quanto costano le pulizie di un appartamento a Pescara?</h5>
+              <p class="text-muted small">25 marzo 2025</p>
+              <p>Scopri cosa incide nel costo di pulizia: metratura, frequenza, condizioni iniziali e tipologia di servizio.</p>
+            </div>
+          </div>
+      
+          <div class="col">
+            <div class="blog-post-card">
+              <img src="assets/differenza.png" alt="Pulizie ordinarie e straordinarie" class="blog-image mx-auto w-100">
+              <h5>Differenza tra pulizie ordinarie e straordinarie</h5>
+              <p class="text-muted small">15 marzo 2025</p>
+              <p>Le pulizie ordinarie mantengono l'igiene nel tempo, mentre le straordinarie sono interventi approfonditi occasionali.</p>
+            </div>
+          </div>
+      
+          <div class="col">
+            <div class="blog-post-card">
+              <img src="assets/sanifficazioni.png" alt="Sanificazioni e igienizzazioni" class="blog-image mx-auto w-100">
+              <h5>Sanificazioni vs igienizzazioni</h5>
+              <p class="text-muted small">3 marzo 2025</p>
+              <p>La sanificazione elimina batteri e virus, l'igienizzazione riduce la carica microbica: scopri quale fa per te.</p>
+            </div>
+          </div>
+      
+          <div class="col">
+            <div class="blog-post-card">
+              <img src="assets/valutare.png" alt="Scegliere un'impresa di pulizie" class="blog-image mx-auto w-100">
+              <h5>Cosa valutare quando scegli un’impresa di pulizie</h5>
+              <p class="text-muted small">20 febbraio 2025</p>
+              <p>Verifica referenze, servizi offerti, trasparenza nei prezzi e qualità dei materiali usati.</p>
+            </div>
+          </div>
+        
+
+            <!-- Card 1 -->
+            <div class="col">
+              <div class="blog-post-card">
+                <img src="assets/consigli.png" alt="Consigli di pulizia" class="blog-image mx-auto">
+                <h5>5 Consigli per mantenere la casa sempre pulita</h5>
+                <p class="text-muted small">26 marzo 2025</p>
+                <p>Piccole abitudini quotidiane per una casa sempre in ordine e pulita, senza fatica e stress.</p>
+              </div>
+            </div>
+          
+            <!-- Card 2 -->
+            <div class="col">
+              <div class="blog-post-card">
+                <img src="assets/eco.png" alt="Pulizie con prodotti naturali" class="blog-image mx-auto">
+                <h5>Come pulire casa con prodotti naturali</h5>
+                <p class="text-muted small">24 marzo 2025</p>
+                <p>Scopri ingredienti ecologici ed economici per pulire ogni ambiente senza sostanze chimiche.</p>
+              </div>
+            </div>
+          
+            <!-- Card 3 -->
+            <div class="col">
+              <div class="blog-post-card">
+                <img src="assets/errori.png" alt="Errori comuni nelle pulizie" class="blog-image mx-auto">
+                <h5>Gli errori più comuni nelle pulizie domestiche</h5>
+                <p class="text-muted small">21 marzo 2025</p>
+                <p>Evita gli sbagli che compromettono l’igiene della casa: detergenti sbagliati e tecniche errate.</p>
+              </div>
+            </div>
+        </div>
+      </div>
+
+  <footer class="bg-light py-4 mt-5">
+    <div class="container text-center">
+      <p>© 2025 Samy Pulizie | <a href="mailto:info@samypulizie.it">info&#64;samypulizie.it</a> | Tel: 08554360</p>
+    </div>
+  </footer>
+</body>
+</html>

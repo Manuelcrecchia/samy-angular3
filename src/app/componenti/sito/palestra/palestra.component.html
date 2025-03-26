@@ -1,109 +1,112 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Servizio di Pulizie Palestre a Pescara</title>
-    <!-- Aggiungi il CSS di Bootstrap -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        .img-fluid {
-            height: 250px;
-            object-fit: cover;
-            border-radius: 15px;
-        }
-        .footer {
-            background-color: #f8f9fa;
-            padding: 20px 0;
-            text-align: center;
-        }
-    </style>
- 
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Servizio professionale di pulizia per palestre a Pescara. Sanificazione, igiene e trattamenti speciali per ambienti sportivi. Sopralluogo gratuito.">
+  <meta name="keywords" content="pulizia palestre Pescara, pulizie centri sportivi, igiene ambienti sportivi, detersione pavimenti palestra">
+  <meta name="author" content="Samy Pulizie">
+  <meta property="og:title" content="Pulizie Palestre a Pescara - Servizio Professionale | Samy Pulizie">
+  <meta property="og:description" content="Pulizia specializzata per palestre, SPA e ambienti umidi. Disinfezione completa e manutenzione professionale a Pescara.">
+  <meta property="og:image" content="https://www.samypulizie.it/wp-content/uploads/2020/01/logo.png">
+  <meta property="og:url" content="https://www.samypulizie.it/palestre">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://www.samypulizie.it/palestre" />
+  <title>Pulizie Palestre a Pescara - Servizio Professionale | Samy Pulizie</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    .img-fluid {
+      height: 250px;
+      object-fit: cover;
+      border-radius: 15px;
+    }
+    .btn-preventivo {
+      background-color: #ffb6c1;
+      color: white;
+      border: none;
+      font-weight: bold;
+      padding: 12px 30px;
+      border-radius: 8px;
+      transition: background-color 0.3s ease-in-out;
+    }
+    .btn-preventivo:hover {
+      background-color: #ff99aa;
+    }
+    .footer {
+      background-color: #f8f9fa;
+      padding: 20px 0;
+      text-align: center;
+    }
+  </style>
 </head>
 <body>
 
-    <!-- Header con navbar -->
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <div class="container-xxl">
-            <a class="navbar-brand" href="#">
-                <img src="https://www.samypulizie.it/wp-content/uploads/2020/01/logo.png" alt="Logo del sito" style="height: 40px;">
-            </a>
-            <h1 class="d-none d-lg-block text-center w-100">Servizio di Pulizie Palestre a Pescara</h1>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                 
-                    <li class="nav-item dropdown order-1">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            Servizi
-                        </a>
-                        <ul class="dropdown-menu">
-                          <li><a class="dropdown-item" (click)="navigateToSanificazioni()">Sanificazioni</a></li>
-                          <li><a class="dropdown-item" (click)="navigateToUffici()">uffici privati/pubblici</a></li>
-                          <li><a class="dropdown-item" (click)="navigateToCondomini1()">Pulizia Condomini</a></li>
-                          <li><a class="dropdown-item" (click)="navigateToPalestra()">Pulizia Palestre</a></li>
-                          <li><a class="dropdown-item" (click)="navigateToStraordinaria()">Pulizia Straordinaria</a></li>
-                          <li><a class="dropdown-item" (click)="navigateToDomestica()">Pulizie Domestica</a></li>
-                        </ul>
-                    </li>
-                    <li class="nav-item order-2">
-                        <a class="nav-link" href="#">Home</a>
-                    </li>
-                    <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="tel:08554360">Call Center</a></li>
-                        <li><a class="dropdown-item" href="mailto:info@samipulizie.it">Email</a></li>
-                        <li><a class="dropdown-item" href="https://www.google.com/maps/dir/Via+Tirino,+147,+65129+Pescara+PE/'45.59135,10.243048'/@44.0076457,10.8110617,8z/data=!3m1!4b1!4m11!4m10!1m5!1m1!1s0x1331a6223b8afae7:0xe0f8329b5888d54d!2m2!1d14.2181475!2d42.4462893!1m3!2m2!1d10.243048!2d45.59135?hl=it&entry=ttu">Sede Commerciale</a></li>
-                      </ul>
-                </ul>
-            </div>
-        </div>
-    </nav>
-
-    <!-- Main Content -->
-    <div class="container py-5">
-        <p>
-            La nostra è un'impresa professionale di pulizie a Pescara, che propone diversi servizi, in particolare per materiali e ambienti che richiedono un intervento specializzato.
-            Il nostro servizio di pulizia dispone, infatti, di una divisione specializzata che può agire nella pulizia di piscine, trattamenti per ambienti SPA, pulizia pavimenti in pietra e pavimenti pensati per il bordo piscina o gli ambienti sportivi.
-            Nella pulizia piscine, in particolare, sappiamo come eseguire lavori di disinfezione e sanificazione accurati, per eliminare batteri e agenti patogeni, umidità e condizioni igieniche tipiche degli spazi umidi come vasche e piscine.
-            I pavimenti in pietra, similmente, richiedono prodotti specifici e personale qualificato per la detersione accurata, che non danneggia i pavimenti e mantiene viva la bellezza della pietra.
-            Rivolgiti ai nostri esperti di pulizie per piscine e pavimentazioni in pietra a Pescara: non ti pentirai di un servizio così preciso di manutenzione delle diverse palestre! <strong>Richiedi un nostro sopralluogo gratuito e senza impegno</strong>
-        </p>
-
-        <!-- Galleria immagini con altezza uniforme e border-radius -->
-        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4">
-            <div class="col">
-                <img src="https://www.mistralgroup.it/wp-content/uploads/2018/10/Pulizie-di-palestre-e-centri-sportivi-in-veneto.jpg" alt="Immagine 1" class="img-fluid">
-            </div>
-            <div class="col">
-                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQZYVaFaEPXNXlSl9pJ1oLiVyso6FUm8F8Rng&s" alt="Immagine 2" class="img-fluid">
-            </div>
-            <div class="col">
-                <img src="https://pulizie.roma.it/wp-content/uploads/foto-di-donna-che-svolge-pulizia-palestre.jpg" alt="Immagine 3" class="img-fluid">
-            </div>
-            <div class="col">
-                <img src="https://www.econsorzio.com/wp-content/uploads/come-pulire-una-palestra.png" alt="Immagine 4" class="img-fluid">
-            </div>
-        </div>
+  <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container-xxl">
+      <a class="navbar-brand" href="/">
+        <img src="https://www.samypulizie.it/wp-content/uploads/2020/01/logo.png" alt="Logo Samy Pulizie" style="height: 40px;">
+      </a>
+      <h1 class="d-none d-lg-block text-center w-100 fs-5 fw-bold">Pulizie Palestre a Pescara</h1>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">Servizi</a>
+            <ul class="dropdown-menu">
+                <li><a class="dropdown-item" (click)="navigateToSanificazioni()">Sanificazioni</a></li>
+                <li><a class="dropdown-item" (click)="navigateToUffici()">uffici privati/pubblici</a></li>
+                <li><a class="dropdown-item" (click)="navigateToCondomini1()">Pulizia Condomini</a></li>
+                <li><a class="dropdown-item" (click)="navigateToPalestra()">Pulizia Palestre</a></li>
+                <li><a class="dropdown-item" (click)="navigateToStraordinaria()">Pulizia Straordinaria</a></li>
+                <li><a class="dropdown-item" (click)="navigateToDomestica()">Pulizie Domestica</a></li>
+              </ul>
+          </li>
+          <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+        </ul>
+      </div>
     </div>
+  </nav>
 
-    <!-- Mappa (iframe) -->
-    <div class="container py-5">
-        <iframe src="https://www.google.com/maps/embed?pb=!1m28!1m12!1m3!1d11774.409853163359!2d14.203068573204833!3d42.45747377002006!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!4m13!3e6!4m5!1s0x1331a60db9286477%3A0xa0b89e89b22cbfe2!2sPescara%2C%20Provincia%20di%20Pescara!3m2!1d42.4617624!2d14.2160321!4m5!1s0x1331a6223b8afae7%3A0xe0f8329b5888d54d!2sVia%20Tirino%2C%20147%2C%20Pescara%2C%20PE!3m2!1d42.4462893!2d14.218147499999999!5e0!3m2!1sit!2sit!4v1713538014550!5m2!1sit!2sit" width="100%" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
-    </div>
+  <main class="container py-5">
+    <section class="text-center mb-4">
+      <h2 class="fs-3 fw-bold">Servizi Specializzati di Pulizia Palestre a Pescara</h2>
+      <p>
+        Offriamo servizi professionali per la pulizia di palestre, centri sportivi e ambienti umidi. Disinfezione piscine, trattamenti per pavimenti in pietra, ambienti SPA e sanificazioni certificate. Rivolgiti a Samy Pulizie per un ambiente sano, profumato e igienizzato. <strong>Richiedi un sopralluogo gratuito e senza impegno!</strong>
+      </p>
+    </section>
 
-    <!-- Form preventivo -->
-    <div class="container py-5">
-        <app-preventivi></app-preventivi>
-    </div>
+    <section class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4">
+      <div class="col">
+        <img src="https://www.mistralgroup.it/wp-content/uploads/2018/10/Pulizie-di-palestre-e-centri-sportivi-in-veneto.jpg" alt="Pulizia palestra attrezzi" class="img-fluid">
+      </div>
+      <div class="col">
+        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQZYVaFaEPXNXlSl9pJ1oLiVyso6FUm8F8Rng&s" alt="Sanificazione ambienti sportivi" class="img-fluid">
+      </div>
+      <div class="col">
+        <img src="https://pulizie.roma.it/wp-content/uploads/foto-di-donna-che-svolge-pulizia-palestre.jpg" alt="Pulizia zona pesi e sala fitness" class="img-fluid">
+      </div>
+      <div class="col">
+        <img src="https://www.econsorzio.com/wp-content/uploads/come-pulire-una-palestra.png" alt="Pulizia professionale palestra" class="img-fluid">
+      </div>
+    </section>
 
-    <!-- Footer -->
-    <div class="footer">
-        <p>Contattaci: info&#64;samipulizie.it | 08554360</p>
-    </div>
+  </main>
 
-    <!-- Aggiungi il JS di Bootstrap -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+  <section class="container py-5">
+    <iframe src="https://www.google.com/maps/embed?pb=!1m28!1m12!1m3!1d11774.409853163359!2d14.203068573204833!3d42.45747377002006!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!4m13!3e6!4m5!1s0x1331a60db9286477%3A0xa0b89e89b22cbfe2!2sPescara!3m2!1d42.4617624!2d14.2160321!4m5!1s0x1331a6223b8afae7%3A0xe0f8329b5888d54d!2sVia%20Tirino%2C%20147%2C%20Pescara!3m2!1d42.4462893!2d14.218147499999999!5e0!3m2!1sit!2sit!4v1713538014550!5m2!1sit!2sit"
+      width="100%" height="450" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+  </section>
+
+  <section class="container py-5">
+    <app-preventivi></app-preventivi>
+  </section>
+
+  <footer class="footer">
+    <p>Contattaci: <a href="mailto:info@samipulizie.it">info&#64;samipulizie.it</a> | 08554360</p>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
