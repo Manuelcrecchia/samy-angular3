@@ -33,6 +33,28 @@ export class DocumentManagerComponent implements OnInit {
     }
   }
 
+  sendFileMail(filename: string): void {
+    if (!this.selectedFolder) {
+      alert("Seleziona prima una cartella");
+      return;
+    }
+    const body = { empEmail: this.empEmail, folder: this.selectedFolder, filename };
+    this.http.post(this.globalService.url + 'adminpayslips/sendFileMail', body, {
+      headers: this.globalService.headers,
+      responseType: 'text'
+    }).subscribe({
+      next: (resp) => {
+        console.log("Documento inviato via email:", resp);
+        alert("Documento inviato via email con successo!");
+      },
+      error: (err) => {
+        console.error("Errore nell'invio del documento via email:", err);
+        alert("Errore nell'invio del documento via email");
+      }
+    });
+  }
+
+
   // Carica la lista delle cartelle per l'employee
   loadFolders(): void {
     const body = { empEmail: this.empEmail };
