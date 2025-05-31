@@ -67,7 +67,7 @@ export class EditQuoteComponent {
         })
         .subscribe((response) => {
           this.quoteModelService.resetQuoteModel();
-          this.router.navigateByUrl('/quotesHome');
+          this.router.navigateByUrl('/quotesHome', { replaceUrl: true });
         });
     }
   }

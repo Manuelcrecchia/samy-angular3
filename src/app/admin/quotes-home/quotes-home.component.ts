@@ -66,14 +66,19 @@ ngOnInit() {
       responseType: 'text',
     })
     .subscribe((response) => {
-      this.quotesFrEnd = JSON.parse(response).reverse()
+      const parsed = JSON.parse(response) as { numeroPreventivo: string; nominativo: string }[];
+
+      this.quotesFrEnd = parsed.sort(
+        (a, b) => parseInt(b.numeroPreventivo) - parseInt(a.numeroPreventivo)
+      );
 
       if (this.quotesFrEnd.length > 0) {
-        this.pdfTsSelezionato = true
+        this.pdfTsSelezionato = true;
         this.numeroClienteSelezionato = this.quotesFrEnd[0].numeroPreventivo;
       }
     });
 }
+
 
 viewPdf(numeroPreventivo:string){   
   this.router.navigate(['/view-pdf'], { queryParams: { numeroPreventivo } });}

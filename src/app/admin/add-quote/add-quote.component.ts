@@ -66,9 +66,17 @@ export class AddQuoteComponent {
         // ...
         .subscribe((response) => {
           this.quoteModelService.resetQuoteModel();
-          this.router.navigateByUrl('/quotesHome');
+          this.router.navigateByUrl('/quotesHome', { replaceUrl: true });
         });
     }
+  }
+
+  formatImponibile(){
+    let value = this.quoteModelService.imponibile;
+    const numberValue = parseFloat(value);
+  if (!isNaN(numberValue)) {
+    this.quoteModelService.imponibile = (numberValue).toFixed(2);
+  }
   }
 
   back() {

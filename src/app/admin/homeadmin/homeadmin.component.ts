@@ -29,7 +29,7 @@ export class HomeAdminComponent implements OnInit {
   }
 
   navigateToCaricaFile() {
-    this.router.navigateByUrl('/caricaFile');
+    this.router.navigateByUrl('/document-manager');
   }
 
   navigateToCalendarHome() {
