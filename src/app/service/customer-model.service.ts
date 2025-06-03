@@ -24,7 +24,7 @@ export class CustomerModelService {
   iva= "N";
   pagamento = "";
   note= '';
-  password='';
+  key=false;
 
   constructor() { }
 }

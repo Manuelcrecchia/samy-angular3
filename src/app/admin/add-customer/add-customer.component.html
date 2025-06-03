@@ -456,6 +456,14 @@
     <input matInput name="note" maxlength="255" [(ngModel)]="this.customerModelService.note" />
   </mat-form-field>
 
+  <mat-form-field class="example-full-width">
+    <mat-label>Chiavi</mat-label>
+    <mat-select [(ngModel)]="this.customerModelService.key" name="key">
+      <mat-option [value]="true">Sì</mat-option>
+      <mat-option [value]="false">No</mat-option>
+    </mat-select>
+  </mat-form-field>
+
     </form>
     <button mat-raised-button color="primary" (click)="addCustomer()">Salva</button>
 </body>

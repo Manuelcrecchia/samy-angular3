@@ -1,62 +1,54 @@
-<mat-toolbar class="example-toolbar">
-    <span>Gestione Clienti</span>
-    <span class="example-spacer"></span>
-    <button
-      (click)="navigateToAddCustomer()"
-      mat-icon-button
-      class="example-icon"
-    >
-      <mat-icon>add</mat-icon>
-    </button>
+<div class="container py-4">
+  <h2 class="mb-4 text-center">Gestione Clienti</h2>
+  <button class="btn btn-success" (click)="navigateToAddCustomer()">Aggiungi Cliente</button>
 
+  <!-- FILTRI -->
+  <div class="row g-3 mb-3">
+    <div class="col-12 col-md-6 col-lg-4">
+      <mat-form-field class="w-100">
+        <mat-label>Numero cliente</mat-label>
+        <input #inputNumeroCliente matInput (input)="searchNumeroCliente(inputNumeroCliente.value)" />
+      </mat-form-field>
+    </div>
 
-  </mat-toolbar>
-
-  <app-quote-list-prw [color]="color"></app-quote-list-prw>
-
-  <div class="main-container">
-    <div class="heading">
-        <mat-form-field class="example-form-field">
-            <mat-label>Numero cliente</mat-label>
-
-            <input
-              #inputNumeroCliente
-              matInput
-              (input)="searchNumeroCliente(inputNumeroCliente.value)"
-            />
-          </mat-form-field>
-
-          <mat-form-field class="example-form-field">
-            <mat-label>Nominativo</mat-label>
-            <input
-              #inputNominativo
-              matInput
-              (input)="searchNominativo(inputNominativo.value)"
-            />
-          </mat-form-field>
-        </div>
-<div class="carta">
-          <div *ngIf="customersFrEnd.length > 0"></div>
-
-    <div *ngFor="let customer of customersFrEnd" class="cards">
-      <div (click)="navigateToMenageCustomer(customer.numeroCliente)"  class="card card-1">
-        <div  class="card__icon"><i class="fas fa-bolt"></i></div>
-        <h2 class="card__title">{{customer.numeroCliente}} {{customer.nominativo}}</h2>
-        <h3 class="card__subtitle"> {{customer.telefono}} </h3>
-        <h4 class="card__text"> {{customer.email}} </h4>
-      </div>
-      </div>
-
-
-
-  <!-- <div class="quote-list">
-    <mat-list role="list">
-      <mat-list-item *ngFor="let quote of customersFrEnd" role="listitem">
-
-        <button (click)="navigateToMenageCustomer(quote.numeroCliente)">
-          {{ quote.numeroCliente }} {{ quote.nominativo }}
-        </button>
-      -->
-      <!-- </mat-list-item>
-    </mat-list> -->
+    <div class="col-12 col-md-6 col-lg-4">
+      <mat-form-field class="w-100">
+        <mat-label>Nominativo</mat-label>
+        <input #inputNominativo matInput (input)="searchNominativo(inputNominativo.value)" />
+      </mat-form-field>
+    </div>
   </div>
+
+  <!-- TABELLA RESPONSIVA -->
+  <div class="table-responsive">
+    <table class="table table-striped table-bordered align-middle text-center">
+      <thead class="table-dark">
+        <tr>
+          <th>Numero</th>
+          <th>Tipo</th>
+          <th>Nominativo</th>
+          <th>Email</th>
+          <th>Telefono</th>
+          <th>Referente</th>
+          <th>Chiavi</th>
+          <th>Azioni</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let customer of customersFrEnd">
+          <td>{{ customer.numeroCliente }}</td>
+          <td>{{ customer.tipoCliente }}</td>
+          <td>{{ customer.nominativo }}</td>
+          <td>{{ customer.email }}</td>
+          <td>{{ customer.telefono }}</td>
+          <td>{{ customer.referente }}</td>
+          <td>{{ customer.key ? 'Sì' : 'No' }}</td>
+          <td>
+            <button (click)="navigateToEditCustomer(customer.numeroCliente)" class="btn btn-warning btn-sm me-1">Modifica</button>
+            <button (click)="deleteCustomer(customer.email)" class="btn btn-danger btn-sm">Elimina</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

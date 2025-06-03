@@ -31,6 +31,7 @@ import { AuthGuard } from './auth.guard';
 import { ViewPdfComponent } from './admin/view-pdf/view-pdf.component';
 import { BlogComponent } from './componenti/sito/blog/blog.component';
 import { ConvenzioniPromozioniComponent } from './componenti/sito/convenzioni-promozioni/convenzioni-promozioni.component';
+import { EditCustomerComponent } from './admin/edit-customer/edit-customer.component';
 
 const routes: Routes = [
   { path: '', component: HomesitoComponent },
@@ -63,7 +64,9 @@ const routes: Routes = [
   { path: 'documenti/:empEmail', component: DocumentManagerComponent, canActivate: [AuthGuard] },
   { path: 'view-pdf', component: ViewPdfComponent, canActivate: [AuthGuard] },
   { path: 'blog', component: BlogComponent },
-  { path: 'convenzioni-promozioni', component: ConvenzioniPromozioniComponent}
+  { path: 'convenzioni-promozioni', component: ConvenzioniPromozioniComponent},
+  { path: 'editCustomer', component: EditCustomerComponent, canActivate: [AuthGuard] },
+
   
 ];
 

@@ -40,6 +40,7 @@ export class AddCustomerComponent {
       iva: this.customerModelService.iva,
       pagamento: this.customerModelService.pagamento,
       note : this.customerModelService.note,
+      key : this.customerModelService.key
     }
     this.http
       .post(this.globalService.url + 'customers/add', body, {
@@ -48,7 +49,7 @@ export class AddCustomerComponent {
       })
       // ...
       .subscribe((response) => {
-        this.router.navigateByUrl('/customersHome');
+        this.router.navigateByUrl('/listCustomer', { replaceUrl: true });
 
       });
     }

@@ -9,165 +9,105 @@ import { Component, Input } from '@angular/core';
   styleUrl: './list-customer.component.css'
 })
 export class ListCustomerComponent {
-  @Input() color: any;
-  numeroClienteSelezionato = '';
+  customers: any[] = [];
+  customersFrEnd: any[] = [];
 
-  customersFrEnd: {
-    numeroCliente: string;
-    nominativo: string;
-    email: string;
-    telefono: string;
-  }[] = [];
-
-  constructor(  private http: HttpClient,
-    private globalService: GlobalService,
+  constructor(
+    private http: HttpClient,
+    public globalService: GlobalService,
     private router: Router,
-    private customerModel: CustomerModelService,
-   ){}
+    private customerModelService: CustomerModelService,
 
-navigateToAddCustomer(){
-  this.router.navigateByUrl('/addCustomer');
-}
+  ) {}
 
+  ngOnInit(): void {
+    this.getCustomers();
+  }
 
-ngOnInit() {
-  this.http
-    .get(this.globalService.url + 'customers/getAll', {
+  getCustomers(): void {
+    this.http.get(this.globalService.url + "customers/getAll", {
+      headers: this.globalService.headers,
+      responseType: "text"
+    }).subscribe({
+      next: (response) => {
+        try {
+          const data = JSON.parse(response);
+          this.customers = data;
+          this.customersFrEnd = data;
+        } catch (err) {
+          console.error("Errore nel parse JSON dei clienti:", err);
+        }
+      },
+      error: (err) => console.error("Errore nel recupero clienti:", err)
+    });
+  }
+
+  searchNumeroCliente(value: string): void {
+    this.customersFrEnd = value ? this.customers.filter(c => c.numeroCliente.toString().startsWith(value)) : [...this.customers];
+  }
+
+  searchNominativo(value: string): void {
+    this.customersFrEnd = value ? this.customers.filter(c => c.nominativo.toLowerCase().startsWith(value.toLowerCase())) : [...this.customers];
+  }
+
+  navigateToEditCustomer(numeroCliente: string): void {
+    const body = { numeroCliente };
+  
+    this.http.post(this.globalService.url + 'customers/getCustomer', body, {
       headers: this.globalService.headers,
       responseType: 'text',
-    })
-    .subscribe((response) => {
-      this.customersFrEnd = JSON.parse(response).reverse()
-
-      if (this.customersFrEnd.length > 0) {
-        this.numeroClienteSelezionato = this.customersFrEnd[0].numeroCliente;
-        const body = { numeroPreventivo: this.customersFrEnd[0].numeroCliente };
+    }).subscribe((response) => {
+      if (response === 'Unauthorized') {
+        this.router.navigateByUrl('/');
+      } else {
+        const cliente = JSON.parse(response)[0];
+        this.customerModelService.numeroCliente = cliente.numeroCliente;
+        this.customerModelService.tipoCliente = cliente.tipoCliente;
+        this.customerModelService.nominativo = cliente.nominativo;
+        this.customerModelService.cfpi = cliente.cfpi;
+        this.customerModelService.citta = cliente.citta;
+        this.customerModelService.selettorePrefissoVia = cliente.selettorePrefissoVia;
+        this.customerModelService.via = cliente.via;
+        this.customerModelService.cap = cliente.cap;
+        this.customerModelService.email = cliente.email;
+        this.customerModelService.telefono = cliente.telefono;
+        this.customerModelService.referente = cliente.referente;
+        this.customerModelService.descrizioneImmobile = cliente.descrizioneImmobile;
+        this.customerModelService.servizi = JSON.parse(cliente.servizi || '[]');
+        this.customerModelService.interventi = JSON.parse(cliente.interventi || '[]');
+        this.customerModelService.imponibile = parseFloat(cliente.imponibile).toFixed(2);
+        this.customerModelService.iva = cliente.iva;
+        this.customerModelService.pagamento = cliente.pagamento;
+        this.customerModelService.note = cliente.note;
+        this.customerModelService.key = cliente.key;
+  
+        this.router.navigateByUrl('/editCustomer');
       }
     });
-}
-
-
-searchNumeroCliente(value: string){
-
-  if(value == ""){
-    this.ngOnInit();
   }
-  else{
+  
 
-    this.customersFrEnd = this.customersFrEnd.filter(customer => customer.numeroCliente.startsWith(value))
-  }
-}
-
-searchNominativo(value: string){
-
-  if(value == ""){
-    this.ngOnInit();
-  }
-  else{
-    this.customersFrEnd = this.customersFrEnd.filter(customer => customer.nominativo.startsWith(value))
-
-  }
-}
-
-navigateToEditCustomer(numeroCliente: string){
-  const body = { numeroCliente: numeroCliente };
-this.http
-          .post(
-            this.globalService.url + 'quotes/getCustomer',
-            body,
-            {
-              headers: this.globalService.headers,
-              responseType: 'text',
-            }
-          )
-          .subscribe((response) => {
-            if(response == 'Unauthorized') {
-              this.router.navigateByUrl('/')
-            }
-            else {
-              let customerJson = (JSON.parse(response)[0]);
-              this.customerModel.numeroCliente = customerJson["numeroCliente"];
-              this.customerModel.tipoCliente= customerJson["tipoCliente"];
-              this.customerModel.nominativo= customerJson["nominativo"];
-              this.customerModel.cfpi = customerJson["cfpi"];
-              this.customerModel.citta = customerJson["citta"];
-              this.customerModel.selettorePrefissoVia = customerJson["selettorePrefissoVia"];
-              this.customerModel.via = customerJson["via"];
-              this.customerModel.cap = customerJson["cap"];
-              this.customerModel.email = customerJson["email"];
-              this.customerModel.telefono = customerJson["telefono"];
-              this.customerModel.referente = customerJson["referente"];
-              this.customerModel.descrizioneImmobile = customerJson["descrizioneImmobile"];
-              this.customerModel.servizi = JSON.parse(customerJson["servizi"]);
-              this.customerModel.interventi = JSON.parse(customerJson["interventi"]);
-              this.customerModel.imponibile = customerJson["imponibile"];
-              this.customerModel.iva = customerJson["iva"];
-              this.customerModel.pagamento = customerJson["pagamento"];
-              this.customerModel.note = customerJson["note"];
-
-              this.router.navigateByUrl('/editCustomer');
-            }
-          });
-}
-delete(numeroCliente: string){
-  const body = { numeroCliente: numeroCliente };
-
-  this.http
-  .post(
-    this.globalService.url + 'customers/delete',
-    body, {
+  deleteCustomer(numeroCliente: string): void {
+    if (!confirm("Sei sicuro di voler eliminare questo cliente?")) return;
+  
+    this.http.post(this.globalService.url + "customers/delete", { numeroCliente }, {
       headers: this.globalService.headers,
-      responseType: 'text',
-    })
-    .subscribe((response)=>{
-      if(response == 'Unauthorized') {
-        this.router.navigateByUrl('/')
+      responseType: "text"
+    }).subscribe({
+      next: () => {
+        this.customers = this.customers.filter(c => c.numeroCliente !== numeroCliente);
+        this.customersFrEnd = [...this.customers];
+      },
+      error: (err) => {
+        console.error("Errore eliminazione cliente:", err);
+        alert("Errore durante l'eliminazione");
       }
-      else {
-      this.ngOnInit();
-      }
-    })
-}
+    });
+  }
+  
 
+  navigateToAddCustomer(){
+    this.router.navigateByUrl('/addCustomer');
+  }
 
-navigateToMenageCustomer(numeroCliente: string){
-  const body = { numeroCliente: numeroCliente };
-this.http
-          .post(
-            this.globalService.url + 'customers/getCustomer',
-            body,
-            {
-              headers: this.globalService.headers,
-              responseType: 'text',
-            }
-          )
-          .subscribe((response) => {
-            if(response == 'Unauthorized') {
-              this.router.navigateByUrl('/')
-            }
-            else {
-              let customerJson = (JSON.parse(response)[0]);
-              this.customerModel.numeroCliente = customerJson["numeroCliente"];
-              this.customerModel.tipoCliente= customerJson["tipoCliente"];
-              this.customerModel.nominativo= customerJson["nominativo"];
-              this.customerModel.cfpi = customerJson["cfpi"];
-              this.customerModel.citta = customerJson["citta"];
-              this.customerModel.selettorePrefissoVia = customerJson["selettorePrefissoVia"];
-              this.customerModel.via = customerJson["via"];
-              this.customerModel.cap = customerJson["cap"];
-              this.customerModel.email = customerJson["email"];
-              this.customerModel.telefono = customerJson["telefono"];
-              this.customerModel.referente = customerJson["referente"];
-              this.customerModel.descrizioneImmobile = customerJson["descrizioneImmobile"];
-              this.customerModel.servizi = JSON.parse(customerJson["servizi"]);
-              this.customerModel.interventi = JSON.parse(customerJson["interventi"]);
-              this.customerModel.imponibile = customerJson["imponibile"];
-              this.customerModel.iva = customerJson["iva"];
-              this.customerModel.pagamento = customerJson["pagamento"];
-              this.customerModel.note = customerJson["note"];
-
-              this.router.navigateByUrl('/menageCustomer');
-            }
-          });
-}
 }

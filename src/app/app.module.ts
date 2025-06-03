@@ -77,6 +77,7 @@ import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { AuthInterceptorService } from './auth-interceptor.service';
 import { BlogComponent } from './componenti/sito/blog/blog.component';
 import { ConvenzioniPromozioniComponent } from './componenti/sito/convenzioni-promozioni/convenzioni-promozioni.component';
+import { EditCustomerComponent } from './admin/edit-customer/edit-customer.component';
 
 
 loadMessages(itMessages);
@@ -119,6 +120,7 @@ locale('it');
     DocumentManagerComponent,
     BlogComponent,
     ConvenzioniPromozioniComponent,
+    EditCustomerComponent,
   ],
   imports: [
     BrowserModule,
