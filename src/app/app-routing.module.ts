@@ -61,13 +61,14 @@ const routes: Routes = [
   { path: 'navbar', component: NavbarComponent },
   { path: 'gestioneemployees', component: GestioneEmployeesComponent, canActivate: [AuthGuard] },
   { path: 'settingsemployees', component: SettingsEmployeesComponent, canActivate: [AuthGuard] },
-  { path: 'documenti/:empEmail', component: DocumentManagerComponent, canActivate: [AuthGuard] },
-  { path: 'view-pdf', component: ViewPdfComponent, canActivate: [AuthGuard] },
+  { path: 'documenti/employee/:id', component: DocumentManagerComponent, canActivate: [AuthGuard] },
+  { path: 'documenti/client/:id', component: DocumentManagerComponent, canActivate: [AuthGuard] },
+    { path: 'view-pdf', component: ViewPdfComponent, canActivate: [AuthGuard] },
   { path: 'blog', component: BlogComponent },
   { path: 'convenzioni-promozioni', component: ConvenzioniPromozioniComponent},
   { path: 'editCustomer', component: EditCustomerComponent, canActivate: [AuthGuard] },
 
-  
+
 ];
 
 @NgModule({

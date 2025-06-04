@@ -41,10 +41,13 @@ export class GestioneEmployeesComponent implements OnInit {
       }
     });
   }
-  
+
 
   // Ottiene la lista di buste paga di un dipendente
-  goToDocument(empEmail: string): void {
-    this.router.navigate(["/documenti", empEmail]);
+  goToDocument(id: string): void {
+    this.router.navigate(['/documenti/employee', id]);
+  }
+  back(){
+    this.router.navigateByUrl('/homeAdmin')
   }
 }

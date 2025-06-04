@@ -15,7 +15,7 @@ export class AddCustomerComponent {
   }
 
   addCustomer(){
-    if(this.customerModelService.tipoCliente == 
+    if(this.customerModelService.tipoCliente ==
       ''){
           //INSERIRE UN ALERT PER AVVISARE DI IMMETERE IL CAMPO
     }
@@ -54,4 +54,7 @@ export class AddCustomerComponent {
       });
     }
    }
+   back(){
+    this.router.navigateByUrl('/listCustomer')
+  }
 }

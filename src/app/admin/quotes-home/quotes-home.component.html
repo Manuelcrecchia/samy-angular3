@@ -27,18 +27,28 @@
         <button mat-raised-button class="scrolling-button" (click)="viewPdf(quote.numeroPreventivo)">
           <span class="scrolling-text">{{ quote.numeroPreventivo }}  {{quote.nominativo}}</span>
         </button>
+
         <button mat-raised-button (click)="navigateToEditQuote(quote.numeroPreventivo)">
-          <mat-icon aria-hidden="false" aria-label="Example edit icon">edit</mat-icon>
+          <mat-icon aria-hidden="false" aria-label="Modifica">edit</mat-icon>
         </button>
+
         <button mat-raised-button (click)="delete(quote.numeroPreventivo)">
-          <mat-icon aria-hidden="false" aria-label="Example delete icon">delete</mat-icon>
+          <mat-icon aria-hidden="false" aria-label="Elimina">delete</mat-icon>
         </button>
+
         <button mat-raised-button (click)="invio(quote.numeroPreventivo)">
-          <mat-icon aria-hidden="false" aria-label="Example conferma icon">send</mat-icon>
+          <mat-icon aria-hidden="false" aria-label="Invio">send</mat-icon>
         </button>
+
         <button mat-raised-button (click)="addInspection(quote.numeroPreventivo, quote.nominativo)">
-          <mat-icon aria-hidden="false" aria-label="Calendar icon">calendar_today</mat-icon>
+          <mat-icon aria-hidden="false" aria-label="Ispezione">calendar_today</mat-icon>
+        </button>
+
+        <!-- ✅ Nuovo pulsante con icona \"visto/verificato\" -->
+        <button mat-raised-button color="primary" (click)="accettaPreventivo(quote.numeroPreventivo)">
+          <mat-icon aria-hidden="false" aria-label="Icona accetta">check</mat-icon>
         </button>
       </mat-list-item>
     </mat-list>
   </div>
+

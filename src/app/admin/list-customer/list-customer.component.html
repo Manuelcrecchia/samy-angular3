@@ -1,3 +1,6 @@
+<div class="indietro">
+  <button (click)="back()">Torna Indietro</button>
+</div>
 <div class="container py-4">
   <h2 class="mb-4 text-center">Gestione Clienti</h2>
   <button class="btn btn-success" (click)="navigateToAddCustomer()">Aggiungi Cliente</button>
@@ -44,9 +47,15 @@
           <td>{{ customer.referente }}</td>
           <td>{{ customer.key ? 'Sì' : 'No' }}</td>
           <td>
-            <button (click)="navigateToEditCustomer(customer.numeroCliente)" class="btn btn-warning btn-sm me-1">Modifica</button>
-            <button (click)="deleteCustomer(customer.email)" class="btn btn-danger btn-sm">Elimina</button>
+            <button (click)="navigateToEditCustomer(customer.numeroCliente)" class="btn btn-warning btn-sm me-1">
+              Modifica
+            </button>
+            <button (click)="deleteCustomer(customer.numeroCliente)" class="btn btn-danger btn-sm">Elimina</button>
+            <button (click)="viewDocuments(customer.numeroCliente)" class="btn btn-primary btn-sm">
+              Visualizza documenti
+            </button>
           </td>
+
         </tr>
       </tbody>
     </table>

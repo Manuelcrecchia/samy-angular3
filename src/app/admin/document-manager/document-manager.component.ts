@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { GlobalService } from '../../service/global.service';
@@ -9,12 +9,16 @@ import { GlobalService } from '../../service/global.service';
   styleUrls: ['./document-manager.component.css']
 })
 export class DocumentManagerComponent implements OnInit {
-  empEmail: string = '';
+  userId: string = '';
+  isCustomer: boolean = false;
+  prefix: 'employee' | 'customer' = 'employee';
+
   folders: string[] = [];
   selectedFolder: string = '';
   files: any[] = [];
   pdfBase64: string = '';
   newFolderName: string = '';
+  email: string = '';
 
   constructor(
     private route: ActivatedRoute,
@@ -24,204 +28,171 @@ export class DocumentManagerComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    // Recupera l'email dell'employee dalla rotta (ad es. /adminpayslips/:empEmail)
-    this.empEmail = this.route.snapshot.paramMap.get('empEmail') || '';
-    if (this.empEmail) {
-      this.loadFolders();
-    } else {
-      console.error("Email dell'employee non presente nella rotta.");
-    }
+    this.userId = this.route.snapshot.paramMap.get('id') || '';
+    this.isCustomer = this.route.snapshot.url[1].path === 'client';
+    this.prefix = this.isCustomer ? 'customer' : 'employee';
+
+    this.loadFolders();
+    this.loadEmailIfNeeded();
+  }
+
+  private getPayload(extra: any = {}) {
+    return this.isCustomer
+      ? { numeroCliente: this.userId, prefix: this.prefix, ...extra }
+      : { employeeId: this.userId, prefix: this.prefix, ...extra };
+  }
+
+  private loadEmailIfNeeded() {
+    const endpoint = this.isCustomer ? 'customers/getAll' : 'employees/getAll';
+
+    this.http.get(this.globalService.url + endpoint, {
+      headers: this.globalService.headers,
+      responseType: 'text'
+    }).subscribe({
+      next: (res) => {
+        try {
+          const users = JSON.parse(res);
+          const user = this.isCustomer
+            ? users.find((u: any) => u.numeroCliente == this.userId)
+            : users.find((u: any) => u.id == this.userId);
+          this.email = user?.email || '';
+        } catch (err) {
+          console.error("Errore nel parsing dell'email:", err);
+        }
+      }
+    });
   }
 
   sendFileMail(filename: string): void {
-    if (!this.selectedFolder) {
-      alert("Seleziona prima una cartella");
-      return;
-    }
-    const body = { empEmail: this.empEmail, folder: this.selectedFolder, filename };
-    this.http.post(this.globalService.url + 'adminpayslips/sendFileMail', body, {
+    if (!this.selectedFolder) return alert("Seleziona una cartella");
+    if (!this.email) return alert("Email utente non disponibile");
+
+    const body = this.getPayload({ folder: this.selectedFolder, filename });
+
+    this.http.post(this.globalService.url + 'documents/sendDocumentMail', body, {
       headers: this.globalService.headers,
       responseType: 'text'
     }).subscribe({
-      next: (resp) => {
-        console.log("Documento inviato via email:", resp);
-        alert("Documento inviato via email con successo!");
-      },
-      error: (err) => {
-        console.error("Errore nell'invio del documento via email:", err);
-        alert("Errore nell'invio del documento via email");
-      }
+      next: () => alert("Email inviata con successo!"),
+      error: () => alert("Errore durante l'invio dell'email")
     });
   }
 
-
-  // Carica la lista delle cartelle per l'employee
   loadFolders(): void {
-    const body = { empEmail: this.empEmail };
-    this.http.post(this.globalService.url + 'adminpayslips/folders', body, {
+    const body = this.getPayload();
+    this.http.post(this.globalService.url + 'documents/folders', body, {
       headers: this.globalService.headers,
       responseType: 'text'
     }).subscribe({
-      next: (response) => {
+      next: (res) => {
         try {
-          const data = JSON.parse(response);
-          this.folders = data;
-          console.log("Cartelle caricate:", data);
-        } catch (error) {
-          console.error("Errore nel parsing delle cartelle:", error);
+          this.folders = JSON.parse(res);
+        } catch {
+          console.error("Errore nel parsing delle cartelle");
         }
-      },
-      error: (error) => {
-        console.error("Errore nel caricamento delle cartelle:", error);
       }
     });
   }
 
-  // Crea una nuova cartella per l'employee
   createFolder(): void {
-    if (!this.newFolderName.trim()) {
-      alert("Inserisci un nome per la cartella");
-      return;
-    }
-    const body = { empEmail: this.empEmail, folder: this.newFolderName.trim() };
-    this.http.post(this.globalService.url + 'adminpayslips/createFolder', body, {
+    if (!this.newFolderName.trim()) return alert("Inserisci un nome");
+
+    const body = this.getPayload({ folder: this.newFolderName.trim() });
+    this.http.post(this.globalService.url + 'documents/createFolder', body, {
       headers: this.globalService.headers,
       responseType: 'text'
-    }).subscribe({
-      next: (resp) => {
-        console.log("Cartella creata:", resp);
-        this.newFolderName = '';
-        this.loadFolders();
-      },
-      error: (err) => {
-        console.error("Errore nella creazione della cartella:", err);
-      }
+    }).subscribe(() => {
+      this.newFolderName = '';
+      this.loadFolders();
     });
   }
 
-  // Elimina una cartella (e tutti i file in essa contenuti)
   deleteFolder(folder: string): void {
-    if (!confirm(`Sei sicuro di voler eliminare la cartella "${folder}"? Tutti i file in essa contenuti verranno eliminati.`)) {
-      return;
-    }
-    const body = { empEmail: this.empEmail, folder };
-    this.http.post(this.globalService.url + 'adminpayslips/deleteFolder', body, {
+    if (!confirm(`Vuoi eliminare la cartella "${folder}"?`)) return;
+
+    const body = this.getPayload({ folder });
+    this.http.post(this.globalService.url + 'documents/deleteFolder', body, {
       headers: this.globalService.headers,
       responseType: 'text'
-    }).subscribe({
-      next: (resp) => {
-        console.log("Cartella eliminata:", resp);
-        if (folder === this.selectedFolder) {
-          this.selectedFolder = '';
-          this.files = [];
-          this.pdfBase64 = '';
-        }
-        this.loadFolders();
-      },
-      error: (err) => {
-        console.error("Errore nell'eliminazione della cartella:", err);
+    }).subscribe(() => {
+      if (folder === this.selectedFolder) {
+        this.selectedFolder = '';
+        this.files = [];
+        this.pdfBase64 = '';
       }
+      this.loadFolders();
     });
   }
 
-  // Seleziona una cartella e carica i file al suo interno
   selectFolder(folder: string): void {
     this.selectedFolder = folder;
-    this.loadFiles(folder);
+    this.loadFiles();
     this.pdfBase64 = '';
   }
 
-  // Carica la lista dei file in una determinata cartella
-  loadFiles(folder: string): void {
-    const body = { empEmail: this.empEmail, folder };
-    this.http.post(this.globalService.url + 'adminpayslips/list', body, {
+  loadFiles(): void {
+    const body = this.getPayload({ folder: this.selectedFolder });
+    this.http.post(this.globalService.url + 'documents/list', body, {
       headers: this.globalService.headers,
       responseType: 'text'
     }).subscribe({
-      next: (response) => {
+      next: (res) => {
         try {
-          const data = JSON.parse(response);
-          this.files = data;
-          console.log("File caricati per la cartella " + folder + ":", data);
-        } catch (error) {
-          console.error("Errore nel parsing dei file:", error);
+          this.files = JSON.parse(res);
+        } catch {
+          console.error("Errore parsing file lista");
         }
-      },
-      error: (error) => {
-        console.error("Errore nel caricamento dei file:", error);
       }
     });
   }
 
-  // Upload di un file nella cartella selezionata
   uploadFile(event: any): void {
     const file = event.target.files[0];
-    if (!file) return;
-    if (!this.selectedFolder) {
-      alert("Seleziona prima una cartella");
-      return;
-    }
+    if (!file || !this.selectedFolder) return alert("Seleziona una cartella e un file");
+
     const formData = new FormData();
     formData.append("document", file);
-    formData.append("email", this.empEmail);
     formData.append("folder", this.selectedFolder);
+    formData.append(this.isCustomer ? "numeroCliente" : "employeeId", this.userId);
+    formData.append("prefix", this.prefix);
 
-    this.http.post(this.globalService.url + 'adminpayslips/upload', formData)
+    this.http.post(this.globalService.url + 'documents/upload', formData)
       .subscribe({
-        next: (resp) => {
-          console.log("Documento caricato con successo:", resp);
-          alert("Documento caricato con successo!");
-          this.loadFiles(this.selectedFolder);
+        next: () => {
+          alert("Documento caricato!");
+          this.loadFiles();
         },
         error: (err) => {
-          console.error("Errore nell'upload del documento:", err);
+          console.error("Errore upload:", err);
+          alert("Errore durante l'upload");
         }
       });
   }
 
-  // Seleziona un file per visualizzarlo in PDF
   selectFile(filename: string): void {
-    const body = { empEmail: this.empEmail, folder: this.selectedFolder, filename };
-    this.http.post(this.globalService.url + 'adminpayslips/getPdf', body, {
+    const body = this.getPayload({ folder: this.selectedFolder, filename });
+    this.http.post(this.globalService.url + 'documents/getPdf', body, {
       headers: this.globalService.headers,
       responseType: 'text'
-    }).subscribe({
-      next: (base64) => {
-        this.pdfBase64 = base64;
-        console.log("Documento in base64 caricato:", base64.substring(0, 30) + '...');
-      },
-      error: (err) => {
-        console.error("Errore nel caricamento del documento:", err);
-      }
-    });
+    }).subscribe((base64) => this.pdfBase64 = base64);
   }
 
-  // Download del file (apre una nuova finestra/tab)
   downloadFile(filename: string): void {
-    const url = this.globalService.url + `adminpayslips/download?empEmail=${this.empEmail}&folder=${this.selectedFolder}&filename=${filename}`;
+    const paramName = this.isCustomer ? "numeroCliente" : "employeeId";
+    const url = `${this.globalService.url}documents/download?${paramName}=${this.userId}&folder=${this.selectedFolder}&filename=${filename}&prefix=${this.prefix}`;
     window.open(url, "_blank");
   }
 
-  // Elimina un file
   deleteFile(filename: string): void {
-    if (!confirm(`Sei sicuro di voler eliminare il file "${filename}"?`)) {
-      return;
-    }
-    const body = { empEmail: this.empEmail, folder: this.selectedFolder, filename };
-    this.http.post(this.globalService.url + 'adminpayslips/delete', body, {
+    if (!confirm(`Eliminare il file "${filename}"?`)) return;
+
+    const body = this.getPayload({ folder: this.selectedFolder, filename });
+    this.http.post(this.globalService.url + 'documents/delete', body, {
       headers: this.globalService.headers,
       responseType: 'text'
-    }).subscribe({
-      next: (resp) => {
-        console.log("Documento eliminato con successo:", resp);
-        this.files = this.files.filter(file => file.filename !== filename);
-        if (this.pdfBase64 && this.pdfBase64 === filename) {
-          this.pdfBase64 = '';
-        }
-      },
-      error: (err) => {
-        console.error("Errore nell'eliminazione del documento:", err);
-      }
+    }).subscribe(() => {
+      this.files = this.files.filter(f => f.filename !== filename);
+      if (this.pdfBase64 === filename) this.pdfBase64 = '';
     });
   }
 

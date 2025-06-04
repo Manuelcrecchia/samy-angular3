@@ -52,7 +52,7 @@ export class ListCustomerComponent {
 
   navigateToEditCustomer(numeroCliente: string): void {
     const body = { numeroCliente };
-  
+
     this.http.post(this.globalService.url + 'customers/getCustomer', body, {
       headers: this.globalService.headers,
       responseType: 'text',
@@ -80,16 +80,16 @@ export class ListCustomerComponent {
         this.customerModelService.pagamento = cliente.pagamento;
         this.customerModelService.note = cliente.note;
         this.customerModelService.key = cliente.key;
-  
+
         this.router.navigateByUrl('/editCustomer');
       }
     });
   }
-  
+
 
   deleteCustomer(numeroCliente: string): void {
     if (!confirm("Sei sicuro di voler eliminare questo cliente?")) return;
-  
+
     this.http.post(this.globalService.url + "customers/delete", { numeroCliente }, {
       headers: this.globalService.headers,
       responseType: "text"
@@ -104,10 +104,15 @@ export class ListCustomerComponent {
       }
     });
   }
-  
+
 
   navigateToAddCustomer(){
     this.router.navigateByUrl('/addCustomer');
   }
-
+  viewDocuments(numeroCliente: string) {
+    // Naviga o apri modale, a seconda di come gestisci i documenti
+    this.router.navigate(['/documenti/client', numeroCliente]);}
+    back(){
+    this.router.navigateByUrl('/homeAdmin')
+  }
 }

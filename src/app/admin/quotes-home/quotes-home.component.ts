@@ -8,6 +8,7 @@ import { PopupServiceService } from '../../componenti/popup/popup-service.servic
 import { DxSchedulerComponent } from "devextreme-angular";
 import { AutomaticAddInspectionToCalendarService } from '../../service/automatic-add-inspection-to-calendar.service';
 import { Location } from '@angular/common';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 
 @Component({
@@ -27,7 +28,7 @@ export class QuotesHomeComponent   {@Input() color: any;
   pdfTsSelezionato = false;
   @ViewChild(DxSchedulerComponent, { static: false }) scheduler!: DxSchedulerComponent;
 
-  constructor(private http: HttpClient,
+  constructor(private http: HttpClient,private snackBar: MatSnackBar,
     private pdfService: NgxExtendedPdfViewerService,
     private globalService: GlobalService,
     private router: Router,
@@ -80,7 +81,7 @@ ngOnInit() {
 }
 
 
-viewPdf(numeroPreventivo:string){   
+viewPdf(numeroPreventivo:string){
   this.router.navigate(['/view-pdf'], { queryParams: { numeroPreventivo } });}
 
 searchNumeroPreventivo(value: string){
@@ -240,6 +241,54 @@ this.http
 //       }
 //     });
 // }
+
+accettaPreventivo(numeroPreventivo: string) {
+  this.http.post<any[]>('http://localhost:5000/quotes/getQuote', { numeroPreventivo }).subscribe({
+    next: (res) => {
+      const quote = res[0];
+      if (!quote) {
+        this.snackBar.open('Preventivo non trovato', 'Chiudi', { duration: 3000 });
+        return;
+      }
+
+      const nuovoCliente = {
+        tipoCliente: quote.tipoPreventivo,
+        nominativo: quote.nominativo,
+        cfpi: quote.cfpi || '',
+        citta: quote.citta || '',
+        selettorePrefissoVia: quote.selettorePrefissoVia || '',
+        via: quote.via || '',
+        cap: quote.cap || '',
+        email: quote.email || '',
+        telefono: quote.telefono || '',
+        referente: quote.referente || '',
+        descrizioneImmobile: quote.descrizioneImmobile || '',
+        servizi: quote.servizi,
+        interventi: quote.interventi,
+        imponibile: quote.imponibile || '0.00',
+        iva: quote.iva || '',
+        pagamento: quote.pagamento || '',
+        note: quote.note || '',
+      };
+
+      this.http.post('http://localhost:5000/customers/add', nuovoCliente).subscribe({
+        next: () => {
+          this.snackBar.open('Cliente aggiunto con successo', 'OK', { duration: 3000 });
+        },
+        error: (err) => {
+          console.error('Errore durante inserimento cliente:', err);
+          this.snackBar.open('Errore durante inserimento cliente', 'Chiudi', { duration: 3000 });
+        }
+      });
+    },
+    error: (err) => {
+      console.error('Errore nel recupero del preventivo:', err);
+      this.snackBar.open('Errore nel recupero preventivo', 'Chiudi', { duration: 3000 });
+    }
+  });
+}
+
+
 
 
 back(){
