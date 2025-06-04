@@ -14,7 +14,7 @@ export class GlobalService {
   private _email: string = sessionStorage.getItem('email') || "";
 
   //url = "https://samipulizie.it:4000/";
-  url = "http://192.168.1.17:5000/";
+  url = "http://192.168.216.3:5000/";
 
   private logoutTimer: any;
 
