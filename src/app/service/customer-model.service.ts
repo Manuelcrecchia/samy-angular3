@@ -26,6 +26,8 @@ export class CustomerModelService {
   note= '';
   key: boolean = false;
   tempistica: string = '';
+  nOperatori: string = '';
+
 
 
 
@@ -51,6 +53,7 @@ export class CustomerModelService {
     this.note = '';
     this.key = false;
     this.tempistica = '';
+    this.nOperatori = "";
   }
 
   constructor() { }

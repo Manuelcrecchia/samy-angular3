@@ -1,0 +1,39 @@
+<div class="container mt-4">
+  <h2>Assegnazione Turni</h2>
+
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <button (click)="prevDay()" class="btn btn-secondary">&larr;</button>
+    <h4>{{ selectedDate | date: 'fullDate' }}</h4>
+    <button (click)="nextDay()" class="btn btn-secondary">&rarr;</button>
+  </div>
+
+  <div *ngIf="loading" class="text-center">Caricamento...</div>
+
+  <div *ngIf="!loading && appointments.length === 0" class="alert alert-info">
+    Nessun lavoro ordinario o straordinario per questo giorno.
+  </div>
+
+  <div class="grid-container" *ngIf="!loading && appointments.length > 0">
+    <div *ngFor="let hour of hours" class="hour-row">
+      <div class="hour-label">{{ hour }}</div>
+      <div class="appointment-blocks">
+        <div
+  *ngFor="let a of getAppointmentsByHour(hour)"
+  class="appointment-card"
+  [ngClass]="{ 'complete': isComplete(a) }"
+  (click)="openAssignmentDialog(a)">
+
+  <div class="badge" *ngIf="!isComplete(a)">❗</div>
+  <div class="badge" *ngIf="a.keyRequired" style="left: 6px; right: auto;">🗝️</div>
+
+  <strong>{{ a.title }}</strong><br>
+  <small>{{ a.startDate | date: 'HH:mm' }} - {{ a.endDate | date: 'HH:mm' }}</small>
+</div>
+
+
+      </div>
+    </div>
+  </div>
+
+  <button class="btn btn-success mt-4" (click)="finalSave()">Salva Turni</button>
+</div>

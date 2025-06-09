@@ -57,6 +57,10 @@ export class HomeAdminComponent implements OnInit {
     this.router.navigateByUrl('/listCustomer');
   }
 
+  goToShifts() {
+    this.router.navigate(['/admin/shifts']);
+  }
+
   back() {
     this.router.navigateByUrl('/');
   }

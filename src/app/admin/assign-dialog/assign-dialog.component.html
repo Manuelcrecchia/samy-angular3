@@ -1,0 +1,22 @@
+<h2 mat-dialog-title>Assegna Dipendenti</h2>
+
+<mat-dialog-content *ngIf="data">
+  <p><strong>Orario:</strong> {{ data.startTime }} - {{ data.endTime }}</p>
+  <p><strong>Cliente:</strong> {{ data.title }}</p>
+  <p><strong>Dipendenti richiesti:</strong> {{ data.requiredEmployees }}</p>
+
+  <mat-selection-list [(ngModel)]="selectedEmployees">
+    <mat-list-option
+      *ngFor="let e of employees"
+      [value]="e.id"
+      [disabled]="isBusy(e.id)"
+      [ngClass]="{ 'busy': isBusy(e.id) }">
+      {{ e.nome }} {{ e.cognome }} <span *ngIf="isBusy(e.id)"> (occupato)</span>
+    </mat-list-option>
+  </mat-selection-list>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="onCancel()">Annulla</button>
+  <button mat-button color="primary" (click)="onSave()">Salva</button>
+</mat-dialog-actions>

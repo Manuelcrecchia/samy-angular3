@@ -39,7 +39,8 @@ export class AddCustomerComponent {
       pagamento: this.customerModelService.pagamento,
       note: this.customerModelService.note,
       key: this.customerModelService.key,
-      tempistica: this.customerModelService.tempistica
+      tempistica: this.customerModelService.tempistica,
+      nOperatori: this.customerModelService.nOperatori
     };
 
     this.http

@@ -40,7 +40,8 @@ export class EditCustomerComponent {
       pagamento: this.customerModelService.pagamento,
       note: this.customerModelService.note,
       key: this.customerModelService.key,
-      tempistica: this.customerModelService.tempistica
+      tempistica: this.customerModelService.tempistica,
+      nOperatori: this.customerModelService.nOperatori
     };
 
     console.log("BODY inviato per update:", body);

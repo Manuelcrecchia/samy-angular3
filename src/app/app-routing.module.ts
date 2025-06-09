@@ -33,6 +33,8 @@ import { BlogComponent } from './componenti/sito/blog/blog.component';
 import { ConvenzioniPromozioniComponent } from './componenti/sito/convenzioni-promozioni/convenzioni-promozioni.component';
 import { EditCustomerComponent } from './admin/edit-customer/edit-customer.component';
 import { SchedaClienteComponent } from './admin/scheda-cliente/scheda-cliente.component';
+import { ShiftHomeComponent } from './admin/shift-home/shift-home.component';
+import { CreateShiftComponent } from './admin/create-shift/create-shift.component';
 
 const routes: Routes = [
   { path: '', component: HomesitoComponent },
@@ -69,6 +71,10 @@ const routes: Routes = [
   { path: 'convenzioni-promozioni', component: ConvenzioniPromozioniComponent},
   { path: 'editCustomer', component: EditCustomerComponent, canActivate: [AuthGuard] },
   { path: 'schedaCliente/:numeroCliente', component: SchedaClienteComponent },
+  { path: 'admin/shifts', component: ShiftHomeComponent },
+  { path: 'admin/shifts/create', component: CreateShiftComponent }
+
+
 
 
 
