@@ -24,7 +24,7 @@ export class CustomerModelService {
   iva= "N";
   pagamento = "";
   note= '';
-  key: boolean = false; // <- campo che ci interessa
+  key: boolean = false;
   tempistica: string = '';
 
 
@@ -32,7 +32,7 @@ export class CustomerModelService {
 
   reset() {
     this.numeroCliente = '';
-    this.tipoCliente = 'O';
+    this.tipoCliente = '';
     this.nominativo = '';
     this.cfpi = '';
     this.citta = '';
@@ -43,9 +43,9 @@ export class CustomerModelService {
     this.telefono = '';
     this.referente = '';
     this.descrizioneImmobile = '';
-    this.servizi = Array(14).fill('');
-    this.interventi = Array(14).fill('');
-    this.imponibile = '';
+    this.servizi = ['','','','','','','','','','','','','',''];
+  this.interventi = ['','','','','','','','','','','','','',''];
+    this.imponibile = '0.00';
     this.iva = 'N';
     this.pagamento = '';
     this.note = '';

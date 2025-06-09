@@ -42,25 +42,18 @@ export class AddCustomerComponent {
       tempistica: this.customerModelService.tempistica
     };
 
-    this.http.post(this.globalService.url + 'customers/add', body, {
-      headers: this.globalService.headers,
-      responseType: 'text'
-    }).subscribe({
-      next: (res) => {
-        console.log('Cliente aggiunto:', res);
+    this.http
+      .post(this.globalService.url + 'customers/add', body, {
+        headers: this.globalService.headers,
+        responseType: 'text',
+      })
+      // ...
+      .subscribe((response) => {
         this.customerModelService.reset();
-        setTimeout(() => {
-          this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
-            this.router.navigate(['/addCustomer']);
-          });
-        }, 0);
-      },
-      error: (err) => {
-        console.error('Errore durante il salvataggio del cliente:', err);
-        alert('Errore durante il salvataggio del cliente. Controlla i dati e riprova.');
-      }
-    });
-  }
+        this.router.navigateByUrl('/listCustomer', { replaceUrl: true });
+
+      });
+    }
 
 
 
