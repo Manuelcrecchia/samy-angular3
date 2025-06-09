@@ -1,0 +1,44 @@
+<div class="container mt-4">
+  <h2 class="mb-3">Scheda Cliente</h2>
+  <div class="indietro">
+    <button (click)="back()">Torna Indietro</button>
+  </div>
+  <div *ngIf="cliente">
+    <p><strong>Numero Cliente:</strong> {{ cliente.numeroCliente }}</p>
+    <p><strong>Tipo Cliente:</strong> {{ cliente.tipoCliente }}</p>
+    <p><strong>Nominativo:</strong> {{ cliente.nominativo }}</p>
+    <p><strong>CF/P.IVA:</strong> {{ cliente.cfpi }}</p>
+    <p><strong>Città:</strong> {{ cliente.citta }}</p>
+    <p><strong>Indirizzo:</strong> {{ cliente.selettorePrefissoVia }} {{ cliente.via }}</p>
+    <p><strong>CAP:</strong> {{ cliente.cap }}</p>
+    <p><strong>Email:</strong> {{ cliente.email }}</p>
+    <p><strong>Telefono:</strong> {{ cliente.telefono }}</p>
+    <p><strong>Referente:</strong> {{ cliente.referente }}</p>
+    <p><strong>Descrizione Immobile:</strong> {{ cliente.descrizioneImmobile }}</p>
+
+    <div *ngIf="parseJson(cliente.servizi).length > 0">
+      <p><strong>Servizi:</strong></p>
+      <ul>
+        <li *ngFor="let s of parseJson(cliente.servizi)">{{ s }}</li>
+      </ul>
+    </div>
+
+    <div *ngIf="cliente.tipoCliente === 'O' && parseJson(cliente.interventi).length > 0">
+      <p><strong>Interventi:</strong></p>
+      <ul>
+        <li *ngFor="let i of parseJson(cliente.interventi)">{{ i }}</li>
+      </ul>
+    </div>
+
+    <p><strong>Imponibile:</strong> {{ cliente.imponibile }}</p>
+    <p><strong>IVA:</strong> {{ cliente.iva }}</p>
+    <p><strong>Pagamento:</strong> {{ cliente.pagamento }}</p>
+    <p><strong>Tempistica:</strong> {{ cliente.tempistica }}</p>
+    <p><strong>Note:</strong> {{ cliente.note }}</p>
+    <p><strong>Chiavi:</strong> {{ cliente.key ? 'Sì' : 'No' }}</p>
+  </div>
+
+  <div *ngIf="!cliente">
+    <p>Caricamento in corso o cliente non trovato...</p>
+  </div>
+</div>
