@@ -32,6 +32,7 @@ import { ViewPdfComponent } from './admin/view-pdf/view-pdf.component';
 import { BlogComponent } from './componenti/sito/blog/blog.component';
 import { ConvenzioniPromozioniComponent } from './componenti/sito/convenzioni-promozioni/convenzioni-promozioni.component';
 import { EditCustomerComponent } from './admin/edit-customer/edit-customer.component';
+import { SchedaClienteComponent } from './admin/scheda-cliente/scheda-cliente.component';
 
 const routes: Routes = [
   { path: '', component: HomesitoComponent },
@@ -67,6 +68,8 @@ const routes: Routes = [
   { path: 'blog', component: BlogComponent },
   { path: 'convenzioni-promozioni', component: ConvenzioniPromozioniComponent},
   { path: 'editCustomer', component: EditCustomerComponent, canActivate: [AuthGuard] },
+  { path: 'schedaCliente/:numeroCliente', component: SchedaClienteComponent },
+
 
 
 ];

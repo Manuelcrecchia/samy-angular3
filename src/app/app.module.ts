@@ -78,6 +78,7 @@ import { AuthInterceptorService } from './auth-interceptor.service';
 import { BlogComponent } from './componenti/sito/blog/blog.component';
 import { ConvenzioniPromozioniComponent } from './componenti/sito/convenzioni-promozioni/convenzioni-promozioni.component';
 import { EditCustomerComponent } from './admin/edit-customer/edit-customer.component';
+import { SchedaClienteComponent } from './admin/scheda-cliente/scheda-cliente.component';
 
 
 loadMessages(itMessages);
@@ -121,6 +122,7 @@ locale('it');
     BlogComponent,
     ConvenzioniPromozioniComponent,
     EditCustomerComponent,
+    SchedaClienteComponent,
   ],
   imports: [
     BrowserModule,

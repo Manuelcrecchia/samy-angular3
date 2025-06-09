@@ -27,6 +27,7 @@ export class CalendarHomeComponent {
   saveRecurrenceRule: string = '';
   recurrenceRuleisVisible: boolean = false;
   selectedDate: Date = new Date();
+  selectedCategoria: string = '';
 
   @ViewChild(DxSchedulerComponent, { static: false })
   scheduler!: DxSchedulerComponent;
@@ -40,6 +41,8 @@ export class CalendarHomeComponent {
   nPreventiviArray: string[] = [];
   descrizioneArray: string[] = [];
   categoriaArray: string[] = [];
+  clientiArray: any[] = [];
+
 
   constructor(
     private http: HttpClient,
@@ -49,6 +52,7 @@ export class CalendarHomeComponent {
     private popup: PopupServiceService,
     private dialog: MatDialog
   ) {} // Inject HttpClient module
+
   ngOnInit() {
     this.saveRecurrenceRule = '';
     this.recurrenceRuleisVisible = false;
@@ -64,7 +68,7 @@ export class CalendarHomeComponent {
           this.automaticAddInspectionToCalendarservice.pass = false;
           const startDate = new Date();
           const endDate = new Date();
-          endDate.setMinutes(endDate.getMinutes() + 30); // Imposta la data di fine 30 minuti dopo la data di inizio
+          endDate.setMinutes(endDate.getMinutes() + 30);
           let descrizione =
             'Contatto ' +
             this.automaticAddInspectionToCalendarservice.nominativo +
@@ -81,7 +85,7 @@ export class CalendarHomeComponent {
             true
           );
         }
-        this.http //Carica l'array di preventivi per lautocompilazione del campo numero preventivo
+        this.http
           .get(this.globalService.url + 'quotes/getAll', {
             headers: this.globalService.headers,
             responseType: 'text',
@@ -98,7 +102,17 @@ export class CalendarHomeComponent {
             this.categoriaArray = data.map((item: any) => item.tipoPreventivo);
           });
       });
+
+    this.http
+      .get(this.globalService.url + 'customers/getAll', {
+        headers: this.globalService.headers,
+        responseType: 'text',
+      })
+      .subscribe((response) => {
+        this.clientiArray = JSON.parse(response);
+      });
   }
+
 
   convertDateToICSFormat(date: Date) {
     // Crea un oggetto Date a partire dalla stringa fornita
@@ -117,13 +131,7 @@ export class CalendarHomeComponent {
   }
 
   onCurrentViewChange(event: any) {
-    event.value == 'day'
-      ? (this.currentView = 'day')
-      : event.value == 'week'
-      ? (this.currentView = 'week')
-      : event.value == 'month'
-      ? (this.currentView = 'month')
-      : null;
+    this.currentView = event.value;
   }
 
   onAppointmentFormOpening(e: any) {
@@ -157,34 +165,43 @@ export class CalendarHomeComponent {
       dataField: 'title',
       editorType: 'dxAutocomplete',
       editorOptions: {
-        dataSource: this.nPreventiviArray,
-        minSearchLength: 1,
-        searchExpr: 'this',
-        placeholder: 'Cerca preventivo...',
+        dataSource: [
+          ...this.nPreventiviArray,
+          ...this.clientiArray.map(c => `${c.numeroCliente} - ${c.nominativo}`)
+        ],
+        minSearchLength: 0, // così mostra tutto anche senza scrivere
+        showDropDownButton: true,
+        valueExpr: undefined, // lasciare undefined per array semplice
+        placeholder: 'Cerca preventivo o cliente...',
+        onOpened: function (e: any) {
+          e.component.option('opened', true);
+        },
+        onFocusIn: function (e: any) {
+          e.component.open();
+        },
         onValueChanged: (args: any) => {
-          const selectedValue = args.value;
-          const selectedPreventivo = this.nPreventiviArray.find(
-            (item) => item === selectedValue
-          );
-          if (selectedPreventivo) {
-            const descrizione =
-              this.descrizioneArray[
-                this.nPreventiviArray.indexOf(selectedPreventivo)
-              ];
-            let categoria =
-              this.categoriaArray[
-                this.nPreventiviArray.indexOf(selectedPreventivo)
-              ];
-            categoria == 'O'
-              ? (categoria = 'ordinario')
-              : (categoria = 'straordinario');
+          const selectedValue: string = args.value;
+          const idxPrev = this.nPreventiviArray.findIndex(item => item === selectedValue);
+          if (idxPrev !== -1) {
+            const descrizione = this.descrizioneArray[idxPrev];
+            const categoria = this.categoriaArray[idxPrev] === 'O' ? 'ordinario' : 'straordinario';
+            form.getEditor('description').option('value', descrizione);
+            form.getEditor('categories').option('value', categoria);
+            return;
+          }
+
+          const cliente = this.clientiArray.find(c => `${c.numeroCliente} - ${c.nominativo}` === selectedValue);
+          if (cliente) {
+            const descrizione = `Cliente: ${cliente.nominativo}, Tel: ${cliente.telefono}`;
+            const categoria = cliente.tipoCliente === 'O' ? 'ordinario' : 'straordinario';
             form.getEditor('description').option('value', descrizione);
             form.getEditor('categories').option('value', categoria);
           }
-        },
+        }
       },
-      label: { text: 'Numero preventivo' },
+      label: { text: 'Numero preventivo' }
     };
+
 
     const switchConfig = {
       dataField: 'enableRecurrence',
@@ -213,11 +230,11 @@ export class CalendarHomeComponent {
         },
 
         onValueChanged: (args: any) => {
-        
+
           // Gestione per la ricorrenza settimanale
           if (
-            args.value != null && 
-            args.value.startsWith('FREQ=WEEKLY;') && 
+            args.value != null &&
+            args.value.startsWith('FREQ=WEEKLY;') &&
             (args.previousValue == null || (args.previousValue != null && !args.previousValue.startsWith('FREQ=WEEKLY;')))
           ) {
             const dayOfWeek = this.selectedDate.getDay();
@@ -227,11 +244,11 @@ export class CalendarHomeComponent {
               'value',
               `FREQ=WEEKLY;BYDAY=${['SU', 'MO', 'TU', 'WE', 'TH', 'FR', 'SA'][dayOfWeek]}`
             );
-          } 
+          }
           // Gestione per la ricorrenza mensile
           else if (
-            args.value != null && 
-            args.value.startsWith('FREQ=MONTHLY;') && 
+            args.value != null &&
+            args.value.startsWith('FREQ=MONTHLY;') &&
             (args.previousValue == null || (args.previousValue != null && !args.previousValue.startsWith('FREQ=MONTHLY;')))
           ) {
             const dayOfMonth = this.selectedDate.getDate();
@@ -241,7 +258,7 @@ export class CalendarHomeComponent {
               'value',
               `FREQ=MONTHLY;BYMONTHDAY=${dayOfMonth}`
             );
-          } 
+          }
           // Altrimenti, aggiorna solo la regola di ricorrenza salvata
           else {
             this.saveRecurrenceRule = args.value;
@@ -292,6 +309,10 @@ export class CalendarHomeComponent {
           items: categories,
           displayExpr: 'text',
           valueExpr: 'id',
+          onValueChanged: (e: any) => {
+            this.selectedCategoria = e.value;
+            form.getEditor('title').option('dataSource', this.getAutocompleteSource(e.value));
+          }
         },
       },
       switchConfig,
@@ -310,6 +331,33 @@ export class CalendarHomeComponent {
     ]);
   }
 
+  getAutocompleteSource(categoria: string): string[] {
+    if (categoria === 'sopralluogo') return this.nPreventiviArray;
+    if (categoria === 'ordinario')
+      return this.clientiArray
+        .filter((c) => c.tipoCliente === 'O')
+        .map((c) => `${c.numeroCliente} - ${c.nominativo}`);
+    if (categoria === 'straordinario')
+      return this.clientiArray
+        .filter((c) => c.tipoCliente === 'S')
+        .map((c) => `${c.numeroCliente} - ${c.nominativo}`);
+    return [];
+  }
+
+
+  onAppointmentClick(e: any) {
+    const data = e.appointmentData;
+    const codice = data.title?.split(' - ')[0];
+    const categoria = data.categories;
+
+    if (categoria === 'sopralluogo') {
+      this.router.navigate(['/editQuote', codice]); // preventivo
+    } else if (categoria === 'ordinario' || categoria === 'straordinario') {
+      this.router.navigate(['/editCustomer', codice]); // cliente
+    }
+  }
+
+
   onAppointmentAdding(e: AppointmentAddingEvent) {
     let body = {
       title: e.appointmentData['title'],
@@ -321,16 +369,29 @@ export class CalendarHomeComponent {
       categories: e.appointmentData['categories'],
       recurrenceException: e.appointmentData['recurrenceException'],
     };
-    if (
-      body.title == undefined ||
-      body.startDate == undefined ||
-      body.endDate == undefined ||
-      body.categories == undefined 
-    ) {
-      this.popup.text = 'Compilare tutti i campi obbligatori';
-      this.popup.openPopup();
-      this.ngOnInit();
-    } else {
+    const codice = body.title?.split(' - ')[0];
+const categoria = body.categories;
+
+// Verifica obbligatorietà
+if (!body.title || !body.startDate || !body.endDate || !body.categories) {
+  this.popup.text = 'Compilare tutti i campi obbligatori';
+  this.popup.openPopup();
+  this.ngOnInit();
+  return;
+}
+
+// Verifica che il codice esista nel DB
+const codiceValido =
+  (categoria === 'sopralluogo' && this.nPreventiviArray.some(p => p.startsWith(codice + ' -'))) ||
+  ((categoria === 'ordinario' || categoria === 'straordinario') && this.clientiArray.some(c => c.numeroCliente.toString() === codice)) ||
+  categoria === 'altro';
+
+if (!codiceValido) {
+  this.popup.text = 'Codice non valido o non esistente per la categoria selezionata';
+  this.popup.openPopup();
+  return;
+}
+
       this.http
         .post(this.globalService.url + 'appointments/add', body, {
           headers: this.globalService.headers,
@@ -359,7 +420,6 @@ export class CalendarHomeComponent {
           }
         });
     }
-  }
 
   onAppointmentUpdating(e: AppointmentUpdatingEvent) {
     let body = {
@@ -466,14 +526,9 @@ export class CalendarHomeComponent {
 
   onFilterChange(event: any) {
     const filterType = event.target.value;
-  
-    console.log('Filtro selezionato:', filterType); // Debug
-  
     if (filterType === 'all') {
-      // Ripristina tutti gli eventi senza alterare l'array originale
       this.filteredEvents = this.events;
     } else {
-      // Filtra eventi in base al tipo
       this.filteredEvents = this.events.filter((event) => {
         return event.categories === filterType;
       });

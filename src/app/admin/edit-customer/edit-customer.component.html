@@ -8,6 +8,9 @@
   <link href="https://cdn.jsdelivr.net/npm/@angular/material/prebuilt-themes/indigo-pink.css" rel="stylesheet">
 </head>
 <body>
+  <div class="indietro">
+    <button (click)="back()">Torna Indietro</button>
+  </div>
   <div class="container py-4">
     <h2 class="mb-4 text-center">Modifica Cliente</h2>
     <form id="form" name="form">
@@ -174,6 +177,14 @@
             </mat-select>
           </mat-form-field>
         </div>
+
+        <div class="col-md-6">
+          <mat-form-field class="w-100">
+            <mat-label>Tempo necessario per il lavoro</mat-label>
+            <input matInput name="tempistica" maxlength="255" [(ngModel)]="customerModelService.tempistica" />
+          </mat-form-field>
+        </div>
+
 
         <div class="col-12 text-center mt-4">
           <button mat-raised-button color="primary" (click)="editCustomer()">Salva</button>

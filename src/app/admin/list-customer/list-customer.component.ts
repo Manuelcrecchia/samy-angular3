@@ -105,6 +105,26 @@ export class ListCustomerComponent {
     });
   }
 
+  applyFiltro(valore: string): void {
+    switch (valore) {
+      case 'chiave_si':
+        this.customersFrEnd = this.customers.filter(c => c.key === true);
+        break;
+      case 'chiave_no':
+        this.customersFrEnd = this.customers.filter(c => c.key === false);
+        break;
+      case 'ordinario':
+        this.customersFrEnd = this.customers.filter(c => c.tipoCliente === 'O');
+        break;
+      case 'straordinario':
+        this.customersFrEnd = this.customers.filter(c => c.tipoCliente === 'S');
+        break;
+      default:
+        this.customersFrEnd = [...this.customers];
+    }
+  }
+
+
 
   navigateToAddCustomer(){
     this.router.navigateByUrl('/addCustomer');

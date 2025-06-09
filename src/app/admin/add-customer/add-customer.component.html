@@ -181,6 +181,12 @@
             </mat-select>
           </mat-form-field>
         </div>
+        <div class="col-md-6">
+          <mat-form-field class="w-100">
+            <mat-label>Tempo necessario per il lavoro</mat-label>
+            <input matInput name="tempistica" maxlength="255" [(ngModel)]="customerModelService.tempistica" />
+          </mat-form-field>
+        </div>
 
         <div class="col-12 text-center mt-4">
           <button mat-raised-button color="primary" (click)="addCustomer()">Salva</button>

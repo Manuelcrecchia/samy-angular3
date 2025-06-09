@@ -1,31 +1,51 @@
-<div class="indietro">
-  <button (click)="back()">Torna Indietro</button>
+<!-- INDIETRO -->
+<div class="indietro mb-3">
+  <button class="btn btn-outline-primary rounded-pill" (click)="back()">
+    ⬅ Torna Indietro
+  </button>
 </div>
+
 <div class="container py-4">
   <h2 class="mb-4 text-center">Gestione Clienti</h2>
-  <button class="btn btn-success" (click)="navigateToAddCustomer()">Aggiungi Cliente</button>
+
+  <button class="btn btn-pink rounded-pill mb-3" (click)="navigateToAddCustomer()">
+    ➕ Aggiungi Cliente
+  </button>
 
   <!-- FILTRI -->
   <div class="row g-3 mb-3">
-    <div class="col-12 col-md-6 col-lg-4">
-      <mat-form-field class="w-100">
+    <div class="col-md-4">
+      <mat-form-field class="w-100" appearance="fill">
         <mat-label>Numero cliente</mat-label>
         <input #inputNumeroCliente matInput (input)="searchNumeroCliente(inputNumeroCliente.value)" />
       </mat-form-field>
     </div>
 
-    <div class="col-12 col-md-6 col-lg-4">
-      <mat-form-field class="w-100">
+    <div class="col-md-4">
+      <mat-form-field class="w-100" appearance="fill">
         <mat-label>Nominativo</mat-label>
         <input #inputNominativo matInput (input)="searchNominativo(inputNominativo.value)" />
       </mat-form-field>
     </div>
+
+    <div class="col-md-4">
+      <mat-form-field appearance="fill" class="w-100">
+        <mat-label>Filtro clienti</mat-label>
+        <mat-select (selectionChange)="applyFiltro($event.value)">
+          <mat-option value="">Tutti</mat-option>
+          <mat-option value="chiave_si">Chiave: Sì</mat-option>
+          <mat-option value="chiave_no">Chiave: No</mat-option>
+          <mat-option value="ordinario">Ordinario</mat-option>
+          <mat-option value="straordinario">Straordinario</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
   </div>
 
-  <!-- TABELLA RESPONSIVA -->
+  <!-- TABELLA -->
   <div class="table-responsive">
-    <table class="table table-striped table-bordered align-middle text-center">
-      <thead class="table-dark">
+    <table class="table table-bordered table-striped align-middle text-center bg-white">
+      <thead class="table-pink text-white">
         <tr>
           <th>Numero</th>
           <th>Tipo</th>
@@ -40,22 +60,29 @@
       <tbody>
         <tr *ngFor="let customer of customersFrEnd">
           <td>{{ customer.numeroCliente }}</td>
-          <td>{{ customer.tipoCliente }}</td>
+          <td>{{ customer.tipoCliente === 'O' ? 'Ordinario' : 'Straordinario' }}</td>
           <td>{{ customer.nominativo }}</td>
           <td>{{ customer.email }}</td>
           <td>{{ customer.telefono }}</td>
           <td>{{ customer.referente }}</td>
-          <td>{{ customer.key ? 'Sì' : 'No' }}</td>
           <td>
-            <button (click)="navigateToEditCustomer(customer.numeroCliente)" class="btn btn-warning btn-sm me-1">
-              Modifica
-            </button>
-            <button (click)="deleteCustomer(customer.numeroCliente)" class="btn btn-danger btn-sm">Elimina</button>
-            <button (click)="viewDocuments(customer.numeroCliente)" class="btn btn-primary btn-sm">
-              Visualizza documenti
-            </button>
+            <span class="badge" [ngClass]="customer.key ? 'badge-success' : 'badge-danger'">
+              {{ customer.key ? 'Sì' : 'No' }}
+            </span>
           </td>
+          <td>
+            <button class="btn btn-warning btn-sm rounded-pill me-1" (click)="navigateToEditCustomer(customer.numeroCliente)">
+              ✏ Modifica
+            </button>
+            <button class="btn btn-danger btn-sm rounded-pill me-1" (click)="deleteCustomer(customer.numeroCliente)">
+              🗑 Elimina
+            </button>
+            <button class="btn btn-primary btn-sm rounded-pill" (click)="viewDocuments(customer.numeroCliente)">
+              📄 Documenti
+            </button>
+            <button class="btn btn-info btn-sm" [routerLink]="['/schedaCliente', customer.numeroCliente]">Scheda</button>
 
+          </td>
         </tr>
       </tbody>
     </table>

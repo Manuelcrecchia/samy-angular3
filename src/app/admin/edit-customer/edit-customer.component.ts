@@ -21,7 +21,7 @@ export class EditCustomerComponent {
 
   editCustomer(): void {
     const body = {
-      numeroCliente: this.customerModelService.numeroCliente,
+      numeroCliente: String(this.customerModelService.numeroCliente).trim(),
       tipoCliente: this.customerModelService.tipoCliente,
       nominativo: this.customerModelService.nominativo,
       cfpi: this.customerModelService.cfpi,
@@ -35,23 +35,33 @@ export class EditCustomerComponent {
       descrizioneImmobile: this.customerModelService.descrizioneImmobile,
       servizi: JSON.stringify(this.customerModelService.servizi),
       interventi: JSON.stringify(this.customerModelService.interventi),
-      imponibile: Number(this.customerModelService.imponibile).toFixed(2),
+      imponibile: this.customerModelService.imponibile,
       iva: this.customerModelService.iva,
       pagamento: this.customerModelService.pagamento,
       note: this.customerModelService.note,
-      key: this.customerModelService.key
+      key: this.customerModelService.key,
+      tempistica: this.customerModelService.tempistica
     };
+
+    console.log("BODY inviato per update:", body);
 
     this.http.post(this.globalService.url + 'customers/edit', body, {
       headers: this.globalService.headers,
       responseType: 'text',
-    }).subscribe(() => {
-      this.router.navigateByUrl('/listCustomer', { replaceUrl: true });
+    }).subscribe({
+      next: (response) => {
+        console.log("Cliente aggiornato:", response);
+        this.router.navigateByUrl('/listCustomer');
+      },
+      error: (err) => {
+        console.error("Errore durante l'aggiornamento:", err);
+      }
     });
   }
 
+
   back(): void {
-    this.router.navigateByUrl('/customersHome');
+    this.router.navigateByUrl('/listCustomer');
   }
 
   @HostListener('window:popstate', ['$event'])
@@ -59,4 +69,5 @@ export class EditCustomerComponent {
     event.preventDefault();
     this.router.navigateByUrl('/listCustomer', { replaceUrl: true });
   }
+
 }

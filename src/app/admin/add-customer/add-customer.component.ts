@@ -13,15 +13,13 @@ export class AddCustomerComponent {
 
   ngOnInit(){
   }
-
-  addCustomer(){
-    if(this.customerModelService.tipoCliente ==
-      ''){
-          //INSERIRE UN ALERT PER AVVISARE DI IMMETERE IL CAMPO
+  addCustomer(): void {
+    if (this.customerModelService.tipoCliente === '') {
+      alert('Compilare il campo tipo cliente.');
+      return;
     }
-    else{
 
-    let body = {
+    const body = {
       codiceOperatore: this.globalService.userCode,
       tipoCliente: this.customerModelService.tipoCliente,
       nominativo: this.customerModelService.nominativo,
@@ -39,21 +37,33 @@ export class AddCustomerComponent {
       imponibile: this.customerModelService.imponibile,
       iva: this.customerModelService.iva,
       pagamento: this.customerModelService.pagamento,
-      note : this.customerModelService.note,
-      key : this.customerModelService.key
-    }
-    this.http
-      .post(this.globalService.url + 'customers/add', body, {
-        headers: this.globalService.headers,
-        responseType: 'text',
-      })
-      // ...
-      .subscribe((response) => {
-        this.router.navigateByUrl('/listCustomer', { replaceUrl: true });
+      note: this.customerModelService.note,
+      key: this.customerModelService.key,
+      tempistica: this.customerModelService.tempistica
+    };
 
-      });
-    }
-   }
+    this.http.post(this.globalService.url + 'customers/add', body, {
+      headers: this.globalService.headers,
+      responseType: 'text'
+    }).subscribe({
+      next: (res) => {
+        console.log('Cliente aggiunto:', res);
+        this.customerModelService.reset();
+        setTimeout(() => {
+          this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
+            this.router.navigate(['/addCustomer']);
+          });
+        }, 0);
+      },
+      error: (err) => {
+        console.error('Errore durante il salvataggio del cliente:', err);
+        alert('Errore durante il salvataggio del cliente. Controlla i dati e riprova.');
+      }
+    });
+  }
+
+
+
    back(){
     this.router.navigateByUrl('/listCustomer')
   }
