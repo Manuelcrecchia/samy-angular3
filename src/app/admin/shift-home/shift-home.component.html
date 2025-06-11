@@ -14,8 +14,14 @@
   </div>
 
   <ul class="list-group" *ngIf="shifts.length > 0">
-    <li class="list-group-item" *ngFor="let shift of shifts">
-      Turno per appuntamento #{{ shift.appointmentId }} – {{ shift.employeeIds.length }} dipendenti assegnati
-    </li>
+    <div *ngFor="let empName of groupedKeys()">
+      <h4>{{ empName.toUpperCase() }} – {{ selectedDate | date: 'EEEE d MMMM y':'':'it-IT' | uppercase }}</h4>
+      <ul>
+        <li *ngFor="let turno of groupedByEmployee[empName]">
+          {{ turno.title }} — {{ turno.start | date: 'HH:mm' }} - {{ turno.end | date: 'HH:mm' }}
+        </li>
+      </ul>
+    </div>
+
   </ul>
 </div>

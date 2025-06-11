@@ -9,9 +9,9 @@
     <mat-list-option
       *ngFor="let e of employees"
       [value]="e.id"
-      [disabled]="isBusy(e.id)"
       [ngClass]="{ 'busy': isBusy(e.id) }">
-      {{ e.nome }} {{ e.cognome }} <span *ngIf="isBusy(e.id)"> (occupato)</span>
+      {{ e.nome }} {{ e.cognome }}
+      <span *ngIf="isBusy(e.id)"> (occupato)</span>
     </mat-list-option>
   </mat-selection-list>
 </mat-dialog-content>

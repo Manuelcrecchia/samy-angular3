@@ -80,6 +80,8 @@ export class ListCustomerComponent {
         this.customerModelService.pagamento = cliente.pagamento;
         this.customerModelService.note = cliente.note;
         this.customerModelService.key = cliente.key;
+        this.customerModelService.tempistica = cliente.tempistica;
+        this.customerModelService.nOperatori = cliente.nOperatori;
 
         this.router.navigateByUrl('/editCustomer');
       }

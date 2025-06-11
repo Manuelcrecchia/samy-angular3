@@ -51,7 +51,7 @@ export class EditCustomerComponent {
       responseType: 'text',
     }).subscribe({
       next: (response) => {
-        console.log("Cliente aggiornato:", response);
+        this.customerModelService.reset();
         this.router.navigateByUrl('/listCustomer');
       },
       error: (err) => {

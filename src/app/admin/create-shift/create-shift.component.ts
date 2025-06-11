@@ -14,6 +14,7 @@ export class CreateShiftComponent {
   appointments: any[] = [];
   assignedShifts: { [appointmentId: number]: number[] } = {};
   loading = false;
+  employeeList: any[] = [];
 
   hours = [
     '08:00', '09:00', '10:00', '11:00',
@@ -32,8 +33,15 @@ export class CreateShiftComponent {
     const queryDate = this.route.snapshot.queryParamMap.get('date');
     if (queryDate) this.selectedDate = new Date(queryDate);
     this.loadAppointments();
+    this.http.get<any[]>('http://localhost:5000/employees/getAll').subscribe(res => {
+      this.employeeList = res;
+    });
   }
 
+  getEmployeeName(id: number): string {
+    const found = this.employeeList.find(e => e.id === id);
+    return found ? `${found.nome} ${found.cognome}` : `ID ${id}`;
+  }
 
 
   formatDate(date: Date): string {
@@ -124,7 +132,8 @@ export class CreateShiftComponent {
       data: {
         ...app,
         assigned,
-        busyEmployees
+        busyEmployees,
+        requiredEmployees: app.requiredEmployees
       }
     });
 
@@ -142,9 +151,49 @@ export class CreateShiftComponent {
       return assigned.length < app.requiredEmployees;
     });
 
-    if (incomplete.length > 0) {
-      const ids = incomplete.map(a => a.id).join(', ');
-      const conferma = confirm(`I seguenti lavori sono incompleti: ${ids}. Vuoi salvare comunque?`);
+    // 🔍 Raggruppa per ora e raccogli i dipendenti doppi
+    const conflicts: { employeeId: number, hour: string }[] = [];
+    const hourMap: { [hour: string]: number[] } = {}; // ora => lista di dipendenti
+
+    this.appointments.forEach(app => {
+      const hour = new Date(app.startDate).toISOString().slice(11, 13); // 'HH'
+      const assigned = this.assignedShifts[app.id] || [];
+
+      if (!hourMap[hour]) hourMap[hour] = [];
+
+      assigned.forEach(emp => {
+        if (hourMap[hour].includes(emp)) {
+          conflicts.push({ employeeId: emp, hour });
+        } else {
+          hourMap[hour].push(emp);
+        }
+      });
+    });
+
+    const dettagli = incomplete.map(a =>
+      `• [${a.startDate.slice(11, 16)}] ${a.title} (ID ${a.id})`
+    ).join('\n');
+
+    const duplicati = conflicts.map(c =>
+      `• ${this.getEmployeeName(c.employeeId)} ha più lavori alle ${c.hour}:00`
+    ).join('\n');
+
+
+
+    if (incomplete.length > 0 || conflicts.length > 0) {
+      let msg = '';
+
+      if (incomplete.length > 0) {
+        msg += `⚠️ I seguenti lavori NON hanno abbastanza operatori assegnati:\n\n${dettagli}\n\n`;
+      }
+
+      if (conflicts.length > 0) {
+        msg += `⚠️ I seguenti dipendenti risultano assegnati a più lavori nello stesso orario:\n\n${duplicati}\n\n`;
+      }
+
+      msg += `Vuoi salvare comunque?`;
+
+      const conferma = confirm(msg);
       if (!conferma) return;
     }
 
@@ -161,4 +210,5 @@ export class CreateShiftComponent {
         this.router.navigate(['/admin/shifts']);
       });
   }
+
 }
