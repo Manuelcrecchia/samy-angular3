@@ -56,7 +56,7 @@ export class ShiftHomeComponent {
     this.http.get<any[]>(`http://localhost:5000/shifts/byDate/${dateStr}`)
           .subscribe(data => {
         this.groupedByEmployee = this.organizeByEmployee(data);
-        console.log(data);
+        this.shifts = data;
       });
   }
 

@@ -1,6 +1,12 @@
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
+import { registerLocaleData } from '@angular/common';
+import localeIt from '@angular/common/locales/it';
+import { LOCALE_ID } from '@angular/core';
+
+
+
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { CustomerAreaComponent } from './componenti/login/customer-area/customer-area.component';
@@ -86,6 +92,8 @@ import { AssignDialogComponent } from './admin/assign-dialog/assign-dialog.compo
 
 loadMessages(itMessages);
 locale('it');
+registerLocaleData(localeIt);
+
 
 @NgModule({
   declarations: [
@@ -175,6 +183,7 @@ locale('it');
   ],
     providers: [
       { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptorService, multi: true },
+      { provide: LOCALE_ID, useValue: 'it-IT' },
       GlobalService, DatePipe
     ],
     bootstrap: [AppComponent],
