@@ -19,9 +19,27 @@
       <ul>
         <li *ngFor="let turno of groupedByEmployee[empName]">
           {{ turno.title }} — {{ turno.start | date: 'HH:mm' }} - {{ turno.end | date: 'HH:mm' }}
+          <span
+          *ngIf="turno.keyRequired"
+          class="key-icon"
+          (mousedown)="handleMouseDown($event, turno.appointmentId)"
+          (mouseup)="hideTooltip()"
+          (mouseleave)="hideTooltip()"
+        >🔑</span>
+               
         </li>
       </ul>
     </div>
 
   </ul>
 </div>
+<div
+  class="tooltip-popup"
+  *ngIf="tooltipVisible"
+  [style.top.px]="tooltipTarget?.getBoundingClientRect().bottom + windowRef.scrollY + 5"
+  [style.left.px]="tooltipTarget?.getBoundingClientRect().left + windowRef.scrollX"
+>
+  {{ tooltipText }}
+</div>
+
+

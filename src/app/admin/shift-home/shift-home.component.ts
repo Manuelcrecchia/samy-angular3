@@ -10,7 +10,11 @@ import { Router } from '@angular/router';
 export class ShiftHomeComponent {
   selectedDate = new Date();
   shifts: any[] = [];
-  groupedByEmployee: { [key: string]: { title: string; start: string; end: string }[] } = {};
+  groupedByEmployee: { [key: string]: { title: string; start: string; end: string; appointmentId: number; keyRequired: boolean }[] } = {};
+  tooltipVisible: boolean = false;
+tooltipText: string = '';
+tooltipTarget: any = null;
+
 
   groupedKeys(): string[] {
     return Object.keys(this.groupedByEmployee || {}).sort();
@@ -22,6 +26,21 @@ export class ShiftHomeComponent {
   ngOnInit(): void {
     this.loadShifts();
   }
+
+  getFormattedDate(): string {
+    return this.formatDate(this.selectedDate);
+  }
+
+  get windowRef() {
+    return window;
+  }
+  
+  handleMouseDown(event: MouseEvent, appointmentId: number) {
+    const target = event.target as HTMLElement;
+    const date = this.getFormattedDate(); // usa la funzione già definita
+    this.showPreviousAssignees(appointmentId, date, target);
+  }
+  
 
   formatDate(date: Date): string {
     return date.toISOString().split('T')[0];
@@ -38,7 +57,9 @@ export class ShiftHomeComponent {
         result[key].push({
           title: shift.appointment.title,
           start: shift.appointment.startDate,
-          end: shift.appointment.endDate
+          end: shift.appointment.endDate,
+          appointmentId: shift.appointmentId,
+          keyRequired: shift.appointment.customer?.key === true
         });
       }
     }
@@ -57,6 +78,7 @@ export class ShiftHomeComponent {
           .subscribe(data => {
         this.groupedByEmployee = this.organizeByEmployee(data);
         this.shifts = data;
+        console.log(data);
       });
   }
 
@@ -77,4 +99,30 @@ export class ShiftHomeComponent {
   createShifts(): void {
     this.router.navigate(['/admin/shifts/create'], { queryParams: { date: this.formatDate(this.selectedDate) } });
   }
+
+  showPreviousAssignees(appointmentId: number, date: string, target: HTMLElement) {
+    this.tooltipVisible = true;
+    this.tooltipText = 'Caricamento...';
+    this.tooltipTarget = target;
+  
+    this.http.post<any[]>('http://localhost:5000/shifts/getPreviousAssignees', {
+      appointmentId: appointmentId,
+      currentDate: date
+    }).subscribe(employees => {
+      if (employees.length === 0) {
+        this.tooltipText = 'Nessun assegnato precedente';
+      } else {
+        this.tooltipText = employees.map(e => `${e.nome} ${e.cognome}`).join(', ');
+      }
+    }, err => {
+      this.tooltipText = 'Errore nel recupero';
+    });
+  }
+  
+  hideTooltip() {
+    this.tooltipVisible = false;
+    this.tooltipText = '';
+    this.tooltipTarget = null;
+  }
+  
 }

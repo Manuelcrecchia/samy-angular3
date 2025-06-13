@@ -182,19 +182,18 @@ export class CalendarHomeComponent {
         onValueChanged: (args: any) => {
           const selectedValue: string = args.value;
           const idxPrev = this.nPreventiviArray.findIndex(item => item === selectedValue);
-
+        
           const currentCategory = form.getEditor('categories').option('value');
-
+        
           if (idxPrev !== -1) {
             const descrizione = this.descrizioneArray[idxPrev];
             if (!currentCategory) {
-              const categoria = this.categoriaArray[idxPrev] === 'O' ? 'ordinario' : 'straordinario';
-              form.getEditor('categories').option('value', categoria);
+              form.getEditor('categories').option('value', 'sopralluogo');
             }
             form.getEditor('description').option('value', descrizione);
             return;
           }
-
+        
           const cliente = this.clientiArray.find(c => `${c.numeroCliente} - ${c.nominativo}` === selectedValue);
           if (cliente) {
             const descrizione = `Cliente: ${cliente.nominativo}, Tel: ${cliente.telefono}`;
@@ -205,6 +204,7 @@ export class CalendarHomeComponent {
             form.getEditor('description').option('value', descrizione);
           }
         }
+        
 
       },
       label: { text: 'Numero preventivo' }

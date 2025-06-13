@@ -18,6 +18,28 @@
   margin-top: 6px;
 }
 
+.tooltip-panel {
+  position: absolute;
+  background-color: white;
+  border: 1px solid #ccc;
+  padding: 10px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  max-height: 300px;
+  overflow-y: auto;
+  z-index: 9999;
+}
+.tooltip-panel {
+  position: absolute;
+  background-color: white;
+  border: 1px solid #ccc;
+  padding: 10px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  max-height: 300px;
+  overflow-y: auto;
+  z-index: 9999;
+  top: 100px;
+  left: 20px;}
+
 .appointment-blocks {
   display: flex;
   flex-wrap: wrap;

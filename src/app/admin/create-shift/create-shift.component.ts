@@ -15,6 +15,8 @@ export class CreateShiftComponent {
   assignedShifts: { [appointmentId: number]: number[] } = {};
   loading = false;
   employeeList: any[] = [];
+  previousWeekShiftList: { cliente: string, dipendenti: string[] }[] = [];
+tooltipVisible = false;
 
   hours = [
     '08:00', '09:00', '10:00', '11:00',
@@ -43,7 +45,35 @@ export class CreateShiftComponent {
     return found ? `${found.nome} ${found.cognome}` : `ID ${id}`;
   }
 
-
+  showPreviousWeekShifts(): void {
+    const prevDate = new Date(this.selectedDate);
+    prevDate.setDate(prevDate.getDate() - 7);
+    const dateStr = this.formatDate(prevDate);
+  
+    this.http.get<any[]>(`http://localhost:5000/shifts/byDate/${dateStr}`)
+      .subscribe(data => {
+        const mappa: { [cliente: string]: string[] } = {};
+        for (const s of data) {
+          const title = s.appointment?.title || '---';
+          const fullNames = s.employees?.map((e: any) => `${e.nome} ${e.cognome}`) || [];
+  
+          if (!mappa[title]) mappa[title] = [];
+          mappa[title].push(...fullNames);
+        }
+  
+        this.previousWeekShiftList = Object.entries(mappa).map(([cliente, dipendenti]) => ({
+          cliente,
+          dipendenti
+        }));
+  
+        this.tooltipVisible = true;
+      });
+  }
+  
+  hidePreviousWeekShifts(): void {
+    this.tooltipVisible = false;
+  }
+  
   formatDate(date: Date): string {
     return date.toISOString().split('T')[0];
   }
@@ -80,7 +110,6 @@ export class CreateShiftComponent {
 
     this.http.post<any[]>('http://localhost:5000/appointments/byDate', { date: dateStr })
       .subscribe(data => {
-        console.log('Dati ricevuti:', data); // 🔍 CONTROLLA QUI
         this.appointments = data.filter(a =>
           a.categories === 'ordinario' || a.categories === 'straordinario'
         );
@@ -106,21 +135,28 @@ export class CreateShiftComponent {
   }
 
   getBusyEmployees(currentApp: any): number[] {
-    const currentHour = new Date(currentApp.startDate).getHours();
-
-    const overlaps = this.appointments.filter(a =>
-      a.id !== currentApp.id &&
-      new Date(a.startDate).getHours() === currentHour
-    );
-
+    const currentStart = new Date(currentApp.startDate).getTime();
+    const currentEnd = new Date(currentApp.endDate).getTime();
+  
+    const overlaps = this.appointments.filter(a => {
+      if (a.id === currentApp.id) return false;
+  
+      const start = new Date(a.startDate).getTime();
+      const end = new Date(a.endDate).getTime();
+  
+      // Sovrapposizione vera: A inizia prima che B finisca E finisce dopo che B inizia
+      return currentStart < end && currentEnd > start;
+    });
+  
     const busy: number[] = [];
     for (const o of overlaps) {
       const assigned = this.assignedShifts[o.id] || [];
       busy.push(...assigned);
     }
-
+  
     return busy;
   }
+  
 
 
   openAssignmentDialog(app: any): void {

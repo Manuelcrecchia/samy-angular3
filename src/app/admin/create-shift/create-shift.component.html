@@ -1,3 +1,17 @@
+<button
+  class="btn btn-outline-primary mb-3"
+  (mousedown)="showPreviousWeekShifts()"
+  (mouseup)="hidePreviousWeekShifts()"
+  (mouseleave)="hidePreviousWeekShifts()"
+>
+  Visualizza turni della settimana precedente
+</button>
+<div *ngIf="tooltipVisible" class="tooltip-panel">
+  <div *ngFor="let item of previousWeekShiftList">
+    <strong>{{ item.cliente }}:</strong>
+    <span>{{ item.dipendenti.join(', ') || 'Nessuno' }}</span>
+  </div>
+</div>
 <div class="container mt-4">
   <h2>Assegnazione Turni</h2>
 
