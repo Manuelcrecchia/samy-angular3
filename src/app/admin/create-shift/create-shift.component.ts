@@ -110,6 +110,7 @@ tooltipVisible = false;
 
     this.http.post<any[]>('http://localhost:5000/appointments/byDate', { date: dateStr })
       .subscribe(data => {
+        console.log(data);
         this.appointments = data.filter(a =>
           a.categories === 'ordinario' || a.categories === 'straordinario'
         );
@@ -135,14 +136,16 @@ tooltipVisible = false;
   }
 
   getBusyEmployees(currentApp: any): number[] {
-    const currentStart = new Date(currentApp.startDate).getTime();
-    const currentEnd = new Date(currentApp.endDate).getTime();
+    const currentStart = new Date(currentApp.startDate).getTime() + new Date().getTimezoneOffset() * 60000;
+const currentEnd = new Date(currentApp.endDate).getTime() + new Date().getTimezoneOffset() * 60000;
+
   
     const overlaps = this.appointments.filter(a => {
       if (a.id === currentApp.id) return false;
   
-      const start = new Date(a.startDate).getTime();
-      const end = new Date(a.endDate).getTime();
+      const start = new Date(a.startDate).getTime() + new Date().getTimezoneOffset() * 60000;
+const end = new Date(a.endDate).getTime() + new Date().getTimezoneOffset() * 60000;
+
   
       // Sovrapposizione vera: A inizia prima che B finisca E finisce dopo che B inizia
       return currentStart < end && currentEnd > start;
@@ -192,8 +195,12 @@ tooltipVisible = false;
     const hourMap: { [hour: string]: number[] } = {}; // ora => lista di dipendenti
 
     this.appointments.forEach(app => {
-      const hour = new Date(app.startDate).toISOString().slice(11, 13); // 'HH'
-      const assigned = this.assignedShifts[app.id] || [];
+      const localHour = new Date(app.startDate).toLocaleTimeString('it-IT', {
+        hour: '2-digit',
+        hour12: false
+      });
+      const hour = localHour.split(':')[0]; // '05'
+            const assigned = this.assignedShifts[app.id] || [];
 
       if (!hourMap[hour]) hourMap[hour] = [];
 
@@ -245,6 +252,10 @@ tooltipVisible = false;
         alert('Turni salvati');
         this.router.navigate(['/admin/shifts']);
       });
+  }
+
+  goBack(){
+    this.router.navigate(['/admin/shifts']);
   }
 
 }

@@ -1,11 +1,15 @@
-<div class="container mt-4">
-  <h2 class="mb-3">Scheda Cliente</h2>
-  <div class="indietro">
-    <button (click)="back()">Torna Indietro</button>
+<div class="container py-4">
+  <div class="d-flex justify-content-start align-items-center mb-3">
+    <button class="btn btn-outline-primary rounded-pill" (click)="back()">
+      ⬅ Torna Indietro
+    </button>
   </div>
-  <div *ngIf="cliente">
+
+  <h2 class="text-center mb-4">Scheda Cliente</h2>
+
+  <div *ngIf="cliente" class="bg-white rounded p-4 shadow-sm">
     <p><strong>Numero Cliente:</strong> {{ cliente.numeroCliente }}</p>
-    <p><strong>Tipo Cliente:</strong> {{ cliente.tipoCliente }}</p>
+    <p><strong>Tipo Cliente:</strong> {{ cliente.tipoCliente === 'O' ? 'Ordinario' : 'Straordinario' }}</p>
     <p><strong>Nominativo:</strong> {{ cliente.nominativo }}</p>
     <p><strong>CF/P.IVA:</strong> {{ cliente.cfpi }}</p>
     <p><strong>Città:</strong> {{ cliente.citta }}</p>
@@ -39,7 +43,7 @@
     <p><strong>Chiavi:</strong> {{ cliente.key ? 'Sì' : 'No' }}</p>
   </div>
 
-  <div *ngIf="!cliente">
-    <p>Caricamento in corso o cliente non trovato...</p>
+  <div *ngIf="!cliente" class="alert alert-warning">
+    Caricamento in corso o cliente non trovato...
   </div>
 </div>

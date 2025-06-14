@@ -123,5 +123,9 @@ tooltipTarget: any = null;
     this.tooltipText = '';
     this.tooltipTarget = null;
   }
+
+  back(){
+    this.router.navigate(['/homeAdmin'])
+  }
   
 }

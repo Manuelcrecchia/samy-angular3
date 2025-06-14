@@ -1,201 +1,189 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Modifica Cliente</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link href="https://cdn.jsdelivr.net/npm/@angular/material/prebuilt-themes/indigo-pink.css" rel="stylesheet">
-</head>
-<body>
-  <div class="indietro">
-    <button (click)="back()">Torna Indietro</button>
+<div class="container py-4">
+  <div class="d-flex justify-content-start align-items-center mb-3">
+    <button class="back-button" type="button" (click)="back()">&larr; Torna Indietro</button>
   </div>
-  <div class="container py-4">
-    <h2 class="mb-4 text-center">Modifica Cliente</h2>
-    <form id="form" name="form">
-      <div class="row g-3">
-        <div class="col-md-6">
-          <mat-form-field appearance="fill" class="w-100">
-            <mat-label>Tipo del cliente</mat-label>
-            <mat-select name="tipoCliente" [(ngModel)]="customerModelService.tipoCliente">
-              <mat-option value="O">Ordinario</mat-option>
-              <mat-option value="S">Straordinario</mat-option>
-            </mat-select>
-          </mat-form-field>
-        </div>
 
-        <div class="col-md-6">
-          <mat-form-field appearance="fill" class="w-100">
-            <mat-label>Nominativo</mat-label>
-            <input matInput name="nominativo" maxlength="255" [(ngModel)]="customerModelService.nominativo" />
-          </mat-form-field>
-        </div>
+  <h2 class="text-center mb-4">Modifica Cliente</h2>
 
-        <div class="col-md-6">
-          <mat-form-field appearance="fill" class="w-100">
-            <mat-label>Codice Fiscale / P.IVA</mat-label>
-            <input matInput name="cfpi" maxlength="255" [(ngModel)]="customerModelService.cfpi" />
-          </mat-form-field>
-        </div>
-
-        <div class="col-md-6">
-          <mat-form-field appearance="fill" class="w-100">
-            <mat-label>Città</mat-label>
-            <input matInput name="citta" maxlength="255" [(ngModel)]="customerModelService.citta" />
-          </mat-form-field>
-        </div>
-
-        <div class="col-md-4">
-          <mat-form-field appearance="fill" class="w-100">
-            <mat-label>Selettore prefisso via</mat-label>
-            <mat-select name="selettorePrefissoVia" [(ngModel)]="customerModelService.selettorePrefissoVia">
-              <mat-option value="VIA">VIA</mat-option>
-              <mat-option value="STRADA">STRADA</mat-option>
-              <mat-option value="VIALE">VIALE</mat-option>
-              <mat-option value="PIAZZA">PIAZZA</mat-option>
-            </mat-select>
-          </mat-form-field>
-        </div>
-
-        <div class="col-md-5">
-          <mat-form-field appearance="fill" class="w-100">
-            <mat-label>Via</mat-label>
-            <input matInput name="via" maxlength="255" [(ngModel)]="customerModelService.via" />
-          </mat-form-field>
-        </div>
-
-        <div class="col-md-3">
-          <mat-form-field appearance="fill" class="w-100">
-            <mat-label>CAP</mat-label>
-            <input matInput name="cap" maxlength="255" [(ngModel)]="customerModelService.cap" />
-          </mat-form-field>
-        </div>
-
-        <div class="col-md-6">
-          <mat-form-field appearance="fill" class="w-100">
-            <mat-label>Email</mat-label>
-            <input matInput name="email" maxlength="255" [(ngModel)]="customerModelService.email" />
-          </mat-form-field>
-        </div>
-
-        <div class="col-md-6">
-          <mat-form-field appearance="fill" class="w-100">
-            <mat-label>Telefono</mat-label>
-            <input matInput name="telefono" maxlength="255" [(ngModel)]="customerModelService.telefono" />
-          </mat-form-field>
-        </div>
-
-        <div class="col-md-6">
-          <mat-form-field appearance="fill" class="w-100">
-            <mat-label>Referente</mat-label>
-            <input matInput name="referente" maxlength="255" [(ngModel)]="customerModelService.referente" />
-          </mat-form-field>
-        </div>
-
-        <div class="col-md-6">
-          <mat-form-field appearance="fill" class="w-100">
-            <mat-label>Descrizione Immobile</mat-label>
-            <input matInput name="descrizioneImmobile" maxlength="255" [(ngModel)]="customerModelService.descrizioneImmobile" />
-          </mat-form-field>
-        </div>
-
-        <!-- Servizi e Interventi -->
-        <ng-container *ngFor="let idx of [].constructor(14); let i = index">
-          <div class="col-md-6">
-            <mat-form-field class="w-100">
-              <mat-label>Servizi{{ i + 1 }}</mat-label>
-              <input matInput [name]="'servizi' + i" [(ngModel)]="customerModelService.servizi[i]" />
-            </mat-form-field>
-          </div>
-
-          <div class="col-md-6" *ngIf="customerModelService.tipoCliente === 'O'">
-            <mat-form-field class="w-100">
-              <mat-label>Interventi{{ i + 1 }}</mat-label>
-              <mat-select [name]="'interventi' + i" [(ngModel)]="customerModelService.interventi[i]">
-                <mat-option value="G">G</mat-option>
-                <mat-option value="1S">1S</mat-option>
-                <mat-option value="2S">2S</mat-option>
-                <mat-option value="3S">3S</mat-option>
-                <mat-option value="4S">4S</mat-option>
-                <mat-option value="Q">Q</mat-option>
-                <mat-option value="1M">1M</mat-option>
-                <mat-option value="2M">2M</mat-option>
-                <mat-option value="3M">3M</mat-option>
-                <mat-option value="4M">4M</mat-option>
-                <mat-option value="TM">TM</mat-option>
-                <mat-option value="SM">SM</mat-option>
-                <mat-option value="A">A</mat-option>
-              </mat-select>
-            </mat-form-field>
-          </div>
-        </ng-container>
-
-        <div class="col-md-4">
-          <mat-form-field appearance="fill" class="w-100">
-            <mat-label>Imponibile</mat-label>
-            <input matInput name="imponibile" maxlength="255" [(ngModel)]="customerModelService.imponibile" />
-          </mat-form-field>
-        </div>
-
-        <div class="col-md-4">
-          <mat-form-field appearance="fill" class="w-100">
-            <mat-label>IVA</mat-label>
-            <mat-select name="iva" [(ngModel)]="customerModelService.iva">
-              <mat-option value="N">N</mat-option>
-              <mat-option value="RC">RC</mat-option>
-              <mat-option value="SP">SP</mat-option>
-            </mat-select>
-          </mat-form-field>
-        </div>
-
-        <div class="col-md-4">
-          <mat-form-field appearance="fill" class="w-100">
-            <mat-label>Pagamento</mat-label>
-            <mat-select name="pagamento" [(ngModel)]="customerModelService.pagamento">
-              <mat-option value="C">Contanti</mat-option>
-              <mat-option value="B">Bonifico</mat-option>
-              <mat-option value="E">Elettronico</mat-option>
-              <mat-option value="">Altro</mat-option>
-            </mat-select>
-          </mat-form-field>
-        </div>
-
-        <div class="col-md-6">
-          <mat-form-field class="w-100">
-            <mat-label>Note</mat-label>
-            <input matInput name="note" maxlength="255" [(ngModel)]="customerModelService.note" />
-          </mat-form-field>
-        </div>
-
-        <div class="col-md-6">
-          <mat-form-field class="w-100">
-            <mat-label>Chiavi</mat-label>
-            <mat-select [(ngModel)]="customerModelService.key" name="key">
-              <mat-option [value]="true">Sì</mat-option>
-              <mat-option [value]="false">No</mat-option>
-            </mat-select>
-          </mat-form-field>
-        </div>
-
-        <div class="col-md-6">
-          <mat-form-field class="w-100">
-            <mat-label>Tempo necessario per il lavoro</mat-label>
-            <input matInput name="tempistica" maxlength="255" [(ngModel)]="customerModelService.tempistica" />
-          </mat-form-field>
-          <mat-form-field class="w-100">
-          <mat-label>Numero operatori</mat-label>
-            <input matInput name="nOperatori" maxlength="255" [(ngModel)]="customerModelService.nOperatori" />
-          </mat-form-field>
-        </div>
-
-
-        <div class="col-12 text-center mt-4">
-          <button mat-raised-button color="primary" (click)="editCustomer()">Salva</button>
-        </div>
+  <form id="form" name="form">
+    <div class="row g-3">
+      <div class="col-md-6">
+        <mat-form-field appearance="fill" class="w-100">
+          <mat-label>Tipo del cliente</mat-label>
+          <mat-select name="tipoCliente" [(ngModel)]="customerModelService.tipoCliente">
+            <mat-option value="O">Ordinario</mat-option>
+            <mat-option value="S">Straordinario</mat-option>
+          </mat-select>
+        </mat-form-field>
       </div>
-    </form>
-  </div>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-</html>
+
+      <div class="col-md-6">
+        <mat-form-field appearance="fill" class="w-100">
+          <mat-label>Nominativo</mat-label>
+          <input matInput name="nominativo" maxlength="255" [(ngModel)]="customerModelService.nominativo" />
+        </mat-form-field>
+      </div>
+
+      <div class="col-md-6">
+        <mat-form-field appearance="fill" class="w-100">
+          <mat-label>Codice Fiscale / P.IVA</mat-label>
+          <input matInput name="cfpi" maxlength="255" [(ngModel)]="customerModelService.cfpi" />
+        </mat-form-field>
+      </div>
+
+      <div class="col-md-6">
+        <mat-form-field appearance="fill" class="w-100">
+          <mat-label>Città</mat-label>
+          <input matInput name="citta" maxlength="255" [(ngModel)]="customerModelService.citta" />
+        </mat-form-field>
+      </div>
+
+      <div class="col-md-4">
+        <mat-form-field appearance="fill" class="w-100">
+          <mat-label>Selettore prefisso via</mat-label>
+          <mat-select name="selettorePrefissoVia" [(ngModel)]="customerModelService.selettorePrefissoVia">
+            <mat-option value="VIA">VIA</mat-option>
+            <mat-option value="STRADA">STRADA</mat-option>
+            <mat-option value="VIALE">VIALE</mat-option>
+            <mat-option value="PIAZZA">PIAZZA</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <div class="col-md-5">
+        <mat-form-field appearance="fill" class="w-100">
+          <mat-label>Via</mat-label>
+          <input matInput name="via" maxlength="255" [(ngModel)]="customerModelService.via" />
+        </mat-form-field>
+      </div>
+
+      <div class="col-md-3">
+        <mat-form-field appearance="fill" class="w-100">
+          <mat-label>CAP</mat-label>
+          <input matInput name="cap" maxlength="255" [(ngModel)]="customerModelService.cap" />
+        </mat-form-field>
+      </div>
+
+      <div class="col-md-6">
+        <mat-form-field appearance="fill" class="w-100">
+          <mat-label>Email</mat-label>
+          <input matInput name="email" maxlength="255" [(ngModel)]="customerModelService.email" />
+        </mat-form-field>
+      </div>
+
+      <div class="col-md-6">
+        <mat-form-field appearance="fill" class="w-100">
+          <mat-label>Telefono</mat-label>
+          <input matInput name="telefono" maxlength="255" [(ngModel)]="customerModelService.telefono" />
+        </mat-form-field>
+      </div>
+
+      <div class="col-md-6">
+        <mat-form-field appearance="fill" class="w-100">
+          <mat-label>Referente</mat-label>
+          <input matInput name="referente" maxlength="255" [(ngModel)]="customerModelService.referente" />
+        </mat-form-field>
+      </div>
+
+      <div class="col-md-6">
+        <mat-form-field appearance="fill" class="w-100">
+          <mat-label>Descrizione Immobile</mat-label>
+          <input matInput name="descrizioneImmobile" maxlength="255" [(ngModel)]="customerModelService.descrizioneImmobile" />
+        </mat-form-field>
+      </div>
+
+      <ng-container *ngFor="let idx of [].constructor(14); let i = index">
+        <div class="col-md-6">
+          <mat-form-field class="w-100">
+            <mat-label>Servizi{{ i + 1 }}</mat-label>
+            <input matInput [name]="'servizi' + i" [(ngModel)]="customerModelService.servizi[i]" />
+          </mat-form-field>
+        </div>
+
+        <div class="col-md-6" *ngIf="customerModelService.tipoCliente === 'O'">
+          <mat-form-field class="w-100">
+            <mat-label>Interventi{{ i + 1 }}</mat-label>
+            <mat-select [name]="'interventi' + i" [(ngModel)]="customerModelService.interventi[i]">
+              <mat-option value="G">G</mat-option>
+              <mat-option value="1S">1S</mat-option>
+              <mat-option value="2S">2S</mat-option>
+              <mat-option value="3S">3S</mat-option>
+              <mat-option value="4S">4S</mat-option>
+              <mat-option value="Q">Q</mat-option>
+              <mat-option value="1M">1M</mat-option>
+              <mat-option value="2M">2M</mat-option>
+              <mat-option value="3M">3M</mat-option>
+              <mat-option value="4M">4M</mat-option>
+              <mat-option value="TM">TM</mat-option>
+              <mat-option value="SM">SM</mat-option>
+              <mat-option value="A">A</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+      </ng-container>
+
+      <div class="col-md-4">
+        <mat-form-field appearance="fill" class="w-100">
+          <mat-label>Imponibile</mat-label>
+          <input matInput name="imponibile" maxlength="255" [(ngModel)]="customerModelService.imponibile" />
+        </mat-form-field>
+      </div>
+
+      <div class="col-md-4">
+        <mat-form-field appearance="fill" class="w-100">
+          <mat-label>IVA</mat-label>
+          <mat-select name="iva" [(ngModel)]="customerModelService.iva">
+            <mat-option value="N">N</mat-option>
+            <mat-option value="RC">RC</mat-option>
+            <mat-option value="SP">SP</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <div class="col-md-4">
+        <mat-form-field appearance="fill" class="w-100">
+          <mat-label>Pagamento</mat-label>
+          <mat-select name="pagamento" [(ngModel)]="customerModelService.pagamento">
+            <mat-option value="C">Contanti</mat-option>
+            <mat-option value="B">Bonifico</mat-option>
+            <mat-option value="E">Elettronico</mat-option>
+            <mat-option value="">Altro</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <div class="col-md-6">
+        <mat-form-field class="w-100">
+          <mat-label>Note</mat-label>
+          <input matInput name="note" maxlength="255" [(ngModel)]="customerModelService.note" />
+        </mat-form-field>
+      </div>
+
+      <div class="col-md-6">
+        <mat-form-field class="w-100">
+          <mat-label>Chiavi</mat-label>
+          <mat-select [(ngModel)]="customerModelService.key" name="key">
+            <mat-option [value]="true">Sì</mat-option>
+            <mat-option [value]="false">No</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <div class="col-md-6">
+        <mat-form-field class="w-100">
+          <mat-label>Tempo necessario per il lavoro</mat-label>
+          <input matInput name="tempistica" maxlength="255" [(ngModel)]="customerModelService.tempistica" />
+        </mat-form-field>
+
+        <mat-form-field class="w-100">
+          <mat-label>Numero operatori</mat-label>
+          <input matInput name="nOperatori" maxlength="255" [(ngModel)]="customerModelService.nOperatori" />
+        </mat-form-field>
+      </div>
+
+      <div class="col-12 text-center mt-4">
+        <button mat-raised-button color="primary" (click)="editCustomer()">Salva</button>
+      </div>
+    </div>
+  </form>
+</div>

@@ -1,64 +1,66 @@
-<div class="fullscreen-container">
-  <div class="back-button" (click)="goBack()">
-    <i class="fa fa-arrow-left"></i> Indietro
+<div class="container-fluid fullscreen-container">
+  <div class="d-flex justify-content-start align-items-center mb-2">
+    <button class="back-button" type="button" (click)="goBack()">
+      <i class="fa fa-arrow-left"></i> Indietro
+    </button>
   </div>
-  <div [ngClass]="{ 'day-view-active': currentView === 'day' }">
-    <div [ngClass]="{ 'day-view-week': currentView === 'week' }">
-      <div class="filter-container">
-        <label for="eventFilter">Filtra eventi:</label>
-        <select id="eventFilter" class="dropdown-button" (change)="onFilterChange($event)">
-          <option value="all">Tutti</option>
-          <option value="sopralluogo">Sopralluoghi</option>
-          <option value="ordinario">Lavori Ordinari</option>
-          <option value="straordinario">Lavori Straordinari</option>
-          <option value="lavoriSvolti">Lavori Svolti</option>
-          <option value="altro">Altro</option>
-        </select>
-      </div>
-      <dx-scheduler
-        #scheduler
-        class="fullscreen-scheduler"
-        locale="it"
-        timeZone="Europe/Rome"
-        id="scheduler"
-        [dataSource]="filteredEvents"
-        [views]="['day', 'week', 'month']"
-        currentView="month"
-        [startDayHour]="5"
-        [endDayHour]="22"
-        [showAllDayPanel]="false"
-        [currentDate]="currentDate"
-        [crossScrollingEnabled]="true"
-        [cellDuration]="30"
-        [height]="1000"
-        appointmentTemplate="appointment-template"
-        appointmentTooltipTemplate="tooltip-template"
-        (onAppointmentFormOpening)="onAppointmentFormOpening($event)"
-        (onAppointmentAdding)="onAppointmentAdding($event)"
-        (onAppointmentUpdating)="onAppointmentUpdating($event)"
-        (onAppointmentDeleted)="onAppointmentDeletedQuestion($event)"
-        (onOptionChanged)="onCurrentViewChange($event)"
-        (onAppointmentClick)="onAppointmentClick($event)"
-      >
-        <dxo-editing [allowAdding]="true"></dxo-editing>
 
-        <dxi-view type="day"></dxi-view>
-        <dxi-view type="week"></dxi-view>
-        <dxi-view type="month"></dxi-view>
-
-        <div *dxTemplate="let model of 'appointment-template'">
-          <div [ngClass]="'category-' + model.appointmentData.categories">
-            {{ model.appointmentData.title }}
-          </div>
-        </div>
-
-        <div *dxTemplate="let model of 'tooltip-template'">
-          <div class="tooltip-content">
-            <div>{{ model.appointmentData.title }}</div>
-            <div>{{ model.appointmentData.description }}</div>
-          </div>
-        </div>
-      </dx-scheduler>
+  <div [ngClass]="{ 'day-view-active': currentView === 'day', 'day-view-week': currentView === 'week' }">
+    <div class="filter-container mb-3">
+      <label for="eventFilter" class="form-label">Filtra eventi:</label>
+      <select id="eventFilter" class="form-select w-auto d-inline-block ms-2" (change)="onFilterChange($event)">
+        <option value="all">Tutti</option>
+        <option value="sopralluogo">Sopralluoghi</option>
+        <option value="ordinario">Lavori Ordinari</option>
+        <option value="straordinario">Lavori Straordinari</option>
+        <option value="lavoriSvolti">Lavori Svolti</option>
+        <option value="altro">Altro</option>
+      </select>
     </div>
+
+    <dx-scheduler
+      #scheduler
+      class="fullscreen-scheduler"
+      locale="it"
+      timeZone="Europe/Rome"
+      id="scheduler"
+      [dataSource]="filteredEvents"
+      [views]="['day', 'week', 'month']"
+      currentView="month"
+      [startDayHour]="5"
+      [endDayHour]="22"
+      [showAllDayPanel]="false"
+      [currentDate]="currentDate"
+      [crossScrollingEnabled]="true"
+      [cellDuration]="30"
+      [height]="1000"
+      appointmentTemplate="appointment-template"
+      appointmentTooltipTemplate="tooltip-template"
+      (onAppointmentFormOpening)="onAppointmentFormOpening($event)"
+      (onAppointmentAdding)="onAppointmentAdding($event)"
+      (onAppointmentUpdating)="onAppointmentUpdating($event)"
+      (onAppointmentDeleted)="onAppointmentDeletedQuestion($event)"
+      (onOptionChanged)="onCurrentViewChange($event)"
+      (onAppointmentClick)="onAppointmentClick($event)"
+    >
+      <dxo-editing [allowAdding]="true"></dxo-editing>
+
+      <dxi-view type="day"></dxi-view>
+      <dxi-view type="week"></dxi-view>
+      <dxi-view type="month"></dxi-view>
+
+      <div *dxTemplate="let model of 'appointment-template'">
+        <div [ngClass]="'category-' + model.appointmentData.categories">
+          {{ model.appointmentData.title }}
+        </div>
+      </div>
+
+      <div *dxTemplate="let model of 'tooltip-template'">
+        <div class="tooltip-content">
+          <div>{{ model.appointmentData.title }}</div>
+          <div>{{ model.appointmentData.description }}</div>
+        </div>
+      </div>
+    </dx-scheduler>
   </div>
 </div>

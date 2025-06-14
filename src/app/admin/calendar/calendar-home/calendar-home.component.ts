@@ -43,7 +43,6 @@ export class CalendarHomeComponent {
   categoriaArray: string[] = [];
   clientiArray: any[] = [];
 
-
   constructor(
     private http: HttpClient,
     private globalService: GlobalService,
@@ -92,9 +91,12 @@ export class CalendarHomeComponent {
           })
           .subscribe((response) => {
             const data = JSON.parse(response);
-            this.nPreventiviArray = data.map(
-              (item: any) => `${item.numeroPreventivo} - ${item.nominativo}`
-            );
+            this.nPreventiviArray = data
+              .filter((item: any) => !item.complete) // solo quelli non completati
+              .map(
+                (item: any) => `${item.numeroPreventivo} - ${item.nominativo}`
+              );
+
             this.descrizioneArray = data.map(
               (item: any) =>
                 `Contatto: ${item.nominativo} Telefono: ${item.telefono}`
@@ -112,7 +114,6 @@ export class CalendarHomeComponent {
         this.clientiArray = JSON.parse(response);
       });
   }
-
 
   convertDateToICSFormat(date: Date) {
     // Crea un oggetto Date a partire dalla stringa fornita
@@ -167,7 +168,9 @@ export class CalendarHomeComponent {
       editorOptions: {
         dataSource: [
           ...this.nPreventiviArray,
-          ...this.clientiArray.map(c => `${c.numeroCliente} - ${c.nominativo}`)
+          ...this.clientiArray.map(
+            (c) => `${c.numeroCliente} - ${c.nominativo}`
+          ),
         ],
         minSearchLength: 0, // così mostra tutto anche senza scrivere
         showDropDownButton: true,
@@ -181,10 +184,12 @@ export class CalendarHomeComponent {
         },
         onValueChanged: (args: any) => {
           const selectedValue: string = args.value;
-          const idxPrev = this.nPreventiviArray.findIndex(item => item === selectedValue);
-        
+          const idxPrev = this.nPreventiviArray.findIndex(
+            (item) => item === selectedValue
+          );
+
           const currentCategory = form.getEditor('categories').option('value');
-        
+
           if (idxPrev !== -1) {
             const descrizione = this.descrizioneArray[idxPrev];
             if (!currentCategory) {
@@ -193,23 +198,23 @@ export class CalendarHomeComponent {
             form.getEditor('description').option('value', descrizione);
             return;
           }
-        
-          const cliente = this.clientiArray.find(c => `${c.numeroCliente} - ${c.nominativo}` === selectedValue);
+
+          const cliente = this.clientiArray.find(
+            (c) => `${c.numeroCliente} - ${c.nominativo}` === selectedValue
+          );
           if (cliente) {
             const descrizione = `Cliente: ${cliente.nominativo}, Tel: ${cliente.telefono}`;
             if (!currentCategory) {
-              const categoria = cliente.tipoCliente === 'O' ? 'ordinario' : 'straordinario';
+              const categoria =
+                cliente.tipoCliente === 'O' ? 'ordinario' : 'straordinario';
               form.getEditor('categories').option('value', categoria);
             }
             form.getEditor('description').option('value', descrizione);
           }
-        }
-        
-
+        },
       },
-      label: { text: 'Numero preventivo' }
+      label: { text: 'Numero preventivo' },
     };
-
 
     const switchConfig = {
       dataField: 'enableRecurrence',
@@ -238,26 +243,31 @@ export class CalendarHomeComponent {
         },
 
         onValueChanged: (args: any) => {
-
           // Gestione per la ricorrenza settimanale
           if (
             args.value != null &&
             args.value.startsWith('FREQ=WEEKLY;') &&
-            (args.previousValue == null || (args.previousValue != null && !args.previousValue.startsWith('FREQ=WEEKLY;')))
+            (args.previousValue == null ||
+              (args.previousValue != null &&
+                !args.previousValue.startsWith('FREQ=WEEKLY;')))
           ) {
             const dayOfWeek = this.selectedDate.getDay();
             const recurrenceEditor = args.component;
             this.saveRecurrenceRule = args.value;
             recurrenceEditor.option(
               'value',
-              `FREQ=WEEKLY;BYDAY=${['SU', 'MO', 'TU', 'WE', 'TH', 'FR', 'SA'][dayOfWeek]}`
+              `FREQ=WEEKLY;BYDAY=${
+                ['SU', 'MO', 'TU', 'WE', 'TH', 'FR', 'SA'][dayOfWeek]
+              }`
             );
           }
           // Gestione per la ricorrenza mensile
           else if (
             args.value != null &&
             args.value.startsWith('FREQ=MONTHLY;') &&
-            (args.previousValue == null || (args.previousValue != null && !args.previousValue.startsWith('FREQ=MONTHLY;')))
+            (args.previousValue == null ||
+              (args.previousValue != null &&
+                !args.previousValue.startsWith('FREQ=MONTHLY;')))
           ) {
             const dayOfMonth = this.selectedDate.getDate();
             const recurrenceEditor = args.component;
@@ -319,8 +329,10 @@ export class CalendarHomeComponent {
           valueExpr: 'id',
           onValueChanged: (e: any) => {
             this.selectedCategoria = e.value;
-            form.getEditor('title').option('dataSource', this.getAutocompleteSource(e.value));
-          }
+            form
+              .getEditor('title')
+              .option('dataSource', this.getAutocompleteSource(e.value));
+          },
         },
       },
       switchConfig,
@@ -352,7 +364,6 @@ export class CalendarHomeComponent {
     return [];
   }
 
-
   onAppointmentClick(e: any) {
     const data = e.appointmentData;
     const codice = data.title?.split(' - ')[0];
@@ -364,7 +375,6 @@ export class CalendarHomeComponent {
       this.router.navigate(['/editCustomer', codice]); // cliente
     }
   }
-
 
   onAppointmentAdding(e: AppointmentAddingEvent) {
     let body = {
@@ -378,56 +388,59 @@ export class CalendarHomeComponent {
       recurrenceException: e.appointmentData['recurrenceException'],
     };
     const codice = body.title?.split(' - ')[0];
-const categoria = body.categories;
+    const categoria = body.categories;
 
-// Verifica obbligatorietà
-if (!body.title || !body.startDate || !body.endDate || !body.categories) {
-  this.popup.text = 'Compilare tutti i campi obbligatori';
-  this.popup.openPopup();
-  this.ngOnInit();
-  return;
-}
-
-// Verifica che il codice esista nel DB
-const codiceValido =
-  (categoria === 'sopralluogo' && this.nPreventiviArray.some(p => p.startsWith(codice + ' -'))) ||
-  ((categoria === 'ordinario' || categoria === 'straordinario') && this.clientiArray.some(c => c.numeroCliente.toString() === codice)) ||
-  categoria === 'altro';
-
-if (!codiceValido) {
-  this.popup.text = 'Codice non valido o non esistente per la categoria selezionata';
-  this.popup.openPopup();
-  return;
-}
-
-      this.http
-        .post(this.globalService.url + 'appointments/add', body, {
-          headers: this.globalService.headers,
-          responseType: 'text',
-        })
-        .subscribe((response) => {
-          this.ngOnInit();
-          if (body.categories == 'sopralluogo') {
-            this.http
-              .post(
-                this.globalService.url +
-                  'appointments/sendInspectionConfirmation',
-                body,
-                {
-                  headers: this.globalService.headers,
-                  responseType: 'text',
-                }
-              )
-              .subscribe((response) => {
-                if (response == 'NO') {
-                  this.popup.text =
-                    "Non è stato possibile inviare la mail di conferma dell'appuntamento perchè non è presente nessuna mail associata al preventivo";
-                  this.popup.openPopup();
-                }
-              });
-          }
-        });
+    // Verifica obbligatorietà
+    if (!body.title || !body.startDate || !body.endDate || !body.categories) {
+      this.popup.text = 'Compilare tutti i campi obbligatori';
+      this.popup.openPopup();
+      this.ngOnInit();
+      return;
     }
+
+    // Verifica che il codice esista nel DB
+    const codiceValido =
+      (categoria === 'sopralluogo' &&
+        this.nPreventiviArray.some((p) => p.startsWith(codice + ' -'))) ||
+      ((categoria === 'ordinario' || categoria === 'straordinario') &&
+        this.clientiArray.some((c) => c.numeroCliente.toString() === codice)) ||
+      categoria === 'altro';
+
+    if (!codiceValido) {
+      this.popup.text =
+        'Codice non valido o non esistente per la categoria selezionata';
+      this.popup.openPopup();
+      return;
+    }
+
+    this.http
+      .post(this.globalService.url + 'appointments/add', body, {
+        headers: this.globalService.headers,
+        responseType: 'text',
+      })
+      .subscribe((response) => {
+        this.ngOnInit();
+        if (body.categories == 'sopralluogo') {
+          this.http
+            .post(
+              this.globalService.url +
+                'appointments/sendInspectionConfirmation',
+              body,
+              {
+                headers: this.globalService.headers,
+                responseType: 'text',
+              }
+            )
+            .subscribe((response) => {
+              if (response == 'NO') {
+                this.popup.text =
+                  "Non è stato possibile inviare la mail di conferma dell'appuntamento perchè non è presente nessuna mail associata al preventivo";
+                this.popup.openPopup();
+              }
+            });
+        }
+      });
+  }
 
   onAppointmentUpdating(e: AppointmentUpdatingEvent) {
     let body = {
@@ -445,7 +458,8 @@ if (!codiceValido) {
       body.title == undefined ||
       body.startDate == undefined ||
       body.endDate == undefined ||
-      body.categories == undefined     ) {
+      body.categories == undefined
+    ) {
       this.popup.text = 'Compilare tutti i campi obbligatori';
       this.popup.openPopup();
       this.ngOnInit();
@@ -482,7 +496,7 @@ if (!codiceValido) {
 
   onAppointmentDeletedQuestion(e: AppointmentDeletedEvent) {
     const appointmentData = e.appointmentData;
-   // Controlla se l'evento ha una regola di ricorrenza
+    // Controlla se l'evento ha una regola di ricorrenza
     if (
       appointmentData.recurrenceRule &&
       appointmentData.recurrenceRule.trim() !== ''
@@ -490,12 +504,12 @@ if (!codiceValido) {
       // Se ha una regola di ricorrenza, chiama appointmentsDeleted
       this.appointmentsDeleted(e);
     } else {
-      if(appointmentData.recurrenceRule == ""){
+      if (appointmentData.recurrenceRule == '') {
         this.appointmentsDeleted(e);
-
-      }else{
-      // Altrimenti, chiama appointmentDeleted
-      this.appointmentDeleted(e);}
+      } else {
+        // Altrimenti, chiama appointmentDeleted
+        this.appointmentDeleted(e);
+      }
     }
   }
 

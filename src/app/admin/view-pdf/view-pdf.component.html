@@ -1,15 +1,23 @@
-<button class="btn-back" (click)="back()">Torna Indietro</button>
-<ngx-extended-pdf-viewer class="ngx-extended-pdf-viewer"
-[base64Src]="pdfPrev"
-useBrowserLocale="true"
-backgroundColor="#fffff"
-[height]="'100%'"
-[customToolbar]="customToolbar">
-</ngx-extended-pdf-viewer>
-
-<ng-template #customToolbar>
-<div id="toolbarViewer">
-<pdf-print></pdf-print>
-<pdf-download></pdf-download>
-</div>
-</ng-template>
+<div class="container py-4">
+    <div class="d-flex justify-content-start align-items-center mb-3">
+      <button class="btn btn-outline-primary rounded-pill" (click)="back()">
+        ⬅ Torna Indietro
+      </button>
+    </div>
+  
+    <ngx-extended-pdf-viewer class="ngx-extended-pdf-viewer"
+                             [base64Src]="pdfPrev"
+                             useBrowserLocale="true"
+                             backgroundColor="#ffffff"
+                             [height]="'100%'"
+                             [customToolbar]="customToolbar">
+    </ngx-extended-pdf-viewer>
+  
+    <ng-template #customToolbar>
+      <div id="toolbarViewer">
+        <pdf-print></pdf-print>
+        <pdf-download></pdf-download>
+      </div>
+    </ng-template>
+  </div>
+  

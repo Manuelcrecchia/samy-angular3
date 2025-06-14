@@ -278,53 +278,6 @@ this.http
 //     });
 // }
 
-accettaPreventivo(numeroPreventivo: string) {
-  this.http.post<any[]>('http://localhost:5000/quotes/getQuote', { numeroPreventivo }).subscribe({
-    next: (res) => {
-      const quote = res[0];
-      if (!quote) {
-        this.snackBar.open('Preventivo non trovato', 'Chiudi', { duration: 3000 });
-        return;
-      }
-
-      const nuovoCliente = {
-        tipoCliente: quote.tipoPreventivo,
-        nominativo: quote.nominativo,
-        cfpi: quote.cfpi || '',
-        citta: quote.citta || '',
-        selettorePrefissoVia: quote.selettorePrefissoVia || '',
-        via: quote.via || '',
-        cap: quote.cap || '',
-        email: quote.email || '',
-        telefono: quote.telefono || '',
-        referente: quote.referente || '',
-        descrizioneImmobile: quote.descrizioneImmobile || '',
-        servizi: quote.servizi,
-        interventi: quote.interventi,
-        imponibile: quote.imponibile || '0.00',
-        iva: quote.iva || '',
-        pagamento: quote.pagamento || '',
-        note: quote.note || '',
-      };
-
-      this.http.post('http://localhost:5000/customers/add', nuovoCliente).subscribe({
-        next: () => {
-          this.snackBar.open('Cliente aggiunto con successo', 'OK', { duration: 3000 });
-        },
-        error: (err) => {
-          console.error('Errore durante inserimento cliente:', err);
-          this.snackBar.open('Errore durante inserimento cliente', 'Chiudi', { duration: 3000 });
-        }
-      });
-    },
-    error: (err) => {
-      console.error('Errore nel recupero del preventivo:', err);
-      this.snackBar.open('Errore nel recupero preventivo', 'Chiudi', { duration: 3000 });
-    }
-  });
-}
-
-
 
 
 back(){

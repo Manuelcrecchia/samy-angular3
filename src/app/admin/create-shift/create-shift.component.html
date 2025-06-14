@@ -1,23 +1,28 @@
-<button
-  class="btn btn-outline-primary mb-3"
-  (mousedown)="showPreviousWeekShifts()"
-  (mouseup)="hidePreviousWeekShifts()"
-  (mouseleave)="hidePreviousWeekShifts()"
->
-  Visualizza turni della settimana precedente
-</button>
-<div *ngIf="tooltipVisible" class="tooltip-panel">
-  <div *ngFor="let item of previousWeekShiftList">
-    <strong>{{ item.cliente }}:</strong>
-    <span>{{ item.dipendenti.join(', ') || 'Nessuno' }}</span>
+<div class="container py-4">
+  <div class="d-flex justify-content-start align-items-center mb-3">
+    <button class="back-button" type="button" (click)="goBack()">&larr; Torna Indietro</button>
   </div>
-</div>
-<div class="container mt-4">
+
+  <button
+    class="btn btn-outline-primary mb-3"
+    (mousedown)="showPreviousWeekShifts()"
+    (mouseup)="hidePreviousWeekShifts()"
+    (mouseleave)="hidePreviousWeekShifts()">
+    Visualizza turni della settimana precedente
+  </button>
+
+  <div *ngIf="tooltipVisible" class="tooltip-panel">
+    <div *ngFor="let item of previousWeekShiftList">
+      <strong>{{ item.cliente }}:</strong>
+      <span>{{ item.dipendenti.join(', ') || 'Nessuno' }}</span>
+    </div>
+  </div>
+
   <h2>Assegnazione Turni</h2>
 
   <div class="d-flex justify-content-between align-items-center mb-3">
     <button (click)="prevDay()" class="btn btn-secondary">&larr;</button>
-    <h4>{{ selectedDate | date: 'fullDate' }}</h4>
+    <h4 class="m-0">{{ selectedDate | date: 'fullDate' }}</h4>
     <button (click)="nextDay()" class="btn btn-secondary">&rarr;</button>
   </div>
 
@@ -32,22 +37,22 @@
       <div class="hour-label">{{ hour }}</div>
       <div class="appointment-blocks">
         <div
-  *ngFor="let a of getAppointmentsByHour(hour)"
-  class="appointment-card"
-  [ngClass]="{ 'complete': isComplete(a) }"
-  (click)="openAssignmentDialog(a)">
+          *ngFor="let a of getAppointmentsByHour(hour)"
+          class="appointment-card"
+          [ngClass]="{ 'complete': isComplete(a) }"
+          (click)="openAssignmentDialog(a)">
 
-  <div class="badge" *ngIf="!isComplete(a)">❗</div>
-  <div class="badge" *ngIf="a.keyRequired" style="left: 6px; right: auto;">🗝️</div>
+          <div class="badge" *ngIf="!isComplete(a)">❗</div>
+          <div class="badge" *ngIf="a.keyRequired" style="left: 6px; right: auto;">🗝️</div>
 
-  <strong>{{ a.title }}</strong><br>
-  <small>{{ a.startDate | date: 'HH:mm' }} - {{ a.endDate | date: 'HH:mm' }}</small>
-</div>
-
-
+          <strong>{{ a.title }}</strong><br>
+          <small>{{ a.startDate | date: 'HH:mm' }} - {{ a.endDate | date: 'HH:mm' }}</small>
+        </div>
       </div>
     </div>
   </div>
 
-  <button class="btn btn-success mt-4" (click)="finalSave()">Salva Turni</button>
+  <div class="text-center mt-4">
+    <button class="btn btn-success" (click)="finalSave()">Salva Turni</button>
+  </div>
 </div>

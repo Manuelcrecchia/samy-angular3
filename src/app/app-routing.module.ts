@@ -8,8 +8,6 @@ import { HomesitoComponent } from './componenti/sito/homesito/homesito.component
 import { QuotesHomeComponent } from './admin/quotes-home/quotes-home.component';
 import { AddQuoteComponent } from './admin/add-quote/add-quote.component';
 import { EditQuoteComponent } from './admin/edit-quote/edit-quote.component';
-import { CaricaFileComponent } from './admin/carica-file/carica-file.component';
-import { MenageCustomerComponent } from './admin/menage-customer/menage-customer.component';
 import { AddCustomerComponent } from './admin/add-customer/add-customer.component';
 import { ListCustomerComponent } from './admin/list-customer/list-customer.component';
 import { SanificazioniComponent } from './componenti/sito/sanificazioni/sanificazioni.component';
@@ -46,10 +44,8 @@ const routes: Routes = [
   { path: 'quotesHome', component: QuotesHomeComponent, canActivate: [AuthGuard] },
   { path: 'addQuote', component: AddQuoteComponent, canActivate: [AuthGuard] },
   { path: 'editQuote', component: EditQuoteComponent, canActivate: [AuthGuard] },
-  { path: 'caricaFile', component: CaricaFileComponent, canActivate: [AuthGuard] },
   { path: 'listCustomer', component: ListCustomerComponent, canActivate: [AuthGuard] },
   { path: 'addCustomer', component: AddCustomerComponent, canActivate: [AuthGuard] },
-  { path: 'menageCustomer', component: MenageCustomerComponent, canActivate: [AuthGuard] },
   { path: 'sanificazioni', component: SanificazioniComponent },
   { path: 'uffici', component: UfficiComponent },
   { path: 'condomini1', component: Condomini1Component },

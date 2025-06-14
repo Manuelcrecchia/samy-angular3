@@ -1,52 +1,61 @@
-<div class="calendar-container">
-  <h2>Invio Email Sopralluogo</h2>
+<div class="container py-4">
 
-  <div class="form-group">
-    <label for="date">Data:</label>
-    <input type="date" id="date" name="date">
-  </div>
+  <!-- Titolo -->
+  <h2 class="text-center mb-4">Invio Email Sopralluogo</h2>
 
-  <div class="form-group">
-    <label for="time">Ora:</label>
-    <input type="time" id="time" name="time">
-  </div>
+  <!-- Form -->
+  <form>
+    <div class="row g-3 mb-3">
+      <div class="col-md-6">
+        <label for="date" class="form-label fw-bold">Data:</label>
+        <input type="date" id="date" name="date" class="form-control">
+      </div>
 
-  <div class="form-group">
-    <label for="day">Giorno:</label>
-    <select id="day" name="day">
-      <option value="monday">Lunedì</option>
-      <option value="tuesday">Martedì</option>
-      <option value="wednesday">Mercoledì</option>
-      <option value="thursday">Giovedì</option>
-      <option value="friday">Venerdì</option>
-      <option value="saturday">Sabato</option>
-      <option value="sunday">Domenica</option>
-    </select>
-  </div>
+      <div class="col-md-6">
+        <label for="time" class="form-label fw-bold">Ora:</label>
+        <input type="time" id="time" name="time" class="form-control">
+      </div>
 
-  <div class="form-group">
-    <label for="notes">Note:</label>
-    <input id="notes" name="notes"/>
-  </div>
+      <div class="col-md-6">
+        <label for="day" class="form-label fw-bold">Giorno:</label>
+        <select id="day" name="day" class="form-select">
+          <option value="monday">Lunedì</option>
+          <option value="tuesday">Martedì</option>
+          <option value="wednesday">Mercoledì</option>
+          <option value="thursday">Giovedì</option>
+          <option value="friday">Venerdì</option>
+          <option value="saturday">Sabato</option>
+          <option value="sunday">Domenica</option>
+        </select>
+      </div>
 
-  <div class="form-group">
-    <label for="color">Colore:</label>
-    <select id="color" name="color">
-      <option value="red">Rosso</option>
-      <option value="yellow">Giallo</option>
-      <option value="green">Verde</option>
-    </select>
-  </div>
+      <div class="col-md-6">
+        <label for="notes" class="form-label fw-bold">Note:</label>
+        <input id="notes" name="notes" class="form-control" />
+      </div>
 
-  <div class="form-group">
-    <label for="phone">Numero di Telefono:</label>
-    <input type="tel" id="phone" name="phone">
-  </div>
+      <div class="col-md-6">
+        <label for="color" class="form-label fw-bold">Colore:</label>
+        <select id="color" name="color" class="form-select">
+          <option value="red">Rosso</option>
+          <option value="yellow">Giallo</option>
+          <option value="green">Verde</option>
+        </select>
+      </div>
 
-  <div class="form-group">
-    <label for="name">Nominativo:</label>
-    <input type="text" id="name" name="name">
-  </div>
+      <div class="col-md-6">
+        <label for="phone" class="form-label fw-bold">Numero di Telefono:</label>
+        <input type="tel" id="phone" name="phone" class="form-control">
+      </div>
 
-  <button type="submit">Salva</button>
+      <div class="col-md-6">
+        <label for="name" class="form-label fw-bold">Nominativo:</label>
+        <input type="text" id="name" name="name" class="form-control">
+      </div>
+
+      <div class="col-12 text-center mt-4">
+        <button type="submit" class="btn btn-primary rounded-pill">Salva</button>
+      </div>
+    </div>
+  </form>
 </div>
