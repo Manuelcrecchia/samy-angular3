@@ -28,6 +28,7 @@ export class QuoteModelService {
   dataInizioContratto = "";
   durataContratto = "";
   note= '';
+  complete = false;
 
   constructor() {}
 

@@ -78,7 +78,6 @@ tooltipTarget: any = null;
           .subscribe(data => {
         this.groupedByEmployee = this.organizeByEmployee(data);
         this.shifts = data;
-        console.log(data);
       });
   }
 

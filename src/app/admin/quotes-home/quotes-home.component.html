@@ -18,6 +18,9 @@
     </mat-form-field>
     <div *ngIf="quotesFrEnd.length > 0"></div>
   </div>
+  <mat-slide-toggle [(ngModel)]="showCompletedQuotes" (change)="ngOnInit()" color="primary">
+    Mostra completati
+  </mat-slide-toggle>  
 </mat-toolbar>
 
 <div class="content-container">
@@ -45,7 +48,7 @@
         </button>
 
         <!-- ✅ Nuovo pulsante con icona \"visto/verificato\" -->
-        <button mat-raised-button color="primary" (click)="accettaPreventivo(quote.numeroPreventivo)">
+        <button mat-raised-button color="primary" (click)="conferm(quote.numeroPreventivo)">
           <mat-icon aria-hidden="false" aria-label="Icona accetta">check</mat-icon>
         </button>
       </mat-list-item>

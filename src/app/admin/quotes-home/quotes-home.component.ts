@@ -9,6 +9,7 @@ import { DxSchedulerComponent } from "devextreme-angular";
 import { AutomaticAddInspectionToCalendarService } from '../../service/automatic-add-inspection-to-calendar.service';
 import { Location } from '@angular/common';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { CustomerModelService } from '../../service/customer-model.service';
 
 
 @Component({
@@ -18,11 +19,13 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 })
 export class QuotesHomeComponent   {@Input() color: any;
   numeroClienteSelezionato = '';
-
+  showCompletedQuotes = false;
   quotesFrEnd: {
     numeroPreventivo: string;
     nominativo: string;
+    complete: boolean;
   }[] = [];
+  
 
   pdfPrev!: string;
   pdfTsSelezionato = false;
@@ -35,7 +38,8 @@ export class QuotesHomeComponent   {@Input() color: any;
     private quoteModel: QuoteModelService,
     private popup: PopupServiceService,
     private automaticAddInspectionToCalendarService: AutomaticAddInspectionToCalendarService,
-    private location: Location
+    private location: Location,
+    private customerModelService : CustomerModelService
    ){}
 
 addInspection(numeroPreventivo: string, nominativo: string) {
@@ -67,9 +71,14 @@ ngOnInit() {
       responseType: 'text',
     })
     .subscribe((response) => {
-      const parsed = JSON.parse(response) as { numeroPreventivo: string; nominativo: string }[];
+      const allQuotes = JSON.parse(response) as any[];
+      console.log(allQuotes);
 
-      this.quotesFrEnd = parsed.sort(
+      const filteredQuotes = this.showCompletedQuotes
+      ? allQuotes.filter(q => q.complete === true)
+      : allQuotes.filter(q => q.complete === false);
+
+      this.quotesFrEnd = filteredQuotes.sort(
         (a, b) => parseInt(b.numeroPreventivo) - parseInt(a.numeroPreventivo)
       );
 
@@ -168,26 +177,53 @@ delete(numeroPreventivo: string){
     })
 }
 
-conferm(numeroPreventivo: string){
-  const body = { numeroPreventivo: numeroPreventivo };
+conferm(numeroPreventivo: string) {
+  const body = { numeroPreventivo };
 
   this.http
-  .post(
-    this.globalService.url + 'quotes/conferm',
-    body, {
+    .post(this.globalService.url + 'quotes/getQuote', body, {
       headers: this.globalService.headers,
       responseType: 'text',
     })
-    .subscribe((response)=>{
-      if(response == 'Unauthorized') {
-        this.router.navigateByUrl('/')
+    .subscribe((response) => {
+      if (response === 'Unauthorized') {
+        this.router.navigateByUrl('/');
+        return;
       }
-      else {
-        this.pdfPrev = '';
-      this.ngOnInit();
-      }
-    })
+
+      const quote = JSON.parse(response)[0];
+
+      // Popola il modello per la pagina AddCustomer
+      this.customerModelService.tipoCliente = quote.tipoPreventivo;
+      this.customerModelService.nominativo = quote.nominativo;
+      this.customerModelService.cfpi = quote.cfpi;
+      this.customerModelService.citta = quote.citta;
+      this.customerModelService.selettorePrefissoVia = quote.selettorePrefissoVia;
+      this.customerModelService.via = quote.via;
+      this.customerModelService.cap = quote.cap;
+      this.customerModelService.email = quote.email;
+      this.customerModelService.telefono = quote.telefono;
+      this.customerModelService.referente = quote.referente;
+      this.customerModelService.descrizioneImmobile = quote.descrizioneImmobile;
+      this.customerModelService.servizi = JSON.parse(quote.servizi);
+      this.customerModelService.interventi = JSON.parse(quote.interventi);
+      this.customerModelService.imponibile = parseFloat(quote.imponibile).toFixed(2);
+      this.customerModelService.iva = quote.iva;
+      this.customerModelService.pagamento = quote.pagamento;
+      this.customerModelService.tempistica = quote.tempistica;
+      this.customerModelService.note = quote.note;
+
+      // ✅ Imposta complete = true nel backend
+      this.http.post(this.globalService.url + 'quotes/setComplete', { numeroPreventivo }, {
+        headers: this.globalService.headers,
+        responseType: 'text'
+      }).subscribe(() => {
+        // Naviga alla pagina di aggiunta cliente
+        this.router.navigateByUrl('/addCustomer');
+      });
+    });
 }
+
 
 
 invio(numeroPreventivo: string){
