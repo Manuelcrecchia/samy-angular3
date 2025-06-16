@@ -3,6 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { MatDialog } from '@angular/material/dialog';
 import { AssignDialogComponent } from '../assign-dialog/assign-dialog.component';
+import { GlobalService } from '../../service/global.service';
 
 @Component({
   selector: 'app-create-shift',
@@ -28,14 +29,16 @@ tooltipVisible = false;
     private http: HttpClient,
   private route: ActivatedRoute,
   private router: Router,
-  private dialog: MatDialog
+  private dialog: MatDialog,
+  private globalService: GlobalService
+
   ) {}
 
   ngOnInit(): void {
     const queryDate = this.route.snapshot.queryParamMap.get('date');
     if (queryDate) this.selectedDate = new Date(queryDate);
     this.loadAppointments();
-    this.http.get<any[]>('http://localhost:5000/employees/getAll').subscribe(res => {
+    this.http.get<any[]>(this.globalService.url + 'employees/getAll').subscribe(res => {
       this.employeeList = res;
     });
   }
@@ -50,7 +53,7 @@ tooltipVisible = false;
     prevDate.setDate(prevDate.getDate() - 7);
     const dateStr = this.formatDate(prevDate);
   
-    this.http.get<any[]>(`http://localhost:5000/shifts/byDate/${dateStr}`)
+    this.http.get<any[]>(this.globalService.url + `shifts/byDate/${dateStr}`)
       .subscribe(data => {
         const mappa: { [cliente: string]: string[] } = {};
         for (const s of data) {
@@ -108,9 +111,8 @@ tooltipVisible = false;
     this.loading = true;
     const dateStr = this.formatDate(this.selectedDate);
 
-    this.http.post<any[]>('http://localhost:5000/appointments/byDate', { date: dateStr })
+    this.http.post<any[]>(this.globalService.url + 'appointments/byDate', { date: dateStr })
       .subscribe(data => {
-        console.log(data);
         this.appointments = data.filter(a =>
           a.categories === 'ordinario' || a.categories === 'straordinario'
         );
@@ -247,7 +249,7 @@ const end = new Date(a.endDate).getTime() + new Date().getTimezoneOffset() * 600
       employeeIds
     }));
 
-    this.http.post('http://localhost:5000/shifts/saveMultiple', { shifts: payload })
+    this.http.post(this.globalService.url + 'shifts/saveMultiple', { shifts: payload })
       .subscribe(() => {
         alert('Turni salvati');
         this.router.navigate(['/admin/shifts']);

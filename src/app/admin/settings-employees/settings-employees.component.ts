@@ -2,6 +2,7 @@ import { Component, OnInit } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import { GlobalService } from "../../service/global.service";
 import { Router } from "@angular/router";
+import { saveAs } from 'file-saver';
 
 interface Employee {
   nome: string;
@@ -38,7 +39,6 @@ export class SettingsEmployeesComponent implements OnInit {
         // Converti la risposta da testo a JSON come fai in AddQuoteComponent
         let data = JSON.parse(response);
         this.employeess = data;
-        console.log("Dipendenti caricati:", data);
       },
       error: (error) => {
         console.error("Errore durante il recupero dei dipendenti:", error);
@@ -59,7 +59,6 @@ export class SettingsEmployeesComponent implements OnInit {
       responseType: "text"
     }).subscribe({
       next: (res) => {
-        console.log("Dipendente aggiunto con successo:", res);
         // Svuota il form
         this.employeesAdd = { nome: "", cognome: "", email: "", cellulare: "" };
         // Aggiorna la lista
@@ -71,22 +70,32 @@ export class SettingsEmployeesComponent implements OnInit {
     });
   }
 
-  deleteEmployees(i: number) {
-    let body = { email: this.employeess[i].email };
-    this.http.post(this.globalService.url + "employees/delete", body, {
+  exportAndDeleteEmployee(emp: any): void {
+    if (!confirm(`Vuoi esportare e cancellare il dipendente "${emp.nome} ${emp.cognome}"?`)) return;
+  
+    const body = {
+      prefix: 'employee',
+      id: emp.id,
+    };
+  
+    this.http.post(this.globalService.url + 'documents/exportAndDeleteUser', body, {
       headers: this.globalService.headers,
-      responseType: "text"
+      responseType: 'blob'
     }).subscribe({
-      next: (res) => {
-        console.log("Dipendente eliminato con successo:", res);
-        this.employeess.splice(i, 1);
-        this.ngOnInit();
+      next: (blob) => {
+        const nomeFile = `dipendente_${emp.nome}_${emp.cognome}.zip`;
+        saveAs(blob, nomeFile);
+  
+        alert('Dipendente esportato e cancellato con successo.');
+        this.ngOnInit();  // aggiorna la lista
       },
-      error: (error) => {
-        console.error("Errore durante l'eliminazione del dipendente:", error);
+      error: (err) => {
+        console.error('Errore:', err);
+        alert('Errore durante esportazione/eliminazione dipendente.');
       }
     });
   }
+  
 
   back() {
     this.router.navigateByUrl("/homeAdmin");

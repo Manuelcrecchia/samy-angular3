@@ -1,56 +1,71 @@
-<mat-toolbar class="example-toolbar">
-  <span>Preventivi</span>
-  <span class="example-spacer"></span>
-  <div class="indietro">
-    <button (click)="back()">Torna Indietro</button>
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Gestione Preventivi</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/@angular/material/prebuilt-themes/indigo-pink.css" rel="stylesheet" />
+</head>
+<body class="bg-light">
+
+  <mat-toolbar class="d-flex flex-wrap justify-content-between align-items-center px-3 py-2 mb-3" color="primary">
+    <div class="d-flex align-items-center mb-2 mb-md-0">
+      <span class="fs-4 me-3 text-white">Preventivi</span>
+      <button class="btn-back me-3" type="button" (click)="back()">&larr; Torna Indietro</button>
+      <button (click)="navigateToAddQuote()" mat-icon-button class="btn btn-pink me-2">
+        <mat-icon>add</mat-icon>
+      </button>
+    </div>
+
+    <div class="d-flex flex-wrap gap-2">
+      <mat-form-field class="example-form-field" appearance="fill">
+        <mat-label>Numero cliente</mat-label>
+        <input #inputNumeroCliente matInput (input)="searchNumeroPreventivo(inputNumeroCliente.value)" />
+      </mat-form-field>
+
+      <mat-form-field class="example-form-field" appearance="fill">
+        <mat-label>Nominativo</mat-label>
+        <input #inputNominativo matInput (input)="searchNominativo(inputNominativo.value)" />
+      </mat-form-field>
+
+      <mat-slide-toggle [(ngModel)]="showCompletedQuotes" (change)="ngOnInit()" color="accent">
+        Mostra completati
+      </mat-slide-toggle>
+    </div>
+  </mat-toolbar>
+
+  <div class="container">
+    <div class="row g-3">
+      <div class="col-12" *ngFor="let quote of quotesFrEnd">
+        <div class="d-flex flex-wrap align-items-center gap-2 p-3 border rounded shadow-sm bg-white">
+          <button mat-raised-button class="scrolling-button btn btn-outline-primary flex-grow-1 text-start" (click)="viewPdf(quote.numeroPreventivo)">
+            <span class="scrolling-text">{{ quote.numeroPreventivo }} - {{ quote.nominativo }}</span>
+          </button>
+
+          <button mat-raised-button color="accent" (click)="navigateToEditQuote(quote.numeroPreventivo)">
+            <mat-icon>edit</mat-icon>
+          </button>
+
+          <button mat-raised-button color="warn" (click)="delete(quote.numeroPreventivo)">
+            <mat-icon>delete</mat-icon>
+          </button>
+
+          <button mat-raised-button color="primary" (click)="invio(quote.numeroPreventivo)">
+            <mat-icon>send</mat-icon>
+          </button>
+
+          <button mat-raised-button color="accent" (click)="addInspection(quote.numeroPreventivo, quote.nominativo)">
+            <mat-icon>calendar_today</mat-icon>
+          </button>
+
+          <button mat-raised-button color="success" (click)="conferm(quote.numeroPreventivo)">
+            <mat-icon>check</mat-icon>
+          </button>
+        </div>
+      </div>
+    </div>
   </div>
-  <button (click)="navigateToAddQuote()" mat-icon-button class="example-icon">
-    <mat-icon>add</mat-icon>
-  </button>
-  <div class="example-spacer">
-    <mat-form-field class="example-form-field">
-      <mat-label>Numero cliente</mat-label>
-      <input #inputNumeroCliente matInput (input)="searchNumeroPreventivo(inputNumeroCliente.value)" />
-    </mat-form-field>
-    <mat-form-field class="example-form-field">
-      <mat-label>Nominativo</mat-label>
-      <input #inputNominativo matInput (input)="searchNominativo(inputNominativo.value)" />
-    </mat-form-field>
-    <div *ngIf="quotesFrEnd.length > 0"></div>
-  </div>
-  <mat-slide-toggle [(ngModel)]="showCompletedQuotes" (change)="ngOnInit()" color="primary">
-    Mostra completati
-  </mat-slide-toggle>  
-</mat-toolbar>
 
-<div class="content-container">
-  <div class="quote-list">
-    <mat-list role="list">
-      <mat-list-item *ngFor="let quote of quotesFrEnd" role="listitem">
-        <button mat-raised-button class="scrolling-button" (click)="viewPdf(quote.numeroPreventivo)">
-          <span class="scrolling-text">{{ quote.numeroPreventivo }}  {{quote.nominativo}}</span>
-        </button>
-
-        <button mat-raised-button (click)="navigateToEditQuote(quote.numeroPreventivo)">
-          <mat-icon aria-hidden="false" aria-label="Modifica">edit</mat-icon>
-        </button>
-
-        <button mat-raised-button (click)="delete(quote.numeroPreventivo)">
-          <mat-icon aria-hidden="false" aria-label="Elimina">delete</mat-icon>
-        </button>
-
-        <button mat-raised-button (click)="invio(quote.numeroPreventivo)">
-          <mat-icon aria-hidden="false" aria-label="Invio">send</mat-icon>
-        </button>
-
-        <button mat-raised-button (click)="addInspection(quote.numeroPreventivo, quote.nominativo)">
-          <mat-icon aria-hidden="false" aria-label="Ispezione">calendar_today</mat-icon>
-        </button>
-
-        <button mat-raised-button color="primary" (click)="conferm(quote.numeroPreventivo)">
-          <mat-icon aria-hidden="false" aria-label="Icona accetta">check</mat-icon>
-        </button>
-      </mat-list-item>
-    </mat-list>
-  </div>
-</div>
+</body>
+</html>

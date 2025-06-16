@@ -72,7 +72,6 @@ ngOnInit() {
     })
     .subscribe((response) => {
       const allQuotes = JSON.parse(response) as any[];
-      console.log(allQuotes);
 
       const filteredQuotes = this.showCompletedQuotes
       ? allQuotes.filter(q => q.complete === true)

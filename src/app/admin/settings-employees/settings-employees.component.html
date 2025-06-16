@@ -50,8 +50,10 @@
           <td>{{ emp.email }}</td>
           <td>{{ emp.cellulare }}</td>
           <td>
-            <button class="btn btn-danger btn-sm rounded-pill" (click)="deleteEmployees(i)">🗑 Elimina</button>
-          </td>
+            <button class="btn btn-danger btn-sm rounded-pill" (click)="exportAndDeleteEmployee(emp)">
+              🗑 Esporta ed Elimina
+            </button>
+                      </td>
         </tr>
       </tbody>
     </table>

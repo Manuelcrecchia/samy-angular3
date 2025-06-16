@@ -1,6 +1,7 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { HttpClient } from '@angular/common/http';
+import { GlobalService } from '../../service/global.service';
 @Component({
   selector: 'app-assign-dialog',
   templateUrl: './assign-dialog.component.html',
@@ -13,13 +14,14 @@ export class AssignDialogComponent {
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: any,
     private dialogRef: MatDialogRef<AssignDialogComponent>,
-    private http: HttpClient
+    private http: HttpClient,
+    private globalService : GlobalService
   ) {}
 
   ngOnInit(): void {
     this.selectedEmployees = [...(this.data.assigned || [])];
 
-    this.http.get<any[]>('http://localhost:5000/employees/getAll')
+    this.http.get<any[]>(this.globalService.url + 'employees/getAll')
       .subscribe(res => this.employees = res);
   }
 

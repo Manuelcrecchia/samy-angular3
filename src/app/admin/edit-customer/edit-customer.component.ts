@@ -44,7 +44,6 @@ export class EditCustomerComponent {
       nOperatori: this.customerModelService.nOperatori
     };
 
-    console.log("BODY inviato per update:", body);
 
     this.http.post(this.globalService.url + 'customers/edit', body, {
       headers: this.globalService.headers,

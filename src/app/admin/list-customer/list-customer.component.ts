@@ -3,6 +3,8 @@ import { Router } from '@angular/router';
 import { GlobalService } from '../../service/global.service';
 import { CustomerModelService } from '../../service/customer-model.service';
 import { Component, Input } from '@angular/core';
+import { saveAs } from 'file-saver';
+
 @Component({
   selector: 'app-list-customer',
   templateUrl: './list-customer.component.html',
@@ -89,23 +91,32 @@ export class ListCustomerComponent {
   }
 
 
-  deleteCustomer(numeroCliente: string): void {
-    if (!confirm("Sei sicuro di voler eliminare questo cliente?")) return;
-
-    this.http.post(this.globalService.url + "customers/delete", { numeroCliente }, {
+  exportAndDeleteCustomer(customer: any): void {
+    if (!confirm(`Vuoi esportare e cancellare il cliente "${customer.nominativo}"?`)) return;
+  
+    const body = {
+      prefix: 'customer',
+      id: customer.numeroCliente,
+    };
+  
+    this.http.post(this.globalService.url + 'documents/exportAndDeleteUser', body, {
       headers: this.globalService.headers,
-      responseType: "text"
+      responseType: 'blob'
     }).subscribe({
-      next: () => {
-        this.customers = this.customers.filter(c => c.numeroCliente !== numeroCliente);
-        this.customersFrEnd = [...this.customers];
+      next: (blob) => {
+        const nomeFile = `cliente_${customer.numeroCliente}.zip`;
+        saveAs(blob, nomeFile);
+  
+        alert('Cliente esportato e cancellato con successo.');
+        this.ngOnInit();  // aggiorna la tabella
       },
       error: (err) => {
-        console.error("Errore eliminazione cliente:", err);
-        alert("Errore durante l'eliminazione");
+        console.error('Errore durante l\'esportazione/cancellazione:', err);
+        alert('Errore durante l\'esportazione o eliminazione del cliente.');
       }
     });
   }
+  
 
   applyFiltro(valore: string): void {
     switch (valore) {

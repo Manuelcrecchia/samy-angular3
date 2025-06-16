@@ -31,7 +31,6 @@ export class GestioneEmployeesComponent implements OnInit {
         try {
           let data = JSON.parse(response);
           this.employees = data;
-          console.log("Dipendenti caricati:", data);
         } catch (error) {
           console.error("Errore nel parse JSON dei dipendenti:", error);
         }

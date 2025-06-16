@@ -23,11 +23,9 @@ export class ViewPdfComponent implements OnInit {
       const numeroPreventivo = params['numeroPreventivo'];
       if (numeroPreventivo) {
         const body = { numeroPreventivo: numeroPreventivo };
-        console.log("pronto per la richiesta");
         this.http.post(this.globalService.url + 'pdfs/sendQuote', body, { headers: this.globalService.headers, responseType: 'text' })
           .subscribe(response => {
             if (response !== 'Unauthorized') {
-              console.log("richietsa pdf effetuata");
               this.pdfPrev = response;
             } else {
               this.router.navigateByUrl('/');            }

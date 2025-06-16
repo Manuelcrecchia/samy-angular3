@@ -1,27 +1,36 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
+import { GlobalService } from '../../service/global.service';
 
 @Component({
   selector: 'app-shift-home',
   templateUrl: './shift-home.component.html',
-  styleUrl: './shift-home.component.css'
+  styleUrl: './shift-home.component.css',
 })
 export class ShiftHomeComponent {
   selectedDate = new Date();
   shifts: any[] = [];
-  groupedByEmployee: { [key: string]: { title: string; start: string; end: string; appointmentId: number; keyRequired: boolean }[] } = {};
+  groupedByEmployee: {
+    [key: string]: {
+      title: string;
+      start: string;
+      end: string;
+      appointmentId: number;
+      keyRequired: boolean;
+    }[];
+  } = {};
   tooltipVisible: boolean = false;
-tooltipText: string = '';
-tooltipTarget: any = null;
+  tooltipText: string = '';
+  tooltipTarget: any = null;
+  tooltipPosition = { top: 0, left: 0 };
 
 
   groupedKeys(): string[] {
     return Object.keys(this.groupedByEmployee || {}).sort();
   }
 
-
-  constructor(private http: HttpClient, private router: Router) {}
+  constructor(private http: HttpClient, private router: Router, private globalService: GlobalService) {}
 
   ngOnInit(): void {
     this.loadShifts();
@@ -34,11 +43,16 @@ tooltipTarget: any = null;
   get windowRef() {
     return window;
   }
-  
-  handleMouseDown(event: MouseEvent, appointmentId: number) {
+
+  handleClick(event: MouseEvent, appointmentId: number) {
     const target = event.target as HTMLElement;
-    const date = this.getFormattedDate(); // usa la funzione già definita
-    this.showPreviousAssignees(appointmentId, date, target);
+    const date = this.getFormattedDate();
+  
+    if (this.tooltipVisible && this.tooltipTarget === target) {
+      this.hideTooltip();
+    } else {
+      this.showPreviousAssignees(appointmentId, date, target);
+    }
   }
   
 
@@ -59,14 +73,16 @@ tooltipTarget: any = null;
           start: shift.appointment.startDate,
           end: shift.appointment.endDate,
           appointmentId: shift.appointmentId,
-          keyRequired: shift.appointment.customer?.key === true
+          keyRequired: shift.appointment.customer?.key === true,
         });
       }
     }
 
     // ordina ogni array per orario
     for (const k in result) {
-      result[k].sort((a, b) => new Date(a.start).getTime() - new Date(b.start).getTime());
+      result[k].sort(
+        (a, b) => new Date(a.start).getTime() - new Date(b.start).getTime()
+      );
     }
 
     return result;
@@ -74,11 +90,10 @@ tooltipTarget: any = null;
 
   loadShifts() {
     const dateStr = this.formatDate(this.selectedDate);
-    this.http.get<any[]>(`http://localhost:5000/shifts/byDate/${dateStr}`)
-          .subscribe(data => {
-        this.groupedByEmployee = this.organizeByEmployee(data);
-        this.shifts = data;
-      });
+    this.http.get<any[]>(this.globalService.url + `shifts/byDate/${dateStr}`).subscribe((data) => {
+      this.groupedByEmployee = this.organizeByEmployee(data);
+      this.shifts = data;
+    });
   }
 
   prevDay(): void {
@@ -96,36 +111,67 @@ tooltipTarget: any = null;
   }
 
   createShifts(): void {
-    this.router.navigate(['/admin/shifts/create'], { queryParams: { date: this.formatDate(this.selectedDate) } });
+    this.router.navigate(['/admin/shifts/create'], {
+      queryParams: { date: this.formatDate(this.selectedDate) },
+    });
   }
 
-  showPreviousAssignees(appointmentId: number, date: string, target: HTMLElement) {
+  showPreviousAssignees(
+    appointmentId: number,
+    date: string,
+    target: HTMLElement
+  ) {
     this.tooltipVisible = true;
     this.tooltipText = 'Caricamento...';
     this.tooltipTarget = target;
+
+    const rect = target.getBoundingClientRect();
+    const tooltipWidth = 200; // stima larghezza del tooltip
+    const tooltipHeight = 40; // stima altezza
   
-    this.http.post<any[]>('http://localhost:5000/shifts/getPreviousAssignees', {
-      appointmentId: appointmentId,
-      currentDate: date
-    }).subscribe(employees => {
-      if (employees.length === 0) {
-        this.tooltipText = 'Nessun assegnato precedente';
-      } else {
-        this.tooltipText = employees.map(e => `${e.nome} ${e.cognome}`).join(', ');
-      }
-    }, err => {
-      this.tooltipText = 'Errore nel recupero';
-    });
+    let left = rect.left + window.scrollX;
+    let top = rect.bottom + window.scrollY + 5;
+  
+    // 👉 Se tooltip esce a destra, spostalo a sinistra
+    if (left + tooltipWidth > window.innerWidth) {
+      left = window.innerWidth - tooltipWidth - 10;
+    }
+  
+    // 👉 Se tooltip esce in basso, spostalo sopra
+    if (top + tooltipHeight > window.innerHeight + window.scrollY) {
+      top = rect.top + window.scrollY - tooltipHeight - 5;
+    }
+  
+    this.tooltipPosition = { top, left };
+
+    this.http
+      .post<any[]>(this.globalService.url + 'shifts/getPreviousAssignees', {
+        appointmentId: appointmentId,
+        currentDate: date,
+      })
+      .subscribe(
+        (employees) => {
+          if (employees.length === 0) {
+            this.tooltipText = 'Nessun assegnato precedente';
+          } else {
+            this.tooltipText = employees
+              .map((e) => `${e.nome} ${e.cognome}`)
+              .join(', ');
+          }
+        },
+        (err) => {
+          this.tooltipText = 'Errore nel recupero';
+        }
+      );
   }
-  
+
   hideTooltip() {
     this.tooltipVisible = false;
     this.tooltipText = '';
     this.tooltipTarget = null;
   }
 
-  back(){
-    this.router.navigate(['/homeAdmin'])
+  back() {
+    this.router.navigate(['/homeAdmin']);
   }
-  
 }

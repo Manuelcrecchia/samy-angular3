@@ -8,13 +8,19 @@
   <h2 class="text-center mb-4">Gestione Turni</h2>
 
   <div class="d-flex justify-content-between align-items-center mb-3">
-    <button class="btn btn-secondary rounded-pill" (click)="prevDay()">&larr;</button>
-    <h4 class="m-0">{{ selectedDate | date: 'fullDate' }}</h4>
-    <button class="btn btn-secondary rounded-pill" (click)="nextDay()">&rarr;</button>
+    <button class="btn btn-secondary rounded-pill" (click)="prevDay()">
+      &larr;
+    </button>
+    <h4 class="m-0">{{ selectedDate | date : "fullDate" }}</h4>
+    <button class="btn btn-secondary rounded-pill" (click)="nextDay()">
+      &rarr;
+    </button>
   </div>
 
   <div class="text-center mb-4">
-    <button class="btn btn-success rounded-pill" (click)="createShifts()">➕ Crea Turni</button>
+    <button class="btn btn-success rounded-pill" (click)="createShifts()">
+      ➕ Crea Turni
+    </button>
   </div>
 
   <div *ngIf="shifts.length === 0" class="alert alert-info text-center">
@@ -23,17 +29,26 @@
 
   <ul class="list-group" *ngIf="shifts.length > 0">
     <div *ngFor="let empName of groupedKeys()">
-      <h4 class="mt-4">{{ empName.toUpperCase() }} – {{ selectedDate | date: 'EEEE d MMMM y':'':'it-IT' | uppercase }}</h4>
+      <h4 class="mt-4">
+        {{ empName.toUpperCase() }} –
+        {{ selectedDate | date : "EEEE d MMMM y" : "" : "it-IT" | uppercase }}
+      </h4>
       <ul class="list-group list-group-flush">
-        <li class="list-group-item d-flex justify-content-between align-items-center" *ngFor="let turno of groupedByEmployee[empName]">
-          <span>{{ turno.title }} — {{ turno.start | date: 'HH:mm' }} - {{ turno.end | date: 'HH:mm' }}</span>
+        <li
+          class="list-group-item d-flex justify-content-between align-items-center"
+          *ngFor="let turno of groupedByEmployee[empName]"
+        >
+          <span
+            >{{ turno.title }} — {{ turno.start | date : "HH:mm" }} -
+            {{ turno.end | date : "HH:mm" }}</span
+          >
           <span
             *ngIf="turno.keyRequired"
             class="key-icon ms-2"
-            (mousedown)="handleMouseDown($event, turno.appointmentId)"
-            (mouseup)="hideTooltip()"
-            (mouseleave)="hideTooltip()"
-          >🔑</span>
+            (click)="handleClick($event, turno.appointmentId)"
+          >
+            🔑
+          </span>
         </li>
       </ul>
     </div>
@@ -43,8 +58,9 @@
 <div
   class="tooltip-popup"
   *ngIf="tooltipVisible"
-  [style.top.px]="tooltipTarget?.getBoundingClientRect().bottom + windowRef.scrollY + 5"
-  [style.left.px]="tooltipTarget?.getBoundingClientRect().left + windowRef.scrollX"
+  [style.top.px]="tooltipPosition.top"
+  [style.left.px]="tooltipPosition.left"
 >
   {{ tooltipText }}
 </div>
+
