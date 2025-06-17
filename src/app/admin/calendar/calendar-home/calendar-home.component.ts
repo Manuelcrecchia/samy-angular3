@@ -184,33 +184,38 @@ export class CalendarHomeComponent {
         },
         onValueChanged: (args: any) => {
           const selectedValue: string = args.value;
+          const formCategoria = form.getEditor('categories');
+
+          // PREVENTIVO
           const idxPrev = this.nPreventiviArray.findIndex(
             (item) => item === selectedValue
           );
-
-          const currentCategory = form.getEditor('categories').option('value');
-
           if (idxPrev !== -1) {
-            const descrizione = this.descrizioneArray[idxPrev];
-            if (!currentCategory) {
-              form.getEditor('categories').option('value', 'sopralluogo');
-            }
+            const descrizione = `Sopralluogo – ${this.descrizioneArray[idxPrev]}`;
+            formCategoria.option('value', 'sopralluogo');
             form.getEditor('description').option('value', descrizione);
             return;
           }
 
+          // CLIENTE
           const cliente = this.clientiArray.find(
             (c) => `${c.numeroCliente} - ${c.nominativo}` === selectedValue
           );
           if (cliente) {
-            const descrizione = `Cliente: ${cliente.nominativo}, Tel: ${cliente.telefono}`;
-            if (!currentCategory) {
-              const categoria =
-                cliente.tipoCliente === 'O' ? 'ordinario' : 'straordinario';
-              form.getEditor('categories').option('value', categoria);
-            }
+            const categoria =
+              cliente.tipoCliente === 'O' ? 'ordinario' : 'straordinario';
+            const descrizione = `${
+              categoria.charAt(0).toUpperCase() + categoria.slice(1)
+            } – Cliente: ${cliente.nominativo}, Tel: ${cliente.telefono}`;
+            formCategoria.option('value', categoria);
             form.getEditor('description').option('value', descrizione);
+            return;
           }
+
+          // VALORE NON VALIDO
+          form
+            .getEditor('description')
+            .option('value', '⚠️ Valore non valido. Seleziona da elenco.');
         },
       },
       label: { text: 'Numero preventivo' },
@@ -222,8 +227,14 @@ export class CalendarHomeComponent {
       label: { text: 'Abilita Ricorrenza' },
       editorOptions: {
         onValueChanged: (args: any) => {
-          this.recurrenceRuleisVisible = args.value;
-          form.itemOption('recurrenceRule', 'visible', args.value);
+          const show = args.value;
+          this.recurrenceRuleisVisible = show;
+          form.itemOption('recurrenceRule', 'visible', show);
+
+          if (!show) {
+            this.saveRecurrenceRule = '';
+            form.getEditor('recurrenceRule').option('value', null);
+          }
         },
       },
     };

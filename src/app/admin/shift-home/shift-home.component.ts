@@ -18,6 +18,7 @@ export class ShiftHomeComponent {
       end: string;
       appointmentId: number;
       keyRequired: boolean;
+      cellulare?: string | null;
     }[];
   } = {};
   tooltipVisible: boolean = false;
@@ -74,6 +75,7 @@ export class ShiftHomeComponent {
           end: shift.appointment.endDate,
           appointmentId: shift.appointmentId,
           keyRequired: shift.appointment.customer?.key === true,
+          cellulare: emp.cellulare || null 
         });
       }
     }
@@ -164,6 +166,50 @@ export class ShiftHomeComponent {
         }
       );
   }
+
+  sendViaWhatsApp(empName: string): void {
+    const turni = this.groupedByEmployee[empName];
+    const dayStr = this.selectedDate.toLocaleDateString('it-IT', {
+      weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
+    }).toUpperCase();
+  
+    let testo = `${empName.toUpperCase()} – ${dayStr}\n`;
+  
+    for (const turno of turni) {
+      const linea = `${turno.title} — ${this.formatHour(turno.start)} - ${this.formatHour(turno.end)}${turno.keyRequired ? ' 🔑' : ''}`;
+      testo += linea + '\n';
+    }
+  
+    const numeroGrezzo = turni.find(t => t.cellulare)?.cellulare;
+    const encodedMsg = encodeURIComponent(testo);
+  
+    // 🔁 Sempre protocollo whatsapp://
+    let url = 'whatsapp://send?text=' + encodedMsg;
+  console.log(numeroGrezzo)
+    if (numeroGrezzo) {
+      const numeroPulito = numeroGrezzo.replace(/\D/g, '');
+      const numeroConPrefisso = '39' + numeroPulito;
+      console.log('Apro WhatsApp con:', numeroConPrefisso);
+      url = `whatsapp://send?phone=${numeroConPrefisso}&text=${encodedMsg}`;
+      
+    }
+  
+    // 🔓 Apre app (se installata e consentita dal browser)
+    window.location.href = url;
+  }
+  
+  
+  
+  
+  formatHour(date: string | Date): string {
+    const d = typeof date === 'string' ? new Date(date) : date;
+    return d.toLocaleTimeString('it-IT', {
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+  }
+  
+  
 
   hideTooltip() {
     this.tooltipVisible = false;
