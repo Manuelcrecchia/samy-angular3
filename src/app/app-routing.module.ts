@@ -26,6 +26,8 @@ import { GestioneEmployeesComponent } from './admin/gestione-employees/gestione-
 import { SettingsEmployeesComponent } from './admin/settings-employees/settings-employees.component';
 import { DocumentManagerComponent } from './admin/document-manager/document-manager.component';
 import { AuthGuard } from './auth.guard';
+import { AuthSGuard } from './auth-s.guard';
+import { AuthAGuard } from './auth-a.guard';
 import { ViewPdfComponent } from './admin/view-pdf/view-pdf.component';
 import { BlogComponent } from './componenti/sito/blog/blog.component';
 import { ConvenzioniPromozioniComponent } from './componenti/sito/convenzioni-promozioni/convenzioni-promozioni.component';
@@ -37,14 +39,13 @@ import { CreateShiftComponent } from './admin/create-shift/create-shift.componen
 const routes: Routes = [
   { path: '', component: HomesitoComponent },
   { path: 'homeSito', component: HomesitoComponent },
-  { path: 'loginCustomer', component: CustomerAreaComponent },
   { path: 'loginPrivateArea', component: PrivateAreaComponent },
   { path: 'homeAdmin', component: HomeAdminComponent, canActivate: [AuthGuard] },
-  { path: 'userSettings', component: UserSettingsComponent, canActivate: [AuthGuard] },
+  { path: 'userSettings', component: UserSettingsComponent, canActivate: [AuthSGuard] },
   { path: 'quotesHome', component: QuotesHomeComponent, canActivate: [AuthGuard] },
   { path: 'addQuote', component: AddQuoteComponent, canActivate: [AuthGuard] },
   { path: 'editQuote', component: EditQuoteComponent, canActivate: [AuthGuard] },
-  { path: 'listCustomer', component: ListCustomerComponent, canActivate: [AuthGuard] },
+  { path: 'listCustomer', component: ListCustomerComponent, canActivate: [AuthAGuard] },
   { path: 'addCustomer', component: AddCustomerComponent, canActivate: [AuthGuard] },
   { path: 'sanificazioni', component: SanificazioniComponent },
   { path: 'uffici', component: UfficiComponent },
@@ -58,17 +59,17 @@ const routes: Routes = [
   { path: 'privacy', component: PrivacyComponent },
   { path: 'preventivi', component: PreventiviComponent },
   { path: 'navbar', component: NavbarComponent },
-  { path: 'gestioneemployees', component: GestioneEmployeesComponent, canActivate: [AuthGuard] },
-  { path: 'settingsemployees', component: SettingsEmployeesComponent, canActivate: [AuthGuard] },
+  { path: 'gestioneemployees', component: GestioneEmployeesComponent, canActivate: [AuthAGuard] },
+  { path: 'settingsemployees', component: SettingsEmployeesComponent, canActivate: [AuthSGuard] },
   { path: 'documenti/employee/:id', component: DocumentManagerComponent, canActivate: [AuthGuard] },
   { path: 'documenti/client/:id', component: DocumentManagerComponent, canActivate: [AuthGuard] },
     { path: 'view-pdf', component: ViewPdfComponent, canActivate: [AuthGuard] },
   { path: 'blog', component: BlogComponent },
   { path: 'convenzioni-promozioni', component: ConvenzioniPromozioniComponent},
   { path: 'editCustomer', component: EditCustomerComponent, canActivate: [AuthGuard] },
-  { path: 'schedaCliente/:numeroCliente', component: SchedaClienteComponent },
-  { path: 'admin/shifts', component: ShiftHomeComponent },
-  { path: 'admin/shifts/create', component: CreateShiftComponent }
+  { path: 'schedaCliente/:numeroCliente', component: SchedaClienteComponent, canActivate: [AuthGuard] },
+  { path: 'admin/shifts', component: ShiftHomeComponent, canActivate: [AuthGuard] },
+  { path: 'admin/shifts/create', component: CreateShiftComponent, canActivate: [AuthGuard] }
 
 
 
