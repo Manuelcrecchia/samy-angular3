@@ -104,14 +104,16 @@ searchNumeroPreventivo(value: string){
 }
 
 searchNominativo(value: string){
-
-  if(value == ""){
+  if (value === "") {
     this.ngOnInit();
-  }
-  else{
-    this.quotesFrEnd = this.quotesFrEnd.filter(quote => quote.nominativo.startsWith(value))
+  } else {
+    const lowerValue = value.toLowerCase();
+    this.quotesFrEnd = this.quotesFrEnd.filter(quote =>
+      quote.nominativo.toLowerCase().startsWith(lowerValue)
+    );
   }
 }
+
 
 navigateToEditQuote(numeroPreventivo: string){
   const body = { numeroPreventivo: numeroPreventivo };

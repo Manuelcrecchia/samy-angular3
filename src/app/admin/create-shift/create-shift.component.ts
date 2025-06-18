@@ -112,13 +112,26 @@ tooltipVisible = false;
     const dateStr = this.formatDate(this.selectedDate);
 
     this.http.post<any[]>(this.globalService.url + 'appointments/byDate', { date: dateStr })
-      .subscribe(data => {
-        this.appointments = data.filter(a =>
-          a.categories === 'ordinario' || a.categories === 'straordinario'
-        );
-        this.hours = this.getDynamicHours();
-        this.loading = false;
-      });
+  .subscribe(data => {
+    let counter = 100000; // ID fittizi per evitare conflitti
+
+    this.appointments = data.map(a => {
+      if (a.isRecurringInstance) {
+        return {
+          ...a,
+          id: counter++, // ID temporaneo
+          originalAppointmentId: a.id // salvo il vero ID
+        };
+      }
+      return a;
+    }).filter(a =>
+      a.categories === 'ordinario' || a.categories === 'straordinario'
+    );
+
+    this.hours = this.getDynamicHours();
+    this.loading = false;
+  });
+
   }
 
   getAppointmentsByHour(hour: string): any[] {
@@ -243,11 +256,17 @@ const end = new Date(a.endDate).getTime() + new Date().getTimezoneOffset() * 600
     }
 
     const dateStr = this.formatDate(this.selectedDate);
-    const payload = Object.entries(this.assignedShifts).map(([appointmentId, employeeIds]) => ({
-      appointmentId: +appointmentId,
-      data: dateStr,
-      employeeIds
-    }));
+    const payload = Object.entries(this.assignedShifts).map(([appointmentId, employeeIds]) => {
+      const app = this.appointments.find(a => a.id === +appointmentId);
+      const realId = app?.originalAppointmentId || app?.id;
+    
+      return {
+        appointmentId: realId,
+        data: dateStr,
+        employeeIds
+      };
+    });
+    
 
     this.http.post(this.globalService.url + 'shifts/saveMultiple', { shifts: payload })
       .subscribe(() => {
