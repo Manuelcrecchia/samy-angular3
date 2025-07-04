@@ -35,6 +35,7 @@ import { EditCustomerComponent } from './admin/edit-customer/edit-customer.compo
 import { SchedaClienteComponent } from './admin/scheda-cliente/scheda-cliente.component';
 import { ShiftHomeComponent } from './admin/shift-home/shift-home.component';
 import { CreateShiftComponent } from './admin/create-shift/create-shift.component';
+import { GestionePermessiComponent } from './admin/gestione-permessi/gestione-permessi.component';
 
 const routes: Routes = [
   { path: '', component: HomesitoComponent },
@@ -69,7 +70,9 @@ const routes: Routes = [
   { path: 'editCustomer', component: EditCustomerComponent, canActivate: [AuthGuard] },
   { path: 'schedaCliente/:numeroCliente', component: SchedaClienteComponent, canActivate: [AuthGuard] },
   { path: 'admin/shifts', component: ShiftHomeComponent, canActivate: [AuthGuard] },
-  { path: 'admin/shifts/create', component: CreateShiftComponent, canActivate: [AuthGuard] }
+  { path: 'admin/shifts/create', component: CreateShiftComponent, canActivate: [AuthGuard] },
+  { path: 'gestionepermessi', component: GestionePermessiComponent }
+
 
 
 

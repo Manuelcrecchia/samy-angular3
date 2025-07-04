@@ -1,0 +1,40 @@
+<div class="container mt-4">
+  <div class="d-flex justify-content-start align-items-center mb-3">
+    <button class="btn btn-outline-secondary" (click)="goBack()">
+      &larr; Torna Indietro
+    </button>
+  </div>
+
+  <h2>Gestione Permessi Richiesti</h2>
+
+  <div *ngIf="loading" class="text-center my-3">
+    <div class="spinner-border" role="status"></div>
+  </div>
+
+  <div *ngIf="!loading && leaveRequests.length === 0" class="alert alert-info">
+    Nessuna richiesta di permesso in attesa.
+  </div>
+
+  <div class="list-group mt-3" *ngIf="leaveRequests.length > 0">
+    <div class="list-group-item" *ngFor="let req of leaveRequests">
+      <div class="d-flex justify-content-between align-items-center">
+        <div>
+          <strong>{{ req.nome }} {{ req.cognome }}</strong><br />
+          Email: {{ req.email }}<br />
+
+          <ng-container *ngIf="req.dataInizio === req.dataFine">
+            Giorno: {{ req.dataInizio | date: 'mediumDate' }}
+          </ng-container>
+          <ng-container *ngIf="req.dataInizio !== req.dataFine">
+            Dal: {{ req.dataInizio | date: 'mediumDate' }}<br />
+            Al: {{ req.dataFine | date: 'mediumDate' }}
+          </ng-container>
+        </div>
+        <div class="btn-group">
+          <button class="btn btn-success" (click)="accetta(req)">Accetta</button>
+          <button class="btn btn-danger" (click)="rifiuta(req.id)">Rifiuta</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

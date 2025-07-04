@@ -86,6 +86,7 @@ import { SchedaClienteComponent } from './admin/scheda-cliente/scheda-cliente.co
 import { ShiftHomeComponent } from './admin/shift-home/shift-home.component';
 import { CreateShiftComponent } from './admin/create-shift/create-shift.component';
 import { AssignDialogComponent } from './admin/assign-dialog/assign-dialog.component';
+import { GestionePermessiComponent } from './admin/gestione-permessi/gestione-permessi.component';
 
 
 loadMessages(itMessages);
@@ -133,6 +134,7 @@ registerLocaleData(localeIt);
     ShiftHomeComponent,
     CreateShiftComponent,
     AssignDialogComponent,
+    GestionePermessiComponent,
   ],
   imports: [
     BrowserModule,

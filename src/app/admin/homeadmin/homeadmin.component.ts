@@ -4,6 +4,8 @@ import { GlobalService } from '../../service/global.service';
 import { PopupServiceService } from '../../componenti/popup/popup-service.service';
 import { QuoteModelService } from '../../service/quote-model.service';
 import { Location } from '@angular/common';
+import { HttpClient } from '@angular/common/http';
+
 
 @Component({
   selector: 'app-homeadmin',
@@ -17,12 +19,29 @@ export class HomeAdminComponent implements OnInit {
     private global: GlobalService,
     private popup: PopupServiceService,
     public quoteModelService: QuoteModelService,
-    private location: Location
+    private location: Location,
+    private http: HttpClient // 👈 AGGIUNTO
   ) {}
 
   isMenuOpen: boolean = false;
 
-  ngOnInit() {}
+  ngOnInit(): void {
+    this.checkPermessiInAttesa();
+  }
+
+  checkPermessiInAttesa(): void {
+    this.http.get<{ pending: number }>(this.global.url + 'permission/notify').subscribe({
+      next: (res) => {
+        if (res.pending > 0) {
+          alert(`🔔 Hai ${res.pending} richiesta/e di permesso in attesa!`);
+        }
+      },
+      error: (err) => {
+        console.error('Errore controllo permessi in attesa:', err);
+      }
+    });
+  }
+
 
   toggleMenu() {
     this.isMenuOpen = !this.isMenuOpen;
@@ -52,6 +71,9 @@ export class HomeAdminComponent implements OnInit {
 
   navigateToQuotesHome() {
     this.router.navigateByUrl('/quotesHome');
+  }
+  navigateToGestionePermessi() {
+    this.router.navigateByUrl('/gestionepermessi');
   }
 
   navigateToListCustomer() {
@@ -89,4 +111,5 @@ export class HomeAdminComponent implements OnInit {
     this.location.replaceState('/');
     this.router.navigateByUrl('/');
   }
+
 }

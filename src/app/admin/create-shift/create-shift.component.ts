@@ -52,31 +52,31 @@ tooltipVisible = false;
     const prevDate = new Date(this.selectedDate);
     prevDate.setDate(prevDate.getDate() - 7);
     const dateStr = this.formatDate(prevDate);
-  
+
     this.http.get<any[]>(this.globalService.url + `shifts/byDate/${dateStr}`)
       .subscribe(data => {
         const mappa: { [cliente: string]: string[] } = {};
         for (const s of data) {
           const title = s.appointment?.title || '---';
           const fullNames = s.employees?.map((e: any) => `${e.nome} ${e.cognome}`) || [];
-  
+
           if (!mappa[title]) mappa[title] = [];
           mappa[title].push(...fullNames);
         }
-  
+
         this.previousWeekShiftList = Object.entries(mappa).map(([cliente, dipendenti]) => ({
           cliente,
           dipendenti
         }));
-  
+
         this.tooltipVisible = true;
       });
   }
-  
+
   hidePreviousWeekShifts(): void {
     this.tooltipVisible = false;
   }
-  
+
   formatDate(date: Date): string {
     return date.toISOString().split('T')[0];
   }
@@ -154,27 +154,27 @@ tooltipVisible = false;
     const currentStart = new Date(currentApp.startDate).getTime() + new Date().getTimezoneOffset() * 60000;
 const currentEnd = new Date(currentApp.endDate).getTime() + new Date().getTimezoneOffset() * 60000;
 
-  
+
     const overlaps = this.appointments.filter(a => {
       if (a.id === currentApp.id) return false;
-  
+
       const start = new Date(a.startDate).getTime() + new Date().getTimezoneOffset() * 60000;
 const end = new Date(a.endDate).getTime() + new Date().getTimezoneOffset() * 60000;
 
-  
+
       // Sovrapposizione vera: A inizia prima che B finisca E finisce dopo che B inizia
       return currentStart < end && currentEnd > start;
     });
-  
+
     const busy: number[] = [];
     for (const o of overlaps) {
       const assigned = this.assignedShifts[o.id] || [];
       busy.push(...assigned);
     }
-  
+
     return busy;
   }
-  
+
 
 
   openAssignmentDialog(app: any): void {
@@ -259,19 +259,29 @@ const end = new Date(a.endDate).getTime() + new Date().getTimezoneOffset() * 600
     const payload = Object.entries(this.assignedShifts).map(([appointmentId, employeeIds]) => {
       const app = this.appointments.find(a => a.id === +appointmentId);
       const realId = app?.originalAppointmentId || app?.id;
-    
+
       return {
         appointmentId: realId,
         data: dateStr,
         employeeIds
       };
     });
-    
+
 
     this.http.post(this.globalService.url + 'shifts/saveMultiple', { shifts: payload })
       .subscribe(() => {
         alert('Turni salvati');
         this.router.navigate(['/admin/shifts']);
+        this.http.post(this.globalService.url + 'shifts/saveMultiple', { shifts: payload }).subscribe(() => {
+          // invio a ms
+          this.http.post(this.globalService.url + 'shifts/sendToMS', { shifts: payload }).subscribe(() => {
+            alert('Turni salvati e inviati ai dipendenti');
+            this.router.navigate(['/admin/shifts']);
+          }, err => {
+            alert('Turni salvati ma errore invio a dipendenti');
+          });
+        });
+
       });
   }
 
