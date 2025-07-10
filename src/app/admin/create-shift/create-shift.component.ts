@@ -272,16 +272,6 @@ const end = new Date(a.endDate).getTime() + new Date().getTimezoneOffset() * 600
       .subscribe(() => {
         alert('Turni salvati');
         this.router.navigate(['/admin/shifts']);
-        this.http.post(this.globalService.url + 'shifts/saveMultiple', { shifts: payload }).subscribe(() => {
-          // invio a ms
-          this.http.post(this.globalService.url + 'shifts/sendToMS', { shifts: payload }).subscribe(() => {
-            alert('Turni salvati e inviati ai dipendenti');
-            this.router.navigate(['/admin/shifts']);
-          }, err => {
-            alert('Turni salvati ma errore invio a dipendenti');
-          });
-        });
-
       });
   }
 

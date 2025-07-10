@@ -14,6 +14,7 @@ export class ShiftHomeComponent {
   groupedByEmployee: {
     [key: string]: {
       title: string;
+      description: string;
       start: string;
       end: string;
       appointmentId: number;
@@ -71,6 +72,7 @@ export class ShiftHomeComponent {
 
         result[key].push({
           title: shift.appointment.title,
+          description: shift.appointment.description,
           start: shift.appointment.startDate,
           end: shift.appointment.endDate,
           appointmentId: shift.appointmentId,
@@ -176,7 +178,7 @@ export class ShiftHomeComponent {
     let testo = `${empName.toUpperCase()} – ${dayStr}\n`;
   
     for (const turno of turni) {
-      const linea = `${turno.title} — ${this.formatHour(turno.start)} - ${this.formatHour(turno.end)}${turno.keyRequired ? ' 🔑' : ''}`;
+      const linea = `${turno.title} — ${this.formatHour(turno.start)} - ${this.formatHour(turno.end)}${turno.keyRequired ? ' 🔑' : ''}\n${turno.description}`;
       testo += linea + '\n';
     }
   

@@ -23,7 +23,7 @@ export class CalendarHomeComponent {
   events: AppointmentModelService[] = [];
   filteredEvents: AppointmentModelService[] = [];
   currentDate: Date = new Date();
-  currentView: string = 'month';
+  currentView: string = 'day';
   saveRecurrenceRule: string = '';
   recurrenceRuleisVisible: boolean = false;
   selectedDate: Date = new Date();
@@ -145,7 +145,7 @@ export class CalendarHomeComponent {
     toolbarItems.forEach((item: any) => {
       if (item.shortcut === 'cancel') {
         this.currentDate = new Date();
-        this.currentView = 'month';
+        this.currentView = 'day';
         this.recurrenceRuleisVisible = false;
         this.saveRecurrenceRule = '';
         form.itemOption('recurrenceRule', 'visible', false);
@@ -204,18 +204,13 @@ export class CalendarHomeComponent {
           if (cliente) {
             const categoria =
               cliente.tipoCliente === 'O' ? 'ordinario' : 'straordinario';
-            const descrizione = `${
-              categoria.charAt(0).toUpperCase() + categoria.slice(1)
-            } – Cliente: ${cliente.nominativo}, Tel: ${cliente.telefono}`;
             formCategoria.option('value', categoria);
-            form.getEditor('description').option('value', descrizione);
             return;
           }
 
           // VALORE NON VALIDO
-          form
-            .getEditor('description')
-            .option('value', '⚠️ Valore non valido. Seleziona da elenco.');
+          formCategoria.option('value', null);
+          form.getEditor('description').option('value', '');
         },
       },
       label: { text: 'Numero preventivo' },
@@ -421,6 +416,8 @@ export class CalendarHomeComponent {
       this.popup.text =
         'Codice non valido o non esistente per la categoria selezionata';
       this.popup.openPopup();
+      e.cancel = true; // blocca il salvataggio
+      this.scheduler.instance.hideAppointmentPopup(); // chiude il popup manualmente
       return;
     }
 

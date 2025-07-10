@@ -4,7 +4,7 @@
   </div>
 
   <mat-dialog-content *ngIf="data">
-    <p><strong>Orario:</strong> {{ data.startTime }} - {{ data.endTime }}</p>
+    <p><strong>Orario:</strong> {{ data.startDate | date: 'HH:mm' }} - {{ data.endDate | date: 'HH:mm' }}</p>
     <p><strong>Cliente:</strong> {{ data.title }}</p>
     <p><strong>Dipendenti richiesti:</strong> {{ data.requiredEmployees }}</p>
 

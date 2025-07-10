@@ -72,6 +72,7 @@ export class HomeAdminComponent implements OnInit {
   navigateToQuotesHome() {
     this.router.navigateByUrl('/quotesHome');
   }
+  
   navigateToGestionePermessi() {
     this.router.navigateByUrl('/gestionepermessi');
   }
