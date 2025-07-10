@@ -37,11 +37,16 @@ tooltipVisible = false;
   ngOnInit(): void {
     const queryDate = this.route.snapshot.queryParamMap.get('date');
     if (queryDate) this.selectedDate = new Date(queryDate);
+  
     this.loadAppointments();
+  
     this.http.get<any[]>(this.globalService.url + 'employees/getAll').subscribe(res => {
       this.employeeList = res;
     });
+  
+    this.showPreviousWeekShifts();
   }
+  
 
   getEmployeeName(id: number): string {
     const found = this.employeeList.find(e => e.id === id);
@@ -86,6 +91,7 @@ tooltipVisible = false;
     newDate.setDate(newDate.getDate() - 1);
     this.selectedDate = newDate;
     this.loadAppointments();
+    this.showPreviousWeekShifts();
   }
 
   getDynamicHours(): string[] {
@@ -105,6 +111,7 @@ tooltipVisible = false;
     newDate.setDate(newDate.getDate() + 1);
     this.selectedDate = newDate;
     this.loadAppointments();
+    this.showPreviousWeekShifts();
   }
 
   loadAppointments(): void {

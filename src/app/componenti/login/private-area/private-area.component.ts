@@ -17,6 +17,8 @@ export class PrivateAreaComponent {
 
 constructor(private globalService: GlobalService, private http: HttpClient, private router: Router, private popup: PopupServiceService) { }
 
+version = this.globalService.version
+
   loginFunction(email: string, password: string) {
     let res;
     let resp;
