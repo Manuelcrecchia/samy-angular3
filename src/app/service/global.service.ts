@@ -13,8 +13,8 @@ export class GlobalService {
   private _admin: string = sessionStorage.getItem('admin') || "";
   private _email: string = sessionStorage.getItem('email') || "";
 
-  //url = "https://samipulizie.it:4000/";
-  url = "http://192.168.1.22:5000/";
+  url = "https://samipulizie.it:4000/";
+  //url = "http://192.168.1.22:5000/";
 
   private logoutTimer: any;
 
