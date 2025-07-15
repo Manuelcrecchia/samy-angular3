@@ -67,6 +67,10 @@ export class ListCustomerComponent {
         this.customerModelService.tipoCliente = cliente.tipoCliente;
         this.customerModelService.nominativo = cliente.nominativo;
         this.customerModelService.cfpi = cliente.cfpi;
+        this.customerModelService.cittaDiFatturazione = cliente.cittaDiFatturazione;
+        this.customerModelService.selettorePrefissoViaDiFatturazione = cliente.selettorePrefissoViaDiFatturazione;
+        this.customerModelService.viaDiFatturazione = cliente.viaDiFatturazione;
+        this.customerModelService.capDiFatturazione = cliente.capDiFatturazione;
         this.customerModelService.citta = cliente.citta;
         this.customerModelService.selettorePrefissoVia = cliente.selettorePrefissoVia;
         this.customerModelService.via = cliente.via;

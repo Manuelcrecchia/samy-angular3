@@ -9,6 +9,10 @@ export class CustomerModelService {
   tipoCliente = '';
   nominativo = '';
   cfpi = '';
+  cittaDiFatturazione = '';
+  selettorePrefissoViaDiFatturazione = '';
+  viaDiFatturazione = '';
+  capDiFatturazione = '';
   citta = '';
   selettorePrefissoVia = '';
   via = '';
@@ -37,6 +41,10 @@ export class CustomerModelService {
     this.tipoCliente = '';
     this.nominativo = '';
     this.cfpi = '';
+    this.cittaDiFatturazione = '';
+    this.selettorePrefissoViaDiFatturazione = '';
+    this.viaDiFatturazione = '';
+    this.capDiFatturazione = '';
     this.citta = '';
     this.selettorePrefissoVia = '';
     this.via = '';

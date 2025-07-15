@@ -42,6 +42,39 @@
 
         <div class="col-md-6">
           <mat-form-field class="w-100" appearance="fill">
+            <mat-label>Città di fatturazione</mat-label>
+            <input matInput name="cittaDiFatturazione" [(ngModel)]="customerModelService.cittaDiFatturazione">
+          </mat-form-field>
+        </div>
+
+        <div class="col-md-4">
+          <mat-form-field class="w-100" appearance="fill">
+            <mat-label>Prefisso via di fatturazione</mat-label>
+            <mat-select name="selettorePrefissoViaDiFatturazione" [(ngModel)]="customerModelService.selettorePrefissoViaDiFatturazione">
+              <mat-option value="VIA">VIA</mat-option>
+              <mat-option value="STRADA">STRADA</mat-option>
+              <mat-option value="VIALE">VIALE</mat-option>
+              <mat-option value="PIAZZA">PIAZZA</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <div class="col-md-5">
+          <mat-form-field class="w-100" appearance="fill">
+            <mat-label>Via di fatturazione</mat-label>
+            <input matInput name="viaDiFatturazione" [(ngModel)]="customerModelService.viaDiFatturazione">
+          </mat-form-field>
+        </div>
+
+        <div class="col-md-3">
+          <mat-form-field class="w-100" appearance="fill">
+            <mat-label>CAP di fatturazione</mat-label>
+            <input matInput name="capDiFatturazione" [(ngModel)]="customerModelService.capDiFatturazione">
+          </mat-form-field>
+        </div>
+
+        <div class="col-md-6">
+          <mat-form-field class="w-100" appearance="fill">
             <mat-label>Città</mat-label>
             <input matInput name="citta" [(ngModel)]="customerModelService.citta">
           </mat-form-field>

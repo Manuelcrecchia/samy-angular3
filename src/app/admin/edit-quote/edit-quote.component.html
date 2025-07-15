@@ -49,6 +49,40 @@
             <input matInput name="cfpi" [(ngModel)]="quoteModelService.cfpi">
           </mat-form-field>
         </div>
+
+        <div class="col-md-6">
+          <mat-form-field class="w-100" appearance="fill">
+            <mat-label>Città di fatturazione</mat-label>
+            <input matInput name="cittaDiFatturazione" [(ngModel)]="quoteModelService.cittaDiFatturazione">
+          </mat-form-field>
+        </div>
+
+        <div class="col-md-4">
+          <mat-form-field class="w-100" appearance="fill">
+            <mat-label>Prefisso via di fatturazione</mat-label>
+            <mat-select name="selettorePrefissoViaDiFatturazione" [(ngModel)]="quoteModelService.selettorePrefissoViaDiFatturazione">
+              <mat-option value="VIA">VIA</mat-option>
+              <mat-option value="STRADA">STRADA</mat-option>
+              <mat-option value="VIALE">VIALE</mat-option>
+              <mat-option value="PIAZZA">PIAZZA</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <div class="col-md-5">
+          <mat-form-field class="w-100" appearance="fill">
+            <mat-label>Via di fatturazione</mat-label>
+            <input matInput name="viaDiFatturazione" [(ngModel)]="quoteModelService.viaDiFatturazione">
+          </mat-form-field>
+        </div>
+
+        <div class="col-md-3">
+          <mat-form-field class="w-100" appearance="fill">
+            <mat-label>CAP di fatturazione</mat-label>
+            <input matInput name="capDiFatturazione" [(ngModel)]="quoteModelService.capDiFatturazione">
+          </mat-form-field>
+        </div>
+
         <div class="col-md-6">
           <mat-form-field appearance="fill" class="w-100">
             <mat-label>Città</mat-label>
@@ -104,32 +138,33 @@
         </div>
       </div>
 
-      <div class="mt-4">
-        <h5>Servizi e Interventi</h5>
-        <div class="row g-3">
-          <div class="col-md-6" *ngFor="let i of [0,1,2,3,4,5,6,7,8,9,10,11,12,13]; let idx = index">
-            <mat-form-field appearance="fill" class="w-100">
-              <mat-label>Servizio {{ idx + 1 }}</mat-label>
-              <input matInput [name]="'servizi' + (idx+1)" [(ngModel)]="quoteModelService.servizi[idx]">
-            </mat-form-field>
-          </div>
-        </div>
+      <!-- Servizi e Interventi -->
+      <ng-container *ngFor="let i of [].constructor(14); let idx = index">
+        <mat-form-field class="w-100" appearance="fill">
+          <mat-label>Servizi {{ idx + 1 }}</mat-label>
+          <input
+            type="text"
+            matInput
+            [matAutocomplete]="auto"
+            [(ngModel)]="quoteModelService.servizi[idx]"
+            [name]="'servizi' + (idx + 1)" maxlength="255">
+          <mat-autocomplete #auto="matAutocomplete" autoActiveFirstOption>
+            <mat-option *ngFor="let option of serviziOptions" [value]="option">
+              {{ option }}
+            </mat-option>
+          </mat-autocomplete>
+        </mat-form-field>
 
-        <ng-container *ngIf="quoteModelService.tipoPreventivo === 'O'">
-          <div class="row g-3">
-            <div class="col-md-6" *ngFor="let i of [0,1,2,3,4,5,6,7,8,9,10,11,12,13]; let idx = index">
-              <mat-form-field appearance="fill" class="w-100">
-                <mat-label>Intervento {{ idx + 1 }}</mat-label>
-                <mat-select [name]="'interventi' + (idx+1)" [(ngModel)]="quoteModelService.interventi[idx]">
-                  <mat-option *ngFor="let op of ['G','1S','2S','3S','4S','Q','1M','2M','3M','4M','TM','SM','A']" [value]="op">
-                    {{ op }}
-                  </mat-option>
-                </mat-select>
-              </mat-form-field>
-            </div>
-          </div>
-        </ng-container>
-      </div>
+      <mat-form-field *ngIf="quoteModelService.tipoPreventivo == 'O'" class="w-100" appearance="fill">
+        <mat-label>Interventi {{ idx + 1 }}</mat-label>
+        <mat-select [name]="'interventi' + (idx + 1)" [(ngModel)]="quoteModelService.interventi[idx]">
+          <mat-option *ngFor="let val of ['G','1S','2S','3S','4S','Q','1M','2M','3M','4M','TM','SM','A']" [value]="val">
+            {{ val }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </ng-container>
+>
 
       <div class="row g-3 mt-4">
         <div class="col-md-4">

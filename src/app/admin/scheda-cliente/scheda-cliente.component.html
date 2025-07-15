@@ -12,6 +12,9 @@
     <p><strong>Tipo Cliente:</strong> {{ cliente.tipoCliente === 'O' ? 'Ordinario' : 'Straordinario' }}</p>
     <p><strong>Nominativo:</strong> {{ cliente.nominativo }}</p>
     <p><strong>CF/P.IVA:</strong> {{ cliente.cfpi }}</p>
+    <p><strong>Città di fatturazione:</strong> {{ cliente.cittaDiFatturazione }}</p>
+    <p><strong>Indirizzo di fatturazione:</strong> {{ cliente.selettorePrefissoViaDiFatturazione }} {{ cliente.viaDiFatturazione }}</p>
+    <p><strong>CAP di fatturazione:</strong> {{ cliente.capDiFatturazione }}</p>
     <p><strong>Città:</strong> {{ cliente.citta }}</p>
     <p><strong>Indirizzo:</strong> {{ cliente.selettorePrefissoVia }} {{ cliente.via }}</p>
     <p><strong>CAP:</strong> {{ cliente.cap }}</p>

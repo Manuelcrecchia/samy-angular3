@@ -10,6 +10,10 @@ export class QuoteModelService {
   data = '';
   nominativo = '';
   cfpi = '';
+  cittaDiFatturazione = '';
+  selettorePrefissoViaDiFatturazione = '';
+  viaDiFatturazione = '';
+  capDiFatturazione = '';
   citta = '';
   selettorePrefissoVia = '';
   via = '';
@@ -39,6 +43,10 @@ export class QuoteModelService {
     this.data = '';
     this.nominativo = '';
     this.cfpi = '';
+    this.cittaDiFatturazione = '';
+    this.selettorePrefissoViaDiFatturazione = '';
+    this.viaDiFatturazione = '';
+    this.capDiFatturazione = '';
     this.citta = '';
     this.selettorePrefissoVia = '';
     this.via = '';

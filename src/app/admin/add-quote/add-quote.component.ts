@@ -22,6 +22,16 @@ export class AddQuoteComponent {
     private location: Location
   ) {}
 
+  serviziOptions = ["Spazzaggio e lavaggio pavimentazione",
+    "Vuotatura cestini con relativa sostituzione dei sacchetti",
+    "Pulizia ed igienizzazione dei servizi igenici",
+    "Pulizia porte",
+    "Pulizia dei vetri e relativi infisii interni ed esterni ove possibile",
+    "Deragnatura generale",
+    "Pulizia termosifoni e/o condizionatori",
+    "Pulizia battiscopa",
+  ]
+
   ngOnInit() {}
 
   addQuote() {
@@ -34,6 +44,10 @@ export class AddQuoteComponent {
         tipoPreventivo: this.quoteModelService.tipoPreventivo,
         nominativo: this.quoteModelService.nominativo,
         cfpi: this.quoteModelService.cfpi,
+        cittaDiFatturazione: this.quoteModelService.cittaDiFatturazione,
+        selettorePrefissoViaDiFatturazione: this.quoteModelService.selettorePrefissoViaDiFatturazione,
+        viaDiFatturazione: this.quoteModelService.viaDiFatturazione,
+        capDiFatturazione: this.quoteModelService.capDiFatturazione,
         citta: this.quoteModelService.citta,
         selettorePrefissoVia: this.quoteModelService.selettorePrefissoVia,
         via: this.quoteModelService.via,

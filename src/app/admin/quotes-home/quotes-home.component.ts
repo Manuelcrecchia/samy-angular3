@@ -138,6 +138,10 @@ this.http
               this.quoteModel.data = quoteJson["data"];
               this.quoteModel.nominativo = quoteJson["nominativo"];
               this.quoteModel.cfpi = quoteJson["cfpi"];
+              this.quoteModel.cittaDiFatturazione = quoteJson["cittaDiFatturazione"];
+              this.quoteModel.selettorePrefissoViaDiFatturazione = quoteJson["selettorePrefissoViaDiFatturazione"];
+              this.quoteModel.viaDiFatturazione = quoteJson["viaDiFatturazione"];
+              this.quoteModel.capDiFatturazione = quoteJson["capDiFatturazione"];
               this.quoteModel.citta = quoteJson["citta"];
               this.quoteModel.selettorePrefissoVia = quoteJson["selettorePrefissoVia"];
               this.quoteModel.via = quoteJson["via"];
@@ -198,6 +202,10 @@ conferm(numeroPreventivo: string) {
       this.customerModelService.tipoCliente = quote.tipoPreventivo;
       this.customerModelService.nominativo = quote.nominativo;
       this.customerModelService.cfpi = quote.cfpi;
+      this.customerModelService.cittaDiFatturazione = quote.cittaDiFatturazione;
+      this.customerModelService.selettorePrefissoViaDiFatturazione = quote.selettorePrefissoViaDiFatturazione;
+      this.customerModelService.viaDiFatturazione = quote.viaDiFatturazione;
+      this.customerModelService.capDiFatturazione = quote.capDiFatturazione;
       this.customerModelService.citta = quote.citta;
       this.customerModelService.selettorePrefissoVia = quote.selettorePrefissoVia;
       this.customerModelService.via = quote.via;
