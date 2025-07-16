@@ -129,7 +129,7 @@
           [(ngModel)]="quoteModelService.servizi[idx]"
           [name]="'servizi' + (idx + 1)" maxlength="255">
         <mat-autocomplete #auto="matAutocomplete" autoActiveFirstOption>
-          <mat-option *ngFor="let option of [serviziOptions]" [value]="option">
+          <mat-option *ngFor="let option of serviziOptions" [value]="option">
             {{ option }}
           </mat-option>
         </mat-autocomplete>
