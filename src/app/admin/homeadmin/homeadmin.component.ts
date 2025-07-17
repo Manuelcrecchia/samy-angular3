@@ -24,6 +24,7 @@ export class HomeAdminComponent implements OnInit {
   ) {}
 
   isMenuOpen: boolean = false;
+  permessiInAttesa: number = 0;
 
   ngOnInit(): void {
     this.checkPermessiInAttesa();
@@ -32,16 +33,14 @@ export class HomeAdminComponent implements OnInit {
   checkPermessiInAttesa(): void {
     this.http.get<{ pending: number }>(this.global.url + 'permission/notify').subscribe({
       next: (res) => {
-        if (res.pending > 0) {
-          alert(`🔔 Hai ${res.pending} richiesta/e di permesso in attesa!`);
-        }
+        this.permessiInAttesa = res.pending;
       },
       error: (err) => {
         console.error('Errore controllo permessi in attesa:', err);
       }
     });
   }
-
+  
 
   toggleMenu() {
     this.isMenuOpen = !this.isMenuOpen;
