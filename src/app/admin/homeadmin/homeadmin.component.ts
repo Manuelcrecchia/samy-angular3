@@ -5,7 +5,7 @@ import { PopupServiceService } from '../../componenti/popup/popup-service.servic
 import { QuoteModelService } from '../../service/quote-model.service';
 import { Location } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
-
+import { AuthServiceService } from '../../auth-service.service';
 
 @Component({
   selector: 'app-homeadmin',
@@ -20,7 +20,8 @@ export class HomeAdminComponent implements OnInit {
     private popup: PopupServiceService,
     public quoteModelService: QuoteModelService,
     private location: Location,
-    private http: HttpClient // 👈 AGGIUNTO
+    private http: HttpClient,
+    private authService: AuthServiceService
   ) {}
 
   isMenuOpen: boolean = false;
@@ -31,16 +32,18 @@ export class HomeAdminComponent implements OnInit {
   }
 
   checkPermessiInAttesa(): void {
-    this.http.get<{ pending: number }>(this.global.url + 'permission/notify').subscribe({
-      next: (res) => {
-        this.permessiInAttesa = res.pending;
-      },
-      error: (err) => {
-        console.error('Errore controllo permessi in attesa:', err);
-      }
-    });
+    this.http
+      .get<{ pending: number }>(this.global.url + 'permission/notify')
+      .subscribe({
+        next: (res) => {
+          this.permessiInAttesa = res.pending;
+          console.log('Permessi in attesa:', this.permessiInAttesa);
+        },
+        error: (err) => {
+          console.error('Errore controllo permessi in attesa:', err);
+        },
+      });
   }
-  
 
   toggleMenu() {
     this.isMenuOpen = !this.isMenuOpen;
@@ -71,13 +74,13 @@ export class HomeAdminComponent implements OnInit {
   navigateToQuotesHome() {
     this.router.navigateByUrl('/quotesHome');
   }
-  
+
   navigateToGestionePermessi() {
     this.router.navigateByUrl('/gestionepermessi');
   }
 
   navigateToListCustomer() {
-    if (this.global.admin == 'A' || this.global.admin == "S") {
+    if (this.global.admin == 'A' || this.global.admin == 'S') {
       this.router.navigateByUrl('/listCustomer');
     } else {
       this.popup.text = 'NON SEI AUTORIZZATO AD ACCEDERE A QUESTA FUNZIONE';
@@ -90,26 +93,22 @@ export class HomeAdminComponent implements OnInit {
   }
 
   back() {
-    this.router.navigateByUrl('/');
+    this.global.logout();
   }
   navigateToCambiapassword() {
     this.router.navigateByUrl('/cambiapassword');
   }
   navigateToGestioneemployees() {
-    if (this.global.admin == 'A' || this.global.admin == "S") {
+    if (this.global.admin == 'A' || this.global.admin == 'S') {
       this.router.navigateByUrl('/gestioneemployees');
     } else {
       this.popup.text = 'NON SEI AUTORIZZATO AD ACCEDERE A QUESTA FUNZIONE';
       this.popup.openPopup();
     }
   }
-
   @HostListener('window:popstate', ['$event'])
-  onBrowserBackBtnClose(event: Event): void {
-    event.preventDefault();
-    this.quoteModelService.resetQuoteModel();
-    this.location.replaceState('/');
-    this.router.navigateByUrl('/');
+  onPopState(event: PopStateEvent) {
+    console.log('[AppComponent] Freccia indietro rilevata');
+    this.authService.logout();
   }
-
 }

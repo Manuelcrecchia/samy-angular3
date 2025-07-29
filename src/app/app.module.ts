@@ -9,7 +9,6 @@ import { LOCALE_ID } from '@angular/core';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { CustomerAreaComponent } from './componenti/login/customer-area/customer-area.component';
 import { PrivateAreaComponent } from './componenti/login/private-area/private-area.component';
 import { HomeAdminComponent } from './admin/homeadmin/homeadmin.component';
 import { GlobalService } from './service/global.service';
@@ -97,7 +96,6 @@ registerLocaleData(localeIt);
 @NgModule({
   declarations: [
     AppComponent,
-    CustomerAreaComponent,
     PrivateAreaComponent,
     HomeAdminComponent,
     UserSettingsComponent,

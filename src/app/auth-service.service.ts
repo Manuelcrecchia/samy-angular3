@@ -94,11 +94,13 @@ export class AuthServiceService {
   }
 
   logout(): void {
-    console.log('[AuthService] Logout automatico eseguito');
-    this.token = null;
-    this.userCode = null;
-    this.admin = null;
-    this.email = null;
-    this.router.navigate(['/']); // Aggiorna il percorso di login se necessario
+    console.log('[AuthService] Logout eseguito o automatico');
+  sessionStorage.clear();
+  this._token = null;
+  this._admin = null;
+  this._email = null;
+  this._userCode = null;
+  this.clearLogoutTimer();
+  this.router.navigateByUrl('/', { replaceUrl: true });
   }
 }

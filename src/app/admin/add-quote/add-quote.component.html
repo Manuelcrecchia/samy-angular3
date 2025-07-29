@@ -1,210 +1,346 @@
-<div class="container py-4">
-  <div class="d-flex justify-content-between align-items-center mb-3">
-    <button class="btn-back" type="button" (click)="back()">&larr; Torna Indietro</button>
-    <h2 class="m-0">Preventivo Cliente</h2>
-  </div>
+<!DOCTYPE html>
+<html lang="it">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Preventivo</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/@angular/material/prebuilt-themes/indigo-pink.css"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div class="container py-4">
+      <div class="d-flex justify-content-start mb-3">
+        <button
+          class="btn btn-outline-primary rounded-pill"
+          type="button"
+          (click)="back()"
+        >
+          ⬅ Torna Indietro
+        </button>
+      </div>
 
-  <form #form="ngForm">
+      <h2 class="text-center mb-4">Preventivo</h2>
 
-    <!-- Tipo Preventivo -->
-    <mat-form-field appearance="fill" class="w-100">
-      <mat-label>Tipo del preventivo</mat-label>
-      <mat-select name="tipoPreventivo" [(ngModel)]="quoteModelService.tipoPreventivo">
-        <mat-option value="O">Ordinario</mat-option>
-        <mat-option value="S">Straordinario</mat-option>
-      </mat-select>
-      <mat-error *ngIf="quoteModelService.tipoPreventivo && !quoteModelService.tipoPreventivo.match('O|S')">
-        Tipo preventivo non valido
-      </mat-error>
-    </mat-form-field>
+      <form>
+        <div class="row g-3">
+          <div class="col-md-6">
+            <mat-form-field appearance="fill" class="w-100">
+              <mat-label>Tipo del preventivo</mat-label>
+              <mat-select
+                name="tipoPreventivo"
+                [(ngModel)]="quoteModelService.tipoPreventivo"
+              >
+                <mat-option value="O">Ordinario</mat-option>
+                <mat-option value="S">Straordinario</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+        </div>
 
-    <!-- Codice Operatore + Data -->
-    <div class="mb-3">
-      <label>Codice operatore:</label>
-      <strong>{{ globalService.userCode }}</strong>
+        <div class="row g-3 mt-3">
+          <div class="col-md-6">
+            <mat-form-field appearance="fill" class="w-100">
+              <mat-label>Nominativo</mat-label>
+              <input
+                matInput
+                name="nominativo"
+                [(ngModel)]="quoteModelService.nominativo"
+              />
+            </mat-form-field>
+          </div>
+          <div class="col-md-6">
+            <mat-form-field appearance="fill" class="w-100">
+              <mat-label>CF/P.IVA</mat-label>
+              <input
+                matInput
+                name="cfpi"
+                [(ngModel)]="quoteModelService.cfpi"
+              />
+            </mat-form-field>
+          </div>
+
+          <div class="col-md-6">
+            <mat-form-field class="w-100" appearance="fill">
+              <mat-label>Città di fatturazione</mat-label>
+              <input
+                matInput
+                name="cittaDiFatturazione"
+                [(ngModel)]="quoteModelService.cittaDiFatturazione"
+              />
+            </mat-form-field>
+          </div>
+
+          <div class="col-md-4">
+            <mat-form-field class="w-100" appearance="fill">
+              <mat-label>Prefisso via di fatturazione</mat-label>
+              <mat-select
+                name="selettorePrefissoViaDiFatturazione"
+                [(ngModel)]="
+                  quoteModelService.selettorePrefissoViaDiFatturazione
+                "
+              >
+                <mat-option value="VIA">VIA</mat-option>
+                <mat-option value="STRADA">STRADA</mat-option>
+                <mat-option value="VIALE">VIALE</mat-option>
+                <mat-option value="PIAZZA">PIAZZA</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+
+          <div class="col-md-5">
+            <mat-form-field class="w-100" appearance="fill">
+              <mat-label>Via di fatturazione</mat-label>
+              <input
+                matInput
+                name="viaDiFatturazione"
+                [(ngModel)]="quoteModelService.viaDiFatturazione"
+              />
+            </mat-form-field>
+          </div>
+
+          <div class="col-md-3">
+            <mat-form-field class="w-100" appearance="fill">
+              <mat-label>CAP di fatturazione</mat-label>
+              <input
+                matInput
+                name="capDiFatturazione"
+                [(ngModel)]="quoteModelService.capDiFatturazione"
+              />
+            </mat-form-field>
+          </div>
+
+          <div class="col-md-6">
+            <mat-form-field appearance="fill" class="w-100">
+              <mat-label>Città</mat-label>
+              <input
+                matInput
+                name="citta"
+                [(ngModel)]="quoteModelService.citta"
+              />
+            </mat-form-field>
+          </div>
+          <div class="col-md-6">
+            <mat-form-field appearance="fill" class="w-100">
+              <mat-label>Selettore Prefisso Via</mat-label>
+              <mat-select
+                name="selettorePrefissoVia"
+                [(ngModel)]="quoteModelService.selettorePrefissoVia"
+              >
+                <mat-option value="VIA">VIA</mat-option>
+                <mat-option value="STRADA">STRADA</mat-option>
+                <mat-option value="VIALE">VIALE</mat-option>
+                <mat-option value="PIAZZA">PIAZZA</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <div class="col-md-6">
+            <mat-form-field appearance="fill" class="w-100">
+              <mat-label>Via</mat-label>
+              <input matInput name="via" [(ngModel)]="quoteModelService.via" />
+            </mat-form-field>
+          </div>
+          <div class="col-md-6">
+            <mat-form-field appearance="fill" class="w-100">
+              <mat-label>CAP</mat-label>
+              <input matInput name="cap" [(ngModel)]="quoteModelService.cap" />
+            </mat-form-field>
+          </div>
+          <div class="col-md-6">
+            <mat-form-field appearance="fill" class="w-100">
+              <mat-label>Email</mat-label>
+              <input
+                matInput
+                name="email"
+                [(ngModel)]="quoteModelService.email"
+              />
+            </mat-form-field>
+          </div>
+          <div class="col-md-6">
+            <mat-form-field appearance="fill" class="w-100">
+              <mat-label>Telefono</mat-label>
+              <input
+                matInput
+                name="telefono"
+                [(ngModel)]="quoteModelService.telefono"
+              />
+            </mat-form-field>
+          </div>
+          <div class="col-md-6">
+            <mat-form-field appearance="fill" class="w-100">
+              <mat-label>Referente</mat-label>
+              <input
+                matInput
+                name="referente"
+                [(ngModel)]="quoteModelService.referente"
+              />
+            </mat-form-field>
+          </div>
+          <div class="col-md-6">
+            <mat-form-field appearance="fill" class="w-100">
+              <mat-label>Descrizione Immobile</mat-label>
+              <input
+                matInput
+                name="descrizioneImmobile"
+                [(ngModel)]="quoteModelService.descrizioneImmobile"
+              />
+            </mat-form-field>
+          </div>
+        </div>
+
+        <!-- Servizi e Interventi -->
+        <ng-container *ngFor="let i of [].constructor(14); let idx = index">
+          <mat-form-field class="w-100" appearance="fill">
+            <mat-label>Servizi {{ idx + 1 }}</mat-label>
+            <input
+              type="text"
+              matInput
+              [matAutocomplete]="auto"
+              [(ngModel)]="quoteModelService.servizi[idx]"
+              [name]="'servizi' + (idx + 1)"
+              maxlength="255"
+            />
+            <mat-autocomplete #auto="matAutocomplete" autoActiveFirstOption>
+              <mat-option
+                *ngFor="let option of serviziOptions"
+                [value]="option"
+              >
+                {{ option }}
+              </mat-option>
+            </mat-autocomplete>
+          </mat-form-field>
+
+          <mat-form-field
+            *ngIf="quoteModelService.tipoPreventivo == 'O'"
+            class="w-100"
+            appearance="fill"
+          >
+            <mat-label>Interventi {{ idx + 1 }}</mat-label>
+            <mat-select
+              [name]="'interventi' + (idx + 1)"
+              [(ngModel)]="quoteModelService.interventi[idx]"
+            >
+              <mat-option
+                *ngFor="
+                  let val of [
+                    'G',
+                    '1S',
+                    '2S',
+                    '3S',
+                    '4S',
+                    'Q',
+                    '1M',
+                    '2M',
+                    '3M',
+                    '4M',
+                    'TM',
+                    'SM',
+                    'A'
+                  ]
+                "
+                [value]="val"
+              >
+                {{ val }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </ng-container>
+
+        <div class="row g-3 mt-4">
+          <div class="col-md-4">
+            <mat-form-field appearance="fill" class="w-100">
+              <mat-label>Imponibile</mat-label>
+              <input
+                matInput
+                name="imponibile"
+                [(ngModel)]="quoteModelService.imponibile"
+              />
+            </mat-form-field>
+          </div>
+          <div class="col-md-4">
+            <mat-form-field appearance="fill" class="w-100">
+              <mat-label>Iva</mat-label>
+              <mat-select name="iva" [(ngModel)]="quoteModelService.iva">
+                <mat-option value="N">22</mat-option>
+                <mat-option value="RC">RC</mat-option>
+                <mat-option value="SP">SP</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <div class="col-md-4">
+            <mat-form-field appearance="fill" class="w-100">
+              <mat-label>Pagamento</mat-label>
+              <mat-select
+                name="pagamento"
+                [(ngModel)]="quoteModelService.pagamento"
+              >
+                <mat-option value="C">Contanti</mat-option>
+                <mat-option value="B">Bonifico bancario</mat-option>
+                <mat-option value="E">Elettronico</mat-option>
+                <mat-option value="A">Assegno</mat-option>
+                <mat-option value=""></mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <div class="col-md-6">
+            <mat-form-field appearance="fill" class="w-100">
+              <mat-label>Tempistica</mat-label>
+              <input
+                matInput
+                name="tempistica"
+                [(ngModel)]="quoteModelService.tempistica"
+              />
+            </mat-form-field>
+          </div>
+          <div class="col-md-6">
+            <mat-form-field appearance="fill" class="w-100">
+              <mat-label>Data Inizio Contratto</mat-label>
+              <input
+                matInput
+                [matDatepicker]="picker"
+                name="dataInizioContratto"
+                [(ngModel)]="quoteModelService.dataInizioContratto"
+              />
+              <mat-datepicker-toggle
+                matSuffix
+                [for]="picker"
+              ></mat-datepicker-toggle>
+              <mat-datepicker #picker></mat-datepicker>
+            </mat-form-field>
+          </div>
+          <div class="col-md-6">
+            <mat-form-field appearance="fill" class="w-100">
+              <mat-label>Durata Contratto</mat-label>
+              <input
+                matInput
+                name="durataContratto"
+                [(ngModel)]="quoteModelService.durataContratto"
+              />
+            </mat-form-field>
+          </div>
+          <div class="col-md-6">
+            <mat-form-field appearance="fill" class="w-100">
+              <mat-label>Note</mat-label>
+              <input
+                matInput
+                name="note"
+                [(ngModel)]="quoteModelService.note"
+              />
+            </mat-form-field>
+          </div>
+        </div>
+
+        <div class="mt-4 d-flex justify-content-between">
+          <button mat-raised-button color="primary" (click)="addQuote()">
+            Salva
+          </button>
+        </div>
+      </form>
     </div>
-    <p><strong>Data:</strong> {{ quoteModelService.data }}</p>
-
-    <!-- Anagrafica -->
-    <mat-form-field class="w-100" appearance="fill">
-      <mat-label>Nominativo</mat-label>
-      <input matInput name="nominativo" maxlength="255" pattern="[\D ]+" [(ngModel)]="quoteModelService.nominativo" />
-    </mat-form-field>
-
-    <mat-form-field class="w-100" appearance="fill">
-      <mat-label>Codice fiscale / P.IVA</mat-label>
-      <input matInput name="cfpi" maxlength="255" pattern="[A-Z]{6}\d{2}[A-z]\d{2}[A-Z]\d{3}[A-Z]|\d{11}"
-        [(ngModel)]="quoteModelService.cfpi" />
-    </mat-form-field>
-
-    <div class="col-md-6">
-      <mat-form-field class="w-100" appearance="fill">
-        <mat-label>Città di fatturazione</mat-label>
-        <input matInput name="cittaDiFatturazione" [(ngModel)]="quoteModelService.cittaDiFatturazione">
-      </mat-form-field>
-    </div>
-
-    <div class="col-md-4">
-      <mat-form-field class="w-100" appearance="fill">
-        <mat-label>Prefisso via di fatturazione</mat-label>
-        <mat-select name="selettorePrefissoViaDiFatturazione" [(ngModel)]="quoteModelService.selettorePrefissoViaDiFatturazione">
-          <mat-option value="VIA">VIA</mat-option>
-          <mat-option value="STRADA">STRADA</mat-option>
-          <mat-option value="VIALE">VIALE</mat-option>
-          <mat-option value="PIAZZA">PIAZZA</mat-option>
-        </mat-select>
-      </mat-form-field>
-    </div>
-
-    <div class="col-md-5">
-      <mat-form-field class="w-100" appearance="fill">
-        <mat-label>Via di fatturazione</mat-label>
-        <input matInput name="viaDiFatturazione" [(ngModel)]="quoteModelService.viaDiFatturazione">
-      </mat-form-field>
-    </div>
-
-    <div class="col-md-3">
-      <mat-form-field class="w-100" appearance="fill">
-        <mat-label>CAP di fatturazione</mat-label>
-        <input matInput name="capDiFatturazione" [(ngModel)]="quoteModelService.capDiFatturazione">
-      </mat-form-field>
-    </div>
-
-    <mat-form-field class="w-100" appearance="fill">
-      <mat-label>Città</mat-label>
-      <input matInput name="citta" maxlength="255" pattern="[\D ]+" [(ngModel)]="quoteModelService.citta" />
-    </mat-form-field>
-
-    <mat-form-field class="w-100" appearance="fill">
-      <mat-label>Prefisso via</mat-label>
-      <mat-select name="selettorePrefissoVia" [(ngModel)]="quoteModelService.selettorePrefissoVia">
-        <mat-option value="VIA">VIA</mat-option>
-        <mat-option value="STRADA">STRADA</mat-option>
-        <mat-option value="VIALE">VIALE</mat-option>
-        <mat-option value="PIAZZA">PIAZZA</mat-option>
-      </mat-select>
-    </mat-form-field>
-
-    <mat-form-field class="w-100" appearance="fill">
-      <mat-label>Via</mat-label>
-      <input matInput name="via" maxlength="255" pattern="(.+)" [(ngModel)]="quoteModelService.via" />
-    </mat-form-field>
-
-    <mat-form-field class="w-100" appearance="fill">
-      <mat-label>CAP</mat-label>
-      <input matInput name="cap" maxlength="255" pattern="\d{5}" [(ngModel)]="quoteModelService.cap" />
-    </mat-form-field>
-
-    <mat-form-field class="w-100" appearance="fill">
-      <mat-label>Email</mat-label>
-      <input matInput name="email" maxlength="255" pattern="\w+@\w+\.\D{2,}"
-        [(ngModel)]="quoteModelService.email" />
-    </mat-form-field>
-
-    <mat-form-field class="w-100" appearance="fill">
-      <mat-label>Telefono</mat-label>
-      <input matInput name="telefono" maxlength="255" pattern="\+?\d{0,13}"
-        [(ngModel)]="quoteModelService.telefono" />
-    </mat-form-field>
-
-    <mat-form-field class="w-100" appearance="fill">
-      <mat-label>Referente</mat-label>
-      <input matInput name="referente" maxlength="255" pattern="[\D ]+" [(ngModel)]="quoteModelService.referente" />
-    </mat-form-field>
-
-    <mat-form-field class="w-100" appearance="fill">
-      <mat-label>Descrizione Immobile</mat-label>
-      <input matInput name="descrizioneImmobile" maxlength="255" pattern="(.+)"
-        [(ngModel)]="quoteModelService.descrizioneImmobile" />
-    </mat-form-field>
-
-    <!-- Servizi e Interventi -->
-    <ng-container *ngFor="let i of [].constructor(14); let idx = index">
-      <mat-form-field class="w-100" appearance="fill">
-        <mat-label>Servizi {{ idx + 1 }}</mat-label>
-        <input
-          type="text"
-          matInput
-          [matAutocomplete]="auto"
-          [(ngModel)]="quoteModelService.servizi[idx]"
-          [name]="'servizi' + (idx + 1)" maxlength="255">
-        <mat-autocomplete #auto="matAutocomplete" autoActiveFirstOption>
-          <mat-option *ngFor="let option of serviziOptions" [value]="option">
-            {{ option }}
-          </mat-option>
-        </mat-autocomplete>
-      </mat-form-field>
-
-      <mat-form-field *ngIf="quoteModelService.tipoPreventivo == 'O'" class="w-100" appearance="fill">
-        <mat-label>Interventi {{ idx + 1 }}</mat-label>
-        <mat-select [name]="'interventi' + (idx + 1)" [(ngModel)]="quoteModelService.interventi[idx]">
-          <mat-option *ngFor="let val of ['G','1S','2S','3S','4S','Q','1M','2M','3M','4M','TM','SM','A']" [value]="val">
-            {{ val }}
-          </mat-option>
-        </mat-select>
-      </mat-form-field>
-    </ng-container>
-
-    <!-- Imponibile -->
-    <mat-form-field class="w-100" appearance="fill">
-      <mat-label>Imponibile</mat-label>
-      <input matInput name="imponibile" maxlength="255" pattern="\d+\.\d{2}"
-        [(ngModel)]="quoteModelService.imponibile" (blur)="formatImponibile()" />
-    </mat-form-field>
-
-    <!-- IVA -->
-    <mat-form-field class="w-100" appearance="fill">
-      <mat-label>IVA</mat-label>
-      <mat-select name="iva" [(ngModel)]="quoteModelService.iva">
-        <mat-option value="N">22</mat-option>
-        <mat-option value="RC">RC</mat-option>
-        <mat-option value="SP">SP</mat-option>
-      </mat-select>
-    </mat-form-field>
-
-    <!-- Pagamento -->
-    <mat-form-field class="w-100" appearance="fill">
-      <mat-label>Pagamento</mat-label>
-      <mat-select name="pagamento" [(ngModel)]="quoteModelService.pagamento">
-        <mat-option value="C">Contanti</mat-option>
-        <mat-option value="B">Bonifico bancario</mat-option>
-        <mat-option value="E">Elettronico</mat-option>
-        <mat-option value="A">Assegno</mat-option>
-        <mat-option value=""></mat-option>
-      </mat-select>
-    </mat-form-field>
-
-    <!-- Tempistica -->
-    <mat-form-field class="w-100" appearance="fill">
-      <mat-label>Tempistica</mat-label>
-      <input matInput name="tempistica" maxlength="255" pattern="(.+)" [(ngModel)]="quoteModelService.tempistica" />
-    </mat-form-field>
-
-    <!-- Data Inizio Contratto -->
-    <mat-form-field class="w-100" appearance="fill">
-      <mat-label>Data Inizio Contratto</mat-label>
-      <input matInput [matDatepicker]="picker" name="dataInizioContratto" pattern="\d{2}/\d{2}/\d{4}"
-        [(ngModel)]="quoteModelService.dataInizioContratto" />
-      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-      <mat-datepicker #picker></mat-datepicker>
-    </mat-form-field>
-
-    <!-- Durata Contratto -->
-    <mat-form-field class="w-100" appearance="fill">
-      <mat-label>Durata Contratto</mat-label>
-      <input matInput name="durataContratto" pattern="(.+)" [(ngModel)]="quoteModelService.durataContratto" />
-    </mat-form-field>
-
-    <!-- Note -->
-    <mat-form-field class="w-100" appearance="fill">
-      <mat-label>Note</mat-label>
-      <input matInput name="note" maxlength="255" pattern="(.+)" [(ngModel)]="quoteModelService.note" />
-    </mat-form-field>
-
-    <!-- Pulsanti -->
-    <div class="text-center mt-4">
-      <button mat-raised-button color="primary" (click)="addQuote()">Salva</button>
-    </div>
-
-  </form>
-</div>
+  </body>
+</html>

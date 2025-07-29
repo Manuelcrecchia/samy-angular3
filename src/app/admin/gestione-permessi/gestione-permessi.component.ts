@@ -21,7 +21,7 @@ export class GestionePermessiComponent implements OnInit {
     this.loading = true;
     this.http.get<any[]>(this.globalService.url + 'permission').subscribe({
       next: (res) => {
-        this.leaveRequests = res.filter(p => p.stato === 'in attesa');
+        this.leaveRequests = res.filter(p => p.status === 'in attesa');
         this.loading = false;
       },
       error: (err) => {

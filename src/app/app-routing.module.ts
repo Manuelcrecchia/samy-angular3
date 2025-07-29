@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { CustomerAreaComponent } from './componenti/login/customer-area/customer-area.component';
 import { PrivateAreaComponent } from './componenti/login/private-area/private-area.component';
 import { HomeAdminComponent } from './admin/homeadmin/homeadmin.component';
 import { UserSettingsComponent } from './admin/user-settings/user-settings.component';
@@ -41,13 +40,11 @@ const routes: Routes = [
   { path: '', component: HomesitoComponent },
   { path: 'homeSito', component: HomesitoComponent },
   { path: 'loginPrivateArea', component: PrivateAreaComponent },
-  { path: 'homeAdmin', component: HomeAdminComponent, canActivate: [AuthGuard] },
-  { path: 'userSettings', component: UserSettingsComponent, canActivate: [AuthSGuard] },
-  { path: 'quotesHome', component: QuotesHomeComponent, canActivate: [AuthGuard] },
-  { path: 'addQuote', component: AddQuoteComponent, canActivate: [AuthGuard] },
-  { path: 'editQuote', component: EditQuoteComponent, canActivate: [AuthGuard] },
-  { path: 'listCustomer', component: ListCustomerComponent, canActivate: [AuthAGuard] },
-  { path: 'addCustomer', component: AddCustomerComponent, canActivate: [AuthGuard] },
+  { path: 'privacy', component: PrivacyComponent },
+  { path: 'preventivi', component: PreventiviComponent },
+  { path: 'navbar', component: NavbarComponent },
+  { path: 'blog', component: BlogComponent },
+  { path: 'convenzioni-promozioni', component: ConvenzioniPromozioniComponent },
   { path: 'sanificazioni', component: SanificazioniComponent },
   { path: 'uffici', component: UfficiComponent },
   { path: 'condomini1', component: Condomini1Component },
@@ -55,33 +52,97 @@ const routes: Routes = [
   { path: 'straordinaria', component: StraordinariaComponent },
   { path: 'domestica', component: DomesticaComponent },
   { path: 'passworddimenticata', component: PassworddimenticataComponent },
-  { path: 'cambiapassword', component: CambiapasswordComponent, canActivate: [AuthGuard] },
-  { path: 'calendarHome', component: CalendarHomeComponent, canActivate: [AuthGuard] },
-  { path: 'privacy', component: PrivacyComponent },
-  { path: 'preventivi', component: PreventiviComponent },
-  { path: 'navbar', component: NavbarComponent },
-  { path: 'gestioneemployees', component: GestioneEmployeesComponent, canActivate: [AuthAGuard] },
-  { path: 'settingsemployees', component: SettingsEmployeesComponent, canActivate: [AuthSGuard] },
-  { path: 'documenti/employee/:id', component: DocumentManagerComponent, canActivate: [AuthGuard] },
-  { path: 'documenti/client/:id', component: DocumentManagerComponent, canActivate: [AuthGuard] },
-    { path: 'view-pdf', component: ViewPdfComponent, canActivate: [AuthGuard] },
-  { path: 'blog', component: BlogComponent },
-  { path: 'convenzioni-promozioni', component: ConvenzioniPromozioniComponent},
-  { path: 'editCustomer', component: EditCustomerComponent, canActivate: [AuthGuard] },
-  { path: 'schedaCliente/:numeroCliente', component: SchedaClienteComponent, canActivate: [AuthGuard] },
-  { path: 'admin/shifts', component: ShiftHomeComponent, canActivate: [AuthGuard] },
-  { path: 'admin/shifts/create', component: CreateShiftComponent, canActivate: [AuthGuard] },
-  { path: 'gestionepermessi', component: GestionePermessiComponent }
-
-
-
-
-
-
+  {
+    path: 'homeAdmin',
+    component: HomeAdminComponent,
+    canActivate: [AuthGuard],
+  },
+  {
+    path: 'userSettings',
+    component: UserSettingsComponent,
+    canActivate: [AuthSGuard, AuthGuard],
+  },
+  {
+    path: 'quotesHome',
+    component: QuotesHomeComponent,
+    canActivate: [AuthGuard],
+  },
+  { path: 'addQuote', component: AddQuoteComponent, canActivate: [AuthGuard] },
+  {
+    path: 'editQuote',
+    component: EditQuoteComponent,
+    canActivate: [AuthGuard],
+  },
+  {
+    path: 'listCustomer',
+    component: ListCustomerComponent,
+    canActivate: [AuthAGuard, AuthGuard],
+  },
+  {
+    path: 'addCustomer',
+    component: AddCustomerComponent,
+    canActivate: [AuthGuard],
+  },
+  {
+    path: 'gestioneemployees',
+    component: GestioneEmployeesComponent,
+    canActivate: [AuthAGuard, AuthGuard],
+  },
+  {
+    path: 'settingsemployees',
+    component: SettingsEmployeesComponent,
+    canActivate: [AuthSGuard, AuthGuard],
+  },
+  {
+    path: 'documenti/employee/:id',
+    component: DocumentManagerComponent,
+    canActivate: [AuthGuard],
+  },
+  {
+    path: 'documenti/client/:id',
+    component: DocumentManagerComponent,
+    canActivate: [AuthGuard],
+  },
+  { path: 'view-pdf', component: ViewPdfComponent, canActivate: [AuthGuard] },
+  {
+    path: 'editCustomer',
+    component: EditCustomerComponent,
+    canActivate: [AuthGuard],
+  },
+  {
+    path: 'schedaCliente/:numeroCliente',
+    component: SchedaClienteComponent,
+    canActivate: [AuthGuard],
+  },
+  {
+    path: 'admin/shifts',
+    component: ShiftHomeComponent,
+    canActivate: [AuthGuard, AuthAGuard],
+  },
+  {
+    path: 'admin/shifts/create',
+    component: CreateShiftComponent,
+    canActivate: [AuthGuard, AuthAGuard],
+  },
+  {
+    path: 'gestionepermessi',
+    component: GestionePermessiComponent,
+    canActivate: [AuthGuard, AuthSGuard],
+  },
+  {
+    path: 'cambiapassword',
+    component: CambiapasswordComponent,
+    canActivate: [AuthGuard],
+  },
+  {
+    path: 'calendarHome',
+    component: CalendarHomeComponent,
+    canActivate: [AuthGuard],
+  },
 ];
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
-export class AppRoutingModule { }
+export class AppRoutingModule {}
