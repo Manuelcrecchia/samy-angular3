@@ -32,7 +32,7 @@ export class QuoteModelService {
   dataInizioContratto = "";
   durataContratto = "";
   note= '';
-  complete = false;
+  complete = "";
 
   constructor() {}
 

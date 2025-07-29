@@ -23,7 +23,7 @@ export class QuotesHomeComponent   {@Input() color: any;
   quotesFrEnd: {
     numeroPreventivo: string;
     nominativo: string;
-    complete: boolean;
+    complete: string;
   }[] = [];
   
 
@@ -74,8 +74,9 @@ ngOnInit() {
       const allQuotes = JSON.parse(response) as any[];
 
       const filteredQuotes = this.showCompletedQuotes
-      ? allQuotes.filter(q => q.complete === true)
-      : allQuotes.filter(q => q.complete === false);
+  ? allQuotes.filter(q => q.complete === 'A' || q.complete === 'R')
+  : allQuotes.filter(q => !q.complete || q.complete === '');
+
 
       this.quotesFrEnd = filteredQuotes.sort(
         (a, b) => parseInt(b.numeroPreventivo) - parseInt(a.numeroPreventivo)
@@ -231,7 +232,26 @@ conferm(numeroPreventivo: string) {
         this.router.navigateByUrl('/addCustomer');
       });
     });
+
 }
+
+refuse(numeroPreventivo: string) {
+  const body = { numeroPreventivo };
+
+  this.http
+    .post(this.globalService.url + 'quotes/setRefused', body, {
+      headers: this.globalService.headers,
+      responseType: 'text',
+    })
+    .subscribe((response) => {
+      if (response === 'Unauthorized') {
+        this.router.navigateByUrl('/');
+      } else {
+        this.ngOnInit();
+      }
+    });
+}
+
 
 
 
