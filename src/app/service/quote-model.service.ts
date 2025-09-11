@@ -19,24 +19,25 @@ export class QuoteModelService {
   via = '';
   cap = '';
   email = '';
-   telefono = '';
+  telefono = '';
   referente = '';
-  descrizioneImmobile= '';
-  servizi = ['','','','','','','','','','','','','',''];
-  interventi = ['','','','','','','','','','','','','',''];
+  descrizioneImmobile = '';
+  servizi = ['', '', '', '', '', '', '', '', '', '', '', '', '', ''];
+  interventi = ['', '', '', '', '', '', '', '', '', '', '', '', '', ''];
 
-  imponibile = "0.00";
-  iva= "N";
-  pagamento = "";
-  tempistica = "";
-  dataInizioContratto = "";
-  durataContratto = "";
-  note= '';
-  complete = "";
+  imponibile = '0.00';
+  iva = 'N';
+  pagamento = '';
+  tempistica = '';
+  dataInizioContratto = '';
+  dataInizioContrattoDate: Date | null = null;
+  durataContratto = '';
+  note = '';
+  complete = '';
 
   constructor() {}
 
-  resetQuoteModel(){
+  resetQuoteModel() {
     this.numeroPreventivo = '';
     this.tipoPreventivo = '';
     this.codiceOperatore = '';
@@ -55,12 +56,15 @@ export class QuoteModelService {
     this.telefono = '';
     this.referente = '';
     this.descrizioneImmobile = '';
-    this.servizi = ['','','','','','','','','','','','','',''];
-    this.interventi = ['','','','','','','','','','','','','',''];
+    this.servizi = ['', '', '', '', '', '', '', '', '', '', '', '', '', ''];
+    this.interventi = ['', '', '', '', '', '', '', '', '', '', '', '', '', ''];
     this.imponibile = '0.00';
     this.iva = 'N';
     this.pagamento = '';
     this.tempistica = '';
+    this.dataInizioContratto = '';
+    this.dataInizioContrattoDate = null;
+    this.durataContratto = '';
     this.note = '';
   }
 }

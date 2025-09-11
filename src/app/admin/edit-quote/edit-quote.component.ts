@@ -23,15 +23,16 @@ export class EditQuoteComponent {
     private location: Location
   ) {}
 
-serviziOptions = ["Spazzaggio e lavaggio pavimentazione",
-                  "Vuotatura cestini con relativa sostituzione dei sacchetti",
-                  "Pulizia ed igienizzazione dei servizi igenici",
-                  "Pulizia porte",
-                  "Pulizia dei vetri e relativi infisii interni ed esterni ove possibile",
-                  "Deragnatura generale",
-                  "Pulizia termosifoni e/o condizionatori",
-                  "Pulizia battiscopa",
-                ]
+  serviziOptions = [
+    'Spazzaggio e lavaggio pavimentazione',
+    'Vuotatura cestini con relativa sostituzione dei sacchetti',
+    'Pulizia ed igienizzazione dei servizi igenici',
+    'Pulizia porte',
+    'Pulizia dei vetri e relativi infisii interni ed esterni ove possibile',
+    'Deragnatura generale',
+    'Pulizia termosifoni e/o condizionatori',
+    'Pulizia battiscopa',
+  ];
 
   ngOnInit() {}
 
@@ -47,7 +48,8 @@ serviziOptions = ["Spazzaggio e lavaggio pavimentazione",
         nominativo: this.quoteModelService.nominativo,
         cfpi: this.quoteModelService.cfpi,
         cittaDiFatturazione: this.quoteModelService.cittaDiFatturazione,
-        selettorePrefissoViaDiFatturazione: this.quoteModelService.selettorePrefissoViaDiFatturazione,
+        selettorePrefissoViaDiFatturazione:
+          this.quoteModelService.selettorePrefissoViaDiFatturazione,
         viaDiFatturazione: this.quoteModelService.viaDiFatturazione,
         capDiFatturazione: this.quoteModelService.capDiFatturazione,
         citta: this.quoteModelService.citta,
@@ -64,13 +66,12 @@ serviziOptions = ["Spazzaggio e lavaggio pavimentazione",
         iva: this.quoteModelService.iva,
         pagamento: this.quoteModelService.pagamento,
         tempistica: this.quoteModelService.tempistica,
-        dataInizioContratto:
-          this.quoteModelService.dataInizioContratto != ''
-            ? this.datePipe.transform(
-                this.quoteModelService.dataInizioContratto,
-                'dd/MM/yyyy'
-              )
-            : this.quoteModelService.dataInizioContratto,
+        dataInizioContratto: this.quoteModelService.dataInizioContrattoDate
+          ? this.datePipe.transform(
+              this.quoteModelService.dataInizioContrattoDate,
+              'dd/MM/yyyy'
+            )
+          : this.quoteModelService.dataInizioContratto,
         durataContratto: this.quoteModelService.durataContratto,
         note: this.quoteModelService.note,
       };

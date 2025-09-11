@@ -110,7 +110,7 @@ searchNominativo(value: string){
   } else {
     const lowerValue = value.toLowerCase();
     this.quotesFrEnd = this.quotesFrEnd.filter(quote =>
-      quote.nominativo.toLowerCase().startsWith(lowerValue)
+      quote.nominativo.toLowerCase().includes(lowerValue)
     );
   }
 }
@@ -157,12 +157,22 @@ this.http
               this.quoteModel.iva = quoteJson["iva"];
               this.quoteModel.pagamento = quoteJson["pagamento"];
               this.quoteModel.tempistica = quoteJson["tempistica"];
+              this.quoteModel.dataInizioContratto = quoteJson["dataInizioContratto"];
+              this.quoteModel.dataInizioContrattoDate = quoteJson["dataInizioContratto"]
+              ? this.parseDateIT(quoteJson["dataInizioContratto"])
+              : null;              this.quoteModel.durataContratto = quoteJson["durataContratto"];
               this.quoteModel.note = quoteJson["note"];
-
               this.router.navigateByUrl('/editQuote');
             }
           });
 }
+
+private parseDateIT(value: string): Date | null {
+  if (!value) return null;
+  const [dd, mm, yyyy] = value.split('/');
+  return new Date(+yyyy, +mm - 1, +dd);
+}
+
 delete(numeroPreventivo: string){
   const body = { numeroPreventivo: numeroPreventivo };
 
