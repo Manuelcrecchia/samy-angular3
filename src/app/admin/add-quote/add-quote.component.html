@@ -66,56 +66,6 @@
           </div>
 
           <div class="col-md-6">
-            <mat-form-field class="w-100" appearance="fill">
-              <mat-label>Città di fatturazione</mat-label>
-              <input
-                matInput
-                name="cittaDiFatturazione"
-                [(ngModel)]="quoteModelService.cittaDiFatturazione"
-              />
-            </mat-form-field>
-          </div>
-
-          <div class="col-md-4">
-            <mat-form-field class="w-100" appearance="fill">
-              <mat-label>Prefisso via di fatturazione</mat-label>
-              <mat-select
-                name="selettorePrefissoViaDiFatturazione"
-                [(ngModel)]="
-                  quoteModelService.selettorePrefissoViaDiFatturazione
-                "
-              >
-                <mat-option value="VIA">VIA</mat-option>
-                <mat-option value="STRADA">STRADA</mat-option>
-                <mat-option value="VIALE">VIALE</mat-option>
-                <mat-option value="PIAZZA">PIAZZA</mat-option>
-              </mat-select>
-            </mat-form-field>
-          </div>
-
-          <div class="col-md-5">
-            <mat-form-field class="w-100" appearance="fill">
-              <mat-label>Via di fatturazione</mat-label>
-              <input
-                matInput
-                name="viaDiFatturazione"
-                [(ngModel)]="quoteModelService.viaDiFatturazione"
-              />
-            </mat-form-field>
-          </div>
-
-          <div class="col-md-3">
-            <mat-form-field class="w-100" appearance="fill">
-              <mat-label>CAP di fatturazione</mat-label>
-              <input
-                matInput
-                name="capDiFatturazione"
-                [(ngModel)]="quoteModelService.capDiFatturazione"
-              />
-            </mat-form-field>
-          </div>
-
-          <div class="col-md-6">
             <mat-form-field appearance="fill" class="w-100">
               <mat-label>Città</mat-label>
               <input
@@ -136,6 +86,8 @@
                 <mat-option value="STRADA">STRADA</mat-option>
                 <mat-option value="VIALE">VIALE</mat-option>
                 <mat-option value="PIAZZA">PIAZZA</mat-option>
+                <mat-option value="CONTRADA">CONTRADA</mat-option>
+                <mat-option value="CORSO">CORSO</mat-option>
               </mat-select>
             </mat-form-field>
           </div>
@@ -151,6 +103,76 @@
               <input matInput name="cap" [(ngModel)]="quoteModelService.cap" />
             </mat-form-field>
           </div>
+
+          <!-- Checkbox per usare stesso indirizzo -->
+          <div class="form-check my-3">
+            <input
+              class="form-check-input"
+              type="checkbox"
+              id="sameAddress"
+              [(ngModel)]="sameAddress"
+              name="sameAddress"
+            />
+            <label class="form-check-label" for="sameAddress">
+              Indirizzo di fatturazione uguale alla via del lavoro
+            </label>
+          </div>
+
+          <!-- Campi di fatturazione: visibili solo se la checkbox è disattivata -->
+          <div *ngIf="!sameAddress" class="row g-3">
+            <div class="col-md-6">
+              <mat-form-field class="w-100" appearance="fill">
+                <mat-label>Città di fatturazione</mat-label>
+                <input
+                  matInput
+                  name="cittaDiFatturazione"
+                  [(ngModel)]="quoteModelService.cittaDiFatturazione"
+                />
+              </mat-form-field>
+            </div>
+
+            <div class="col-md-4">
+              <mat-form-field class="w-100" appearance="fill">
+                <mat-label>Prefisso via di fatturazione</mat-label>
+                <mat-select
+                  name="selettorePrefissoViaDiFatturazione"
+                  [(ngModel)]="
+                    quoteModelService.selettorePrefissoViaDiFatturazione
+                  "
+                >
+                  <mat-option value="VIA">VIA</mat-option>
+                  <mat-option value="STRADA">STRADA</mat-option>
+                  <mat-option value="VIALE">VIALE</mat-option>
+                  <mat-option value="PIAZZA">PIAZZA</mat-option>
+                  <mat-option value="CONTRADA">CONTRADA</mat-option>
+                  <mat-option value="CORSO">CORSO</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+
+            <div class="col-md-5">
+              <mat-form-field class="w-100" appearance="fill">
+                <mat-label>Via di fatturazione</mat-label>
+                <input
+                  matInput
+                  name="viaDiFatturazione"
+                  [(ngModel)]="quoteModelService.viaDiFatturazione"
+                />
+              </mat-form-field>
+            </div>
+
+            <div class="col-md-3">
+              <mat-form-field class="w-100" appearance="fill">
+                <mat-label>CAP di fatturazione</mat-label>
+                <input
+                  matInput
+                  name="capDiFatturazione"
+                  [(ngModel)]="quoteModelService.capDiFatturazione"
+                />
+              </mat-form-field>
+            </div>
+          </div>
+
           <div class="col-md-6">
             <mat-form-field appearance="fill" class="w-100">
               <mat-label>Email</mat-label>

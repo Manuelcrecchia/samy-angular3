@@ -34,6 +34,9 @@ export class EditQuoteComponent {
     'Pulizia battiscopa',
   ];
 
+  sameAddress: boolean = false;
+
+
   ngOnInit() {}
 
   editQuote() {
@@ -41,6 +44,15 @@ export class EditQuoteComponent {
       this.popup.text = 'INSERISCI IL TIPO DI PREVENTIVO';
       this.popup.openPopup();
     } else {
+      // Se la checkbox è selezionata, copia indirizzo lavoro in fatturazione
+      if (this.sameAddress) {
+        this.quoteModelService.cittaDiFatturazione = this.quoteModelService.citta;
+        this.quoteModelService.selettorePrefissoViaDiFatturazione =
+          this.quoteModelService.selettorePrefissoVia;
+        this.quoteModelService.viaDiFatturazione = this.quoteModelService.via;
+        this.quoteModelService.capDiFatturazione = this.quoteModelService.cap;
+      }
+  
       let body = {
         numeroPreventivo: this.quoteModelService.numeroPreventivo,
         codiceOperatore: this.globalService.userCode,
@@ -75,6 +87,7 @@ export class EditQuoteComponent {
         durataContratto: this.quoteModelService.durataContratto,
         note: this.quoteModelService.note,
       };
+  
       this.http
         .post(this.globalService.url + 'quotes/edit', body, {
           headers: this.globalService.headers,
@@ -86,6 +99,7 @@ export class EditQuoteComponent {
         });
     }
   }
+  
 
   back() {
     this.router.navigateByUrl('/quotesHome');
