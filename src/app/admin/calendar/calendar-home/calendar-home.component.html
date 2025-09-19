@@ -27,8 +27,8 @@
       [dataSource]="filteredEvents"
       [views]="['day', 'week', 'month']"
       currentView="day"
-      [startDayHour]="5"
-      [endDayHour]="22"
+      [startDayHour]="0"
+      [endDayHour]="23"
       [showAllDayPanel]="false"
       [currentDate]="currentDate"
       [crossScrollingEnabled]="true"
@@ -42,6 +42,8 @@
       (onAppointmentDeleted)="onAppointmentDeletedQuestion($event)"
       (onOptionChanged)="onCurrentViewChange($event)"
       (onAppointmentClick)="onAppointmentClick($event)"
+      (onContentReady)="onSchedulerContentReady()"
+
     >
       <dxo-editing [allowAdding]="true"></dxo-editing>
 

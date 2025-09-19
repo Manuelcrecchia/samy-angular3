@@ -93,27 +93,32 @@ ngOnInit() {
 viewPdf(numeroPreventivo:string){
   this.router.navigate(['/view-pdf'], { queryParams: { numeroPreventivo } });}
 
-searchNumeroPreventivo(value: string){
-
-  if(value == ""){
-    this.ngOnInit();
+  private normalize(s: string): string {
+    return (s || '')
+      .normalize('NFD')                // separa lettere e accenti
+      .replace(/\p{Diacritic}/gu, '')  // elimina i segni diacritici
+      .toLowerCase()
+      .trim();
   }
-  else{
-
-    this.quotesFrEnd = this.quotesFrEnd.filter(quote => quote.numeroPreventivo.startsWith(value))
+  
+  searchNumeroPreventivo(v: string): void {
+    const q = this.normalize(v);
+    this.quotesFrEnd = q
+      ? this.quotesFrEnd.filter(quote =>
+          this.normalize(quote?.numeroPreventivo?.toString()).startsWith(q)
+        )
+      : [...this.quotesFrEnd];
   }
-}
-
-searchNominativo(value: string){
-  if (value === "") {
-    this.ngOnInit();
-  } else {
-    const lowerValue = value.toLowerCase();
-    this.quotesFrEnd = this.quotesFrEnd.filter(quote =>
-      quote.nominativo.toLowerCase().includes(lowerValue)
-    );
+  
+  searchNominativo(v: string): void {
+    const q = this.normalize(v);
+    this.quotesFrEnd = q
+      ? this.quotesFrEnd.filter(quote =>
+          this.normalize(quote?.nominativo).includes(q)
+        )
+      : [...this.quotesFrEnd];
   }
-}
+  
 
 
 navigateToEditQuote(numeroPreventivo: string){

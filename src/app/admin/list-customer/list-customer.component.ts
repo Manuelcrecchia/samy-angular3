@@ -44,13 +44,33 @@ export class ListCustomerComponent {
     });
   }
 
-  searchNumeroCliente(value: string): void {
-    this.customersFrEnd = value ? this.customers.filter(c => c.numeroCliente.toString().startsWith(value)) : [...this.customers];
+  private normalize(s: string): string {
+    return (s || '')
+      .normalize('NFD')                // separa lettere e accenti
+      .replace(/\p{Diacritic}/gu, '')  // elimina diacritici (es. è -> e)
+      .toLowerCase()
+      .trim();
   }
-
-  searchNominativo(value: string): void {
-    this.customersFrEnd = value ? this.customers.filter(c => c.nominativo.toLowerCase().startsWith(value.toLowerCase())) : [...this.customers];
+  
+  searchNumeroCliente(v: string): void {
+    const q = this.normalize(v);
+    this.customersFrEnd = q
+      ? this.customers.filter(c =>
+          this.normalize(c?.numeroCliente?.toString()).startsWith(q)
+        )
+      : [...this.customers];
   }
+  
+  searchNominativo(v: string): void {
+    const q = this.normalize(v);
+    this.customersFrEnd = q
+      ? this.customers.filter(c =>
+          this.normalize(c?.nominativo).includes(q)
+        )
+      : [...this.customers];
+  }
+  
+  
 
   navigateToEditCustomer(numeroCliente: string): void {
     const body = { numeroCliente };

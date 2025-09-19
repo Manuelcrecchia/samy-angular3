@@ -8,7 +8,7 @@
   <h2>Assegnazione Turni</h2>
 
   <div class="row">
-    <!-- Colonna sinistra: turni del giorno -->
+    <!-- Colonna sinistra -->
     <div class="col-md-8 border-end">
       <div class="d-flex justify-content-between align-items-center mb-3">
         <button (click)="prevDay()" class="btn btn-secondary">&larr;</button>
@@ -17,42 +17,106 @@
       </div>
 
       <div *ngIf="loading" class="text-center">Caricamento...</div>
-      <div *ngIf="!loading && appointments.length === 0" class="alert alert-info">
-        Nessun lavoro ordinario o straordinario per questo giorno.
+      <div
+        *ngIf="!loading && appointments.length === 0"
+        class="alert alert-info"
+      >
+        Nessun lavoro per questo giorno.
       </div>
 
-      <div class="grid-container" *ngIf="!loading && appointments.length > 0">
-        <div *ngFor="let hour of hours" class="hour-row">
-          <div class="hour-label">{{ hour }}</div>
-          <div class="appointment-blocks">
-            <div
-              *ngFor="let a of getAppointmentsByHour(hour)"
-              class="appointment-card"
-              [ngClass]="{ complete: isComplete(a) }"
-              (click)="openAssignmentDialog(a)"
-            >
-              <div class="badge" *ngIf="!isComplete(a)">❗</div>
-              <div class="badge" *ngIf="a.keyRequired" style="left: 6px; right: auto">🗝️</div>
-              <strong>{{ a.title }}</strong><br />
-              <small>{{ a.description }}</small><br />
-              <small>{{ a.startDate | date : "HH:mm" }} - {{ a.endDate | date : "HH:mm" }}</small>
+      <div *ngIf="!loading && appointments.length > 0" class="list-group">
+        <!-- Bottone in alto -->
+        <div class="text-center mb-3">
+          <button class="btn btn-outline-primary btn-sm" (click)="addExtra()">
+            ➕ Aggiungi lavoro extra
+          </button>
+        </div>
+
+        <!-- Lista lavori -->
+        <div
+          *ngFor="let a of appointments"
+          class="list-group-item d-flex align-items-center justify-content-between"
+        >
+          <div class="flex-grow-1 me-3">
+            <div>
+              <strong *ngIf="!a.isExtra">{{ a.title }}</strong>
+              <input
+                *ngIf="a.isExtra"
+                type="text"
+                class="form-control form-control-sm mb-1"
+                [(ngModel)]="a.title"
+                placeholder="Titolo lavoro extra"
+              />
+            </div>
+            <div>
+              <small *ngIf="!a.isExtra">{{ a.description }}</small>
+              <textarea
+                *ngIf="a.isExtra"
+                class="form-control form-control-sm"
+                [(ngModel)]="a.description"
+                placeholder="Descrizione"
+              ></textarea>
             </div>
           </div>
+
+          <!-- Apertura dialog -->
+          <button
+            class="btn btn-sm btn-outline-primary me-2"
+            (click)="openAssignmentDialog(a)"
+          >
+            👥
+          </button>
+
+          <!-- Orario di inizio -->
+<div class="me-2" style="min-width: 90px;" (click)="$event.stopPropagation()">
+  <input type="time"
+         class="form-control form-control-sm"
+         [ngModel]="getShiftTime(a, 'start')"
+         (change)="updateTime(a, $any($event.target).value, 'start')" />
+</div>
+
+<!-- Orario di fine -->
+<div class="me-2" style="min-width: 90px;" (click)="$event.stopPropagation()">
+  <input type="time"
+         class="form-control form-control-sm"
+         [ngModel]="getShiftTime(a, 'end')"
+         (change)="updateTime(a, $any($event.target).value, 'end')" />
+</div>
+
+          <!-- Badge incompleto -->
+          <div *ngIf="!isComplete(a)" class="text-danger me-2">❗</div>
+
+          <!-- Rimozione -->
+          <button
+            *ngIf="a.isExtra"
+            class="btn btn-sm btn-outline-danger"
+            (click)="removeExtra(a)"
+          >
+            ❌
+          </button>
+        </div>
+
+        <!-- Bottone in fondo -->
+        <div class="text-center mt-3">
+          <button class="btn btn-outline-primary btn-sm" (click)="addExtra()">
+            ➕ Aggiungi lavoro extra
+          </button>
         </div>
       </div>
 
       <div class="text-center mt-4">
-        <button class="btn btn-success" (click)="finalSave()">Salva Turni</button>
+        <button class="btn btn-success" (click)="finalSave()">
+          💾 Salva Turni
+        </button>
       </div>
     </div>
 
-    <!-- Colonna destra: turni settimana precedente -->
+    <!-- Colonna destra -->
     <div class="col-md-4">
       <h5 class="text-center">Turni della settimana precedente</h5>
       <div class="list-group mt-3">
         <div class="list-group-item" *ngFor="let item of previousWeekShiftList">
-          <strong>{{ item.cliente }}:</strong>
-          <br />
+          <strong>{{ item.cliente }}:</strong><br />
           <span>{{ item.dipendenti.join(", ") || "Nessuno" }}</span>
         </div>
       </div>

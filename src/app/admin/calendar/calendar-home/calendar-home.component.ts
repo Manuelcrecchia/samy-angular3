@@ -12,7 +12,7 @@ import { Router } from '@angular/router';
 import { AutomaticAddInspectionToCalendarService } from '../../../service/automatic-add-inspection-to-calendar.service';
 import { PopupServiceService } from '../../../componenti/popup/popup-service.service';
 import { MatDialog } from '@angular/material/dialog';
-import { QuestionPopupComponent } from '../../../componenti/popup/question-popup/question-popup.component';
+import { formatDate } from '@angular/common';
 
 @Component({
   selector: 'app-calendar-home',
@@ -131,90 +131,123 @@ export class CalendarHomeComponent {
     return `${year}${month}${day}T${hours}${minutes}${seconds}Z`;
   }
 
-  onCurrentViewChange(event: any) {
-    this.currentView = event.value;
+  private normalize(s: string): string {
+    return (s || '')
+      .normalize('NFD')                // separa lettere e accenti
+      .replace(/\p{Diacritic}/gu, '')  // elimina diacritici
+      .toLowerCase()
+      .trim();
   }
+  
+  
+  private updateNavigatorCaption() {
+    if (!this.scheduler) return;
+    const rawDate = this.scheduler.instance.option('currentDate');
+    if (!rawDate) return;
+  
+    const date = new Date(rawDate as string | number | Date);
+    const formatted = formatDate(date, 'EEEE d MMMM yyyy', 'it-IT');
+  
+    const toolbar = this.scheduler.instance
+      .element()
+      .querySelector('.dx-scheduler-navigator-caption');
+    if (toolbar) {
+      toolbar.textContent = formatted!;
+    }
+  }
+
+  onSchedulerContentReady() {
+    // Chiamato ogni volta che lo scheduler ha finito di renderizzare la vista
+   this.updateNavigatorCaption();
+  }
+  
+  onCurrentViewChange(event: any) {
+    // Aggiorna la view corrente
+    if (event.name === 'currentView' || event.name === 'currentDate') {
+      this.currentView = event.value;
+      this.updateNavigatorCaption();
+    }
+  }
+  
+  ngAfterViewInit() {
+    // quando lo scheduler è pronto, aggiorna subito il titolo
+    this.updateNavigatorCaption();
+  }
+  
 
   onAppointmentFormOpening(e: any) {
     const form = e.form;
+  const popup = e.popup;
 
-    const popup = e.popup;
+  const toolbarItems = popup.option('toolbarItems');
+  toolbarItems.forEach((item: any) => {
+    if (item.shortcut === 'cancel') {
+      this.currentDate = new Date();
+      this.currentView = 'day';
+      this.recurrenceRuleisVisible = false;
+      this.saveRecurrenceRule = '';
+      form.itemOption('recurrenceRule', 'visible', false);
+    }
+  });
+  popup.option('toolbarItems', toolbarItems);
 
-    // Modifica il comportamento del pulsante "Annulla" esistente
-    const toolbarItems = popup.option('toolbarItems');
-    toolbarItems.forEach((item: any) => {
-      if (item.shortcut === 'cancel') {
-        this.currentDate = new Date();
-        this.currentView = 'day';
-        this.recurrenceRuleisVisible = false;
-        this.saveRecurrenceRule = '';
-        form.itemOption('recurrenceRule', 'visible', false);
-      }
-    });
+  const startDate = form.getEditor('startDate').option('value');
+  this.selectedDate = new Date(startDate);
+  const endDate = new Date(startDate);
+  endDate.setMinutes(endDate.getMinutes() + 30);
+  form.getEditor('endDate').option('value', endDate);
 
-    // Assicurati di aggiornare la toolbar con le modifiche
-    popup.option('toolbarItems', toolbarItems);
+  const categories = this.categories;
 
-    const startDate = form.getEditor('startDate').option('value');
-    this.selectedDate = new Date(startDate);
-    const endDate = new Date(startDate);
-    endDate.setMinutes(endDate.getMinutes() + 30); // Imposta la data di fine 30 minuti dopo la data di inizio
-    form.getEditor('endDate').option('value', endDate);
-    const categories = this.categories;
+  const searchFieldConfig = {
+    dataField: 'title',
+    editorType: 'dxAutocomplete',
+    editorOptions: {
+      dataSource: [
+        ...this.nPreventiviArray,
+        ...this.clientiArray.map(c => `${c.numeroCliente} - ${c.nominativo}`),
+      ],
+      minSearchLength: 0,
+      showDropDownButton: true,
+      valueExpr: undefined,
+      placeholder: 'Cerca preventivo o cliente...',
+      onOpened: (e: any) => e.component.option('opened', true),
+      onFocusIn: (e: any) => e.component.open(),
+      onValueChanged: (args: any) => {
+        const selectedValue: string = args.value;
+        const formCategoria = form.getEditor('categories');
 
-    const searchFieldConfig = {
-      dataField: 'title',
-      editorType: 'dxAutocomplete',
-      editorOptions: {
-        dataSource: [
-          ...this.nPreventiviArray,
-          ...this.clientiArray.map(
-            (c) => `${c.numeroCliente} - ${c.nominativo}`
-          ),
-        ],
-        minSearchLength: 0, // così mostra tutto anche senza scrivere
-        showDropDownButton: true,
-        valueExpr: undefined, // lasciare undefined per array semplice
-        placeholder: 'Cerca preventivo o cliente...',
-        onOpened: function (e: any) {
-          e.component.option('opened', true);
-        },
-        onFocusIn: function (e: any) {
-          e.component.open();
-        },
-        onValueChanged: (args: any) => {
-          const selectedValue: string = args.value;
-          const formCategoria = form.getEditor('categories');
+        // PREVENTIVO
+        const idxPrev = this.nPreventiviArray.findIndex(
+          item => this.normalize(item) === this.normalize(selectedValue)
+        );
+        if (idxPrev !== -1) {
+          const descrizione = `Sopralluogo – ${this.descrizioneArray[idxPrev]}`;
+          formCategoria.option('value', 'sopralluogo');
+          form.getEditor('description').option('value', descrizione);
+          return;
+        }
 
-          // PREVENTIVO
-          const idxPrev = this.nPreventiviArray.findIndex(
-            (item) => item === selectedValue
-          );
-          if (idxPrev !== -1) {
-            const descrizione = `Sopralluogo – ${this.descrizioneArray[idxPrev]}`;
-            formCategoria.option('value', 'sopralluogo');
-            form.getEditor('description').option('value', descrizione);
-            return;
-          }
+        // CLIENTE
+        const cliente = this.clientiArray.find(
+          c =>
+            this.normalize(`${c.numeroCliente} - ${c.nominativo}`) ===
+            this.normalize(selectedValue)
+        );
+        if (cliente) {
+          const categoria =
+            cliente.tipoCliente === 'O' ? 'ordinario' : 'straordinario';
+          formCategoria.option('value', categoria);
+          return;
+        }
 
-          // CLIENTE
-          const cliente = this.clientiArray.find(
-            (c) => `${c.numeroCliente} - ${c.nominativo}` === selectedValue
-          );
-          if (cliente) {
-            const categoria =
-              cliente.tipoCliente === 'O' ? 'ordinario' : 'straordinario';
-            formCategoria.option('value', categoria);
-            return;
-          }
-
-          // VALORE NON VALIDO
-          formCategoria.option('value', null);
-          form.getEditor('description').option('value', '');
-        },
+        // VALORE NON VALIDO
+        formCategoria.option('value', null);
+        form.getEditor('description').option('value', '');
       },
-      label: { text: 'Numero preventivo' },
-    };
+    },
+    label: { text: 'Numero preventivo' },
+  };
 
     const switchConfig = {
       dataField: 'enableRecurrence',
@@ -395,49 +428,50 @@ export class CalendarHomeComponent {
     };
     const codice = body.title?.split(' - ')[0];
     const categoria = body.categories;
-
-    // Verifica obbligatorietà
+  
+    // Obbligatori
     if (!body.title || !body.startDate || !body.endDate || !body.categories) {
       this.popup.text = 'Compilare tutti i campi obbligatori';
       this.popup.openPopup();
       this.ngOnInit();
       return;
     }
-
+  
     // Verifica che il codice esista nel DB
     const codiceValido =
       (categoria === 'sopralluogo' &&
-        this.nPreventiviArray.some((p) => p.startsWith(codice + ' -'))) ||
+        this.nPreventiviArray.some(p =>
+          this.normalize(p).startsWith(this.normalize(codice + ' -'))
+        )) ||
       ((categoria === 'ordinario' || categoria === 'straordinario') &&
-        this.clientiArray.some((c) => c.numeroCliente.toString() === codice)) ||
+        this.clientiArray.some(
+          c =>
+            this.normalize(c.numeroCliente.toString()) === this.normalize(codice)
+        )) ||
       categoria === 'altro';
-
+  
     if (!codiceValido) {
       this.popup.text =
         'Codice non valido o non esistente per la categoria selezionata';
       this.popup.openPopup();
-      e.cancel = true; // blocca il salvataggio
-      this.scheduler.instance.hideAppointmentPopup(); // chiude il popup manualmente
+      e.cancel = true;
+      this.scheduler.instance.hideAppointmentPopup();
       return;
     }
-
+  
     this.http
       .post(this.globalService.url + 'appointments/add', body, {
         headers: this.globalService.headers,
         responseType: 'text',
       })
-      .subscribe((response) => {
+      .subscribe(() => {
         this.ngOnInit();
         if (body.categories == 'sopralluogo') {
           this.http
             .post(
-              this.globalService.url +
-                'appointments/sendInspectionConfirmation',
+              this.globalService.url + 'appointments/sendInspectionConfirmation',
               body,
-              {
-                headers: this.globalService.headers,
-                responseType: 'text',
-              }
+              { headers: this.globalService.headers, responseType: 'text' }
             )
             .subscribe((response) => {
               if (response == 'NO') {

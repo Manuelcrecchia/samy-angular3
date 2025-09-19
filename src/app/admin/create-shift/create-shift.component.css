@@ -1,93 +1,74 @@
-.grid-container {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
-  
-  .hour-row {
-    display: flex;
-    align-items: flex-start;
-    flex-wrap: wrap;
-  }
-  
-  .hour-label {
-    width: 80px;
-    font-weight: bold;
-    text-align: right;
-    margin-right: 10px;
-    margin-top: 6px;
-  }
-  
-  .tooltip-panel {
-    position: absolute;
-    background-color: white;
-    border: 1px solid #ccc;
-    padding: 10px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-    max-height: 300px;
-    overflow-y: auto;
-    z-index: 9999;
-  }
-  .tooltip-panel {
-    position: absolute;
-    background-color: white;
-    border: 1px solid #ccc;
-    padding: 10px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-    max-height: 300px;
-    overflow-y: auto;
-    z-index: 9999;
-    top: 100px;
-    left: 20px;}
-  
-  .appointment-blocks {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    flex: 1;
-  }
-  
-  .appointment-card {
-    background-color: #f5f5f5;
-    border: 1px solid #ccc;
-    padding: 8px 12px;
-    border-radius: 6px;
-    cursor: pointer;
-    min-width: 140px;
-    max-width: 45%;
-    flex: 1 1 auto;
-    text-align: center;
-    transition: 0.2s;
-    position: relative;
-  }
-  
-  .appointment-card:hover {
-    background-color: #e9ecef;
-  }
-  
-  .appointment-card.complete {
-    background-color: #d4edda;
-    border-color: #28a745;
-    color: #155724;
-    font-weight: bold;
-  }
-  
-  .appointment-card .badge {
-    position: absolute;
-    top: 4px;
-    right: 6px;
-    font-size: 14px;
-  }
-  
-  @media (max-width: 600px) {
-    .appointment-card {
-      min-width: 100%;
-      max-width: 100%;
-    }
-  
-    .hour-label {
-      width: 100%;
-      text-align: left;
-      margin-bottom: 4px;
-    }
-  }
+/* Contenitore generale */
+.list-group {
+  border: none;
+  padding: 0;
+}
+
+/* Ogni riga (cliente o extra) */
+.list-group-item {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  border: 1px solid #dee2e6;
+  border-radius: 8px;
+  margin-bottom: 10px;
+  padding: 12px;
+  background: #fff;
+  transition: box-shadow 0.2s ease;
+}
+
+.list-group-item:hover {
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+/* Testo cliente/lavoro */
+.list-group-item strong {
+  font-size: 14px;
+  color: #212529;
+}
+
+.list-group-item small {
+  font-size: 12px;
+  color: #6c757d;
+}
+
+/* Input orario */
+.list-group-item input[type="time"] {
+  width: 90px;
+  font-size: 13px;
+  padding: 4px;
+}
+
+/* Input titolo e descrizione per extra */
+.list-group-item input[type="text"],
+.list-group-item textarea {
+  font-size: 13px;
+  margin-bottom: 4px;
+  resize: vertical;
+}
+
+/* Pulsanti extra */
+.list-group-item .btn-outline-danger {
+  font-size: 12px;
+  padding: 2px 6px;
+}
+
+/* Pulsanti aggiungi */
+.btn-outline-primary.btn-sm {
+  font-size: 13px;
+  border-radius: 20px;
+}
+
+/* Pulsante salva */
+.btn-success {
+  font-size: 15px;
+  padding: 8px 20px;
+  border-radius: 30px;
+}
+/* Input orario più largo e ben visibile */
+.list-group-item input[type="time"] {
+  width: 110px;       /* un po’ più largo */
+  min-width: 110px;   /* evita che Bootstrap lo stringa */
+  text-align: center; /* ore al centro */
+  font-size: 14px;
+}
