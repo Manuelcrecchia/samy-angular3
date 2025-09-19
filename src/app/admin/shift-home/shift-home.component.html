@@ -46,8 +46,9 @@
         <span>
           {{ turno.title }} — {{ turno.start | date : "HH:mm" }} - {{ turno.end | date : "HH:mm" }}
           <br />
-          <small class="text-muted">{{ turno.description }}</small>
+          <small class="text-muted">{{ turno.description }} 👥 Con: {{ (turno.colleghi || []).join(', ') }}</small>
         </span>
+        
         
           <span
             *ngIf="turno.keyRequired"

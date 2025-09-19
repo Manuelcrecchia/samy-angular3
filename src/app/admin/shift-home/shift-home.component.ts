@@ -79,15 +79,16 @@ export class ShiftHomeComponent {
         const colleghi = allNames.filter((name: string) => name !== key);
 
         result[key].push({
-          title: shift.appointment.title,
-          description: shift.appointment.description,
-          start: shift.appointment.startDate,
-          end: shift.appointment.endDate,
+          title: shift.appointment?.title || shift.title,
+          description: shift.appointment?.description || shift.description,
+          start: shift.appointment?.startDate || shift.startDate,
+          end: shift.appointment?.endDate || shift.endDate,
           appointmentId: shift.appointmentId,
-          keyRequired: shift.appointment.customer?.key === true,
+          keyRequired: shift.appointment?.customer?.key === true,
           cellulare: emp.cellulare || null,
-          colleghi: colleghi, // array di colleghi
+          colleghi: colleghi,
         });
+        
       }
     }
 
