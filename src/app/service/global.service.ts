@@ -8,7 +8,7 @@ import { AuthServiceService } from '../auth-service.service';
 export class GlobalService {
   //url = "http://192.168.1.25:5000/";
   url = "https://samipulizie.it:4000/";
-  version = "1.3.1";
+  version = "1.3.2";
 
   constructor(private authService: AuthServiceService) {}
 

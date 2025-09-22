@@ -46,8 +46,16 @@
         <span>
           {{ turno.title }} — {{ turno.start | date : "HH:mm" }} - {{ turno.end | date : "HH:mm" }}
           <br />
-          <small class="text-muted">{{ turno.description }} 👥 Con: {{ (turno.colleghi || []).join(', ') }}</small>
-        </span>
+          <small class="text-muted">
+            {{ turno.description }}
+            <span *ngIf="turno.colleghi && turno.colleghi.length > 0">
+              👥 Con: {{ turno.colleghi.join(', ') }}
+            </span>
+            <span *ngIf="!turno.colleghi || turno.colleghi.length === 0">
+              👤 Da solo
+            </span>
+          </small>
+                  </span>
         
         
           <span

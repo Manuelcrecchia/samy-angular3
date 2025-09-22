@@ -190,37 +190,42 @@ export class ShiftHomeComponent {
         day: 'numeric',
       })
       .toUpperCase();
-
-    let testo = `${empName.toUpperCase()} – ${dayStr}\n`;
-
+  
+    // intestazione messaggio
+    let testo = `${empName.toUpperCase()} – ${dayStr}\n\n`;
+  
     for (const turno of turni) {
-      const linea = `\n${turno.title} — ${this.formatHour(
-        turno.start
-      )} - ${this.formatHour(turno.end)}${turno.keyRequired ? ' 🔑' : ''}\n${
-        turno.description
-      }`;
-      const colleghi = turno.colleghi?.length
-        ? `👥 Con: ${turno.colleghi.join(', ')}`
-        : '';
-      testo += linea + colleghi + '\n\n';
+      // riga orario + titolo
+      testo += `${turno.title} — ${this.formatHour(turno.start)} - ${this.formatHour(turno.end)}${turno.keyRequired ? ' 🔑' : ''}\n`;
+  
+      // riga descrizione (se presente)
+      if (turno.description) {
+        testo += `${turno.description}\n`;
+      }
+  
+      // riga colleghi o "Da solo"
+      if (turno.colleghi && turno.colleghi.length > 0) {
+        testo += `👥 Con: ${turno.colleghi.join(', ')}\n\n`;
+      } else {
+        testo += `👤 Da solo\n\n`;
+      }
     }
-
+  
     const numeroGrezzo = turni.find((t) => t.cellulare)?.cellulare;
     const encodedMsg = encodeURIComponent(testo);
-
-    // 🔁 Sempre protocollo whatsapp://
+  
+    // default: solo testo
     let url = 'whatsapp://send?text=' + encodedMsg;
-    console.log(numeroGrezzo);
+  
     if (numeroGrezzo) {
       const numeroPulito = numeroGrezzo.replace(/\D/g, '');
       const numeroConPrefisso = '39' + numeroPulito;
-      console.log('Apro WhatsApp con:', numeroConPrefisso);
       url = `whatsapp://send?phone=${numeroConPrefisso}&text=${encodedMsg}`;
     }
-
-    // 🔓 Apre app (se installata e consentita dal browser)
+  
     window.location.href = url;
   }
+  
 
   formatHour(date: string | Date): string {
     const d = typeof date === 'string' ? new Date(date) : date;
