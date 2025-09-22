@@ -8,9 +8,32 @@ import { AuthServiceService } from '../auth-service.service';
 export class GlobalService {
   //url = "http://192.168.1.25:5000/";
   url = "https://samipulizie.it:4000/";
-  version = "1.3.2";
+  version = "1.3.5";
 
   constructor(private authService: AuthServiceService) {}
+
+  checkVersion(): Promise<boolean> {
+    return new Promise((resolve) => {
+      fetch(this.url + "api/version")
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.version !== this.version) {
+            alert(
+              `Versione non valida!\nApp: ${this.version}\nServer: ${data.version}`
+            );
+            resolve(false);
+            this.logout();
+          } else {
+            resolve(true);
+          }
+        })
+        .catch(() => {
+          alert("Impossibile verificare la versione del server.");
+          resolve(false);
+        });
+    });
+  }
+  
 
   get token(): string {
     return this.authService.token || '';

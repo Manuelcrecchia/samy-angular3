@@ -5,7 +5,6 @@ import { Router } from '@angular/router';
 import { PopupServiceService } from '../../popup/popup-service.service';
 import { AuthServiceService } from '../../../auth-service.service';
 
-
 @Component({
   selector: 'app-private-area',
   templateUrl: './private-area.component.html',
@@ -24,6 +23,17 @@ export class PrivateAreaComponent {
   ) {}
 
   version = this.globalService.version;
+
+  async ngOnInit() {
+    const ok = await this.globalService.checkVersion();
+    if (!ok) {
+      alert(
+        `⚠️ La versione dell'app non è aggiornata!\n\n` +
+          `Versione attuale: ${this.globalService.version}`
+      );
+      this.globalService.logout();
+    }
+  }
 
   loginFunction(email: string, password: string) {
     let res;
