@@ -16,7 +16,7 @@ export class ShiftHomeComponent {
       title: string;
       description: string;
       start: string;
-      end: string;
+      duration: number;
       appointmentId: number;
       keyRequired: boolean;
       cellulare?: string | null;
@@ -82,12 +82,13 @@ export class ShiftHomeComponent {
           title: shift.appointment?.title || shift.title,
           description: shift.appointment?.description || shift.description,
           start: shift.appointment?.startDate || shift.startDate,
-          end: shift.appointment?.endDate || shift.endDate,
+          duration: Number(shift.duration) || 0,
           appointmentId: shift.appointmentId,
           keyRequired: shift.appointment?.customer?.key === true,
           cellulare: emp.cellulare || null,
           colleghi: colleghi,
         });
+        
         
       }
     }
@@ -180,6 +181,21 @@ export class ShiftHomeComponent {
       );
   }
 
+  formatDuration(minutes: number): string {
+    if (!minutes) return '0 minuti';
+    const h = Math.floor(minutes / 60);
+    const m = minutes % 60;
+  
+    if (h > 0 && m > 0) {
+      return `${h} ${h === 1 ? 'ora' : 'ore'} e ${m} minuti`;
+    } else if (h > 0) {
+      return `${h} ${h === 1 ? 'ora' : 'ore'}`;
+    } else {
+      return `${m} minuti`;
+    }
+  }
+  
+
   sendViaWhatsApp(empName: string): void {
     const turni = this.groupedByEmployee[empName];
     const dayStr = this.selectedDate
@@ -196,8 +212,12 @@ export class ShiftHomeComponent {
   
     for (const turno of turni) {
       // riga orario + titolo
-      testo += `${turno.title} — ${this.formatHour(turno.start)} - ${this.formatHour(turno.end)}${turno.keyRequired ? ' 🔑' : ''}\n`;
-  
+      const startStr = turno.start ? this.formatHour(turno.start) : '';
+      const durataStr = this.formatDuration(turno.duration);
+
+      testo += `${turno.title}`;
+      if (startStr) testo += ` — ${startStr}`;
+      testo += ` • Durata: ${durataStr}${turno.keyRequired ? ' 🔑' : ''}\n`;  
       // riga descrizione (se presente)
       if (turno.description) {
         testo += `${turno.description}\n`;

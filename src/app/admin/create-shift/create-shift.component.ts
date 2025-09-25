@@ -17,6 +17,7 @@ export class CreateShiftComponent implements OnInit {
   loading = false;
   employeeList: any[] = [];
   previousWeekShiftList: { cliente: string; dipendenti: string[] }[] = [];
+  durationOptions: number[] = Array.from({ length: 33 }, (_, i) => i * 15); // 0 → 480 minuti
 
   constructor(
     private http: HttpClient,
@@ -39,6 +40,44 @@ export class CreateShiftComponent implements OnInit {
     this.showPreviousWeekShifts();
   }
 
+  // 🔹 Incrementa/decrementa di 15 minuti
+  changeDuration(app: any, delta: number) {
+    this.applyDuration(app);
+
+    if (!app.duration) app.duration = 0;
+    app.duration = Math.max(0, Math.min(480, app.duration + delta));
+    app.durationDisplay = this.formatDuration(app.duration);
+  }
+
+  // 🔹 Quando si esce dal campo, converte testo in minuti
+  applyDuration(app: any) {
+    if (!app.durationDisplay) {
+      app.duration = 0;
+      app.durationDisplay = '00.00';
+      return;
+    }
+
+    const parts = app.durationDisplay.split('.');
+    if (parts.length === 2) {
+      const h = parseInt(parts[0], 10) || 0;
+      const m = parseInt(parts[1], 10) || 0;
+      app.duration = h * 60 + m;
+    } else {
+      app.duration = parseInt(app.durationDisplay, 10) || 0;
+    }
+
+    app.duration = Math.max(0, Math.min(480, app.duration)); // clamp
+    app.durationDisplay = this.formatDuration(app.duration);
+  }
+
+  // 🔹 Formatta minuti → hh.mm
+  formatDuration(minutes: number): string {
+    if (!minutes) return '00.00';
+    const h = Math.floor(minutes / 60);
+    const m = minutes % 60;
+    return `${h.toString().padStart(2, '0')}.${m.toString().padStart(2, '0')}`;
+  }
+
   loadExistingShifts(): void {
     const dateStr = this.formatDate(this.selectedDate);
 
@@ -46,27 +85,31 @@ export class CreateShiftComponent implements OnInit {
       .get<any[]>(this.globalService.url + `shifts/byDate/${dateStr}`)
       .subscribe((existing) => {
         for (const s of existing) {
-          // 🔹 Caso 1: turno extra (appointmentId nullo + categories = 'extra')
-          if (!s.appointmentId && s.appointment?.categories === 'extra') {
+          // 🟡 Caso 1: turno extra (salvato in Shift, non legato ad appointment)
+          if (!s.appointmentId) {
             const extraId = `extra-${s.id}`;
 
-            this.appointments.push({
-              id: extraId,
-              appointmentId: null,
-              isExtra: true,
-              title: s.appointment.title || s.title,
-              description: s.appointment.description || s.description,
-              startDate: new Date(s.appointment.startDate || s.startDate),
-              endDate: new Date(s.appointment.endDate || s.endDate),
-              requiredEmployees: 0,
-            });
+            // evita duplicati
+            if (!this.appointments.some((a) => a.id === extraId)) {
+              this.appointments.push({
+                id: extraId,
+                appointmentId: null,
+                isExtra: true,
+                title: s.title,
+                description: s.description,
+                startDate: new Date(s.startDate),
+                duration: s.duration ?? 60,
+                durationDisplay: this.formatDuration(s.duration ?? 60),
+                requiredEmployees: 0,
+              });
+            }
 
             this.assignedShifts[extraId] = (s.employees || []).map(
               (e: any) => e.id
             );
           }
 
-          // 🔹 Caso 2: turno normale (collegato a un appointment)
+          // 🟢 Caso 2: turno normale (legato a un appointment esistente)
           else {
             const app = this.appointments.find(
               (a) =>
@@ -75,9 +118,14 @@ export class CreateShiftComponent implements OnInit {
             );
 
             if (app) {
-              // override orari se salvati
               if (s.startDate) app.startDate = new Date(s.startDate);
-              if (s.endDate) app.endDate = new Date(s.endDate);
+              if (s.duration) {
+                app.duration = s.duration;
+                app.durationDisplay = this.formatDuration(s.duration);
+              }
+              if (s.description != null) {              
+                app.description = s.description;
+              }
 
               this.assignedShifts[app.id] = (s.employees || []).map(
                 (e: any) => e.id
@@ -102,8 +150,11 @@ export class CreateShiftComponent implements OnInit {
 
   // 🔹 Caricamento appuntamenti
   loadAppointments(): void {
+    console.log('prima:', this.appointments.length);
     this.loading = true;
     const dateStr = this.formatDate(this.selectedDate);
+
+    this.appointments = [];
 
     this.http
       .post<any[]>(this.globalService.url + 'appointments/byDate', {
@@ -115,7 +166,12 @@ export class CreateShiftComponent implements OnInit {
         this.appointments = data
           .map((a) =>
             a.isRecurringInstance
-              ? { ...a, id: counter++, originalAppointmentId: a.id }
+              ? {
+                  ...a,
+                  id: counter++,
+                  originalAppointmentId: a.id,
+                  description: a.description || '',
+                }
               : { ...a }
           )
           .filter(
@@ -127,6 +183,7 @@ export class CreateShiftComponent implements OnInit {
         this.loading = false;
         this.loadExistingShifts();
       });
+    console.log('dopo:', this.appointments.length);
   }
 
   // 🔹 Ordinamento
@@ -161,14 +218,42 @@ export class CreateShiftComponent implements OnInit {
     // normalizza start/end
     for (const a of this.appointments) {
       a.startDate = normalize(a.startDate) ?? new Date(baseDate);
-      a.endDate =
-        normalize(a.endDate) ?? new Date(a.startDate.getTime() + 60 * 60000);
+      if (!a.duration) a.duration = 0;
+      a.durationDisplay = this.formatDuration(a.duration);
     }
 
     // ordina
     this.appointments.sort(
       (a, b) => a.startDate.getTime() - b.startDate.getTime()
     );
+  }
+
+  // 🔹 Turni della settimana precedente
+  showPreviousWeekShifts(): void {
+    const prevDate = new Date(this.selectedDate);
+    prevDate.setDate(prevDate.getDate() - 7);
+    const dateStr = this.formatDate(prevDate);
+
+    this.http
+      .get<any[]>(this.globalService.url + `shifts/byDate/${dateStr}`)
+      .subscribe((data) => {
+        const mappa: { [cliente: string]: string[] } = {};
+
+        for (const s of data) {
+          // titolo: per i normali prendo dall'appointment, per gli extra dal shift
+          const title = s.appointment?.title || s.title || '---';
+
+          const fullNames =
+            s.employees?.map((e: any) => `${e.nome} ${e.cognome}`) || [];
+
+          if (!mappa[title]) mappa[title] = [];
+          mappa[title].push(...fullNames);
+        }
+
+        this.previousWeekShiftList = Object.entries(mappa).map(
+          ([cliente, dipendenti]) => ({ cliente, dipendenti })
+        );
+      });
   }
 
   // 🔹 Navigazione
@@ -202,7 +287,8 @@ export class CreateShiftComponent implements OnInit {
       title: 'Nuovo lavoro extra',
       description: '',
       startDate: start,
-      endDate: end,
+      duration: 0,
+      durationDisplay: this.formatDuration(0),
       requiredEmployees: 0,
     });
 
@@ -215,65 +301,47 @@ export class CreateShiftComponent implements OnInit {
 
   removeExtra(app: any): void {
     const dateStr = this.formatDate(this.selectedDate);
-  
+
     const payload: any = {
       appointmentId: app.appointmentId,
-      data: dateStr
+      data: dateStr,
     };
-  
+
     if (app.isExtra && app.id.startsWith('extra-')) {
       const numericId = Number(app.id.replace('extra-', ''));
       if (!isNaN(numericId)) {
         payload.shiftId = numericId;
       }
     }
-  
-    this.http.post(this.globalService.url + 'shifts/delete', payload)
+
+    this.http
+      .post(this.globalService.url + 'shifts/delete', payload)
       .subscribe(() => {
-        this.appointments = this.appointments.filter(a => a.id !== app.id);
+        this.appointments = this.appointments.filter((a) => a.id !== app.id);
       });
   }
-  
 
-  // 🔹 Gestione orari
-  getShiftTime(app: any, type: 'start' | 'end' = 'start'): string {
-    const d =
-      (type === 'start' ? app.startDate : app.endDate) instanceof Date
-        ? type === 'start'
-          ? app.startDate
-          : app.endDate
-        : new Date(type === 'start' ? app.startDate : app.endDate);
-
+  // 👇 Ritorna stringa HH:mm oppure '' se non impostato
+  getShiftTime(app: any): string {
+    if (!app.startDate) return '';
+    const d = new Date(app.startDate);
     if (isNaN(d.getTime())) return '';
     const hh = String(d.getHours()).padStart(2, '0');
     const mm = String(d.getMinutes()).padStart(2, '0');
     return `${hh}:${mm}`;
   }
 
-  updateTime(app: any, newValue: string, type: 'start' | 'end'): void {
-    if (!newValue || !/^\d{1,2}:\d{2}$/.test(newValue)) return;
-  
-    const [h, m] = newValue.split(':').map(Number);
+  // 👇 Se value è stringa vuota → salva null
+  updateTime(app: any, value: string) {
+    if (!value) {
+      app.startDate = null; // 👈 ORA si può cancellare
+      return;
+    }
+    const [h, m] = value.split(':').map(Number);
     const d = new Date(this.selectedDate);
     d.setHours(h, m, 0, 0);
-  
-    if (type === 'start') {
-      app.startDate = d;
-      // se la fine è assente o precedente all'inizio → allinea alla start (consente uguaglianza)
-      if (!app.endDate || new Date(app.endDate).getTime() < d.getTime()) {
-        app.endDate = new Date(d.getTime());
-      }
-    } else {
-      app.endDate = d;
-      // se la fine è prima dell'inizio → riallinea (consente uguaglianza)
-      if (new Date(app.endDate).getTime() < new Date(app.startDate).getTime()) {
-        app.endDate = new Date(app.startDate.getTime());
-      }
-    }
-  
-    this.sortAppointments();
+    app.startDate = d;
   }
-  
 
   parseHourInput(value: string): Date | null {
     if (!value) return null;
@@ -310,25 +378,57 @@ export class CreateShiftComponent implements OnInit {
       data: {
         ...app,
         assigned: this.assignedShifts[app.id] || [],
-        busyEmployees: this.getBusyEmployees(app),
+        busyDetails: this.getBusyDetails(app),
         requiredEmployees: app.requiredEmployees,
       },
     });
 
     dialogRef.afterClosed().subscribe((result) => {
-      if (Array.isArray(result)) this.assignedShifts[app.id] = result;
+      if (result) {
+        this.assignedShifts[app.id] = result.employees || result;
+        if (result.forceConfirmed) {
+          app.forceConfirmed = true;
+        }
+      }
     });
+    
   }
+
+  getBusyDetails(currentApp: any): any[] {
+    const conflicts: any[] = [];
+    const currentStart = new Date(currentApp.startDate).getTime();
+    const currentEnd = currentStart + (currentApp.duration || 60) * 60000;
+  
+    for (const a of this.appointments) {
+      if (a.id === currentApp.id) continue;
+      const start = new Date(a.startDate).getTime();
+      const end = start + (a.duration || 60) * 60000;
+  
+      if (currentStart < end && currentEnd > start) {
+        const empIds = this.assignedShifts[a.id] || [];
+        empIds.forEach(empId => {
+          conflicts.push({
+            employeeId: empId,
+            title: a.title,
+            start: this.getShiftTime(a),
+            duration: a.duration || 60
+          });
+        });
+      }
+    }
+    return conflicts;
+  }
+  
 
   getBusyEmployees(currentApp: any): number[] {
     const busy: number[] = [];
     const currentStart = new Date(currentApp.startDate).getTime();
-    const currentEnd = new Date(currentApp.endDate).getTime();
+    const currentEnd = currentStart + (currentApp.duration || 0) * 60000;
 
     for (const a of this.appointments) {
       if (a.id === currentApp.id) continue;
       const start = new Date(a.startDate).getTime();
-      const end = new Date(a.endDate).getTime();
+      const end = start + (a.duration || 0) * 60000;
       if (currentStart < end && currentEnd > start) {
         busy.push(...(this.assignedShifts[a.id] || []));
       }
@@ -346,65 +446,32 @@ export class CreateShiftComponent implements OnInit {
     return `${yyyy}-${mm}-${dd} ${hh}:${mi}:${ss}`;
   }
 
- // 🔹 Salvataggio
-finalSave(): void {
-  // 🔎 Controllo lavori incompleti
-  const incomplete = this.appointments.filter((app) => {
-    const assigned = this.assignedShifts[app.id] || [];
-    return assigned.length < (app.requiredEmployees || 1);
-  });
+  // 🔹 Salvataggio
+  finalSave(): void {
 
-  // 🔎 Controllo conflitti
-  const conflicts: { employeeId: number; hour: string }[] = [];
-  const hourMap: { [hour: string]: number[] } = {};
+    const hourMap: { [hour: string]: number[] } = {};
 
-  this.appointments.forEach((app) => {
-    const start =
-      app.startDate instanceof Date ? app.startDate : new Date(app.startDate);
-    const hourKey = start.getHours().toString().padStart(2, '0') + ':00';
-    const assigned = this.assignedShifts[app.id] || [];
+    this.appointments.forEach((app) => {
+      const start =
+        app.startDate instanceof Date ? app.startDate : new Date(app.startDate);
+      const hourKey = start.getHours().toString().padStart(2, '0') + ':00';
+      const assigned = this.assignedShifts[app.id] || [];
 
-    if (!hourMap[hourKey]) hourMap[hourKey] = [];
+      if (!hourMap[hourKey]) hourMap[hourKey] = [];
 
-    assigned.forEach((emp) => {
-      if (hourMap[hourKey].includes(emp)) {
-        conflicts.push({ employeeId: emp, hour: hourKey });
-      } else {
-        hourMap[hourKey].push(emp);
-      }
+      
     });
-  });
 
-  if (incomplete.length > 0 || conflicts.length > 0) {
-    let msg = '';
+    const dateStr = this.formatDate(this.selectedDate);
 
-    if (incomplete.length > 0) {
-      msg += `⚠️ Lavori incompleti:\n\n${incomplete
-        .map((a) => `• ${this.getShiftTime(a)} ${a.title}`)
-        .join('\n')}\n\n`;
-    }
-
-    if (conflicts.length > 0) {
-      msg += `⚠️ Conflitti dipendenti:\n\n${conflicts
-        .map((c) => `• ${this.getEmployeeName(c.employeeId)} alle ${c.hour}`)
-        .join('\n')}\n\n`;
-    }
-
-    msg += 'Vuoi salvare comunque?';
-    if (!confirm(msg)) return;
-  }
-
-  // ✅ Costruzione payload
-  const dateStr = this.formatDate(this.selectedDate);
-
-  const payload = this.appointments.map((app) => {
-    const start =
-      app.startDate instanceof Date ? app.startDate : new Date(app.startDate);
-    const end =
-      app.endDate instanceof Date ? app.endDate : new Date(app.endDate);
+    const payload = this.appointments.map((app) => {
+      const start =
+        app.startDate instanceof Date ? app.startDate : new Date(app.startDate);
 
       if (app.isExtra || String(app.id).startsWith('extra-')) {
-        const isPersisted = app.id.startsWith('extra-') && !isNaN(Number(app.id.replace('extra-', '')));
+        const isPersisted =
+          app.id.startsWith('extra-') &&
+          !isNaN(Number(app.id.replace('extra-', '')));
         return {
           shiftId: isPersisted ? Number(app.id.replace('extra-', '')) : null,
           appointmentId: null,
@@ -413,57 +480,35 @@ finalSave(): void {
           title: app.title,
           description: app.description,
           startDate: this.toSqlDateTime(start),
-          endDate: this.toSqlDateTime(end),
+          duration: app.duration || 60,
+        };
+      } else {
+        return {
+          shiftId: app.shiftId || null,
+          appointmentId: app.originalAppointmentId || app.id,
+          data: dateStr,
+          employeeIds: this.assignedShifts[app.id] || [],
+          startDate: app.startDate ? this.toSqlDateTime(app.startDate) : null,
+          duration: app.duration || 60,
+          description: app.description || '',
         };
       }
-       else {
-      // 🔹 Turno normale → salvo anche orari come override
-      return {
-        shiftId: app.shiftId || null,   // 👈 utile se già salvato
-        appointmentId: app.originalAppointmentId || app.id,
-        data: dateStr,
-        employeeIds: this.assignedShifts[app.id] || [],
-        startDate: this.toSqlDateTime(start),
-        endDate: this.toSqlDateTime(end),
-      };
-    }
-  });
-
-  this.http
-    .post(this.globalService.url + 'shifts/saveMultiple', { shifts: payload })
-    .subscribe(() => {
-      alert('Turni salvati');
-      this.router.navigate(['/admin/shifts']);
     });
-}
-
-  // 🔹 Turni precedenti
-  showPreviousWeekShifts(): void {
-    const prevDate = new Date(this.selectedDate);
-    prevDate.setDate(prevDate.getDate() - 7);
-    const dateStr = this.formatDate(prevDate);
 
     this.http
-      .get<any[]>(this.globalService.url + `shifts/byDate/${dateStr}`)
-      .subscribe((data) => {
-        const mappa: { [cliente: string]: string[] } = {};
-        for (const s of data) {
-          const title = s.appointment?.title || '---';
-          const fullNames =
-            s.employees?.map((e: any) => `${e.nome} ${e.cognome}`) || [];
-          if (!mappa[title]) mappa[title] = [];
-          mappa[title].push(...fullNames);
-        }
-        this.previousWeekShiftList = Object.entries(mappa).map(
-          ([cliente, dipendenti]) => ({ cliente, dipendenti })
-        );
+      .post(this.globalService.url + 'shifts/saveMultiple', { shifts: payload })
+      .subscribe(() => {
+        alert('Turni salvati');
+        this.router.navigate(['/admin/shifts']);
       });
   }
 
   isComplete(app: any): boolean {
+    if (app.forceConfirmed) return true; 
     const assigned = this.assignedShifts[app.id] || [];
     return assigned.length >= (app.requiredEmployees || 1);
   }
+  
 
   goBack(): void {
     this.router.navigate(['/admin/shifts']);

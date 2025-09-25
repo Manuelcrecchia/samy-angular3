@@ -44,8 +44,14 @@
           *ngFor="let turno of groupedByEmployee[empName]"
         >
         <span>
-          {{ turno.title }} — {{ turno.start | date : "HH:mm" }} - {{ turno.end | date : "HH:mm" }}
-          <br />
+          {{ turno.title }}
+          <span *ngIf="turno.start">
+            — {{ turno.start | date : "HH:mm" }}
+          </span>
+          <span class="ms-2">
+            • Durata: {{ formatDuration(turno.duration) }}
+          </span>
+                    <br />
           <small class="text-muted">
             {{ turno.description }}
             <span *ngIf="turno.colleghi && turno.colleghi.length > 0">
