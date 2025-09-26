@@ -67,40 +67,44 @@ export class ShiftHomeComponent {
 
   organizeByEmployee(shifts: any[]): any {
     const result: { [key: string]: any[] } = {};
-
+  
     for (const shift of shifts) {
       const allNames = shift.employees.map(
         (e: any) => `${e.nome} ${e.cognome}`
       );
+  
       for (const emp of shift.employees) {
         const key = `${emp.nome} ${emp.cognome}`;
         if (!result[key]) result[key] = [];
-
+  
         const colleghi = allNames.filter((name: string) => name !== key);
-
+  
         result[key].push({
           title: shift.appointment?.title || shift.title,
           description: shift.appointment?.description || shift.description,
-          start: shift.appointment?.startDate || shift.startDate,
+          start: shift.startDate || null,   // 👈 solo dal turno
           duration: Number(shift.duration) || 0,
           appointmentId: shift.appointmentId,
           keyRequired: shift.appointment?.customer?.key === true,
           cellulare: emp.cellulare || null,
           colleghi: colleghi,
         });
-        
-        
       }
     }
-
+  
+    // 🔹 ordina con i null in fondo
     for (const k in result) {
-      result[k].sort(
-        (a, b) => new Date(a.start).getTime() - new Date(b.start).getTime()
-      );
+      result[k].sort((a, b) => {
+        if (!a.start && !b.start) return 0;
+        if (!a.start) return 1;
+        if (!b.start) return -1;
+        return new Date(a.start).getTime() - new Date(b.start).getTime();
+      });
     }
-
+  
     return result;
   }
+  
 
   loadShifts() {
     const dateStr = this.formatDate(this.selectedDate);
@@ -197,7 +201,14 @@ export class ShiftHomeComponent {
   
 
   sendViaWhatsApp(empName: string): void {
-    const turni = this.groupedByEmployee[empName];
+    // 🔹 ordino i turni con i null in fondo
+    const turni = [...this.groupedByEmployee[empName]].sort((a, b) => {
+      if (!a.start && !b.start) return 0;
+      if (!a.start) return 1;
+      if (!b.start) return -1;
+      return new Date(a.start).getTime() - new Date(b.start).getTime();
+    });
+  
     const dayStr = this.selectedDate
       .toLocaleDateString('it-IT', {
         weekday: 'long',
@@ -207,23 +218,20 @@ export class ShiftHomeComponent {
       })
       .toUpperCase();
   
-    // intestazione messaggio
     let testo = `${empName.toUpperCase()} – ${dayStr}\n\n`;
   
     for (const turno of turni) {
-      // riga orario + titolo
       const startStr = turno.start ? this.formatHour(turno.start) : '';
       const durataStr = this.formatDuration(turno.duration);
-
+  
       testo += `${turno.title}`;
       if (startStr) testo += ` — ${startStr}`;
-      testo += ` • Durata: ${durataStr}${turno.keyRequired ? ' 🔑' : ''}\n`;  
-      // riga descrizione (se presente)
+      testo += ` • Durata: ${durataStr}${turno.keyRequired ? ' 🔑' : ''}\n`;
+  
       if (turno.description) {
         testo += `${turno.description}\n`;
       }
   
-      // riga colleghi o "Da solo"
       if (turno.colleghi && turno.colleghi.length > 0) {
         testo += `👥 Con: ${turno.colleghi.join(', ')}\n\n`;
       } else {
@@ -234,9 +242,7 @@ export class ShiftHomeComponent {
     const numeroGrezzo = turni.find((t) => t.cellulare)?.cellulare;
     const encodedMsg = encodeURIComponent(testo);
   
-    // default: solo testo
     let url = 'whatsapp://send?text=' + encodedMsg;
-  
     if (numeroGrezzo) {
       const numeroPulito = numeroGrezzo.replace(/\D/g, '');
       const numeroConPrefisso = '39' + numeroPulito;
@@ -245,6 +251,7 @@ export class ShiftHomeComponent {
   
     window.location.href = url;
   }
+  
   
 
   formatHour(date: string | Date): string {

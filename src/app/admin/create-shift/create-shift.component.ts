@@ -447,61 +447,57 @@ export class CreateShiftComponent implements OnInit {
   }
 
   // 🔹 Salvataggio
-  finalSave(): void {
+finalSave(): void {
+  const dateStr = this.formatDate(this.selectedDate);
 
-    const hourMap: { [hour: string]: number[] } = {};
+  const payload = this.appointments.map((app) => {
+    // 👇 Gestione startDate: se nullo/"" rimane null
+    let start: string | null = null;
 
-    this.appointments.forEach((app) => {
-      const start =
-        app.startDate instanceof Date ? app.startDate : new Date(app.startDate);
-      const hourKey = start.getHours().toString().padStart(2, '0') + ':00';
-      const assigned = this.assignedShifts[app.id] || [];
-
-      if (!hourMap[hourKey]) hourMap[hourKey] = [];
-
-      
-    });
-
-    const dateStr = this.formatDate(this.selectedDate);
-
-    const payload = this.appointments.map((app) => {
-      const start =
-        app.startDate instanceof Date ? app.startDate : new Date(app.startDate);
-
-      if (app.isExtra || String(app.id).startsWith('extra-')) {
-        const isPersisted =
-          app.id.startsWith('extra-') &&
-          !isNaN(Number(app.id.replace('extra-', '')));
-        return {
-          shiftId: isPersisted ? Number(app.id.replace('extra-', '')) : null,
-          appointmentId: null,
-          data: dateStr,
-          employeeIds: this.assignedShifts[app.id] || [],
-          title: app.title,
-          description: app.description,
-          startDate: this.toSqlDateTime(start),
-          duration: app.duration || 60,
-        };
-      } else {
-        return {
-          shiftId: app.shiftId || null,
-          appointmentId: app.originalAppointmentId || app.id,
-          data: dateStr,
-          employeeIds: this.assignedShifts[app.id] || [],
-          startDate: app.startDate ? this.toSqlDateTime(app.startDate) : null,
-          duration: app.duration || 60,
-          description: app.description || '',
-        };
+    if (app.startDate instanceof Date && !isNaN(app.startDate.getTime())) {
+      start = this.toSqlDateTime(app.startDate);
+    } else if (typeof app.startDate === 'string' && app.startDate.trim() !== '') {
+      const d = new Date(app.startDate);
+      if (!isNaN(d.getTime())) {
+        start = this.toSqlDateTime(d);
       }
-    });
+    }
 
-    this.http
-      .post(this.globalService.url + 'shifts/saveMultiple', { shifts: payload })
-      .subscribe(() => {
-        alert('Turni salvati');
-        this.router.navigate(['/admin/shifts']);
-      });
-  }
+    if (app.isExtra || String(app.id).startsWith('extra-')) {
+      const isPersisted =
+        app.id.startsWith('extra-') &&
+        !isNaN(Number(app.id.replace('extra-', '')));
+
+      return {
+        shiftId: isPersisted ? Number(app.id.replace('extra-', '')) : null,
+        appointmentId: null,
+        data: dateStr,
+        employeeIds: this.assignedShifts[app.id] || [],
+        title: app.title,
+        description: app.description,
+        startDate: start, // 👈 se non impostato → null
+        duration: app.duration || 60,
+      };
+    } else {
+      return {
+        shiftId: app.shiftId || null,
+        appointmentId: app.originalAppointmentId || app.id,
+        data: dateStr,
+        employeeIds: this.assignedShifts[app.id] || [],
+        startDate: start, // 👈 se non impostato → null
+        duration: app.duration || 60,
+        description: app.description || '',
+      };
+    }
+  });
+
+  this.http
+    .post(this.globalService.url + 'shifts/saveMultiple', { shifts: payload })
+    .subscribe(() => {
+      alert('Turni salvati');
+      this.router.navigate(['/admin/shifts']);
+    });
+}
 
   isComplete(app: any): boolean {
     if (app.forceConfirmed) return true; 
