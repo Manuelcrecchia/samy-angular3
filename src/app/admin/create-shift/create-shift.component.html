@@ -8,7 +8,7 @@
   <h2>Assegnazione Turni</h2>
 
   <div class="row">
-    <!-- Colonna sinistra -->
+    <!-- ====================== COLONNA SINISTRA ====================== -->
     <div class="col-md-8 border-end">
       <div class="d-flex justify-content-between align-items-center mb-3">
         <button (click)="prevDay()" class="btn btn-secondary">&larr;</button>
@@ -17,14 +17,18 @@
       </div>
 
       <div *ngIf="loading" class="text-center">Caricamento...</div>
-      <div
-        *ngIf="!loading && appointments.length === 0"
-        class="alert alert-info"
-      >
+      <div *ngIf="!loading && appointments.length === 0" class="alert alert-info">
         Nessun lavoro per questo giorno.
       </div>
 
-      <div *ngIf="!loading && appointments.length > 0" class="list-group">
+      <!-- Lista generale lavori (riordinabili globalmente) -->
+      <div
+        *ngIf="!loading && appointments.length > 0"
+        cdkDropList
+        [cdkDropListData]="appointments"
+        (cdkDropListDropped)="dropGeneral($event)"
+        class="list-group"
+      >
         <!-- Bottone in alto -->
         <div class="text-center mb-3">
           <button class="btn btn-outline-primary btn-sm" (click)="addExtra()">
@@ -32,10 +36,11 @@
           </button>
         </div>
 
-        <!-- Lista lavori -->
+        <!-- Ogni lavoro -->
         <div
           *ngFor="let a of appointments"
           class="list-group-item d-flex align-items-center justify-content-between"
+          cdkDrag
         >
           <div class="flex-grow-1 me-3">
             <div>
@@ -65,33 +70,37 @@
             👥
           </button>
 
-<!-- Orario di inizio (può essere anche vuoto/null) -->
-<div class="me-2" style="min-width: 90px;" (click)="$event.stopPropagation()">
-  <input type="time"
-         class="form-control form-control-sm"
-         [value]="getShiftTime(a)"
-         (input)="updateTime(a, $any($event.target).value)"
-         placeholder="--:--" />
-</div>
+          <!-- Orario -->
+          <div class="me-2" style="min-width: 90px" (click)="$event.stopPropagation()">
+            <input
+              type="text"
+              inputmode="numeric"
+              pattern="^([01]\d|2[0-3]):?[0-5]\d$"
+              class="form-control form-control-sm"
+              placeholder="HH:mm"
+              [ngModel]="getShiftTime(a)"              
+              (ngModelChange)="onTimeTextChange(a, $event)"
+            />
+          </div>
+          
 
-
-<div class="me-2" style="min-width: 100px;" (click)="$event.stopPropagation()">
-  <select class="form-control form-control-sm"
-          [(ngModel)]="a.duration"
-          (ngModelChange)="a.durationDisplay = formatDuration(a.duration)">
-    <option *ngFor="let d of durationOptions" [ngValue]="d">
-      {{ formatDuration(d) }}
-    </option>
-  </select>
-</div>
-
-
-
+          <!-- Durata -->
+          <div class="me-2" style="min-width: 100px" (click)="$event.stopPropagation()">
+            <select
+              class="form-control form-control-sm"
+              [(ngModel)]="a.duration"
+              (ngModelChange)="a.durationDisplay = formatDuration(a.duration)"
+            >
+              <option *ngFor="let d of durationOptions" [ngValue]="d">
+                {{ formatDuration(d) }}
+              </option>
+            </select>
+          </div>
 
           <!-- Badge incompleto -->
           <div *ngIf="!isComplete(a)" class="text-danger me-2">❗</div>
 
-          <!-- Rimozione -->
+          <!-- Rimozione extra -->
           <button
             *ngIf="a.isExtra"
             class="btn btn-sm btn-outline-danger"
@@ -116,9 +125,44 @@
       </div>
     </div>
 
-    <!-- Colonna destra -->
+    <!-- ====================== COLONNA DESTRA ====================== -->
     <div class="col-md-4">
-      <h5 class="text-center">Turni della settimana precedente</h5>
+      <!-- 👥 Sezione dipendenti con i lavori selezionati -->
+      <h5 class="text-center">Lavori selezionati per dipendente</h5>
+
+      <div *ngFor="let emp of employeeList" class="card my-2 shadow-sm">
+        <div class="card-header bg-light fw-bold">
+          {{ emp.nome }} {{ emp.cognome }}
+          <span class="float-end text-muted">
+            Totale: {{ getEmployeeTotalDuration(emp.id) }}
+          </span>
+        </div>
+        
+
+        <!-- Lista lavori del dipendente (riordinabili con drag&drop) -->
+        <div
+          cdkDropList
+          [cdkDropListData]="getEmployeeShifts(emp.id)"
+          (cdkDropListDropped)="dropForEmployee($event, emp.id)"
+          class="card-body p-2"
+        >
+        <div
+        *ngFor="let job of getEmployeeShifts(emp.id)"
+        class="border rounded p-2 my-1 bg-white"
+        cdkDrag
+      >
+        {{ job.title }}
+        <small class="text-muted">
+          <span *ngIf="getShiftTime(job)"> ({{ getShiftTime(job) }}) </span>
+          • {{ formatDuration(job.duration) }}
+        </small>
+      </div>
+      
+        </div>
+      </div>
+
+      <!-- 📜 Sezione lavori precedenti -->
+      <h5 class="text-center mt-4">Turni della settimana precedente</h5>
       <div class="list-group mt-3">
         <div class="list-group-item" *ngFor="let item of previousWeekShiftList">
           <strong>{{ item.cliente }}:</strong><br />

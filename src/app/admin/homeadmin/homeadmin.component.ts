@@ -92,6 +92,11 @@ export class HomeAdminComponent implements OnInit {
     this.router.navigate(['/admin/shifts']);
   }
 
+  goToHours() {
+    this.router.navigate(['/hours-report']);
+  }
+  
+
   back() {
     this.global.logout();
   }

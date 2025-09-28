@@ -13,11 +13,13 @@ export class ShiftHomeComponent {
   shifts: any[] = [];
   groupedByEmployee: {
     [key: string]: {
+      empId: number;
       title: string;
       description: string;
       start: string;
       duration: number;
       appointmentId: number;
+      sortOrderByEmployee: { [key: number]: number };
       keyRequired: boolean;
       cellulare?: string | null;
       colleghi?: string[];
@@ -69,6 +71,7 @@ export class ShiftHomeComponent {
     const result: { [key: string]: any[] } = {};
   
     for (const shift of shifts) {
+      console.log("organize" , shift)
       const allNames = shift.employees.map(
         (e: any) => `${e.nome} ${e.cognome}`
       );
@@ -80,27 +83,44 @@ export class ShiftHomeComponent {
         const colleghi = allNames.filter((name: string) => name !== key);
   
         result[key].push({
+          empId: emp.id,   // 👈 salvo anche l’id numerico
           title: shift.appointment?.title || shift.title,
-          description: shift.appointment?.description || shift.description,
-          start: shift.startDate || null,   // 👈 solo dal turno
-          duration: Number(shift.duration) || 0,
+          description: shift.description,
+          start: shift.startDate && shift.startDate !== 'null' && shift.startDate !== ''
+          ? shift.startDate
+          : null,
+                  duration: Number(shift.duration) || 0,
           appointmentId: shift.appointmentId,
           keyRequired: shift.appointment?.customer?.key === true,
           cellulare: emp.cellulare || null,
           colleghi: colleghi,
+          sortOrderByEmployee: shift.sortOrderByEmployee || {}
         });
       }
     }
   
-    // 🔹 ordina con i null in fondo
     for (const k in result) {
+      // ricavo l’empId dal primo elemento del gruppo (sono tutti dello stesso dipendente)
+      const empId = result[k][0]?.empId;
+    
       result[k].sort((a, b) => {
-        if (!a.start && !b.start) return 0;
-        if (!a.start) return 1;
-        if (!b.start) return -1;
-        return new Date(a.start).getTime() - new Date(b.start).getTime();
+        const sa = empId != null ? a.sortOrderByEmployee?.[empId] : undefined;
+        const sb = empId != null ? b.sortOrderByEmployee?.[empId] : undefined;
+    
+        if (sa != null && sb != null) return sa - sb;
+        if (sa != null) return -1;
+        if (sb != null) return 1;
+    
+        if (a.start && b.start) return new Date(a.start).getTime() - new Date(b.start).getTime();
+        if (a.start && !b.start) return -1;
+        if (!a.start && b.start) return 1;
+    
+        return 0;
       });
     }
+    
+    
+    
   
     return result;
   }
@@ -199,14 +219,23 @@ export class ShiftHomeComponent {
     }
   }
   
-
   sendViaWhatsApp(empName: string): void {
-    // 🔹 ordino i turni con i null in fondo
+    // ordino i turni con i null in fondo
     const turni = [...this.groupedByEmployee[empName]].sort((a, b) => {
-      if (!a.start && !b.start) return 0;
-      if (!a.start) return 1;
-      if (!b.start) return -1;
-      return new Date(a.start).getTime() - new Date(b.start).getTime();
+      const sa = a.sortOrderByEmployee?.[a.empId];
+      const sb = b.sortOrderByEmployee?.[b.empId];
+      if (sa != null && sb != null) return sa - sb;
+      if (sa != null) return -1;
+      if (sb != null) return 1;
+  
+      if (a.start && b.start) {
+        const ta = new Date(a.start).getTime();
+        const tb = new Date(b.start).getTime();
+        return ta - tb;
+      }
+      if (a.start && !b.start) return -1;
+      if (!a.start && b.start) return 1;
+      return 0;
     });
   
     const dayStr = this.selectedDate
@@ -223,19 +252,25 @@ export class ShiftHomeComponent {
     for (const turno of turni) {
       const startStr = turno.start ? this.formatHour(turno.start) : '';
       const durataStr = this.formatDuration(turno.duration);
+      const cleanTitle = turno.title ? turno.title.replace(/^\d+\s*-\s*/, '') : '';
   
-      testo += `${turno.title}`;
+      testo += `• ${cleanTitle}`;
       if (startStr) testo += ` — ${startStr}`;
-      testo += ` • Durata: ${durataStr}${turno.keyRequired ? ' 🔑' : ''}\n`;
+      testo += ` • ${durataStr}`;
+  
+      if (turno.keyRequired) {
+        testo += ' 🔑';
+      }
+      testo += `\n`;
   
       if (turno.description) {
-        testo += `${turno.description}\n`;
+        testo += `  ${turno.description}\n`;
       }
   
       if (turno.colleghi && turno.colleghi.length > 0) {
-        testo += `👥 Con: ${turno.colleghi.join(', ')}\n\n`;
+        testo += `  👥 Con: ${turno.colleghi.join(', ')}\n\n`;
       } else {
-        testo += `👤 Da solo\n\n`;
+        testo += `  👤 Da solo\n\n`;
       }
     }
   
@@ -252,15 +287,18 @@ export class ShiftHomeComponent {
     window.location.href = url;
   }
   
-  
 
-  formatHour(date: string | Date): string {
+  formatHour(date: string | Date | null): string {
+    if (!date) return '';   // 👈 se è null/undefined/stringa vuota → ritorna vuoto
+  
     const d = typeof date === 'string' ? new Date(date) : date;
+    if (isNaN(d.getTime())) return ''; // 👈 se non è data valida
     return d.toLocaleTimeString('it-IT', {
       hour: '2-digit',
       minute: '2-digit',
     });
   }
+  
 
   hideTooltip() {
     this.tooltipVisible = false;

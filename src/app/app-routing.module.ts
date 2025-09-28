@@ -35,6 +35,7 @@ import { SchedaClienteComponent } from './admin/scheda-cliente/scheda-cliente.co
 import { ShiftHomeComponent } from './admin/shift-home/shift-home.component';
 import { CreateShiftComponent } from './admin/create-shift/create-shift.component';
 import { GestionePermessiComponent } from './admin/gestione-permessi/gestione-permessi.component';
+import { HoursReportComponent } from './admin/hours-report/hours-report.component';
 
 const routes: Routes = [
   { path: '', component: HomesitoComponent },
@@ -108,6 +109,11 @@ const routes: Routes = [
     path: 'editCustomer',
     component: EditCustomerComponent,
     canActivate: [AuthGuard],
+  },
+  {
+    path: 'hours-report',
+    component: HoursReportComponent,
+    canActivate: [AuthAGuard],
   },
   {
     path: 'schedaCliente/:numeroCliente',

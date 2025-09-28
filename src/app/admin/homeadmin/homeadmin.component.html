@@ -20,6 +20,7 @@
 
 <div class="container py-5">
   <div class="row justify-content-center g-4">
+    <!-- Gestione Dipendenti -->
     <div class="col-12 col-sm-6 col-lg-4">
       <button
         class="btn btn-pink w-100 h-100 py-4"
@@ -28,6 +29,8 @@
         <i class="fas fa-user fa-2x mb-2"></i><br />Gestione Dipendenti
       </button>
     </div>
+
+    <!-- Gestione Clienti -->
     <div class="col-12 col-sm-6 col-lg-4">
       <button
         class="btn btn-pink w-100 h-100 py-4"
@@ -36,6 +39,8 @@
         <i class="fas fa-users fa-2x mb-2"></i><br />Gestione Clienti
       </button>
     </div>
+
+    <!-- Gestione Preventivi -->
     <div class="col-12 col-sm-6 col-lg-4">
       <button
         class="btn btn-pink w-100 h-100 py-4"
@@ -44,6 +49,8 @@
         <i class="fas fa-file-alt fa-2x mb-2"></i><br />Gestione Preventivi
       </button>
     </div>
+
+    <!-- Calendario -->
     <div class="col-12 col-sm-6 col-lg-4">
       <button
         class="btn btn-pink w-100 h-100 py-4"
@@ -52,18 +59,28 @@
         <i class="fas fa-calendar fa-2x mb-2"></i><br />Calendario
       </button>
     </div>
+
+    <!-- Turni -->
     <div class="col-12 col-sm-6 col-lg-4">
       <button class="btn btn-pink w-100 h-100 py-4" (click)="goToShifts()">
         <i class="fas fa-tasks fa-2x mb-2"></i><br />Turni
       </button>
     </div>
+
+    <!-- Riepilogo Ore -->
+    <div class="col-12 col-sm-6 col-lg-4">
+      <button class="btn btn-pink w-100 h-100 py-4" (click)="goToHours()">
+        <i class="fas fa-clock fa-2x mb-2"></i><br />Riepilogo Ore
+      </button>
+    </div>
+
+    <!-- Gestione Permessi -->
     <div class="col-12 col-sm-6 col-lg-4">
       <button
         class="btn btn-pink w-100 h-100 py-4"
         (click)="navigateToGestionePermessi()"
       >
-        <i class="fas fa-clipboard-check fa-2x mb-2"></i><br />
-        Permessi
+        <i class="fas fa-clipboard-check fa-2x mb-2"></i><br />Permessi
         <span *ngIf="permessiInAttesa > 0" class="badge bg-danger ms-1">
           {{ permessiInAttesa }}
         </span>

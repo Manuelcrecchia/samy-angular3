@@ -61,6 +61,7 @@ import { locale, loadMessages } from 'devextreme/localization';
 import { DatePipe } from '@angular/common';
 import { CommonModule } from '@angular/common'; // IMPORTA QUESTO
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { DragDropModule } from '@angular/cdk/drag-drop';
 
 import * as itMessages from 'devextreme/localization/messages/it.json';
 
@@ -75,6 +76,10 @@ import { GestioneEmployeesComponent } from './admin/gestione-employees/gestione-
 import { SettingsEmployeesComponent } from './admin/settings-employees/settings-employees.component';
 import { DocumentManagerComponent } from './admin/document-manager/document-manager.component';
 import { ViewPdfComponent } from './admin/view-pdf/view-pdf.component';
+import { DateAdapter, MAT_DATE_LOCALE } from '@angular/material/core';
+import { ItalianDateAdapter } from './shared/italian-date-adapter';
+
+
 
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { AuthInterceptorService } from './auth-interceptor.service';
@@ -86,12 +91,13 @@ import { ShiftHomeComponent } from './admin/shift-home/shift-home.component';
 import { CreateShiftComponent } from './admin/create-shift/create-shift.component';
 import { AssignDialogComponent } from './admin/assign-dialog/assign-dialog.component';
 import { GestionePermessiComponent } from './admin/gestione-permessi/gestione-permessi.component';
+import { HoursReportComponent } from './admin/hours-report/hours-report.component';
 
 
 loadMessages(itMessages);
 locale('it');
 registerLocaleData(localeIt);
-
+loadMessages(itMessages);
 
 @NgModule({
   declarations: [
@@ -133,6 +139,7 @@ registerLocaleData(localeIt);
     CreateShiftComponent,
     AssignDialogComponent,
     GestionePermessiComponent,
+    HoursReportComponent,
   ],
   imports: [
     BrowserModule,
@@ -175,11 +182,16 @@ registerLocaleData(localeIt);
     MatNativeDateModule,
     MatDatepickerModule,
     MatDialogModule,
-    CommonModule // IMPORTA QUESTO PER *ngFor
+    CommonModule,
+    DragDropModule
   ],
     providers: [
       { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptorService, multi: true },
       { provide: LOCALE_ID, useValue: 'it-IT' },
+      {provide: MAT_DATE_LOCALE, useValue: 'it-IT'},
+      { provide: DateAdapter, useClass: ItalianDateAdapter },
+
+
       GlobalService, DatePipe
     ],
     bootstrap: [AppComponent],

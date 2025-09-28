@@ -4,6 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { MatDialog } from '@angular/material/dialog';
 import { AssignDialogComponent } from '../assign-dialog/assign-dialog.component';
 import { GlobalService } from '../../service/global.service';
+import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 
 @Component({
   selector: 'app-create-shift',
@@ -80,16 +81,15 @@ export class CreateShiftComponent implements OnInit {
 
   loadExistingShifts(): void {
     const dateStr = this.formatDate(this.selectedDate);
-
+  
     this.http
       .get<any[]>(this.globalService.url + `shifts/byDate/${dateStr}`)
       .subscribe((existing) => {
         for (const s of existing) {
-          // 🟡 Caso 1: turno extra (salvato in Shift, non legato ad appointment)
+          // 🟡 Caso 1: turno extra
           if (!s.appointmentId) {
             const extraId = `extra-${s.id}`;
-
-            // evita duplicati
+  
             if (!this.appointments.some((a) => a.id === extraId)) {
               this.appointments.push({
                 id: extraId,
@@ -97,46 +97,54 @@ export class CreateShiftComponent implements OnInit {
                 isExtra: true,
                 title: s.title,
                 description: s.description,
-                startDate: new Date(s.startDate),
+                startDate: (s.startDate && s.startDate !== 'null' && s.startDate !== '')
+                  ? new Date(s.startDate)
+                  : null,
                 duration: s.duration ?? 60,
                 durationDisplay: this.formatDuration(s.duration ?? 60),
                 requiredEmployees: 0,
+                sortOrderByEmployee: s.sortOrderByEmployee || {}   // 👈 sempre inizializzato
               });
             }
-
-            this.assignedShifts[extraId] = (s.employees || []).map(
-              (e: any) => e.id
-            );
+  
+            this.assignedShifts[extraId] = (s.employees || []).map((e: any) => e.id);
           }
-
-          // 🟢 Caso 2: turno normale (legato a un appointment esistente)
+  
+          // 🟢 Caso 2: turno normale (appointment esistente)
           else {
             const app = this.appointments.find(
               (a) =>
                 a.id === s.appointmentId ||
                 a.originalAppointmentId === s.appointmentId
             );
-
+  
             if (app) {
-              if (s.startDate) app.startDate = new Date(s.startDate);
-              if (s.duration) {
+              if ('startDate' in s) {
+                app.startDate = (s.startDate && s.startDate !== 'null' && s.startDate !== '')
+                  ? new Date(s.startDate)
+                  : null;
+              }
+  
+              if (typeof s.duration === 'number') {
                 app.duration = s.duration;
                 app.durationDisplay = this.formatDuration(s.duration);
               }
-              if (s.description != null) {              
-                app.description = s.description;
+  
+              if (s.description !== undefined) {
+                app.description = s.description ?? '';
               }
-
-              this.assignedShifts[app.id] = (s.employees || []).map(
-                (e: any) => e.id
-              );
+  
+              app.sortOrderByEmployee = s.sortOrderByEmployee || {};  // 👈 sempre inizializzato
+  
+              this.assignedShifts[app.id] = (s.employees || []).map((e: any) => e.id);
             }
           }
         }
-
+  
         this.sortAppointments();
       });
   }
+  
 
   // 🔹 Utility
   formatDate(date: Date): string {
@@ -150,19 +158,16 @@ export class CreateShiftComponent implements OnInit {
 
   // 🔹 Caricamento appuntamenti
   loadAppointments(): void {
-    console.log('prima:', this.appointments.length);
     this.loading = true;
     const dateStr = this.formatDate(this.selectedDate);
-
+  
     this.appointments = [];
-
+  
     this.http
-      .post<any[]>(this.globalService.url + 'appointments/byDate', {
-        date: dateStr,
-      })
+      .post<any[]>(this.globalService.url + 'appointments/byDate', { date: dateStr })
       .subscribe((data) => {
         let counter = 100000;
-
+  
         this.appointments = data
           .map((a) =>
             a.isRecurringInstance
@@ -175,58 +180,97 @@ export class CreateShiftComponent implements OnInit {
               : { ...a }
           )
           .filter(
-            (a) =>
-              a.categories === 'ordinario' || a.categories === 'straordinario'
-          );
-
-        this.sortAppointments(); // 👈 ora normalizza+ordina in modo robusto
+            (a) => a.categories === 'ordinario' || a.categories === 'straordinario'
+          )
+          .map((a) => {
+            // 👇 Conversione startDate
+            if (a.startDate && a.startDate !== 'null' && a.startDate !== '') {
+              a.startDate = new Date(a.startDate);
+            } else {
+              a.startDate = null;
+            }
+          
+            // 👇 Conversione endDate e calcolo durata automatica
+            if (a.endDate && a.endDate !== 'null' && a.endDate !== '') {
+              a.endDate = new Date(a.endDate);
+          
+              if (a.startDate && a.endDate) {
+                const diffMinutes = Math.floor(
+                  (a.endDate.getTime() - a.startDate.getTime()) / 60000
+                );
+                a.duration = diffMinutes > 0 ? diffMinutes : 0;
+              }
+            }
+          
+            // 👇 fallback se non è un numero
+            if (typeof a.duration !== 'number') {
+              a.duration = 0;
+            }
+          
+            a.durationDisplay = this.formatDuration(a.duration);
+            a.sortOrderByEmployee = a.sortOrderByEmployee || {};
+          
+            return a;
+          });
+          
+  
+        this.sortAppointments();
         this.loading = false;
         this.loadExistingShifts();
       });
-    console.log('dopo:', this.appointments.length);
   }
-
-  // 🔹 Ordinamento
-  // 🔧 Normalizza e ordina in modo stabile
+  
+  
   private sortAppointments(): void {
     const baseDate = new Date(this.selectedDate);
-
+  
     const normalize = (val: any): Date | null => {
       if (val instanceof Date) return val;
-
       if (typeof val === 'string') {
-        // Se è solo HH:mm → ancoralo alla selectedDate
         if (/^\d{1,2}:\d{2}$/.test(val)) {
           const [h, m] = val.split(':').map(Number);
           const d = new Date(baseDate);
           d.setHours(h, m, 0, 0);
           return d;
         }
-
-        // Se è ISO o contiene anche la data → parse normale
-        const d = new Date(
-          val.includes(' ') && !val.includes('T') ? val.replace(' ', 'T') : val
-        );
+        const d = new Date(val.includes(' ') && !val.includes('T') ? val.replace(' ', 'T') : val);
         return isNaN(d.getTime()) ? null : d;
       }
-
       if (typeof val === 'number') return new Date(val);
-
       return null;
     };
-
-    // normalizza start/end
+  
     for (const a of this.appointments) {
-      a.startDate = normalize(a.startDate) ?? new Date(baseDate);
-      if (!a.duration) a.duration = 0;
+      a.startDate = a.startDate != null ? (normalize(a.startDate) ?? null) : null;
+      if (typeof a.duration !== 'number') a.duration = 0;
       a.durationDisplay = this.formatDuration(a.duration);
     }
-
-    // ordina
-    this.appointments.sort(
-      (a, b) => a.startDate.getTime() - b.startDate.getTime()
-    );
+  
+    this.appointments.sort((a, b) => {
+      // 1️⃣ sortOrderByEmployee (se definito)
+      const empId = null; // qui puoi passare l'id se sei nel contesto dipendente
+      const orderA = empId != null ? a.sortOrderByEmployee?.[empId] : undefined;
+      const orderB = empId != null ? b.sortOrderByEmployee?.[empId] : undefined;
+      if (orderA != null && orderB != null) return orderA - orderB;
+      if (orderA != null) return -1;
+      if (orderB != null) return 1;
+  
+      // 3️⃣ fallback → orario (null resta in mezzo, non sostituito)
+      if (a.startDate && b.startDate) return a.startDate.getTime() - b.startDate.getTime();
+      if (a.startDate && !b.startDate) return -1;
+      if (!a.startDate && b.startDate) return 1;
+      return 0;
+    });
   }
+  
+
+  dropGeneral(event: CdkDragDrop<any[]>): void {
+  moveItemInArray(this.appointments, event.previousIndex, event.currentIndex);
+
+  // forza Angular a ricalcolare il binding
+  this.appointments = [...this.appointments];
+}
+
 
   // 🔹 Turni della settimana precedente
   showPreviousWeekShifts(): void {
@@ -330,11 +374,23 @@ export class CreateShiftComponent implements OnInit {
     const mm = String(d.getMinutes()).padStart(2, '0');
     return `${hh}:${mm}`;
   }
+  
+  onTimeTextChange(app: any, value: string) {
+    const d = this.parseHourInput(value);
+    app.startDate = d; // Date o null
+  }
+
+  getEmployeeTotalDuration(empId: number): string {
+    const jobs = this.getEmployeeShifts(empId);
+    const totalMinutes = jobs.reduce((sum, job) => sum + (job.duration || 0), 0);
+    return this.formatDuration(totalMinutes);
+  }
+    
 
   // 👇 Se value è stringa vuota → salva null
   updateTime(app: any, value: string) {
     if (!value) {
-      app.startDate = null; // 👈 ORA si può cancellare
+      app.startDate = null; 
       return;
     }
     const [h, m] = value.split(':').map(Number);
@@ -391,34 +447,32 @@ export class CreateShiftComponent implements OnInit {
         }
       }
     });
-    
   }
 
   getBusyDetails(currentApp: any): any[] {
     const conflicts: any[] = [];
     const currentStart = new Date(currentApp.startDate).getTime();
     const currentEnd = currentStart + (currentApp.duration || 60) * 60000;
-  
+
     for (const a of this.appointments) {
       if (a.id === currentApp.id) continue;
       const start = new Date(a.startDate).getTime();
       const end = start + (a.duration || 60) * 60000;
-  
+
       if (currentStart < end && currentEnd > start) {
         const empIds = this.assignedShifts[a.id] || [];
-        empIds.forEach(empId => {
+        empIds.forEach((empId) => {
           conflicts.push({
             employeeId: empId,
             title: a.title,
             start: this.getShiftTime(a),
-            duration: a.duration || 60
+            duration: a.duration || 60,
           });
         });
       }
     }
     return conflicts;
   }
-  
 
   getBusyEmployees(currentApp: any): number[] {
     const busy: number[] = [];
@@ -446,65 +500,113 @@ export class CreateShiftComponent implements OnInit {
     return `${yyyy}-${mm}-${dd} ${hh}:${mi}:${ss}`;
   }
 
-  // 🔹 Salvataggio
-finalSave(): void {
-  const dateStr = this.formatDate(this.selectedDate);
-
-  const payload = this.appointments.map((app) => {
-    // 👇 Gestione startDate: se nullo/"" rimane null
-    let start: string | null = null;
-
-    if (app.startDate instanceof Date && !isNaN(app.startDate.getTime())) {
-      start = this.toSqlDateTime(app.startDate);
-    } else if (typeof app.startDate === 'string' && app.startDate.trim() !== '') {
-      const d = new Date(app.startDate);
-      if (!isNaN(d.getTime())) {
-        start = this.toSqlDateTime(d);
-      }
-    }
-
-    if (app.isExtra || String(app.id).startsWith('extra-')) {
-      const isPersisted =
-        app.id.startsWith('extra-') &&
-        !isNaN(Number(app.id.replace('extra-', '')));
-
-      return {
-        shiftId: isPersisted ? Number(app.id.replace('extra-', '')) : null,
-        appointmentId: null,
-        data: dateStr,
-        employeeIds: this.assignedShifts[app.id] || [],
-        title: app.title,
-        description: app.description,
-        startDate: start, // 👈 se non impostato → null
-        duration: app.duration || 60,
-      };
-    } else {
-      return {
-        shiftId: app.shiftId || null,
-        appointmentId: app.originalAppointmentId || app.id,
-        data: dateStr,
-        employeeIds: this.assignedShifts[app.id] || [],
-        startDate: start, // 👈 se non impostato → null
-        duration: app.duration || 60,
-        description: app.description || '',
-      };
-    }
-  });
-
-  this.http
-    .post(this.globalService.url + 'shifts/saveMultiple', { shifts: payload })
-    .subscribe(() => {
-      alert('Turni salvati');
-      this.router.navigate(['/admin/shifts']);
+  getEmployeeShifts(empId: number): any[] {
+    const jobs = this.appointments.filter(app =>
+      (this.assignedShifts[app.id] || []).includes(empId)
+    );
+  
+    return jobs.sort((a, b) => {
+      const sa = a.sortOrderByEmployee?.[empId];
+      const sb = b.sortOrderByEmployee?.[empId];
+  
+      if (sa != null && sb != null) return sa - sb;
+      if (sa != null) return -1;
+      if (sb != null) return 1;
+  
+      if (a.startDate && b.startDate) return a.startDate.getTime() - b.startDate.getTime();
+      if (a.startDate && !b.startDate) return -1;
+      if (!a.startDate && b.startDate) return 1;
+  
+      return 0;
     });
-}
+  }
+  
+  
+  
+  
+  
+
+  dropForEmployee(event: CdkDragDrop<any[]>, empId: number) {
+    moveItemInArray(
+      event.container.data,
+      event.previousIndex,
+      event.currentIndex
+    );
+  
+    event.container.data.forEach((job, i) => {
+      if (!job.sortOrderByEmployee) job.sortOrderByEmployee = {};
+      job.sortOrderByEmployee[empId] = i;
+    });
+  
+    // 👇 forza Angular a ricalcolare il binding
+    this.employeeList = [...this.employeeList];
+  }
+  
+  
+
+  // 🔹 Salvataggio
+  finalSave(): void {
+    const dateStr = this.formatDate(this.selectedDate);
+
+    const payload = this.appointments.map((app) => {
+      // 👇 Gestione startDate: se nullo/"" rimane null
+      let start: string | null = null;
+
+      if (app.startDate instanceof Date && !isNaN(app.startDate.getTime())) {
+        start = this.toSqlDateTime(app.startDate);
+      } else if (
+        typeof app.startDate === 'string' &&
+        app.startDate.trim() !== ''
+      ) {
+        const d = new Date(app.startDate);
+        if (!isNaN(d.getTime())) {
+          start = this.toSqlDateTime(d);
+        }
+      }
+
+      if (app.isExtra || String(app.id).startsWith('extra-')) {
+        const isPersisted =
+          app.id.startsWith('extra-') &&
+          !isNaN(Number(app.id.replace('extra-', '')));
+
+        return {
+          shiftId: isPersisted ? Number(app.id.replace('extra-', '')) : null,
+          appointmentId: null,
+          data: dateStr,
+          employeeIds: this.assignedShifts[app.id] || [],
+          title: app.title,
+          description: app.description,
+          startDate: start, // 👈 se non impostato → null
+          duration: app.duration || 60,
+          sortOrderByEmployee: app.sortOrderByEmployee || {},
+        };
+      } else {
+        return {
+          shiftId: app.shiftId || null,
+          appointmentId: app.originalAppointmentId || app.id,
+          data: dateStr,
+          employeeIds: this.assignedShifts[app.id] || [],
+          startDate: start, // 👈 se non impostato → null
+          duration: app.duration || 60,
+          description: app.description || '',
+          sortOrderByEmployee: app.sortOrderByEmployee || {},
+        };
+      }
+    });
+
+    this.http
+      .post(this.globalService.url + 'shifts/saveMultiple', { shifts: payload })
+      .subscribe(() => {
+        alert('Turni salvati');
+        this.router.navigate(['/admin/shifts']);
+      });
+  }
 
   isComplete(app: any): boolean {
-    if (app.forceConfirmed) return true; 
+    if (app.forceConfirmed) return true;
     const assigned = this.assignedShifts[app.id] || [];
     return assigned.length >= (app.requiredEmployees || 1);
   }
-  
 
   goBack(): void {
     this.router.navigate(['/admin/shifts']);
