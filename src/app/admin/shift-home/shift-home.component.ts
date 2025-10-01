@@ -69,62 +69,72 @@ export class ShiftHomeComponent {
 
   organizeByEmployee(shifts: any[]): any {
     const result: { [key: string]: any[] } = {};
-  
+
     for (const shift of shifts) {
-      console.log("organize" , shift)
+      // 👇 Normalizza sempre sortOrderByEmployee
+      let sortMap: any = shift.sortOrderByEmployee;
+      if (typeof sortMap === 'string') {
+        try {
+          sortMap = JSON.parse(sortMap);
+        } catch {
+          sortMap = {};
+        }
+      }
+      if (!sortMap) sortMap = {};
+
       const allNames = shift.employees.map(
         (e: any) => `${e.nome} ${e.cognome}`
       );
-  
+
       for (const emp of shift.employees) {
         const key = `${emp.nome} ${emp.cognome}`;
         if (!result[key]) result[key] = [];
-  
+
         const colleghi = allNames.filter((name: string) => name !== key);
-  
+
         result[key].push({
-          empId: emp.id,   // 👈 salvo anche l’id numerico
+          empId: emp.id,
           title: shift.appointment?.title || shift.title,
           description: shift.description,
-          start: shift.startDate && shift.startDate !== 'null' && shift.startDate !== ''
-          ? shift.startDate
-          : null,
-                  duration: Number(shift.duration) || 0,
+          start:
+            shift.startDate &&
+            shift.startDate !== 'null' &&
+            shift.startDate !== ''
+              ? shift.startDate
+              : null,
+          duration: Number(shift.duration) || 0,
           appointmentId: shift.appointmentId,
           keyRequired: shift.appointment?.customer?.key === true,
           cellulare: emp.cellulare || null,
           colleghi: colleghi,
-          sortOrderByEmployee: shift.sortOrderByEmployee || {}
+          sortOrderByEmployee: sortMap,
         });
       }
     }
-  
+
+    // 👇 Ordina i turni di ogni dipendente
     for (const k in result) {
-      // ricavo l’empId dal primo elemento del gruppo (sono tutti dello stesso dipendente)
       const empId = result[k][0]?.empId;
-    
+
       result[k].sort((a, b) => {
         const sa = empId != null ? a.sortOrderByEmployee?.[empId] : undefined;
         const sb = empId != null ? b.sortOrderByEmployee?.[empId] : undefined;
-    
+
         if (sa != null && sb != null) return sa - sb;
         if (sa != null) return -1;
         if (sb != null) return 1;
-    
-        if (a.start && b.start) return new Date(a.start).getTime() - new Date(b.start).getTime();
+
+        if (a.start && b.start)
+          return new Date(a.start).getTime() - new Date(b.start).getTime();
         if (a.start && !b.start) return -1;
         if (!a.start && b.start) return 1;
-    
+
         return 0;
       });
     }
-    
-    
-    
-  
+
     return result;
   }
-  
 
   loadShifts() {
     const dateStr = this.formatDate(this.selectedDate);
@@ -209,7 +219,7 @@ export class ShiftHomeComponent {
     if (!minutes) return '0 minuti';
     const h = Math.floor(minutes / 60);
     const m = minutes % 60;
-  
+
     if (h > 0 && m > 0) {
       return `${h} ${h === 1 ? 'ora' : 'ore'} e ${m} minuti`;
     } else if (h > 0) {
@@ -218,26 +228,32 @@ export class ShiftHomeComponent {
       return `${m} minuti`;
     }
   }
-  
+
   sendViaWhatsApp(empName: string): void {
-    // ordino i turni con i null in fondo
+    // ✅ ordino i turni con la stessa logica di organizeByEmployee
     const turni = [...this.groupedByEmployee[empName]].sort((a, b) => {
-      const sa = a.sortOrderByEmployee?.[a.empId];
-      const sb = b.sortOrderByEmployee?.[b.empId];
+      const empId = a.empId; // tutti i turni qui hanno lo stesso empId
+
+      // 👇 Normalizza se serve
+      let sa = a.sortOrderByEmployee?.[empId];
+      let sb = b.sortOrderByEmployee?.[empId];
+
+      if (typeof sa === 'string') sa = parseInt(sa, 10);
+      if (typeof sb === 'string') sb = parseInt(sb, 10);
+
       if (sa != null && sb != null) return sa - sb;
       if (sa != null) return -1;
       if (sb != null) return 1;
-  
+
       if (a.start && b.start) {
-        const ta = new Date(a.start).getTime();
-        const tb = new Date(b.start).getTime();
-        return ta - tb;
+        return new Date(a.start).getTime() - new Date(b.start).getTime();
       }
       if (a.start && !b.start) return -1;
       if (!a.start && b.start) return 1;
+
       return 0;
     });
-  
+
     const dayStr = this.selectedDate
       .toLocaleDateString('it-IT', {
         weekday: 'long',
@@ -246,51 +262,52 @@ export class ShiftHomeComponent {
         day: 'numeric',
       })
       .toUpperCase();
-  
+
     let testo = `${empName.toUpperCase()} – ${dayStr}\n\n`;
-  
+
     for (const turno of turni) {
       const startStr = turno.start ? this.formatHour(turno.start) : '';
       const durataStr = this.formatDuration(turno.duration);
-      const cleanTitle = turno.title ? turno.title.replace(/^\d+\s*-\s*/, '') : '';
-  
+      const cleanTitle = turno.title
+        ? turno.title.replace(/^\d+\s*-\s*/, '')
+        : '';
+
       testo += `• ${cleanTitle}`;
       if (startStr) testo += ` — ${startStr}`;
       testo += ` • ${durataStr}`;
-  
+
       if (turno.keyRequired) {
         testo += ' 🔑';
       }
       testo += `\n`;
-  
+
       if (turno.description) {
         testo += `  ${turno.description}\n`;
       }
-  
+
       if (turno.colleghi && turno.colleghi.length > 0) {
         testo += `  👥 Con: ${turno.colleghi.join(', ')}\n\n`;
       } else {
         testo += `  👤 Da solo\n\n`;
       }
     }
-  
+
     const numeroGrezzo = turni.find((t) => t.cellulare)?.cellulare;
     const encodedMsg = encodeURIComponent(testo);
-  
+
     let url = 'whatsapp://send?text=' + encodedMsg;
     if (numeroGrezzo) {
       const numeroPulito = numeroGrezzo.replace(/\D/g, '');
       const numeroConPrefisso = '39' + numeroPulito;
       url = `whatsapp://send?phone=${numeroConPrefisso}&text=${encodedMsg}`;
     }
-  
+
     window.location.href = url;
   }
-  
 
   formatHour(date: string | Date | null): string {
-    if (!date) return '';   // 👈 se è null/undefined/stringa vuota → ritorna vuoto
-  
+    if (!date) return ''; // 👈 se è null/undefined/stringa vuota → ritorna vuoto
+
     const d = typeof date === 'string' ? new Date(date) : date;
     if (isNaN(d.getTime())) return ''; // 👈 se non è data valida
     return d.toLocaleTimeString('it-IT', {
@@ -298,7 +315,6 @@ export class ShiftHomeComponent {
       minute: '2-digit',
     });
   }
-  
 
   hideTooltip() {
     this.tooltipVisible = false;

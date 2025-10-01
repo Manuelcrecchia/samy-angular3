@@ -3,18 +3,18 @@ import { HttpHeaders } from '@angular/common/http';
 import { AuthServiceService } from '../auth-service.service';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class GlobalService {
-  //url = "http://192.168.1.25:5000/";
-  url = "https://samipulizie.it:4000/";
-  version = "1.4.3";
+  //url = 'http://192.168.1.37:5001/';
+  url = 'https://samipulizie.it:4000/';
+  version = '1.4.5';
 
   constructor(private authService: AuthServiceService) {}
 
   checkVersion(): Promise<boolean> {
     return new Promise((resolve) => {
-      fetch(this.url + "api/version")
+      fetch(this.url + 'api/version')
         .then((res) => res.json())
         .then((data) => {
           if (data.version !== this.version) {
@@ -28,12 +28,11 @@ export class GlobalService {
           }
         })
         .catch(() => {
-          alert("Impossibile verificare la versione del server.");
+          alert('Impossibile verificare la versione del server.');
           resolve(false);
         });
     });
   }
-  
 
   get token(): string {
     return this.authService.token || '';
@@ -54,7 +53,7 @@ export class GlobalService {
   get headers(): HttpHeaders {
     return new HttpHeaders({
       'Content-Type': 'application/json; charset=utf-8',
-      'Authorization': `${this.token}`
+      Authorization: `${this.token}`,
     });
   }
 
