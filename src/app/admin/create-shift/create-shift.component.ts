@@ -176,6 +176,24 @@ export class CreateShiftComponent implements OnInit {
       event.currentIndex
     );
     event.container.data.forEach((job, i) => {
+      // 👇 qui forzi sempre oggetto
+      if (typeof job.sortOrderByEmployee === 'string') {
+        try {
+          job.sortOrderByEmployee = JSON.parse(job.sortOrderByEmployee);
+        } catch {
+          job.sortOrderByEmployee = {};
+        }
+      }
+      if (
+        !job.sortOrderByEmployee ||
+        typeof job.sortOrderByEmployee !== 'object'
+      ) {
+        job.sortOrderByEmployee = {};
+      }
+
+      job.sortOrderByEmployee[empId] = i;
+    });
+    event.container.data.forEach((job, i) => {
       if (!job.sortOrderByEmployee) job.sortOrderByEmployee = {};
       job.sortOrderByEmployee[empId] = i;
     });
@@ -236,7 +254,7 @@ export class CreateShiftComponent implements OnInit {
       }
       return {
         shiftId: app.shiftId || null,
-        appointmentId: app.originalAppointmentId || app.id,
+        appointmentId: app.isExtra ? null : app.originalAppointmentId || app.id,
         data: dateStr,
         employeeIds: this.assignedShifts[app.id] || [],
         title: app.title,
@@ -382,8 +400,20 @@ export class CreateShiftComponent implements OnInit {
                 a.sortOrderByEmployee = {};
               }
             }
-            if (!a.sortOrderByEmployee) a.sortOrderByEmployee = {};
-            a.sortOrderByEmployee = a.sortOrderByEmployee || {};
+            if (typeof a.sortOrderByEmployee === 'string') {
+              try {
+                a.sortOrderByEmployee = JSON.parse(a.sortOrderByEmployee);
+              } catch {
+                a.sortOrderByEmployee = {};
+              }
+            }
+
+            if (
+              !a.sortOrderByEmployee ||
+              typeof a.sortOrderByEmployee !== 'object'
+            ) {
+              a.sortOrderByEmployee = {};
+            }
 
             return a;
           });
@@ -403,8 +433,10 @@ export class CreateShiftComponent implements OnInit {
           // Caso 1: turno extra
           if (!s.appointmentId) {
             const extraId = `extra-${s.id}`;
-            if (!this.appointments.some((a) => a.id === extraId)) {
-              let sortMap: any = s.sortOrderByEmployee;
+            if (
+              !this.appointments.some((a) => a.isExtra && a.shiftId === s.id)
+            ) {
+              let sortMap = s.sortOrderByEmployee;
               if (typeof sortMap === 'string') {
                 try {
                   sortMap = JSON.parse(sortMap);
@@ -412,9 +444,13 @@ export class CreateShiftComponent implements OnInit {
                   sortMap = {};
                 }
               }
-              if (!sortMap) sortMap = {};
+              if (!sortMap || typeof sortMap !== 'object') {
+                sortMap = {};
+              }
               this.appointments.push({
                 id: extraId,
+                shiftId: s.id, // 👈 salvo l'id reale del turno extra
+
                 appointmentId: null,
                 isExtra: true,
                 title: s.title,

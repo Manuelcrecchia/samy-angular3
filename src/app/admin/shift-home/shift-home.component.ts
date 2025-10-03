@@ -230,79 +230,46 @@ export class ShiftHomeComponent {
   }
 
   sendViaWhatsApp(empName: string): void {
-    // ✅ ordino i turni con la stessa logica di organizeByEmployee
-    const turni = [...this.groupedByEmployee[empName]].sort((a, b) => {
-      const empId = a.empId; // tutti i turni qui hanno lo stesso empId
+    const dateStr = this.getFormattedDate();
 
-      // 👇 Normalizza se serve
-      let sa = a.sortOrderByEmployee?.[empId];
-      let sb = b.sortOrderByEmployee?.[empId];
-
-      if (typeof sa === 'string') sa = parseInt(sa, 10);
-      if (typeof sb === 'string') sb = parseInt(sb, 10);
-
-      if (sa != null && sb != null) return sa - sb;
-      if (sa != null) return -1;
-      if (sb != null) return 1;
-
-      if (a.start && b.start) {
-        return new Date(a.start).getTime() - new Date(b.start).getTime();
-      }
-      if (a.start && !b.start) return -1;
-      if (!a.start && b.start) return 1;
-
-      return 0;
-    });
-
-    const dayStr = this.selectedDate
-      .toLocaleDateString('it-IT', {
-        weekday: 'long',
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric',
-      })
-      .toUpperCase();
-
-    let testo = `${empName.toUpperCase()} – ${dayStr}\n\n`;
-
-    for (const turno of turni) {
-      const startStr = turno.start ? this.formatHour(turno.start) : '';
-      const durataStr = this.formatDuration(turno.duration);
-      const cleanTitle = turno.title
-        ? turno.title.replace(/^\d+\s*-\s*/, '')
-        : '';
-
-      testo += `• ${cleanTitle}`;
-      if (startStr) testo += ` — ${startStr}`;
-      testo += ` • ${durataStr}`;
-
-      if (turno.keyRequired) {
-        testo += ' 🔑';
-      }
-      testo += `\n`;
-
-      if (turno.description) {
-        testo += `  ${turno.description}\n`;
-      }
-
-      if (turno.colleghi && turno.colleghi.length > 0) {
-        testo += `  👥 Con: ${turno.colleghi.join(', ')}\n\n`;
-      } else {
-        testo += `  👤 Da solo\n\n`;
-      }
+    // Trovo un numero cellulare dal primo turno di quel dipendente
+    const numeroGrezzo = this.groupedByEmployee[empName]?.[0]?.cellulare;
+    if (!numeroGrezzo) {
+      alert('Nessun numero di telefono trovato per questo dipendente');
+      return;
     }
+    const safeName = empName.trim().replace(/\s+/g, ' ');
 
-    const numeroGrezzo = turni.find((t) => t.cellulare)?.cellulare;
-    const encodedMsg = encodeURIComponent(testo);
+    // Richiesta al backend per ottenere il link sicuro
+    this.http
+      .get<{ url: string }>(
+        `${
+          this.globalService.url
+        }shifts/pdf-link?date=${dateStr}&empName=${encodeURIComponent(empName)}`
+      )
+      .subscribe(
+        (res) => {
+          const pdfLink = res.url;
 
-    let url = 'whatsapp://send?text=' + encodedMsg;
-    if (numeroGrezzo) {
-      const numeroPulito = numeroGrezzo.replace(/\D/g, '');
-      const numeroConPrefisso = '39' + numeroPulito;
-      url = `whatsapp://send?phone=${numeroConPrefisso}&text=${encodedMsg}`;
-    }
+          // Pulizia numero → solo cifre
+          const numeroPulito = numeroGrezzo.replace(/\D/g, '');
+          const numeroConPrefisso = '39' + numeroPulito;
 
-    window.location.href = url;
+          // Messaggio WhatsApp
+          const msg =
+            `Ciao ${empName}, ecco i tuoi turni di oggi 📄\n\n` +
+            `Scarica qui il PDF:\n${pdfLink}`;
+
+          const encoded = encodeURIComponent(msg);
+
+          // Apertura WhatsApp
+          window.location.href = `whatsapp://send?phone=${numeroConPrefisso}&text=${encoded}`;
+        },
+        (err) => {
+          console.error('Errore recuperando link PDF:', err);
+          alert('Errore nel recupero del link PDF');
+        }
+      );
   }
 
   formatHour(date: string | Date | null): string {
