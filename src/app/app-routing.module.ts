@@ -35,7 +35,7 @@ import { SchedaClienteComponent } from './admin/scheda-cliente/scheda-cliente.co
 import { ShiftHomeComponent } from './admin/shift-home/shift-home.component';
 import { CreateShiftComponent } from './admin/create-shift/create-shift.component';
 import { GestionePermessiComponent } from './admin/gestione-permessi/gestione-permessi.component';
-import { HoursReportComponent } from './admin/hours-report/hours-report.component';
+import { RiepilogoPresenzeComponent } from './admin/riepilogo-presenze/riepilogo-presenze.component';
 
 const routes: Routes = [
   { path: '', component: HomesitoComponent },
@@ -111,8 +111,8 @@ const routes: Routes = [
     canActivate: [AuthGuard],
   },
   {
-    path: 'hours-report',
-    component: HoursReportComponent,
+    path: 'riepilogo-presenze',
+    component: RiepilogoPresenzeComponent,
     canActivate: [AuthAGuard],
   },
   {

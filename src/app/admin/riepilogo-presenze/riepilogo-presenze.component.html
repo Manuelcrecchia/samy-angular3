@@ -1,0 +1,80 @@
+<div class="container-fluid py-4">
+  <div class="d-flex justify-content-start align-items-center mb-3">
+    <button class="btn-back me-3" type="button" (click)="back()">
+      &larr; Torna Indietro
+    </button>
+  </div>
+  <h4 class="text-center fw-bold mb-4">Riepilogo Presenze</h4>
+
+  <!-- Filtri -->
+  <div class="d-flex justify-content-center align-items-center gap-3 mb-3">
+    <select
+      [(ngModel)]="meseSelezionato"
+      (change)="cambiaMeseAnno()"
+      class="form-select w-auto"
+    >
+      <option *ngFor="let m of mesi" [value]="m.valore">{{ m.nome }}</option>
+    </select>
+
+    <input
+      type="number"
+      [(ngModel)]="annoSelezionato"
+      (change)="cambiaMeseAnno()"
+      class="form-control w-auto"
+      style="max-width: 100px"
+    />
+  </div>
+
+  <div *ngIf="loading" class="text-center my-5">
+    <div class="spinner-border text-primary" role="status"></div>
+  </div>
+
+  <!-- Tabella -->
+  <div *ngIf="!loading">
+    <div class="table-responsive shadow-sm rounded">
+      <table class="table table-bordered align-middle">
+        <thead class="table-light">
+          <tr>
+            <th>Dipendente</th>
+            <th *ngFor="let g of giorni">{{ g }}</th>
+            <th>Totale</th>
+            <th>Note</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let d of dipendenti">
+            <td class="fw-bold">{{ d.nome }}</td>
+
+            <!-- Mostra ore ordinario come base -->
+            <td *ngFor="let g of giorni; let i = index" class="text-center">
+              {{ d.tipologie?.Ordinario?.[i] || '' }}
+            </td>
+
+            <td class="text-center">{{ d.totale }}</td>
+
+            <td style="min-width: 280px">
+              <input
+                type="text"
+                [(ngModel)]="d.note"
+                (ngModelChange)="onNotaChange(d)"
+                class="form-control px-3 py-2"
+                placeholder="Note"
+                style="font-size: 0.95rem"
+              />
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="text-center mt-4">
+      <button
+        class="btn btn-primary px-5"
+        (click)="generaPdf()"
+        [disabled]="loading"
+      >
+        📄 Genera PDF
+      </button>
+    </div>
+  </div>
+</div>

@@ -93,9 +93,8 @@ export class HomeAdminComponent implements OnInit {
   }
 
   goToHours() {
-    this.router.navigate(['/hours-report']);
+    this.router.navigate(['/riepilogo-presenze']);
   }
-  
 
   back() {
     this.global.logout();

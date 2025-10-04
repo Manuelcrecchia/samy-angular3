@@ -5,36 +5,37 @@ import { registerLocaleData } from '@angular/common';
 import localeIt from '@angular/common/locales/it';
 import { LOCALE_ID } from '@angular/core';
 
-
-
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { PrivateAreaComponent } from './componenti/login/private-area/private-area.component';
 import { HomeAdminComponent } from './admin/homeadmin/homeadmin.component';
 import { GlobalService } from './service/global.service';
 
-import {FormsModule, ReactiveFormsModule} from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
-import { MatButtonToggleGroup, MatButtonToggleModule } from '@angular/material/button-toggle';
+import {
+  MatButtonToggleGroup,
+  MatButtonToggleModule,
+} from '@angular/material/button-toggle';
 import { HttpClientModule } from '@angular/common/http';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { UserSettingsComponent } from './admin/user-settings/user-settings.component';
-import {MatGridListModule} from '@angular/material/grid-list';
-import {MatInputModule} from '@angular/material/input';
-import {MatChipsModule} from '@angular/material/chips';
-import {MatIconModule} from "@angular/material/icon";
-import {MatListModule} from '@angular/material/list';
-import {MatCardModule} from '@angular/material/card';
-import {MatButtonModule} from '@angular/material/button';
+import { MatGridListModule } from '@angular/material/grid-list';
+import { MatInputModule } from '@angular/material/input';
+import { MatChipsModule } from '@angular/material/chips';
+import { MatIconModule } from '@angular/material/icon';
+import { MatListModule } from '@angular/material/list';
+import { MatCardModule } from '@angular/material/card';
+import { MatButtonModule } from '@angular/material/button';
 import { MatToolbarModule } from '@angular/material/toolbar';
-import {MatTabsModule} from '@angular/material/tabs';
-import {MatSidenavModule} from '@angular/material/sidenav';
-import {MatMenuModule} from '@angular/material/menu';
-import {MatRadioModule} from '@angular/material/radio';
-import {MatCheckboxModule} from '@angular/material/checkbox';
-import {MatAutocompleteModule} from '@angular/material/autocomplete';
-import {MatExpansionModule} from '@angular/material/expansion';
+import { MatTabsModule } from '@angular/material/tabs';
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatRadioModule } from '@angular/material/radio';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatExpansionModule } from '@angular/material/expansion';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HomesitoComponent } from './componenti/sito/homesito/homesito.component';
 import { QuotesHomeComponent } from './admin/quotes-home/quotes-home.component';
@@ -78,8 +79,7 @@ import { DocumentManagerComponent } from './admin/document-manager/document-mana
 import { ViewPdfComponent } from './admin/view-pdf/view-pdf.component';
 import { DateAdapter, MAT_DATE_LOCALE } from '@angular/material/core';
 import { ItalianDateAdapter } from './shared/italian-date-adapter';
-
-
+import { NgbModalModule } from '@ng-bootstrap/ng-bootstrap';
 
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { AuthInterceptorService } from './auth-interceptor.service';
@@ -91,8 +91,8 @@ import { ShiftHomeComponent } from './admin/shift-home/shift-home.component';
 import { CreateShiftComponent } from './admin/create-shift/create-shift.component';
 import { AssignDialogComponent } from './admin/assign-dialog/assign-dialog.component';
 import { GestionePermessiComponent } from './admin/gestione-permessi/gestione-permessi.component';
-import { HoursReportComponent } from './admin/hours-report/hours-report.component';
-
+import { RiepilogoPresenzeComponent } from './admin/riepilogo-presenze/riepilogo-presenze.component';
+import { CategoriaModalComponent } from './admin/gestione-employees/categoria-modal/categoria-modal.component';
 
 loadMessages(itMessages);
 locale('it');
@@ -139,7 +139,8 @@ loadMessages(itMessages);
     CreateShiftComponent,
     AssignDialogComponent,
     GestionePermessiComponent,
-    HoursReportComponent,
+    RiepilogoPresenzeComponent,
+    CategoriaModalComponent,
   ],
   imports: [
     BrowserModule,
@@ -183,23 +184,26 @@ loadMessages(itMessages);
     MatDatepickerModule,
     MatDialogModule,
     CommonModule,
-    DragDropModule
+    DragDropModule,
+    NgbModalModule,
   ],
-    providers: [
-      { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptorService, multi: true },
-      { provide: LOCALE_ID, useValue: 'it-IT' },
-      {provide: MAT_DATE_LOCALE, useValue: 'it-IT'},
-      { provide: DateAdapter, useClass: ItalianDateAdapter },
+  providers: [
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthInterceptorService,
+      multi: true,
+    },
+    { provide: LOCALE_ID, useValue: 'it-IT' },
+    { provide: MAT_DATE_LOCALE, useValue: 'it-IT' },
+    { provide: DateAdapter, useClass: ItalianDateAdapter },
 
-
-      GlobalService, DatePipe
-    ],
-    bootstrap: [AppComponent],
-    schemas: [
-      CUSTOM_ELEMENTS_SCHEMA
-    ]
-  })
-  // Remove the existing export statement for the AppModule class
-  // export class AppModule { }
-export class AppModule { }
-export class YourModule { }
+    GlobalService,
+    DatePipe,
+  ],
+  bootstrap: [AppComponent],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
+})
+// Remove the existing export statement for the AppModule class
+// export class AppModule { }
+export class AppModule {}
+export class YourModule {}
