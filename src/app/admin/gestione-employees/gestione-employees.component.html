@@ -23,7 +23,7 @@
 
       <h2 class="text-center mb-4">Gestione Dipendenti</h2>
 
-      <table class="table table-striped table-bordered">
+      <table class="table table-striped table-bordered align-middle">
         <thead class="table-dark">
           <tr>
             <th>Nome</th>
@@ -39,25 +39,16 @@
             <td>{{ emp.email }}</td>
             <td>
               <button
-                class="btn btn-pink btn-sm"
-                (click)="goToDocument(emp.id)"
-              >
-                Visualizza documenti
-              </button>
-              <button
-                class="btn btn-success btn-sm ms-2"
+                class="btn btn-success btn-sm me-2"
                 (click)="apriCategoria(emp)"
               >
-                ➕
+                ➕ Gestisci assenze
               </button>
-            </td>
-
-            <td>
               <button
                 class="btn btn-pink btn-sm"
                 (click)="goToDocument(emp.id)"
               >
-                Visualizza documenti
+                Gestisci documenti
               </button>
             </td>
           </tr>
