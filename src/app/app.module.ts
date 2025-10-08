@@ -93,6 +93,8 @@ import { AssignDialogComponent } from './admin/assign-dialog/assign-dialog.compo
 import { GestionePermessiComponent } from './admin/gestione-permessi/gestione-permessi.component';
 import { RiepilogoPresenzeComponent } from './admin/riepilogo-presenze/riepilogo-presenze.component';
 import { CategoriaModalComponent } from './admin/gestione-employees/categoria-modal/categoria-modal.component';
+import { TimbratureHomeComponent } from './admin/timbrature-home/timbrature-home.component';
+import { TimbratureDettaglioComponent } from './admin/timbrature-dettaglio/timbrature-dettaglio.component';
 
 loadMessages(itMessages);
 locale('it');
@@ -141,6 +143,8 @@ loadMessages(itMessages);
     GestionePermessiComponent,
     RiepilogoPresenzeComponent,
     CategoriaModalComponent,
+    TimbratureHomeComponent,
+    TimbratureDettaglioComponent,
   ],
   imports: [
     BrowserModule,

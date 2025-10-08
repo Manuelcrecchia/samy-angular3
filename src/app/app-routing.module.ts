@@ -36,6 +36,8 @@ import { ShiftHomeComponent } from './admin/shift-home/shift-home.component';
 import { CreateShiftComponent } from './admin/create-shift/create-shift.component';
 import { GestionePermessiComponent } from './admin/gestione-permessi/gestione-permessi.component';
 import { RiepilogoPresenzeComponent } from './admin/riepilogo-presenze/riepilogo-presenze.component';
+import { TimbratureHomeComponent } from './admin/timbrature-home/timbrature-home.component';
+import { TimbratureDettaglioComponent } from './admin/timbrature-dettaglio/timbrature-dettaglio.component';
 
 const routes: Routes = [
   { path: '', component: HomesitoComponent },
@@ -144,6 +146,11 @@ const routes: Routes = [
     path: 'calendarHome',
     component: CalendarHomeComponent,
     canActivate: [AuthGuard],
+  },
+  { path: 'timbratureHome', component: TimbratureHomeComponent },
+  {
+    path: 'timbratureDettaglio/:employeeId/:date',
+    component: TimbratureDettaglioComponent,
   },
 ];
 

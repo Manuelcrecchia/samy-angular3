@@ -91,6 +91,9 @@ export class HomeAdminComponent implements OnInit {
   goToShifts() {
     this.router.navigate(['/admin/shifts']);
   }
+  navigateToTimbrature() {
+    this.router.navigateByUrl('/timbratureHome');
+  }
 
   goToHours() {
     this.router.navigate(['/riepilogo-presenze']);

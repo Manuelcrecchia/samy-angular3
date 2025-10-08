@@ -1,0 +1,20 @@
+.table-pink {
+  background-color: #f8c1d9;
+  color: #fff;
+}
+
+.btn-back {
+  background: none;
+  border: none;
+  color: #ff4081;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.btn-back:hover {
+  text-decoration: underline;
+}
+
+.text-pink {
+  color: #ff4081 !important;
+}

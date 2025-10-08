@@ -1,0 +1,86 @@
+<div class="container py-4">
+  <!-- Pulsante Torna Indietro -->
+  <div class="d-flex justify-content-start align-items-center mb-3">
+    <button class="btn-back" type="button" (click)="back()">
+      &larr; Torna Indietro
+    </button>
+  </div>
+
+  <h2 class="text-center mb-4">Gestione Timbrature</h2>
+
+  <!-- Selettore data -->
+  <div class="d-flex justify-content-center align-items-center mb-3 gap-3">
+    <button class="btn btn-outline-secondary" (click)="changeDate(-1)">
+      <i class="fas fa-chevron-left"></i>
+    </button>
+
+    <input
+      type="date"
+      [(ngModel)]="selectedDate"
+      (change)="loadEmployees()"
+      class="form-control w-auto text-center"
+    />
+
+    <button class="btn btn-outline-secondary" (click)="changeDate(1)">
+      <i class="fas fa-chevron-right"></i>
+    </button>
+  </div>
+
+  <!-- Tabella dipendenti -->
+  <div class="table-responsive" *ngIf="!loading; else loadingTpl">
+    <table class="table table-hover align-middle text-center shadow-sm">
+      <thead class="table-pink">
+        <tr>
+          <th>Nome</th>
+          <th>Email</th>
+          <th>Cellulare</th>
+          <th>Errori</th>
+          <th>Azioni</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr
+          *ngFor="let emp of employees"
+          [ngClass]="{ 'table-danger': emp.hasError }"
+        >
+          <td>{{ emp.nome }} {{ emp.cognome }}</td>
+          <td>{{ emp.email }}</td>
+          <td>{{ emp.cellulare }}</td>
+
+          <td>
+            <span
+              *ngIf="emp.hasError"
+              class="badge bg-danger"
+              title="Timbrature con errore"
+            >
+              {{ emp.errorsCount }}
+            </span>
+            <span *ngIf="!emp.hasError" class="badge bg-success">OK</span>
+          </td>
+
+          <td>
+            <button
+              class="btn btn-sm btn-outline-primary"
+              (click)="openDetail(emp)"
+            >
+              <i class="fas fa-eye"></i> Dettaglio
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div *ngIf="employees.length === 0" class="text-center text-muted mt-3">
+      Nessun dipendente trovato per la data selezionata.
+    </div>
+  </div>
+
+  <ng-template #loadingTpl>
+    <div class="text-center py-5">
+      <div class="spinner-border text-pink" role="status">
+        <span class="visually-hidden">Caricamento...</span>
+      </div>
+      <p class="mt-2">Caricamento dati...</p>
+    </div>
+  </ng-template>
+</div>
