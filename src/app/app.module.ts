@@ -92,9 +92,10 @@ import { CreateShiftComponent } from './admin/create-shift/create-shift.componen
 import { AssignDialogComponent } from './admin/assign-dialog/assign-dialog.component';
 import { GestionePermessiComponent } from './admin/gestione-permessi/gestione-permessi.component';
 import { RiepilogoPresenzeComponent } from './admin/riepilogo-presenze/riepilogo-presenze.component';
-import { CategoriaModalComponent } from './admin/gestione-employees/categoria-modal/categoria-modal.component';
 import { TimbratureHomeComponent } from './admin/timbrature-home/timbrature-home.component';
 import { TimbratureDettaglioComponent } from './admin/timbrature-dettaglio/timbrature-dettaglio.component';
+import { CustomModalComponent } from './admin/timbrature-dettaglio/custom-modal/custom-modal.component';
+import { GestioneAssenzeComponent } from './admin/gestione-assenze/gestione-assenze.component';
 
 loadMessages(itMessages);
 locale('it');
@@ -142,9 +143,9 @@ loadMessages(itMessages);
     AssignDialogComponent,
     GestionePermessiComponent,
     RiepilogoPresenzeComponent,
-    CategoriaModalComponent,
     TimbratureHomeComponent,
     TimbratureDettaglioComponent,
+    GestioneAssenzeComponent,
   ],
   imports: [
     BrowserModule,
@@ -190,6 +191,7 @@ loadMessages(itMessages);
     CommonModule,
     DragDropModule,
     NgbModalModule,
+    CustomModalComponent,
   ],
   providers: [
     {
@@ -200,7 +202,6 @@ loadMessages(itMessages);
     { provide: LOCALE_ID, useValue: 'it-IT' },
     { provide: MAT_DATE_LOCALE, useValue: 'it-IT' },
     { provide: DateAdapter, useClass: ItalianDateAdapter },
-
     GlobalService,
     DatePipe,
   ],

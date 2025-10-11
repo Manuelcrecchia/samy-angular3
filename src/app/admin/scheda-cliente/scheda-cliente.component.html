@@ -1,52 +1,139 @@
 <div class="container py-4">
+  <!-- 🔙 Torna indietro -->
   <div class="d-flex justify-content-start align-items-center mb-3">
     <button class="btn btn-outline-primary rounded-pill" (click)="back()">
       ⬅ Torna Indietro
     </button>
   </div>
 
-  <h2 class="text-center mb-4">Scheda Cliente</h2>
+  <!-- Titolo -->
+  <h2 class="text-center mb-4 text-primary">
+    <i class="fas fa-user me-2"></i>Scheda Cliente
+  </h2>
 
-  <div *ngIf="cliente" class="bg-white rounded p-4 shadow-sm">
-    <p><strong>Numero Cliente:</strong> {{ cliente.numeroCliente }}</p>
-    <p><strong>Tipo Cliente:</strong> {{ cliente.tipoCliente === 'O' ? 'Ordinario' : 'Straordinario' }}</p>
-    <p><strong>Nominativo:</strong> {{ cliente.nominativo }}</p>
-    <p><strong>CF/P.IVA:</strong> {{ cliente.cfpi }}</p>
-    <p><strong>Città di fatturazione:</strong> {{ cliente.cittaDiFatturazione }}</p>
-    <p><strong>Indirizzo di fatturazione:</strong> {{ cliente.selettorePrefissoViaDiFatturazione }} {{ cliente.viaDiFatturazione }}</p>
-    <p><strong>CAP di fatturazione:</strong> {{ cliente.capDiFatturazione }}</p>
-    <p><strong>Città:</strong> {{ cliente.citta }}</p>
-    <p><strong>Indirizzo:</strong> {{ cliente.selettorePrefissoVia }} {{ cliente.via }}</p>
-    <p><strong>CAP:</strong> {{ cliente.cap }}</p>
-    <p><strong>Email:</strong> {{ cliente.email }}</p>
-    <p><strong>Telefono:</strong> {{ cliente.telefono }}</p>
-    <p><strong>Referente:</strong> {{ cliente.referente }}</p>
-    <p><strong>Descrizione Immobile:</strong> {{ cliente.descrizioneImmobile }}</p>
-
-    <div *ngIf="parseJson(cliente.servizi).length > 0">
-      <p><strong>Servizi:</strong></p>
-      <ul>
-        <li *ngFor="let s of parseJson(cliente.servizi)">{{ s }}</li>
-      </ul>
-    </div>
-
-    <div *ngIf="cliente.tipoCliente === 'O' && parseJson(cliente.interventi).length > 0">
-      <p><strong>Interventi:</strong></p>
-      <ul>
-        <li *ngFor="let i of parseJson(cliente.interventi)">{{ i }}</li>
-      </ul>
-    </div>
-
-    <p><strong>Imponibile:</strong> {{ cliente.imponibile }}</p>
-    <p><strong>IVA:</strong> {{ cliente.iva }}</p>
-    <p><strong>Pagamento:</strong> {{ cliente.pagamento }}</p>
-    <p><strong>Tempistica:</strong> {{ cliente.tempistica }}</p>
-    <p><strong>Numero operatori:</strong> {{ cliente.nOperatori }}</p>
-    <p><strong>Note:</strong> {{ cliente.note }}</p>
-    <p><strong>Chiavi:</strong> {{ cliente.key ? 'Sì' : 'No' }}</p>
+  <!-- Loading / errore -->
+  <div
+    *ngIf="!cliente"
+    class="alert alert-warning text-center shadow-sm rounded-pill"
+  >
+    Caricamento in corso o cliente non trovato...
   </div>
 
-  <div *ngIf="!cliente" class="alert alert-warning">
-    Caricamento in corso o cliente non trovato...
+  <!-- Dati cliente -->
+  <div
+    *ngIf="cliente"
+    class="card border-0 shadow-sm rounded-4 bg-white mx-auto"
+    style="max-width: 700px"
+  >
+    <div class="card-body p-4">
+      <h4 class="mb-3 text-center text-secondary">
+        {{ cliente.nominativo || "Cliente Sconosciuto" }}
+      </h4>
+
+      <div class="row">
+        <div class="col-md-6 mb-2">
+          <strong>Numero Cliente:</strong> {{ cliente.numeroCliente }}
+        </div>
+        <div class="col-md-6 mb-2">
+          <strong>Tipo Cliente:</strong>
+          {{ cliente.tipoCliente === "O" ? "Ordinario" : "Straordinario" }}
+        </div>
+        <div class="col-md-6 mb-2">
+          <strong>CF/P.IVA:</strong> {{ cliente.cfpi }}
+        </div>
+        <div class="col-md-6 mb-2">
+          <strong>Email:</strong> {{ cliente.email }}
+        </div>
+        <div class="col-md-6 mb-2">
+          <strong>Telefono:</strong> {{ cliente.telefono }}
+        </div>
+        <div class="col-md-6 mb-2">
+          <strong>Referente:</strong> {{ cliente.referente }}
+        </div>
+      </div>
+
+      <hr />
+
+      <h5 class="mt-3 mb-2 text-primary">📍 Dati Fatturazione</h5>
+      <p class="mb-1">
+        <strong>Città:</strong> {{ cliente.cittaDiFatturazione }}
+      </p>
+      <p class="mb-1">
+        <strong>Indirizzo:</strong>
+        {{ cliente.selettorePrefissoViaDiFatturazione }}
+        {{ cliente.viaDiFatturazione }}
+      </p>
+      <p class="mb-1"><strong>CAP:</strong> {{ cliente.capDiFatturazione }}</p>
+
+      <h5 class="mt-3 mb-2 text-primary">🏠 Dati Sede Operativa</h5>
+      <p class="mb-1"><strong>Città:</strong> {{ cliente.citta }}</p>
+      <p class="mb-1">
+        <strong>Indirizzo:</strong> {{ cliente.selettorePrefissoVia }}
+        {{ cliente.via }}
+      </p>
+      <p class="mb-3"><strong>CAP:</strong> {{ cliente.cap }}</p>
+
+      <h5 class="mt-3 mb-2 text-primary">🧾 Servizi</h5>
+      <ul
+        *ngIf="parseJson(cliente.servizi).length > 0"
+        class="list-group list-group-flush mb-3"
+      >
+        <li
+          class="list-group-item py-2"
+          *ngFor="let s of parseJson(cliente.servizi)"
+        >
+          <i class="fas fa-check text-success me-2"></i>{{ s }}
+        </li>
+      </ul>
+      <p
+        *ngIf="parseJson(cliente.servizi).length === 0"
+        class="text-muted small"
+      >
+        Nessun servizio registrato
+      </p>
+
+      <div
+        *ngIf="
+          cliente.tipoCliente === 'O' &&
+          parseJson(cliente.interventi).length > 0
+        "
+      >
+        <h5 class="mt-3 mb-2 text-primary">🧹 Interventi</h5>
+        <ul class="list-group list-group-flush mb-3">
+          <li
+            class="list-group-item py-2"
+            *ngFor="let i of parseJson(cliente.interventi)"
+          >
+            <i class="fas fa-arrow-right text-secondary me-2"></i>{{ i }}
+          </li>
+        </ul>
+      </div>
+
+      <h5 class="mt-3 mb-2 text-primary">💰 Dati Contrattuali</h5>
+      <div class="row">
+        <div class="col-md-6 mb-2">
+          <strong>Imponibile:</strong> {{ cliente.imponibile }}
+        </div>
+        <div class="col-md-6 mb-2"><strong>IVA:</strong> {{ cliente.iva }}</div>
+        <div class="col-md-6 mb-2">
+          <strong>Pagamento:</strong> {{ cliente.pagamento }}
+        </div>
+        <div class="col-md-6 mb-2">
+          <strong>Tempistica:</strong> {{ cliente.tempistica }}
+        </div>
+        <div class="col-md-6 mb-2">
+          <strong>Operatori:</strong> {{ cliente.nOperatori }}
+        </div>
+        <div class="col-md-6 mb-2">
+          <strong>Chiavi:</strong> {{ cliente.key ? "Sì" : "No" }}
+        </div>
+      </div>
+
+      <hr />
+      <p><strong>Note:</strong> {{ cliente.note }}</p>
+      <p>
+        <strong>Descrizione Immobile:</strong> {{ cliente.descrizioneImmobile }}
+      </p>
+    </div>
   </div>
 </div>

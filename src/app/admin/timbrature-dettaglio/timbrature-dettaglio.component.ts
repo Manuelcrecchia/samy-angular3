@@ -1,9 +1,9 @@
-import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { GlobalService } from '../../service/global.service';
 import { Location } from '@angular/common';
-import { Router } from '@angular/router';
+declare var bootstrap: any;
 
 @Component({
   selector: 'app-timbrature-dettaglio',
@@ -11,11 +11,26 @@ import { Router } from '@angular/router';
   styleUrls: ['./timbrature-dettaglio.component.css'],
 })
 export class TimbratureDettaglioComponent implements OnInit {
+  @ViewChild('timbraturaModal') modalElement!: ElementRef;
+
   employeeId!: number;
   employee: any;
   date!: string;
   works: any[] = [];
-  loading: boolean = false;
+  loading = false;
+
+  modalMode: 'add' | 'edit' | 'delete' | 'resolve' = 'add';
+  modalTitle = '';
+  modalData: any = {
+    entrata: '',
+    uscita: '',
+    note: '',
+    action: '',
+    solutions: [],
+    tipo: '',
+  };
+  currentWork: any;
+  currentStamp: any;
 
   constructor(
     private route: ActivatedRoute,
@@ -31,7 +46,7 @@ export class TimbratureDettaglioComponent implements OnInit {
     this.loadTimbrature();
   }
 
-  // 🔹 Carica i dati del dipendente e le timbrature del giorno
+  // 🔹 Carica timbrature
   loadTimbrature() {
     this.loading = true;
     this.http
@@ -63,149 +78,231 @@ export class TimbratureDettaglioComponent implements OnInit {
     this.loadTimbrature();
   }
 
-  // 🔹 Aggiungi nuova timbratura
-  addStamping(work: any) {
-    const entrata = prompt('Orario di entrata (HH:mm):', '');
-    if (!entrata) return;
-    const uscita = prompt('Orario di uscita (HH:mm):', '');
-    const note = prompt('Motivo dell’aggiunta:', '');
-
-    const body: any = {
-      employeeId: this.employeeId,
-      customerId: work.customerId,
-      date: this.date,
-      entrata,
-      uscita,
-      note,
-    };
-
-    this.http
-      .post(`${this.global.url}admin/stamping/add`, body, {
-        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
-      })
-      .subscribe({
-        next: () => {
-          alert('Timbratura aggiunta con successo.');
-          this.loadTimbrature();
-        },
-        error: (err) => {
-          console.error('Errore aggiunta timbratura:', err);
-          alert('Errore durante il salvataggio della timbratura.');
-        },
-      });
+  // 🔹 Toast Bootstrap
+  showToast(message: string, error: boolean = false) {
+    const toastEl = document.getElementById('liveToast');
+    const toastBody = document.getElementById('toastBody');
+    if (!toastEl || !toastBody) return;
+    toastBody.textContent = message;
+    toastEl.className = `toast align-items-center text-bg-${
+      error ? 'danger' : 'success'
+    } border-0`;
+    const toast = new bootstrap.Toast(toastEl, { delay: 3000 });
+    toast.show();
   }
 
-  // 🔹 Modifica o elimina una timbratura
+  // 🔹 Aggiungi timbratura
+  addStamping(work: any) {
+    this.modalMode = 'add';
+    this.modalTitle = 'Aggiungi timbratura';
+    this.currentWork = work;
+    this.modalData = { entrata: '', uscita: '', note: '', tipo: '' };
+    const modal = new bootstrap.Modal(this.modalElement.nativeElement);
+    modal.show();
+  }
+
+  // 🔹 Modifica timbratura
   editStamping(stamp: any) {
-    const choice = prompt(
-      'Vuoi MODIFICARE (M) o ELIMINARE (E) questa timbratura?',
-      'M'
-    );
+    this.modalMode = 'edit';
+    this.modalTitle = 'Modifica timbratura';
+    this.currentStamp = stamp;
 
-    if (!choice) return;
+    const tipo = stamp.tipo?.toLowerCase() || '';
+    const orario = this.formatHour(stamp.timestamp);
 
-    if (choice.toUpperCase() === 'E') {
-      const note = prompt('Motivo eliminazione:', '');
+    // 🔹 Se presente anche customerId lo salviamo per sicurezza
+    this.currentWork = { customerId: stamp.customerId || null };
+
+    this.modalData = {
+      tipo,
+      entrata: tipo === 'entrata' ? orario : '',
+      uscita: tipo === 'uscita' ? orario : '',
+      note: '',
+    };
+
+    const modal = new bootstrap.Modal(this.modalElement.nativeElement);
+    modal.show();
+  }
+
+  // 🔹 Elimina timbratura
+  deleteStamping(stamp: any) {
+    this.modalMode = 'delete';
+    this.modalTitle = 'Elimina timbratura';
+    this.currentStamp = stamp;
+    this.modalData = { note: '' };
+    const modal = new bootstrap.Modal(this.modalElement.nativeElement);
+    modal.show();
+  }
+
+  // 🔹 Risolvi errore
+  resolveError(work: any) {
+    this.modalMode = 'resolve';
+    this.modalTitle = `Risolvi errore: ${work.errorType}`;
+    this.currentWork = work;
+    this.modalData = { note: '', action: '', solutions: work.solutions || [] };
+    const modal = new bootstrap.Modal(this.modalElement.nativeElement);
+    modal.show();
+  }
+
+  // 🔹 Conferma azione dal modale
+  confirmModal() {
+    const { entrata, uscita, note, action } = this.modalData;
+
+    // ➕ ADD
+    if (this.modalMode === 'add') {
+      if (!entrata && !uscita) {
+        this.showToast(
+          '⚠️ Inserisci almeno un orario di entrata o uscita',
+          true
+        );
+        return;
+      }
+
+      if (entrata && uscita) {
+        const [h1, m1] = entrata.split(':').map(Number);
+        const [h2, m2] = uscita.split(':').map(Number);
+        const d1 = new Date(0, 0, 0, h1, m1);
+        const d2 = new Date(0, 0, 0, h2, m2);
+        if (d2 <= d1) {
+          this.showToast(
+            '⚠️ L’uscita deve essere successiva all’entrata',
+            true
+          );
+          return;
+        }
+      }
+
+      const body = {
+        employeeId: this.employeeId,
+        customerId: this.currentWork?.customerId || null,
+        date: this.date,
+        entrata: entrata || null,
+        uscita: uscita || null,
+        note,
+      };
+      console.log('➡️ BODY INVIATO A /add:', body);
+
       this.http
-        .delete(`${this.global.url}admin/stamping/delete/${stamp.id}`, {
+        .post(`${this.global.url}admin/stamping/add`, body, {
           headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
-          body: { note },
         })
         .subscribe({
           next: () => {
-            alert('Timbratura eliminata.');
+            this.showToast('✅ Timbratura aggiunta con successo');
             this.loadTimbrature();
           },
           error: (err) => {
-            console.error('Errore eliminazione:', err);
-            alert('Errore durante l’eliminazione.');
+            console.error('Errore aggiunta:', err);
+            this.showToast('❌ Errore durante il salvataggio', true);
           },
         });
-    } else {
-      const time = prompt(
-        'Inserisci nuovo orario (HH:mm) o lascia vuoto per annullare:',
-        ''
-      );
-      if (!time) return;
-      const note = prompt('Motivo modifica:', '');
-      const body = {
-        date: this.date,
-        time,
-        note,
-      };
+      return;
+    }
+
+    // ✏️ EDIT
+    if (this.modalMode === 'edit') {
+      if (!entrata && !uscita) {
+        this.showToast('⚠️ Inserisci un orario di entrata o uscita', true);
+        return;
+      }
+
+      const time = entrata || uscita;
+      const body = { date: this.date, time, note };
 
       this.http
-        .put(`${this.global.url}admin/stamping/edit/${stamp.id}`, body, {
-          headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
-        })
+        .put(
+          `${this.global.url}admin/stamping/edit/${this.currentStamp?.id}`,
+          body,
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem('token')}`,
+            },
+          }
+        )
         .subscribe({
           next: () => {
-            alert('Timbratura modificata.');
+            this.showToast('✅ Timbratura modificata con successo');
             this.loadTimbrature();
           },
           error: (err) => {
             console.error('Errore modifica:', err);
-            alert('Errore durante la modifica.');
+            this.showToast('❌ Errore durante la modifica', true);
           },
         });
-    }
-  }
-
-  // 🔹 Risolvi errore su un lavoro
-  resolveError(work: any) {
-    // Caso speciale: Turno non previsto
-    if (work.errorType === 'TURNO_NON_PREVISTO') {
-      const choice = prompt(
-        'Timbratura su turno non pianificato. Scegli azione:\n1) Ignora errore\n2) Crea turno automatico',
-        '1'
-      );
-      if (!choice) return;
-
-      if (choice === '2') {
-        alert('→ Creazione automatica turno non ancora implementata.');
-      } else {
-        alert('→ Errore ignorato.');
-      }
       return;
     }
 
-    // Altri errori (già gestiti)
-    const action = prompt(
-      `Errore "${work.errorType}" - Scegli azione:\n1) ${work.solutions[0]?.label}\n2) ${work.solutions[1]?.label}`,
-      '1'
-    );
+    // 🗑️ DELETE
+    if (this.modalMode === 'delete') {
+      this.http
+        .delete(
+          `${this.global.url}admin/stamping/delete/${this.currentStamp?.id}`,
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem('token')}`,
+            },
+            body: { note },
+          }
+        )
+        .subscribe({
+          next: () => {
+            this.showToast('🗑️ Timbratura eliminata');
+            this.loadTimbrature();
+          },
+          error: (err) => {
+            console.error('Errore eliminazione:', err);
+            this.showToast('❌ Errore durante l’eliminazione', true);
+          },
+        });
+      return;
+    }
 
-    if (!action) return;
-    const selected =
-      action === '1' ? work.solutions[0]?.code : work.solutions[1]?.code;
-    const note = prompt('Motivo decisione:', '');
+    // ⚠️ RESOLVE ERROR
+    if (this.modalMode === 'resolve') {
+      if (!action) {
+        this.showToast('⚠️ Seleziona un’azione per risolvere l’errore', true);
+        return;
+      }
 
-    this.http
-      .post(
-        `${this.global.url}admin/stamping/resolveError`,
-        {
-          employeeId: this.employeeId,
-          date: this.date,
-          shiftId: work.shiftId,
-          action: selected,
-          note,
-        },
-        {
-          headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
-        }
-      )
-      .subscribe({
-        next: () => {
-          alert('Errore risolto.');
-          this.loadTimbrature();
-        },
-        error: (err) => {
-          console.error('Errore risoluzione:', err);
-          alert('Errore durante la risoluzione.');
-        },
-      });
+      this.http
+        .post(
+          `${this.global.url}admin/stamping/resolveError`,
+          {
+            employeeId: this.employeeId,
+            date: this.date,
+            shiftId: this.currentWork.shiftId,
+            action,
+            note,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem('token')}`,
+            },
+          }
+        )
+        .subscribe({
+          next: () => {
+            this.showToast('✅ Errore risolto correttamente');
+            this.loadTimbrature();
+          },
+          error: (err) => {
+            console.error('Errore risoluzione:', err);
+            this.showToast('❌ Errore durante la risoluzione', true);
+          },
+        });
+      return;
+    }
   }
 
+  // 🔹 Helper per formattare l’orario
+  formatHour(timestamp: string | Date): string {
+    const d = new Date(timestamp);
+    const h = d.getHours().toString().padStart(2, '0');
+    const m = d.getMinutes().toString().padStart(2, '0');
+    return `${h}:${m}`;
+  }
+
+  // 🔙 Torna indietro
   back(): void {
     this.location.back();
   }

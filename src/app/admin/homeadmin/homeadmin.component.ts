@@ -54,21 +54,11 @@ export class HomeAdminComponent implements OnInit {
   }
 
   navigateToUserSettings() {
-    if (this.global.admin == 'S') {
-      this.router.navigateByUrl('/userSettings');
-    } else {
-      this.popup.text = 'NON SEI AUTORIZZATO AD ACCEDERE A QUESTA FUNZIONE';
-      this.popup.openPopup();
-    }
+    this.router.navigateByUrl('/userSettings');
   }
 
   navigateToSettingsEmployees() {
-    if (this.global.admin == 'S') {
-      this.router.navigateByUrl('/settingsemployees');
-    } else {
-      this.popup.text = 'NON SEI AUTORIZZATO AD ACCEDERE A QUESTA FUNZIONE';
-      this.popup.openPopup();
-    }
+    this.router.navigateByUrl('/settingsemployees');
   }
 
   navigateToQuotesHome() {
@@ -80,12 +70,7 @@ export class HomeAdminComponent implements OnInit {
   }
 
   navigateToListCustomer() {
-    if (this.global.admin == 'A' || this.global.admin == 'S') {
-      this.router.navigateByUrl('/listCustomer');
-    } else {
-      this.popup.text = 'NON SEI AUTORIZZATO AD ACCEDERE A QUESTA FUNZIONE';
-      this.popup.openPopup();
-    }
+    this.router.navigateByUrl('/listCustomer');
   }
 
   goToShifts() {
@@ -106,12 +91,7 @@ export class HomeAdminComponent implements OnInit {
     this.router.navigateByUrl('/cambiapassword');
   }
   navigateToGestioneemployees() {
-    if (this.global.admin == 'A' || this.global.admin == 'S') {
-      this.router.navigateByUrl('/gestioneemployees');
-    } else {
-      this.popup.text = 'NON SEI AUTORIZZATO AD ACCEDERE A QUESTA FUNZIONE';
-      this.popup.openPopup();
-    }
+    this.router.navigateByUrl('/gestioneemployees');
   }
   @HostListener('window:popstate', ['$event'])
   onPopState(event: PopStateEvent) {

@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { GlobalService } from '../../service/global.service';
 import { Router } from '@angular/router';
-import { CategoriaModalComponent } from './categoria-modal/categoria-modal.component';
 import { NgbModal, NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
@@ -51,22 +50,10 @@ export class GestioneEmployeesComponent implements OnInit {
     this.router.navigate(['/documenti/employee', id]);
   }
 
-  apriCategoria(emp: any) {
-    const modalRef = this.modalService.open(CategoriaModalComponent, {
-      size: 'md',
-      backdrop: 'static',
+  goToAssenze(empId: number) {
+    this.router.navigate(['/gestioneassenze'], {
+      queryParams: { employeeId: empId },
     });
-    modalRef.componentInstance.emp = emp;
-
-    modalRef.result.then(
-      (res) => {
-        if (res) {
-          console.log('Categoria aggiunta per', emp.nome);
-          // puoi aggiornare la tabella o mostrare un toast
-        }
-      },
-      () => {}
-    );
   }
 
   back() {

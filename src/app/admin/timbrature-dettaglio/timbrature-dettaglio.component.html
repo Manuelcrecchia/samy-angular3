@@ -7,7 +7,6 @@
     Timbrature di {{ employee?.nome }} {{ employee?.cognome }}
   </h2>
 
-  <!-- Data -->
   <div class="d-flex justify-content-center align-items-center mb-4 gap-3">
     <button class="btn btn-outline-secondary" (click)="changeDate(-1)">
       <i class="fas fa-chevron-left"></i>
@@ -25,7 +24,6 @@
     </button>
   </div>
 
-  <!-- Tabella lavori -->
   <div *ngIf="!loading; else loadingTpl">
     <table class="table table-hover align-middle text-center shadow-sm">
       <thead class="table-pink">
@@ -53,44 +51,39 @@
             {{ work.diffMinutes }}
           </td>
           <td>
-            <!-- 🔴 Straordinario / Riduzione -->
             <span
-              *ngIf="
-                work.errorType === 'STRAORDINARIO' ||
-                work.errorType === 'RIDUZIONE'
-              "
-              class="badge bg-danger"
+              *ngIf="work.errorType"
+              class="badge"
+              [ngClass]="{
+                'bg-danger': work.errorType !== 'TURNO_NON_PREVISTO',
+                'bg-warning text-dark': work.errorType === 'TURNO_NON_PREVISTO'
+              }"
               style="cursor: pointer"
               (click)="resolveError(work)"
             >
               {{ work.errorType }}
             </span>
-
-            <!-- 🟠 Turno non previsto -->
-            <span
-              *ngIf="work.errorType === 'TURNO_NON_PREVISTO'"
-              class="badge bg-warning text-dark"
-              style="cursor: pointer"
-              (click)="resolveError(work)"
-            >
-              Turno non previsto
-            </span>
-
-            <!-- 🟢 Nessun errore -->
             <span *ngIf="!work.errorType" class="badge bg-success">OK</span>
           </td>
 
           <td>
-            <div *ngFor="let stamp of work.stamps" class="mb-1">
+            <div *ngFor="let stamp of work.stamps" class="mb-1 d-flex gap-1">
               <button
-                class="btn btn-sm btn-outline-secondary w-100"
+                class="btn btn-sm btn-outline-secondary flex-grow-1"
                 (click)="editStamping(stamp)"
               >
                 {{ stamp.tipo | uppercase }} -
                 {{ stamp.timestamp | date : "HH:mm" }}
               </button>
+              <button
+                class="btn btn-sm btn-outline-danger"
+                (click)="deleteStamping(stamp)"
+              >
+                <i class="fas fa-trash"></i>
+              </button>
             </div>
           </td>
+
           <td>
             <button
               class="btn btn-sm btn-outline-primary"
@@ -110,4 +103,124 @@
       <p class="mt-2">Caricamento timbrature...</p>
     </div>
   </ng-template>
+</div>
+
+<!-- ✅ Modale universale -->
+<div class="modal fade" id="modalTimbratura" tabindex="-1" #timbraturaModal>
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content shadow-lg rounded-4">
+      <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title">{{ modalTitle }}</h5>
+        <button
+          type="button"
+          class="btn-close btn-close-white"
+          data-bs-dismiss="modal"
+        ></button>
+      </div>
+
+      <div class="modal-body">
+        <!-- 🔹 Campi orari -->
+        <div *ngIf="modalMode !== 'delete' && modalMode !== 'resolve'">
+          <!-- Caso: Aggiungi (mostra entrambi) -->
+          <ng-container *ngIf="modalMode === 'add'; else editMode">
+            <div class="mb-3">
+              <label class="form-label">Entrata (HH:mm)</label>
+              <input
+                type="time"
+                class="form-control"
+                [(ngModel)]="modalData.entrata"
+              />
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Uscita (HH:mm)</label>
+              <input
+                type="time"
+                class="form-control"
+                [(ngModel)]="modalData.uscita"
+              />
+            </div>
+          </ng-container>
+
+          <!-- Caso: Modifica (mostra solo il tipo selezionato) -->
+          <ng-template #editMode>
+            <div class="mb-3" *ngIf="modalData.tipo === 'entrata'">
+              <label class="form-label">Entrata (HH:mm)</label>
+              <input
+                type="time"
+                class="form-control"
+                [(ngModel)]="modalData.entrata"
+              />
+            </div>
+            <div class="mb-3" *ngIf="modalData.tipo === 'uscita'">
+              <label class="form-label">Uscita (HH:mm)</label>
+              <input
+                type="time"
+                class="form-control"
+                [(ngModel)]="modalData.uscita"
+              />
+            </div>
+          </ng-template>
+        </div>
+
+        <!-- 🔹 Scelte per resolveError -->
+        <div *ngIf="modalMode === 'resolve'" class="mb-3">
+          <label class="form-label">Azione da eseguire</label>
+          <select class="form-select" [(ngModel)]="modalData.action">
+            <option *ngFor="let opt of modalData.solutions" [value]="opt.code">
+              {{ opt.label }}
+            </option>
+          </select>
+        </div>
+
+        <!-- 🔹 Campo motivo -->
+        <div class="mb-3">
+          <label class="form-label">
+            {{
+              modalMode === "delete"
+                ? "Motivo eliminazione"
+                : modalMode === "resolve"
+                ? "Motivo decisione"
+                : modalMode === "edit"
+                ? "Motivo modifica"
+                : "Motivo"
+            }}
+          </label>
+          <input
+            type="text"
+            class="form-control"
+            [(ngModel)]="modalData.note"
+            placeholder="Inserisci una nota"
+          />
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+          Annulla
+        </button>
+        <button
+          type="button"
+          class="btn btn-primary"
+          (click)="confirmModal()"
+          data-bs-dismiss="modal"
+        >
+          Conferma
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ✅ Toast -->
+<div class="toast-container position-fixed bottom-0 end-0 p-3">
+  <div id="liveToast" class="toast align-items-center border-0" role="alert">
+    <div class="d-flex">
+      <div id="toastBody" class="toast-body"></div>
+      <button
+        type="button"
+        class="btn-close me-2 m-auto"
+        data-bs-dismiss="toast"
+      ></button>
+    </div>
+  </div>
 </div>

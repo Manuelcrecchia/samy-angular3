@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { CategoriaModalComponent } from './categoria-modal.component';
+import { CustomModalComponent } from './custom-modal.component';
 
-describe('CategoriaModalComponent', () => {
-  let component: CategoriaModalComponent;
-  let fixture: ComponentFixture<CategoriaModalComponent>;
+describe('CustomModalComponent', () => {
+  let component: CustomModalComponent;
+  let fixture: ComponentFixture<CustomModalComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [CategoriaModalComponent]
+      declarations: [CustomModalComponent]
     })
     .compileComponents();
     
-    fixture = TestBed.createComponent(CategoriaModalComponent);
+    fixture = TestBed.createComponent(CustomModalComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

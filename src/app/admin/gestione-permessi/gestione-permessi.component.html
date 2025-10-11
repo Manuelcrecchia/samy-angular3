@@ -17,25 +17,25 @@
 
   <div class="list-group mt-3" *ngIf="leaveRequests.length > 0">
     <div class="list-group-item" *ngFor="let req of leaveRequests">
-      <div class="d-flex justify-content-between align-items-center">
+      <div class="d-flex justify-content-between align-items-center flex-wrap">
         <div>
           <strong>{{ req.employee?.nome }} {{ req.employee?.cognome }}</strong
           ><br />
           Email: {{ req.employee?.email }}<br />
-          Tipo: <strong class="text-capitalize">{{ req.tipoPermesso }}</strong><br />
-
+          Tipo: <strong class="text-capitalize">{{ req.tipoPermesso }}</strong
+          ><br />
 
           <ng-container *ngIf="req.fromDate === req.toDate">
-            Giorno: {{ req.fromDate | date: 'mediumDate' }}
+            Giorno: {{ req.fromDate | date : "mediumDate" }}
           </ng-container>
           <ng-container *ngIf="req.fromDate !== req.toDate">
-            Dal: {{ req.fromDate | date: 'mediumDate' }}<br />
-            Al: {{ req.toDate | date: 'mediumDate' }}
+            Dal: {{ req.fromDate | date : "mediumDate" }}<br />
+            Al: {{ req.toDate | date : "mediumDate" }}
           </ng-container>
-          
         </div>
-        <div class="btn-group">
-          <button class="btn btn-success" (click)="accetta(req)">
+
+        <div class="btn-group mt-2 mt-sm-0">
+          <button class="btn btn-success" (click)="openModal(req)">
             Accetta
           </button>
           <button class="btn btn-danger" (click)="rifiuta(req.id)">
@@ -43,6 +43,88 @@
           </button>
         </div>
       </div>
+    </div>
+  </div>
+</div>
+
+<!-- 🔹 MODALE ACCETTAZIONE -->
+<div
+  #permessoModal
+  class="modal fade"
+  tabindex="-1"
+  aria-labelledby="permessoModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="permessoModalLabel">
+          Accetta richiesta permesso
+        </h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+        ></button>
+      </div>
+
+      <div class="modal-body">
+        <p class="fw-semibold mb-3">
+          Stai accettando la richiesta di
+          <strong
+            >{{ selectedRequest?.employee?.nome }}
+            {{ selectedRequest?.employee?.cognome }}</strong
+          >.
+        </p>
+
+        <div class="mb-3">
+          <label class="form-label">Categoria</label>
+          <select class="form-select" [(ngModel)]="modalData.categoria">
+            <option value="Ferie">Ferie</option>
+            <option value="Permessi/ROL">Permessi/ROL</option>
+          </select>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">Ore giornaliere (facoltativo)</label>
+          <input
+            type="number"
+            class="form-control"
+            min="0"
+            max="24"
+            step="0.5"
+            [(ngModel)]="modalData.oreGiornaliere"
+            placeholder="es. 8"
+          />
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+          Annulla
+        </button>
+        <button type="button" class="btn btn-primary" (click)="confirmAccept()">
+          Conferma
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 🔹 TOAST -->
+<div class="toast-container position-fixed bottom-0 end-0 p-3">
+  <div
+    id="liveToast"
+    class="toast align-items-center text-bg-success border-0"
+    role="alert"
+  >
+    <div class="d-flex">
+      <div class="toast-body" id="toastBody">Operazione completata.</div>
+      <button
+        type="button"
+        class="btn-close btn-close-white me-2 m-auto"
+        data-bs-dismiss="toast"
+      ></button>
     </div>
   </div>
 </div>

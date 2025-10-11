@@ -24,9 +24,6 @@ import { NavbarComponent } from './sito/navbar/navbar.component';
 import { GestioneEmployeesComponent } from './admin/gestione-employees/gestione-employees.component';
 import { SettingsEmployeesComponent } from './admin/settings-employees/settings-employees.component';
 import { DocumentManagerComponent } from './admin/document-manager/document-manager.component';
-import { AuthGuard } from './auth.guard';
-import { AuthSGuard } from './auth-s.guard';
-import { AuthAGuard } from './auth-a.guard';
 import { ViewPdfComponent } from './admin/view-pdf/view-pdf.component';
 import { BlogComponent } from './componenti/sito/blog/blog.component';
 import { ConvenzioniPromozioniComponent } from './componenti/sito/convenzioni-promozioni/convenzioni-promozioni.component';
@@ -38,6 +35,10 @@ import { GestionePermessiComponent } from './admin/gestione-permessi/gestione-pe
 import { RiepilogoPresenzeComponent } from './admin/riepilogo-presenze/riepilogo-presenze.component';
 import { TimbratureHomeComponent } from './admin/timbrature-home/timbrature-home.component';
 import { TimbratureDettaglioComponent } from './admin/timbrature-dettaglio/timbrature-dettaglio.component';
+
+import { AuthGuard } from './auth.guard';
+import { AuthLevelGuard } from './auth-level.guard';
+import { GestioneAssenzeComponent } from './admin/gestione-assenze/gestione-assenze.component';
 
 const routes: Routes = [
   { path: '', component: HomesitoComponent },
@@ -55,102 +56,148 @@ const routes: Routes = [
   { path: 'straordinaria', component: StraordinariaComponent },
   { path: 'domestica', component: DomesticaComponent },
   { path: 'passworddimenticata', component: PassworddimenticataComponent },
+
+  // 🔹 ADMIN AREA
   {
     path: 'homeAdmin',
     component: HomeAdminComponent,
-    canActivate: [AuthGuard],
+    canActivate: [AuthGuard, AuthLevelGuard],
+    data: { level: 'B' },
   },
   {
     path: 'userSettings',
     component: UserSettingsComponent,
-    canActivate: [AuthSGuard, AuthGuard],
+    canActivate: [AuthGuard, AuthLevelGuard],
+    data: { level: 'S' },
   },
   {
     path: 'quotesHome',
     component: QuotesHomeComponent,
-    canActivate: [AuthGuard],
+    canActivate: [AuthGuard, AuthLevelGuard],
+    data: { level: 'B' },
   },
-  { path: 'addQuote', component: AddQuoteComponent, canActivate: [AuthGuard] },
+  {
+    path: 'addQuote',
+    component: AddQuoteComponent,
+    canActivate: [AuthGuard, AuthLevelGuard],
+    data: { level: 'B' },
+  },
   {
     path: 'editQuote',
     component: EditQuoteComponent,
-    canActivate: [AuthGuard],
+    canActivate: [AuthGuard, AuthLevelGuard],
+    data: { level: 'B' },
   },
   {
     path: 'listCustomer',
     component: ListCustomerComponent,
-    canActivate: [AuthAGuard, AuthGuard],
+    canActivate: [AuthGuard, AuthLevelGuard],
+    data: { level: 'B' },
   },
   {
     path: 'addCustomer',
     component: AddCustomerComponent,
-    canActivate: [AuthGuard],
+    canActivate: [AuthGuard, AuthLevelGuard],
+    data: { level: 'A' },
   },
   {
     path: 'gestioneemployees',
     component: GestioneEmployeesComponent,
-    canActivate: [AuthAGuard, AuthGuard],
+    canActivate: [AuthGuard, AuthLevelGuard],
+    data: { level: 'B' },
   },
+  {
+    path: 'gestioneassenze',
+    component: GestioneAssenzeComponent,
+    canActivate: [AuthGuard, AuthLevelGuard],
+    data: { level: 'A' }, // ✅ Solo Admin e Superadmin
+  },
+
   {
     path: 'settingsemployees',
     component: SettingsEmployeesComponent,
-    canActivate: [AuthSGuard, AuthGuard],
+    canActivate: [AuthGuard, AuthLevelGuard],
+    data: { level: 'A' },
   },
   {
     path: 'documenti/employee/:id',
     component: DocumentManagerComponent,
-    canActivate: [AuthGuard],
+    canActivate: [AuthGuard, AuthLevelGuard],
+    data: { level: 'A' },
   },
   {
     path: 'documenti/client/:id',
     component: DocumentManagerComponent,
-    canActivate: [AuthGuard],
+    canActivate: [AuthGuard, AuthLevelGuard],
+    data: { level: 'A' },
   },
-  { path: 'view-pdf', component: ViewPdfComponent, canActivate: [AuthGuard] },
+  {
+    path: 'view-pdf',
+    component: ViewPdfComponent,
+    canActivate: [AuthGuard, AuthLevelGuard],
+    data: { level: 'B' },
+  },
   {
     path: 'editCustomer',
     component: EditCustomerComponent,
-    canActivate: [AuthGuard],
+    canActivate: [AuthGuard, AuthLevelGuard],
+    data: { level: 'A' },
   },
   {
     path: 'riepilogo-presenze',
     component: RiepilogoPresenzeComponent,
-    canActivate: [AuthAGuard],
+    canActivate: [AuthGuard, AuthLevelGuard],
+    data: { level: 'B' },
   },
   {
     path: 'schedaCliente/:numeroCliente',
     component: SchedaClienteComponent,
-    canActivate: [AuthGuard],
+    canActivate: [AuthGuard, AuthLevelGuard],
+    data: { level: 'B' },
   },
   {
     path: 'admin/shifts',
     component: ShiftHomeComponent,
-    canActivate: [AuthGuard, AuthAGuard],
+    canActivate: [AuthGuard, AuthLevelGuard],
+    data: { level: 'B' },
   },
   {
     path: 'admin/shifts/create',
     component: CreateShiftComponent,
-    canActivate: [AuthGuard, AuthAGuard],
+    canActivate: [AuthGuard, AuthLevelGuard],
+    data: { level: 'A' },
   },
   {
     path: 'gestionepermessi',
     component: GestionePermessiComponent,
-    canActivate: [AuthGuard, AuthSGuard],
+    canActivate: [AuthGuard, AuthLevelGuard],
+    data: { level: 'A' },
   },
   {
     path: 'cambiapassword',
     component: CambiapasswordComponent,
-    canActivate: [AuthGuard],
+    canActivate: [AuthGuard, AuthLevelGuard],
+    data: { level: 'B' },
   },
   {
     path: 'calendarHome',
     component: CalendarHomeComponent,
-    canActivate: [AuthGuard],
+    canActivate: [AuthGuard, AuthLevelGuard],
+    data: { level: 'B' },
   },
-  { path: 'timbratureHome', component: TimbratureHomeComponent },
+
+  // 🔹 TIMBRATURE SOLO SUPERADMIN
+  {
+    path: 'timbratureHome',
+    component: TimbratureHomeComponent,
+    canActivate: [AuthGuard, AuthLevelGuard],
+    data: { level: 'S' },
+  },
   {
     path: 'timbratureDettaglio/:employeeId/:date',
     component: TimbratureDettaglioComponent,
+    canActivate: [AuthGuard, AuthLevelGuard],
+    data: { level: 'S' },
   },
 ];
 

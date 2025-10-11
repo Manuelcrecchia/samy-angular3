@@ -8,22 +8,33 @@ import { Router } from '@angular/router';
 @Component({
   selector: 'app-scheda-cliente',
   templateUrl: './scheda-cliente.component.html',
-  styleUrls: ['./scheda-cliente.component.css']
+  styleUrls: ['./scheda-cliente.component.css'],
 })
 export class SchedaClienteComponent implements OnInit {
-  cliente: any = {};
+  cliente: any | null = null;
 
-  constructor(public globalService: GlobalService, private http: HttpClient, private router: Router, private route: ActivatedRoute){}
+  constructor(
+    public globalService: GlobalService,
+    private http: HttpClient,
+    private router: Router,
+    private route: ActivatedRoute
+  ) {}
   ngOnInit(): void {
     const numeroCliente = this.route.snapshot.paramMap.get('numeroCliente');
     if (numeroCliente) {
-      this.http.post(this.globalService.url + 'customers/getCustomer', {
-        numeroCliente: numeroCliente
-      }, {
-        headers: this.globalService.headers
-      }).subscribe((res: any) => {
-        this.cliente = res[0];
-      });
+      this.http
+        .post(
+          this.globalService.url + 'customers/getCustomer',
+          {
+            numeroCliente: numeroCliente,
+          },
+          {
+            headers: this.globalService.headers,
+          }
+        )
+        .subscribe((res: any) => {
+          this.cliente = res[0];
+        });
     }
   }
   parseJson(val: string): string[] {
@@ -34,8 +45,7 @@ export class SchedaClienteComponent implements OnInit {
     }
   }
 
-
-  back(){
-    this.router.navigateByUrl('/listCustomer')
+  back() {
+    this.router.navigateByUrl('/listCustomer');
   }
 }

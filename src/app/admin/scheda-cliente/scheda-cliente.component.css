@@ -1,0 +1,21 @@
+.card {
+  border-radius: 1rem;
+}
+
+h2 {
+  font-weight: 600;
+}
+
+.list-group-item {
+  background: transparent;
+  border: none;
+  padding-left: 0;
+}
+
+.btn {
+  transition: all 0.2s ease-in-out;
+}
+
+.btn:hover {
+  transform: scale(1.05);
+}

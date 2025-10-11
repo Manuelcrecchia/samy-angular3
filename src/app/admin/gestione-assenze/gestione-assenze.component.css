@@ -1,0 +1,23 @@
+.table {
+  border-radius: 0.75rem;
+  overflow: hidden;
+}
+
+.btn {
+  transition: all 0.2s ease-in-out;
+}
+
+.btn:hover {
+  transform: scale(1.05);
+}
+
+.btn-pink {
+  background-color: #e83e8c;
+  color: white;
+  border: none;
+}
+
+.btn-pink:hover {
+  background-color: #d63384;
+  color: white;
+}

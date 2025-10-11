@@ -1,0 +1,10 @@
+.modal-content {
+  border: none;
+  overflow: hidden;
+}
+.modal-header {
+  border-bottom: 0;
+}
+.modal-footer {
+  border-top: 0;
+}
