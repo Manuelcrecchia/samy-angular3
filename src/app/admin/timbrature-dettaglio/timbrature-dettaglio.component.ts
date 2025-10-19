@@ -264,22 +264,27 @@ export class TimbratureDettaglioComponent implements OnInit {
         return;
       }
 
+      const body: any = {
+        employeeId: this.employeeId,
+        date: this.date,
+        action,
+        note,
+      };
+
+      // Se esiste shiftId, lo inviamo
+      if (this.currentWork.shiftId) body.shiftId = this.currentWork.shiftId;
+
+      // Se è un "turno non previsto", serve anche customerId
+      if (this.currentWork.errorType === 'TURNO_NON_PREVISTO') {
+        body.customerId = this.currentWork.customerId;
+      }
+
       this.http
-        .post(
-          `${this.global.url}admin/stamping/resolveError`,
-          {
-            employeeId: this.employeeId,
-            date: this.date,
-            shiftId: this.currentWork.shiftId,
-            action,
-            note,
+        .post(`${this.global.url}admin/stamping/resolveError`, body, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
           },
-          {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem('token')}`,
-            },
-          }
-        )
+        })
         .subscribe({
           next: () => {
             this.showToast('✅ Errore risolto correttamente');

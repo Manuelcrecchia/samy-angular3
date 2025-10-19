@@ -1,13 +1,20 @@
 <div class="container py-4">
+  <!-- 🔙 Torna indietro -->
   <div class="d-flex justify-content-start align-items-center mb-3">
-    <button class="btn-back" (click)="back()">&larr; Torna Indietro</button>
+    <button class="btn-back" (click)="back()">
+      <i class="fas fa-arrow-left me-2"></i> Torna Indietro
+    </button>
   </div>
 
-  <h2 class="text-center mb-3">
+  <!-- 👤 Intestazione -->
+  <h2 class="text-center mb-3 fw-bold">
     Timbrature di {{ employee?.nome }} {{ employee?.cognome }}
   </h2>
 
-  <div class="d-flex justify-content-center align-items-center mb-4 gap-3">
+  <!-- 📅 Controllo data -->
+  <div
+    class="d-flex justify-content-center align-items-center mb-4 gap-3 flex-wrap"
+  >
     <button class="btn btn-outline-secondary" (click)="changeDate(-1)">
       <i class="fas fa-chevron-left"></i>
     </button>
@@ -16,7 +23,8 @@
       type="date"
       [(ngModel)]="date"
       (change)="loadTimbrature()"
-      class="form-control w-auto text-center"
+      class="form-control text-center"
+      style="max-width: 200px"
     />
 
     <button class="btn btn-outline-secondary" (click)="changeDate(1)">
@@ -24,24 +32,46 @@
     </button>
   </div>
 
+  <!-- 📋 Tabella principale -->
   <div *ngIf="!loading; else loadingTpl">
     <table class="table table-hover align-middle text-center shadow-sm">
-      <thead class="table-pink">
+      <thead class="table-light">
         <tr>
-          <th>Lavoro</th>
+          <th>Cliente / Lavoro</th>
           <th>Durata pianificata</th>
           <th>Durata effettiva</th>
           <th>Diff</th>
-          <th>Errore</th>
+          <th>Stato</th>
           <th>Timbrature</th>
           <th>Azioni</th>
         </tr>
       </thead>
+
       <tbody>
-        <tr *ngFor="let work of works">
-          <td>{{ work.label }}</td>
+        <tr
+          *ngFor="let work of works"
+          [ngClass]="{
+            'table-success': !work.errorType,
+            'table-warning':
+              work.errorType === 'STRAORDINARIO' ||
+              work.errorType === 'RIDUZIONE',
+            'table-danger':
+              work.errorType === 'TURNO_NON_PREVISTO' ||
+              work.errorType === 'nonPianificata'
+          }"
+        >
+          <!-- 🏷 Cliente/Lavoro -->
+          <td>
+            <strong>{{ work.label }}</strong>
+          </td>
+
+          <!-- ⏱ Pianificato -->
           <td>{{ work.plannedMinutes }} min</td>
+
+          <!-- ⏱ Effettivo -->
           <td>{{ work.stampedMinutes }} min</td>
+
+          <!-- 🔁 Differenza -->
           <td
             [ngClass]="{
               'text-success': work.diffMinutes === 0,
@@ -50,22 +80,35 @@
           >
             {{ work.diffMinutes }}
           </td>
+
+          <!-- ⚠️ Stato -->
           <td>
             <span
               *ngIf="work.errorType"
               class="badge"
               [ngClass]="{
-                'bg-danger': work.errorType !== 'TURNO_NON_PREVISTO',
-                'bg-warning text-dark': work.errorType === 'TURNO_NON_PREVISTO'
+                'bg-danger':
+                  work.errorType === 'TURNO_NON_PREVISTO' ||
+                  work.errorType === 'nonPianificata',
+                'bg-warning text-dark':
+                  work.errorType === 'STRAORDINARIO' ||
+                  work.errorType === 'RIDUZIONE'
               }"
-              style="cursor: pointer"
               (click)="resolveError(work)"
+              style="cursor: pointer"
+              title="Gestisci errore"
             >
-              {{ work.errorType }}
+              {{
+                work.errorType === "TURNO_NON_PREVISTO"
+                  ? "Non pianificata"
+                  : work.errorType
+              }}
             </span>
+
             <span *ngIf="!work.errorType" class="badge bg-success">OK</span>
           </td>
 
+          <!-- 🕒 Timbrature -->
           <td>
             <div *ngFor="let stamp of work.stamps" class="mb-1 d-flex gap-1">
               <button
@@ -84,6 +127,7 @@
             </div>
           </td>
 
+          <!-- ➕ Azioni -->
           <td>
             <button
               class="btn btn-sm btn-outline-primary"
@@ -91,21 +135,33 @@
             >
               <i class="fas fa-plus"></i> Aggiungi
             </button>
+
+            <button
+              *ngIf="
+                work.errorType === 'TURNO_NON_PREVISTO' ||
+                work.errorType === 'nonPianificata'
+              "
+              class="btn btn-sm btn-outline-danger ms-1"
+              (click)="resolveError(work)"
+            >
+              <i class="fas fa-exclamation-triangle"></i> Gestisci
+            </button>
           </td>
         </tr>
       </tbody>
     </table>
   </div>
 
+  <!-- 🔄 Loader -->
   <ng-template #loadingTpl>
     <div class="text-center py-5">
-      <div class="spinner-border text-pink" role="status"></div>
-      <p class="mt-2">Caricamento timbrature...</p>
+      <div class="spinner-border text-primary" role="status"></div>
+      <p class="mt-3">Caricamento timbrature...</p>
     </div>
   </ng-template>
 </div>
 
-<!-- ✅ Modale universale -->
+<!-- 🧩 Modale -->
 <div class="modal fade" id="modalTimbratura" tabindex="-1" #timbraturaModal>
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content shadow-lg rounded-4">
@@ -119,9 +175,8 @@
       </div>
 
       <div class="modal-body">
-        <!-- 🔹 Campi orari -->
+        <!-- Aggiungi o modifica -->
         <div *ngIf="modalMode !== 'delete' && modalMode !== 'resolve'">
-          <!-- Caso: Aggiungi (mostra entrambi) -->
           <ng-container *ngIf="modalMode === 'add'; else editMode">
             <div class="mb-3">
               <label class="form-label">Entrata (HH:mm)</label>
@@ -141,7 +196,6 @@
             </div>
           </ng-container>
 
-          <!-- Caso: Modifica (mostra solo il tipo selezionato) -->
           <ng-template #editMode>
             <div class="mb-3" *ngIf="modalData.tipo === 'entrata'">
               <label class="form-label">Entrata (HH:mm)</label>
@@ -162,7 +216,7 @@
           </ng-template>
         </div>
 
-        <!-- 🔹 Scelte per resolveError -->
+        <!-- Resolve error -->
         <div *ngIf="modalMode === 'resolve'" class="mb-3">
           <label class="form-label">Azione da eseguire</label>
           <select class="form-select" [(ngModel)]="modalData.action">
@@ -172,7 +226,7 @@
           </select>
         </div>
 
-        <!-- 🔹 Campo motivo -->
+        <!-- Note -->
         <div class="mb-3">
           <label class="form-label">
             {{
