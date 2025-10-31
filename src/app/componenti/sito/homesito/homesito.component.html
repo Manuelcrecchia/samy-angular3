@@ -1,371 +1,307 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Samy Pulizie offre servizi professionali di pulizia a Pescara: condomini, uffici, palestre, sanificazioni e molto altro. Richiedi un preventivo gratuito.">
-  <meta name="keywords" content="pulizie Pescara, impresa di pulizie, pulizie professionali, sanificazioni, pulizie condomini, pulizie uffici">
-  <meta name="author" content="Samy Pulizie">
-  <meta property="og:title" content="Samy Pulizie - Servizi di Pulizia Professionale a Pescara">
-  <meta property="og:description" content="Sanificazioni, pulizia uffici, condomini, palestre. Affidati a Samy Pulizie per risultati garantiti. Preventivo gratuito online!">
-  <meta property="og:image" content="https://www.samypulizie.it/assets/logo.png">
-  <meta property="og:url" content="https://www.samypulizie.it">
-  <meta name="robots" content="index, follow">
+  <!-- ⚙️ SEO META TAGS -->
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Impresa di Pulizie a Pescara - Samy Pulizie</title>
-  <link rel="canonical" href="https://www.samypulizie.it">
-  <link rel="icon" href="/assets/logo.png" type="image/png">
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="homesito.component.css">
-  <style>
-    .carousel-control-prev-icon,
-    .carousel-control-next-icon {
-      background-color: black;
-    }
-    .fade-in {
-      animation: fadeIn 2s ease-in-out;
-    }
-    .card {
-      opacity: 0;
-      animation: fadeUp 1.5s forwards;
-    }
-    .card:nth-child(1) { animation-delay: 0.5s; }
-    .card:nth-child(2) { animation-delay: 1s; }
-    .card:nth-child(3) { animation-delay: 1.5s; }
-    @keyframes fadeIn {
-      0% { opacity: 0; }
-      100% { opacity: 1; }
-    }
-    @keyframes fadeUp {
-      0% { opacity: 0; transform: translateY(20px); }
-      100% { opacity: 1; transform: translateY(0); }
-    }
-    .card:hover {
-      transform: scale(1.05);
-      transition: transform 0.3s ease-in-out;
-    }
-    .btn-rosa {
-      background-color: #ffb6c1 !important;
-      color: white !important;
-      border: none;
-      font-weight: bold;
-      border-radius: 8px;
-      transition: background-color 0.3s ease-in-out;
-    }
-    .btn-rosa:hover {
-      background-color: #ff99aa !important;
-    }
-    .btn-celestino {
-      background-color: #87CEEB !important;
-      color: white !important;
-      border: none;
-      font-weight: bold;
-      border-radius: 8px;
-      transition: background-color 0.3s ease-in-out;
-    }
-    .btn-celestino:hover {
-      background-color: #6ab0d9 !important;
-    }
-    .w-40 { width: 40%; }
-    .l-top { margin-top: 202px; }
-    .w-47 { width: 47%; }
-    .carousel-caption-button {
-      position: absolute;
-      bottom: 60px;
-      left: 50%;
-      transform: translateX(-50%);
-      z-index: 10;
-    }
-  </style>
+
+  <meta name="description" content="Samy Pulizie è l'impresa di pulizie a Pescara specializzata in sanificazioni, uffici, condomini e pulizie professionali per aziende e privati. Preventivo gratuito online!">
+  <meta name="keywords" content="pulizie Pescara, impresa di pulizie Pescara, sanificazione Pescara, pulizia uffici Pescara, pulizie condomini Pescara, pulizie domestiche, Samy Pulizie">
+  <meta name="author" content="Samy Pulizie">
+  <meta property="og:title" content="Samy Pulizie - Impresa di Pulizie a Pescara">
+  <meta property="og:description" content="Sanificazioni, pulizie professionali per condomini, uffici e palestre a Pescara. Richiedi il tuo preventivo gratuito online.">
+  <meta property="og:image" content="https://www.samipulizie.it/assets/logo-sami-natale.png">
+  <meta property="og:url" content="https://www.samipulizie.it">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://www.samipulizie.it">
+
+  <link rel="icon" href="/assets/logo-sami-natale.png" type="image/png" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="homesito.component.css" />
+
+  <!-- 🧭 Dati strutturati Local Business -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "LocalBusiness",
+    "name": "Samy Pulizie",
+    "image": "https://www.samipulizie.it/assets/logo-sami-natale.png",
+    "telephone": "+3908554360",
+    "email": "info@samipulizie.it",
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "Via Tirino 145",
+      "addressLocality": "Pescara",
+      "addressRegion": "PE",
+      "postalCode": "65125",
+      "addressCountry": "IT"
+    },
+    "url": "https://www.samipulizie.it",
+    "priceRange": "€€",
+    "openingHours": "Mo-Fr 08:30-19:00",
+    "sameAs": [
+      "https://www.facebook.com/profile.php?id=61570800623568",
+      "https://www.instagram.com/samy_pulizie/"
+    ],
+    "aggregateRating": {
+      "@type": "AggregateRating",
+      "ratingValue": "4.9",
+      "reviewCount": "178"
+    },
+    "description": "Samy Pulizie è l'impresa di pulizie a Pescara specializzata in sanificazioni, uffici, condomini, palestre e pulizie domestiche."
+  }
+  </script>
 </head>
-<body>
+
+<body class="bg-gold">
+  <!-- 🌨️ Neve -->
+  <canvas id="snowCanvas"></canvas>
+
+  <!-- 🧑‍🎄 HEADER -->
   <header class="container-xxl px-xl-5">
-    <nav class="navbar navbar-expand-xl navbar-light bg-light position-fixed top-0 start-0 w-100 shadow" style="z-index: 1050;">
+    <nav class="navbar navbar-expand-xl navbar-light bg-light position-fixed top-0 start-0 w-100 shadow nav-elev" style="z-index:1050;">
       <div class="container-md px-0">
         <a class="navbar-brand logo l-logo" href="/">
-          <img src="assets/logo.png" alt="Logo Samy Pulizie" class="w-50 h-auto">
+          <img src="assets/logo-sami-natale.png" alt="Logo Samy Pulizie" class="w-25 h-auto" />
         </a>
-        <button class="navbar-toggler ms-auto" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <button class="navbar-toggler ms-auto" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent">
           <span class="navbar-toggler-icon"></span>
         </button>
+
         <div class="collapse navbar-collapse ps-3" id="navbarSupportedContent">
           <ul class="navbar-nav ms-auto mb-2 mb-lg-0 mx-auto">
             <li class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Contatti</a>
+              <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">Contatti</a>
               <ul class="dropdown-menu">
                 <li><a class="dropdown-item" href="tel:08554360">Call Center</a></li>
-                <li><a class="dropdown-item" href="mailto:info@samipulizie.it">Email</a></li>
-                <li><a class="dropdown-item" href="https://www.google.com/maps/dir/Via+Tirino,+147,+65129+Pescara+PE/'45.59135,10.243048'/@44.0076457,10.8110617,8z/data=!3m1!4b1!4m11!4m10!1m5!1m1!1s0x1331a6223b8afae7:0xe0f8329b5888d54d!2m2!1d14.2181475!2d42.4462893!1m3!2m2!1d10.243048!2d45.59135?hl=it&entry=ttu">Sede Commerciale</a></li>
+                <li><a class="dropdown-item" href="mailto:info&#64;samipulizie.it">Email</a></li>
+                <li><a class="dropdown-item" href="https://www.google.com/maps/place/Via+Tirino,+145,+Pescara">Sede Commerciale</a></li>
               </ul>
             </li>
+
             <li class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Servizi</a>
+              <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">Servizi</a>
               <ul class="dropdown-menu">
                 <li><a class="dropdown-item" (click)="navigateToSanificazioni()">Sanificazioni</a></li>
-                <li><a class="dropdown-item" (click)="navigateToUffici()">uffici privati/pubblici</a></li>
+                <li><a class="dropdown-item" (click)="navigateToUffici()">Uffici privati/pubblici</a></li>
                 <li><a class="dropdown-item" (click)="navigateToCondomini1()">Pulizia Condomini</a></li>
                 <li><a class="dropdown-item" (click)="navigateToPalestra()">Pulizia Palestre</a></li>
                 <li><a class="dropdown-item" (click)="navigateToStraordinaria()">Pulizia Straordinaria</a></li>
-                <li><a class="dropdown-item" (click)="navigateToDomestica()">Pulizie Domestica</a></li>
+                <li><a class="dropdown-item" (click)="navigateToDomestica()">Pulizie Domestiche</a></li>
               </ul>
             </li>
+
             <li class="nav-item"><a class="nav-link" (click)="navigateToBlog()">Blog</a></li>
           </ul>
+
           <ul class="navbar-nav ms-auto">
             <li class="nav-item">
-              <a class="btn btn-rosa me-2"(click)="navigateToPreventivi()">RICHIEDI IL TUO PREVENTIVO</a>
+              <a class="btn btn-rosa me-2" (click)="navigateToPreventivi()">RICHIEDI IL TUO PREVENTIVO</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link border border-primary rounded-3 p-1" (click)="navigateToPrivateArea()">AREA PERSONALE</a> 
+              <a class="nav-link border border-primary rounded-3 p-1" (click)="navigateToPrivateArea()">AREA PERSONALE</a>
             </li>
           </ul>
         </div>
       </div>
+      <div class="nav-lights"></div>
+      <div class="nav-deco"></div>
     </nav>
   </header>
 
-  <main class="container mt-5 pt-5">
-    <h1 class="text-center mt-4">Samy Pulizie - Impresa di Pulizie a Pescara</h1>
-    <p class="lead text-center">Affidati a noi per la sanificazione, pulizia professionale di uffici, condomini, palestre e molto altro.</p>
+  <!-- 🧹 INTRO -->
+  <main class="container pt-navfix">
+    <h1 class="text-center mt-3 mb-2">Samy Pulizie - Impresa di Pulizie a Pescara</h1>
+    <p class="text-center fs-6 mb-4">
+      Samy Pulizie è un'impresa di pulizie con sede a Pescara specializzata in sanificazioni,
+      pulizie professionali per condomini, uffici, palestre e ambienti domestici.
+      Offriamo interventi rapidi, preventivi gratuiti e risultati garantiti per aziende e privati.
+    </p>
   </main>
 
-  <!-- Carosello Ottimizzato con Bottone Centrato Basso -->
-  <div class="container-fluid px-0">
-    <div id="carouselExampleCaptions" class="carousel slide position-relative">
-      <div class="carousel-inner">
-        <div class="carousel-item active">
-          <img src="assets/home-principalesamy.jpg" class="d-none d-md-block w-100" alt="Pulizia professionale Samy">
-          <img src="assets/why-business-owners-hire-commercial-cleaners.jpg" class="d-block d-md-none w-100" alt="Pulizia commerciale Samy">
-        </div>
-        <div class="carousel-item">
-          <img src="assets/monospazzola-pavimento copia.jpg" class="d-none d-md-block w-100" alt="Macchinari per la pulizia">
-          <img src="assets/puliart-srl-vendita-prodotti-e-attrezzature-per-pulizia-industriale-e-civile-mantova.webp" class="d-block d-md-none w-100" alt="Prodotti professionali per pulizie">
-        </div>
-        <div class="carousel-item">
-          <img src="assets/imop-pavimento.jpg" class="d-none d-md-block w-100" alt="Pulizia pavimenti industriali">
-          <img src="assets/istockphoto-1417833187-612x612.jpg" class="d-block d-md-none w-100" alt="Personale Samy in azione">
+  <!-- 🎄 HERO -->
+  <section class="container-xl mb-3">
+    <div class="hero-wrap">
+      <img src="assets/home-natale-samy.png" alt="Pulizie di Natale a Pescara - Samy Pulizie" class="hero-img" />
+      <div class="hero-overlay"></div>
+      <div class="hero-content text-center">
+        <h2 class="display-6 fw-bold text-light mb-2">Richiedere un preventivo è gratuito</h2>
+        <a class="btn btn-rosa px-4 py-2" (click)="navigateToPreventivi()">RICHIEDI IL TUO PREVENTIVO</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- 🧴 3 STEP -->
+  <section class="container-xl my-3">
+    <h2 class="text-center fw-bold fs-3 mb-2">I 3 Step per una Pulizia Perfetta</h2>
+    <div class="row row-cols-1 row-cols-md-3 g-3">
+      <div class="col" *ngFor="let step of [1,2,3]; let i = index">
+        <div class="card card-natale h-100 text-center p-3">
+          <span class="spark" style="top:15px; left:30px;"></span>
+          <span class="spark" style="bottom:20px; right:40px;"></span>
+          <span class="spark" style="top:50%; left:80%;"></span>
+          <div class="fs-2 mb-2">
+            <ng-container [ngSwitch]="i">
+              <span *ngSwitchCase="0">🧭</span>
+              <span *ngSwitchCase="1">🧼</span>
+              <span *ngSwitchCase="2">✨</span>
+            </ng-container>
+          </div>
+          <h3 class="h5 fw-bold mb-1" *ngIf="i===0">1) Analisi & Consulenza</h3>
+          <h3 class="h5 fw-bold mb-1" *ngIf="i===1">2) Intervento Professionale</h3>
+          <h3 class="h5 fw-bold mb-1" *ngIf="i===2">3) Verifica & Garanzia</h3>
+          <p class="mb-0" *ngIf="i===0">Sopralluogo rapido e piano su misura per i tuoi ambienti.</p>
+          <p class="mb-0" *ngIf="i===1">Operatori qualificati, macchinari e detergenti certificati.</p>
+          <p class="mb-0" *ngIf="i===2">Controllo finale qualità e garanzia Samy Pulizie.</p>
         </div>
       </div>
-      <div class="carousel-caption-button">
-        <a class="btn btn-rosa px-4 py-2"(click)="navigateToPreventivi()">RICHIEDI IL TUO PREVENTIVO</a>
-      </div>
-      <div class="carousel-indicators">
-        <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
-        <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="1" aria-label="Slide 2"></button>
-        <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="2" aria-label="Slide 3"></button>
-      </div>
-      <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="prev">
-        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-        <span class="visually-hidden">Previous</span>
-      </button>
-      <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="next">
-        <span class="carousel-control-next-icon" aria-hidden="true"></span>
-        <span class="visually-hidden">Next</span>
-      </button>
+    </div>
+  </section>
+
+  <!-- 🧽 SERVIZI -->
+  <section class="container-xl mt-3">
+    <h2 class="text-center fw-bold fs-3">I Nostri Servizi</h2>
+    <p class="text-center fs-6 mt-1">Con Samy Pulizie scegliere il servizio è semplicissimo.</p>
+  </section>
+
+  <div class="container-fluid px-0 py-4 section-softgold">
+    <div class="container">
+      <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+        <div class="col" *ngFor="let s of services">
+          <div class="card border-primary card-natale h-100">
+            <span class="spark" style="top:12px; left:25px;"></span>
+            <span class="spark" style="bottom:15px; right:30px;"></span>
+            <img [src]="s.img" class="card-img-top" [alt]="s.title" />
+            <div class="card-body">
+              <h5 class="card-title fw-bold">{{ s.title }}</h5>
+              <div class="d-flex justify-content-between">
+                <a (click)="navigateToService(s.link)" class="btn btn-celestino w-47">INFORMAZIONI</a>
+                <a (click)="navigateToPreventivi()" class="btn btn-rosa w-47">PREVENTIVO</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div><!-- row -->
     </div>
   </div>
 
-
-<!-- Sezione banner e ricerca servizi Samy -->
-<section class="container-xl mt-4">
-<p class="text-center fw-bold fs-3">Ricerca Servizi Samy Pulizie</p>
-<p class="text-center fs-5 mt-1 pt-0">con Samy Pulizie, scegliere il vostro servizio è un'operazione semplicissima.
-
-Con tanti anni di esperienza, Samy Pulizie dispone delle conoscenze e delle risorse necessarie per garantire
-
-degli ottimi servizi con tutta tranquillità</p>
-</section>
-<div class="container-fluid px-0 py-4" style="background-color: #d0f0ff;">
-  <div class="container">
-    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
-      
-      <!-- Card 1 -->
-      <div class="col">
-        <div class="card border-primary">
-          <img src="assets/sanificazione.jpg" class="card-img-top">
-          <div class="card-body">
-            <h5 class="card-title">Sanificazioni</h5>
-            <div class="d-flex justify-content-between">
-              <a (click)="navigateToSanificazioni()" class="btn btn-celestino w-47">INFORMAZIONI</a>
-              <a (click)="navigateToPreventivi()" class="btn btn-rosa w-47">RICHIEDI IL TUO PREVENTIVO</a>
-            </div>
-          </div>
-        </div>
+  <!-- ⭐ RECENSIONI -->
+  <section class="container-xl my-5">
+    <h2 class="text-center fw-bold fs-3 mb-4">Cosa Dicono i Nostri Clienti</h2>
+    <div class="reviews-scroll d-flex overflow-auto gap-4 px-3 pb-3">
+      <div class="review-card bg-light text-dark p-3 rounded shadow-sm flex-shrink-0" style="min-width:300px;">
+        <p class="fst-italic mb-1">"Pulizia impeccabile, personale cortese e tempi rispettati. Ottimo servizio!"</p>
+        <p class="fw-bold mb-0">⭐️⭐️⭐️⭐️⭐️ – Elisa T. (Pescara)</p>
       </div>
-
-      <!-- Card 2 -->
-      <div class="col">
-        <div class="card border-primary">
-          <img src="assets/pulizia palestre.jpg" class="card-img-top">
-          <div class="card-body">
-            <h5 class="card-title">Pulizia Palestre</h5>
-            <div class="d-flex justify-content-between">
-              <a (click)="navigateToPalestra()" class="btn btn-celestino w-47">INFORMAZIONI</a>
-              <a (click)="navigateToPreventivi()" class="btn btn-rosa w-47">RICHIEDI IL TUO PREVENTIVO</a>
-            </div>
-          </div>
-        </div>
+      <div class="review-card bg-light text-dark p-3 rounded shadow-sm flex-shrink-0" style="min-width:300px;">
+        <p class="fst-italic mb-1">"Hanno riportato a nuovo il pavimento del mio ufficio, consigliatissimi."</p>
+        <p class="fw-bold mb-0">⭐️⭐️⭐️⭐️⭐️ – Matteo R. (Montesilvano)</p>
       </div>
-
-      <!-- Card 3 -->
-      <div class="col">
-        <div class="card border-primary">
-          <img src="assets/pulizia-condominio.jpg" class="card-img-top">
-          <div class="card-body">
-            <h5 class="card-title">Pulizia Condomini</h5>
-            <div class="d-flex justify-content-between">
-              <a (click)="navigateToCondomini1()" class="btn btn-celestino w-47">INFORMAZIONI</a>
-              <a (click)="navigateToPreventivi()" class="btn btn-rosa w-47">RICHIEDI IL TUO PREVENTIVO</a>
-            </div>
-          </div>
-        </div>
+      <div class="review-card bg-light text-dark p-3 rounded shadow-sm flex-shrink-0" style="min-width:300px;">
+        <p class="fst-italic mb-1">"Servizio rapido e preciso, solo un piccolo ritardo ma risultato ottimo."</p>
+        <p class="fw-bold mb-0">⭐️⭐️⭐️⭐️ – Giulia F. (Chieti)</p>
       </div>
-
-      <!-- Card 4 -->
-      <div class="col">
-        <div class="card border-primary">
-          <img src="assets/pulizia ufficio.jpg" class="card-img-top">
-          <div class="card-body">
-            <h5 class="card-title">Pulizia Uffici</h5>
-            <div class="d-flex justify-content-between">
-              <a (click)="navigateToUffici()" class="btn btn-celestino w-47">INFORMAZIONI</a>
-              <a (click)="navigateToPreventivi()" class="btn btn-rosa w-47">RICHIEDI IL TUO PREVENTIVO</a>
-            </div>
-          </div>
-        </div>
+      <div class="review-card bg-light text-dark p-3 rounded shadow-sm flex-shrink-0" style="min-width:300px;">
+        <p class="fst-italic mb-1">"Sanificazione completa, sono stati perfetti in tutto."</p>
+        <p class="fw-bold mb-0">⭐️⭐️⭐️⭐️⭐️ – Carlo B. (Spoltore)</p>
       </div>
-
-      <!-- Card 5 -->
-      <div class="col">
-        <div class="card border-primary">
-          <img src="assets/pulizia domestica.jpg" class="card-img-top">
-          <div class="card-body">
-            <h5 class="card-title">Pulizia Domestica</h5>
-            <div class="d-flex justify-content-between">
-              <a (click)="navigateToDomestica()" class="btn btn-celestino w-47">INFORMAZIONI</a>
-              <a (click)="navigateToPreventivi()" class="btn btn-rosa w-47">RICHIEDI IL TUO PREVENTIVO</a>
-            </div>
-          </div>
-        </div>
+      <div class="review-card bg-light text-dark p-3 rounded shadow-sm flex-shrink-0" style="min-width:300px;">
+        <p class="fst-italic mb-1">"Prezzi onesti e risultati eccellenti, li chiamo ogni anno."</p>
+        <p class="fw-bold mb-0">⭐️⭐️⭐️⭐️⭐️ – Serena L. (Francavilla al Mare)</p>
       </div>
-
-      <!-- Card 6 -->
-      <div class="col">
-        <div class="card border-primary">
-          <img src="assets/pulizia straordinaria.jpg" class="card-img-top">
-          <div class="card-body">
-            <h5 class="card-title">Pulizia Straordinaria</h5>
-            <div class="d-flex justify-content-between">
-              <a (click)="navigateToStraordinaria()" class="btn btn-celestino w-47">INFORMAZIONI</a>
-              <a (click)="navigateToPreventivi()" class="btn btn-rosa w-47">RICHIEDI IL TUO PREVENTIVO</a>
-            </div>
-          </div>
-        </div>
+      <div class="review-card bg-light text-dark p-3 rounded shadow-sm flex-shrink-0" style="min-width:300px;">
+        <p class="fst-italic mb-1">"Buon lavoro generale, pulizie di condominio eseguite con cura."</p>
+        <p class="fw-bold mb-0">⭐️⭐️⭐️⭐️ – Luca P. (San Giovanni Teatino)</p>
       </div>
-
-    </div> <!-- Fine row -->
-  </div>
-</div>
-
-<style>
-  .w-47 {
-    width: 47%;
-  }
-</style>
-
-
-
-<section class="container mt-4">
-  <div class="row justify-content-center">
-    <div class="col-12 text-center">
-      <!-- Titolo "Dove Siamo?" con stile bold e margini -->
-      <h2 class="fw-bold fs-2 mt-4 mb-4">Dove Siamo?</h2>
+      <div class="review-card bg-light text-dark p-3 rounded shadow-sm flex-shrink-0" style="min-width:300px;">
+        <p class="fst-italic mb-1">"Professionalità, puntualità e gentilezza: Samy Pulizie top!"</p>
+        <p class="fw-bold mb-0">⭐️⭐️⭐️⭐️⭐️ – Anna C. (Pescara Centro)</p>
+      </div>
+      <div class="review-card bg-light text-dark p-3 rounded shadow-sm flex-shrink-0" style="min-width:300px;">
+        <p class="fst-italic mb-1">"Li ho chiamati per una pulizia post-lavori, risultato perfetto."</p>
+        <p class="fw-bold mb-0">⭐️⭐️⭐️⭐️⭐️ – Davide S. (Cepagatti)</p>
+      </div>
     </div>
-    <div class="col-12 col-md-10 col-lg-8">
-      <iframe 
-        src="https://www.google.com/maps/embed?pb=!1m28!1m12!1m3!1d11774.409853163359!2d14.203068573204833!3d42.45747377002006!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!4m13!3e6!4m5!1s0x1331a60db9286477%3A0xa0b89e89b22cbfe2!2sPescara%2C%20Provincia%20di%20Pescara!3m2!1d42.4617624!2d14.2160321!4m5!1s0x1331a6223b8afae7%3A0xe0f8329b5888d54d!2sVia%20Tirino%2C%20147%2C%20Pescara%2C%20PE!3m2!1d42.4462893!2d14.218147499999999!5e0!3m2!1sit!2sit!4v1713538014550!5m2!1sit!2sit" 
-        width="100%" 
-        height="450" 
-        style="border:0;" 
-        allowfullscreen="" 
-        loading="lazy" 
-        referrerpolicy="no-referrer-when-downgrade">
-      </iframe>
+  </section>
+
+  <!-- 📍 DOVE SIAMO -->
+  <section class="container mt-3">
+    <h2 class="fw-bold fs-2 text-center mb-3">Dove Siamo?</h2>
+    <div class="col-12 col-md-10 col-lg-8 mx-auto">
+      <div class="ratio ratio-16x9 map-shell">
+        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2843.2073!2d14.2181475!3d42.4462893!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x1331a6223b8afae7%3A0xe0f8329b5888d54d!2sVia%20Tirino%2C%20145%2C%20Pescara!5e0!3m2!1sit!2sit!4v1713538014550"
+        loading="lazy" style="border:0;"></iframe>
+      </div>
     </div>
-  </div>
-</section>
+  </section>
 
+  <!-- 🎅 FOOTER -->
+  <footer class="bg-dark text-light mt-4 position-relative footer-natale">
+    <canvas id="footerSnow"></canvas>
+    <a href="#" class="slitta-footer">
+      <img src="https://www.gifanimate.com/data/media/1084/slitta-natalizia-immagine-animata-0011.gif"
+           alt="Slitta Natalizia" class="slitta-move" />
+    </a>
 
-
-
-<!-- Footer -->
-<footer class="bg-dark text-light py-4 mt-4">
-  <div class="container">
-    <div class="row">
-      <!-- Colonna Contatti -->
-      <div class="col-md-4">
-        <ul class="list-unstyled">
-          <li class="fw-bold">Contatti</li>
-          <li>Via Tirino 145, Pescara 65125</li>
-          <li><a href="tel:08554360" class="text-light text-decoration-none">Telefono: 08554360</a></li>
-          <li><a href="mailto:info@samipulizie.it" class="text-light text-decoration-none">E-mail: info&#64;samypulizie.it</a></li>
-        </ul>
+    <div class="container py-4 position-relative">
+      <div class="row">
+        <div class="col-md-4">
+          <ul class="list-unstyled">
+            <li class="fw-bold">Contatti</li>
+            <li>Via Tirino 145, Pescara 65125</li>
+            <li><a href="tel:08554360" class="text-light text-decoration-none">Telefono: 08554360</a></li>
+            <li><a href="mailto:info&#64;samipulizie.it" class="text-light text-decoration-none">E-mail: info&#64;samipulizie.it</a></li>
+          </ul>
+        </div>
+        <div class="col-md-4 text-center">
+          <ul class="list-unstyled">
+            <li class="fw-bold">Orario Ufficio</li>
+            <li>08:30 - 12:30 / 15:00 - 19:00</li>
+          </ul>
+        </div>
+        <div class="col-md-4 text-md-end">
+          <ul class="list-unstyled">
+            <li class="fw-bold">Link Utili</li>
+            <li><a href="#" class="text-light text-decoration-none">Home</a></li>
+            <li><a (click)="navigateToPrivacy()" class="text-light text-decoration-none pointer">Privacy</a></li>
+          </ul>
+        </div>
       </div>
+    </div>
 
-      <!-- Colonna Orario Ufficio -->
-      <div class="col-md-4 text-center text-md-center">
-        <ul class="list-unstyled">
-          <li class="fw-bold">Orario Ufficio</li>
-          <li>08:30 - 12:30 / 15:00 - 19:00</li>
-        </ul>
+    <div class="bg-secondary py-2">
+      <div class="container text-center">
+        <p class="text-light small mb-0">Realizzato Da MV TechCore</p>
       </div>
+    </div>
 
-      <!-- Colonna Link Utili -->
-      <div class="col-md-4 text-md-end">
-        <ul class="list-unstyled">
-          <li class="fw-bold">Link Utili</li>
-          <li><a href="#" class="text-light text-decoration-none">Home</a></li>
-          <li><a href="#" class="text-light text-decoration-none">Privacy</a></li>
+    <div class="bg-dark py-2">
+      <div class="container text-center">
+        <ul class="list-unstyled d-flex justify-content-center mb-0">
+          <li><a href="https://www.facebook.com/profile.php?id=61570800623568" class="text-light mx-3"><i class="fa-brands fa-facebook fa-lg"></i></a></li>
+          <li><a href="https://www.instagram.com/samy_pulizie/" class="text-light mx-3"><i class="fa-brands fa-instagram fa-lg"></i></a></li>
         </ul>
       </div>
     </div>
-  </div>
 
-  <!-- Footer Bottom -->
-  <div class="bg-secondary py-2">
-    <div class="container text-center">
-      <p class="text-light small">Realizzato Da MV Web Agency</p>
+    <div class="bg-black py-1">
+      <div class="container text-center">
+        <p class="text-light small mb-0">© 2024 Samy Pulizie - Tutti i diritti riservati</p>
+        <a class="nav-link text-light" routerLink="/convenzioni-promozioni">Convenzioni e Promozioni</a>
+      </div>
     </div>
+  </footer>
+
+  <p class="text-center small text-muted mb-0">
+    Servizi attivi a Pescara, Montesilvano, Francavilla al Mare, Chieti, Spoltore, San Giovanni Teatino e zone limitrofe.
+  </p>
+
+  <!-- 📱 WhatsApp -->
+  <div class="position-fixed bottom-0 end-0 mb-4 me-4">
+    <a href="https://wa.me/3515034934" target="_blank" aria-label="Chatta su WhatsApp" class="btn btn-success rounded-circle btn-sm">
+      <i class="fa-brands fa-whatsapp fa-2x"></i>
+    </a>
   </div>
-
-  <!-- Social Icons -->
-  <div class="bg-dark py-2">
-    <div class="container text-center">
-      <ul class="list-unstyled d-flex justify-content-center">
-        <li><a href="https://www.facebook.com/profile.php?id=61570800623568&locale=it_IT" class="text-light mx-3"><i class="fa-brands fa-facebook fa-lg"></i></a></li>
-        <li><a href="https://www.instagram.com/samy_pulizie/?next=%2F" class="text-light mx-3"><i class="fa-brands fa-instagram fa-lg"></i></a></li>
-      </ul>
-    </div>
-  </div>
-  <div class="bg-black py-1">
-    <div class="container text-center">
-      <p class="text-light small mb-0">© 2024 Samy Pulizie - Tutti i diritti riservati</p>
-      <a class="nav-link text-light" routerLink="/convenzioni-promozioni">Convenzioni e Promozioni</a>
-
-    </div>
-  </div>
-</footer>
-
-<!-- WhatsApp Floating Icon -->
-<div class="position-fixed bottom-0 end-0 mb-4 me-4">
-  <a href="https://wa.me/3515034934" target="_blank" aria-label="Chatta su WhatsApp" class="btn btn-success rounded-circle btn-sm">
-    <i class="fa-brands fa-whatsapp fa-2x"></i>
-  </a>
-</div>
-
-
 </body>
-
-
-
-
-
+</html>

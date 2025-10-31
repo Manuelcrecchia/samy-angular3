@@ -1,4 +1,256 @@
-/* homesito.component.css */
-.l_logo{
-  width:100px;
+/* 🌟 RESET BASE */
+body {
+  background-color: #fff7da !important;
+  color: #222;
+  font-family: 'Poppins', sans-serif;
+  overflow-x: hidden;
 }
+
+/* ===== NAVBAR ===== */
+.navbar {
+  background-color: #ffffffd9 !important;
+  border-bottom: 3px solid #d4af37;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  position: relative;
+}
+
+.navbar-nav .nav-link {
+  font-weight: 500;
+  color: #444 !important;
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.navbar-nav .nav-link:hover {
+  color: #b11226 !important;
+  text-shadow: 0 0 4px #ffdf7e;
+}
+
+/* 🎄 Lucine decorative funzionanti */
+.nav-lights {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 6px;
+  border-radius: 10px 10px 0 0;
+  background: repeating-linear-gradient(
+    90deg,
+    #ff3b3b 0px,
+    #ff3b3b 8px,
+    #ffd700 8px,
+    #ffd700 16px,
+    #3cff00 16px,
+    #3cff00 24px
+  );
+  animation: lightsMove 5s linear infinite;
+  z-index: 50;
+}
+@keyframes lightsMove {
+  0% { background-position: 0 0; }
+  100% { background-position: 100px 0; }
+}
+
+/* Header logo */
+.l-logo img, .l_logo img {
+  width: 120px;
+  transition: transform 0.3s ease;
+}
+.l-logo img:hover {
+  transform: scale(1.05);
+}
+
+/* ===== HERO / BANNER ===== */
+.hero-wrap {
+  position: relative;
+  overflow: hidden;
+  border-radius: 15px;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+}
+.hero-img {
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+  border-radius: 15px;
+}
+.hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(0,0,0,0.3), rgba(0,0,0,0.6));
+}
+.hero-content {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+/* ===== BOTTONI ===== */
+.btn-rosa {
+  background-color: #ff7f9c !important;
+  border: none;
+  color: #fff !important;
+  font-weight: 600;
+  border-radius: 10px;
+  transition: background 0.3s;
+}
+.btn-rosa:hover { background-color: #ff5579 !important; }
+
+.btn-celestino {
+  background-color: #80c4f9 !important;
+  color: white !important;
+  font-weight: 600;
+  border-radius: 10px;
+}
+.btn-celestino:hover { background-color: #57a4db !important; }
+
+.section-softgold {
+  background-color: #fff3b5;
+}
+
+/* ===== CARD NATALIZIA REALISTICA ===== */
+.card-natale {
+  position: relative;
+  overflow: hidden;
+  border: 2px solid #e1c16e;
+  border-radius: 10px;
+  background: linear-gradient(180deg, #fffdf6 0%, #fff7da 100%);
+  box-shadow: 0 4px 15px rgba(224, 191, 108, 0.3);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.card-natale:hover {
+  transform: scale(1.03);
+  box-shadow: 0 6px 20px rgba(224, 191, 108, 0.6);
+}
+
+/* 🌿 Ramo di abete in alto a sinistra */
+.card-natale::before {
+  content: "";
+  position: absolute;
+  top: -8px;
+  left: -12px;
+  width: 120px;
+  height: 80px;
+  background: url('https://upload.wikimedia.org/wikipedia/commons/4/4c/Christmas_tree_branch_PNG.png') no-repeat center/contain;
+  transform: rotate(-10deg);
+  z-index: 2;
+  opacity: 0.95;
+  pointer-events: none;
+  animation: ramo-oscilla 4s ease-in-out infinite alternate;
+}
+
+/* 🎀 Palline realistiche in basso a destra */
+.card-natale::after {
+  content: "";
+  position: absolute;
+  bottom: -5px;
+  right: -10px;
+  width: 90px;
+  height: 90px;
+  background: url('https://upload.wikimedia.org/wikipedia/commons/4/4e/Christmas_ornaments_PNG.png') no-repeat center/contain;
+  opacity: 0.9;
+  z-index: 2;
+  pointer-events: none;
+  animation: decor-glow 3s ease-in-out infinite alternate;
+}
+
+/* 🌲 Animazioni realistiche */
+@keyframes ramo-oscilla {
+  from { transform: rotate(-10deg) translateY(0); }
+  to   { transform: rotate(-14deg) translateY(2px); }
+}
+@keyframes decor-glow {
+  0% { filter: drop-shadow(0 0 2px gold) brightness(1); }
+  50% { filter: drop-shadow(0 0 8px #ffd700) brightness(1.2); }
+  100% { filter: drop-shadow(0 0 2px gold) brightness(1); }
+}
+
+/* ✨ Puntini luminosi */
+.card-natale .spark {
+  position: absolute;
+  width: 5px;
+  height: 5px;
+  background: radial-gradient(circle, #fff 0%, transparent 70%);
+  border-radius: 50%;
+  animation: sparkle 2s ease-in-out infinite alternate;
+  z-index: 3;
+}
+@keyframes sparkle {
+  0%, 100% { opacity: 0.3; transform: scale(0.8); }
+  50% { opacity: 1; transform: scale(1.4); }
+}
+
+/* ===== MAPPA ===== */
+.map-shell iframe {
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.3);
+}
+
+/* ===== FOOTER ===== */
+.footer-natale {
+  overflow: hidden;
+  background: linear-gradient(180deg, #3b0000 0%, #140000 100%);
+  border-top: 4px solid #d4af37;
+  position: relative;
+}
+.footer-natale ul li a:hover {
+  color: #ffd700 !important;
+  text-shadow: 0 0 4px #fff;
+}
+
+/* ❄️ Neve footer */
+#footerSnow {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+/* 🛷 Slitta animata */
+.slitta-move {
+  position: absolute;
+  bottom: 20px;
+  left: -200px;
+  width: 180px;
+  animation: slittaAnim 25s linear infinite;
+  pointer-events: none;
+}
+@keyframes slittaAnim {
+  0%   { transform: translateX(0) scale(1); opacity: 1; }
+  50%  { transform: translateX(100vw) scale(1.1); opacity: 1; }
+  100% { transform: translateX(0) scale(1); opacity: 1; }
+}
+
+/* ===== RECENSIONI ===== */
+.reviews-scroll::-webkit-scrollbar { height: 8px; }
+.reviews-scroll::-webkit-scrollbar-thumb {
+  background: #d4af37;
+  border-radius: 10px;
+}
+.reviews-scroll::-webkit-scrollbar-track {
+  background: #f3e8c7;
+}
+
+/* ⚡ WhatsApp */
+.btn-success {
+  background-color: #25d366 !important;
+  border-radius: 50%;
+  box-shadow: 0 0 8px rgba(37,211,102,0.5);
+}
+
+/* ❄️ Neve globale */
+#snowCanvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* UTILITIES */
+.pt-navfix { padding-top: 130px; }
+.w-47 { width: 47%; }
+.text-light a { color: #ffd700; }
