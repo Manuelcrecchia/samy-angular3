@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, HostListener } from '@angular/core';
 import { Router } from '@angular/router';
 
 type SnowFlake = { x:number; y:number; r:number; vy:number; vx:number; a:number };
@@ -11,12 +11,12 @@ type SnowFlake = { x:number; y:number; r:number; vy:number; vx:number; a:number 
 export class HomesitoComponent implements OnInit, OnDestroy {
 
   services = [
-    { title: 'Sanificazioni',         img: 'assets/sanificazione.jpg',           link: '/sanificazioni' },
-    { title: 'Pulizia Palestre',      img: 'assets/pulizia palestre.jpg',        link: '/palestra' },
-    { title: 'Pulizia Condomini',     img: 'assets/pulizia-condominio.jpg',      link: '/condomini1' },
-    { title: 'Pulizia Uffici',        img: 'assets/pulizia ufficio.jpg',         link: '/uffici' },
-    { title: 'Pulizia Domestica',     img: 'assets/pulizia domestica.jpg',       link: '/domestica' },
-    { title: 'Pulizia Straordinaria', img: 'assets/pulizia straordinaria.jpg',   link: '/straordinaria' }
+    { title: 'Sanificazioni', img: 'assets/sanificazione.jpg', link: '/sanificazioni' },
+    { title: 'Pulizia Palestre', img: 'assets/pulizia palestre.jpg', link: '/palestra' },
+    { title: 'Pulizia Condomini', img: 'assets/pulizia-condominio.jpg', link: '/condomini1' },
+    { title: 'Pulizia Uffici', img: 'assets/pulizia ufficio.jpg', link: '/uffici' },
+    { title: 'Pulizia Domestica', img: 'assets/pulizia domestica.jpg', link: '/domestica' },
+    { title: 'Pulizia Straordinaria', img: 'assets/pulizia straordinaria.jpg', link: '/straordinaria' }
   ];
 
   private snowRAF?: number;
@@ -25,9 +25,7 @@ export class HomesitoComponent implements OnInit, OnDestroy {
   constructor(private router: Router) {}
 
   ngOnInit(): void {
-    // neve globale (in alto a destra dello schermo)
     this.initSnow('snowCanvas', true);
-    // neve nel footer (canvas dedicato)
     setTimeout(() => this.initSnow('footerSnow', false), 0);
   }
 
@@ -36,9 +34,8 @@ export class HomesitoComponent implements OnInit, OnDestroy {
     if (this.footerRAF) cancelAnimationFrame(this.footerRAF);
   }
 
-  /* Navigazione (tutte quelle richieste, stessa struttura) */
+  // Navigazione
   navigateToService(link: string){ this.router.navigateByUrl(link); }
-  navigateToCustomerArea(){ this.router.navigateByUrl('/loginCustomer'); }
   navigateToPrivateArea(){ this.router.navigateByUrl('/loginPrivateArea'); }
   navigateToSanificazioni(){ this.router.navigateByUrl('/sanificazioni'); }
   navigateToUffici(){ this.router.navigateByUrl('/uffici'); }
@@ -47,12 +44,24 @@ export class HomesitoComponent implements OnInit, OnDestroy {
   navigateToStraordinaria(){ this.router.navigateByUrl('/straordinaria'); }
   navigateToDomestica(){ this.router.navigateByUrl('/domestica'); }
   navigateToPrivacy(){ this.router.navigateByUrl('/privacy'); }
-  navigateToNavbar(){ this.router.navigateByUrl('/navbar'); }
-  navigateToPreventivi(){ this.router.navigateByUrl('/preventivi'); }
+  navigateToPreventiviSito(){ this.router.navigateByUrl('/preventivi-sito'); }
   navigateToBlog(){ this.router.navigateByUrl('/blog'); }
-  navigateToConvenzioniPromozioni(){ this.router.navigateByUrl('/convenzionipromozioni'); }
 
-  /* Neve */
+  // Effetto riduzione navbar allo scroll
+  @HostListener('window:scroll', [])
+  onWindowScroll() {
+    const nav = document.getElementById('mainNav');
+    if (!nav) return;
+    if (window.scrollY > 80) {
+      nav.classList.remove('nav-large');
+      nav.classList.add('nav-small');
+    } else {
+      nav.classList.add('nav-large');
+      nav.classList.remove('nav-small');
+    }
+  }
+
+  // Neve
   private initSnow(id: string, isGlobal: boolean){
     const canvas = document.getElementById(id) as HTMLCanvasElement | null;
     if (!canvas) return;
@@ -65,7 +74,6 @@ export class HomesitoComponent implements OnInit, OnDestroy {
         canvas.height = window.innerHeight;
         canvas.style.position = 'fixed';
       } else {
-        // nel footer occupa il contenitore
         const footer = canvas.closest('footer') as HTMLElement | null;
         const rect = footer ? footer.getBoundingClientRect() : { width: window.innerWidth, height: 300 } as DOMRect;
         canvas.width = Math.max(1, rect.width);

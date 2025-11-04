@@ -58,12 +58,12 @@
   <!-- 🌨️ Neve -->
   <canvas id="snowCanvas"></canvas>
 
-  <!-- 🧑‍🎄 HEADER -->
+  <!-- 🧑‍🎄 HEADER DINAMICO -->
   <header class="container-xxl px-xl-5">
-    <nav class="navbar navbar-expand-xl navbar-light bg-light position-fixed top-0 start-0 w-100 shadow nav-elev" style="z-index:1050;">
+    <nav id="mainNav" class="navbar navbar-expand-xl navbar-light bg-light position-fixed top-0 start-0 w-100 shadow nav-elev nav-large" style="z-index:1050;">
       <div class="container-md px-0">
         <a class="navbar-brand logo l-logo" href="/">
-          <img src="assets/logo-sami-natale.png" alt="Logo Samy Pulizie" class="w-25 h-auto" />
+          <img src="assets/logo-sami-natale.png" alt="Logo Samy Pulizie" class="h-auto" />
         </a>
         <button class="navbar-toggler ms-auto" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent">
           <span class="navbar-toggler-icon"></span>
@@ -97,7 +97,7 @@
 
           <ul class="navbar-nav ms-auto">
             <li class="nav-item">
-              <a class="btn btn-rosa me-2" (click)="navigateToPreventivi()">RICHIEDI IL TUO PREVENTIVO</a>
+              <a class="btn btn-rosa me-2" (click)="navigateToPreventiviSito()">RICHIEDI IL TUO PREVENTIVO</a>
             </li>
             <li class="nav-item">
               <a class="nav-link border border-primary rounded-3 p-1" (click)="navigateToPrivateArea()">AREA PERSONALE</a>
@@ -110,7 +110,7 @@
     </nav>
   </header>
 
-  <!-- 🧹 INTRO -->
+  <!-- 🔽 TUTTO IL RESTO DELLA PAGINA (uguale al tuo originale) -->
   <main class="container pt-navfix">
     <h1 class="text-center mt-3 mb-2">Samy Pulizie - Impresa di Pulizie a Pescara</h1>
     <p class="text-center fs-6 mb-4">
@@ -119,7 +119,6 @@
       Offriamo interventi rapidi, preventivi gratuiti e risultati garantiti per aziende e privati.
     </p>
   </main>
-
   <!-- 🎄 HERO -->
   <section class="container-xl mb-3">
     <div class="hero-wrap">
@@ -127,7 +126,7 @@
       <div class="hero-overlay"></div>
       <div class="hero-content text-center">
         <h2 class="display-6 fw-bold text-light mb-2">Richiedere un preventivo è gratuito</h2>
-        <a class="btn btn-rosa px-4 py-2" (click)="navigateToPreventivi()">RICHIEDI IL TUO PREVENTIVO</a>
+        <a class="btn btn-rosa px-4 py-2" (click)="navigateToPreventiviSito()">RICHIEDI IL TUO PREVENTIVO</a>
       </div>
     </div>
   </section>
@@ -177,7 +176,7 @@
               <h5 class="card-title fw-bold">{{ s.title }}</h5>
               <div class="d-flex justify-content-between">
                 <a (click)="navigateToService(s.link)" class="btn btn-celestino w-47">INFORMAZIONI</a>
-                <a (click)="navigateToPreventivi()" class="btn btn-rosa w-47">PREVENTIVO</a>
+                <a (click)="navigateToPreventiviSito()" class="btn btn-rosa w-47">PREVENTIVO</a>
               </div>
             </div>
           </div>
@@ -238,11 +237,6 @@
 
   <!-- 🎅 FOOTER -->
   <footer class="bg-dark text-light mt-4 position-relative footer-natale">
-    <canvas id="footerSnow"></canvas>
-    <a href="#" class="slitta-footer">
-      <img src="https://www.gifanimate.com/data/media/1084/slitta-natalizia-immagine-animata-0011.gif"
-           alt="Slitta Natalizia" class="slitta-move" />
-    </a>
 
     <div class="container py-4 position-relative">
       <div class="row">

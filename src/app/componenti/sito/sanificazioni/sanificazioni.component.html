@@ -1,105 +1,169 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Galleria fotografica del servizio di sanificazione offerto da Samy Pulizie a Pescara. Interventi certificati per ambienti sicuri e igienizzati.">
-  <meta name="keywords" content="sanificazione ambienti Pescara, pulizia professionale, impresa di pulizie, igienizzazione, covid-19, disinfezione uffici">
-  <meta name="author" content="Samy Pulizie">
-  <meta property="og:title" content="Sanificazione Ambienti a Pescara - Galleria Interventi | Samy Pulizie">
-  <meta property="og:description" content="Scopri gli interventi di sanificazione professionale con immagini reali del nostro operato a Pescara.">
-  <meta property="og:image" content="https://www.samypulizie.it/wp-content/uploads/2020/01/logo.png">
-  <meta property="og:url" content="https://www.samypulizie.it/galleria">
-  <meta name="robots" content="index, follow">
-  <title>Sanificazione Ambienti a Pescara - Galleria Interventi | Samy Pulizie</title>
-  <link rel="canonical" href="https://www.samypulizie.it/galleria">
-  <link rel="icon" href="https://www.samypulizie.it/wp-content/uploads/2020/01/logo.png" type="image/png">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-  <style>
-    .img-fluid {
-      height: 250px;
-      object-fit: cover;
-      border-radius: 15px;
-    }
-    .btn-preventivo {
-      background-color: #ffb6c1;
-      color: white;
-      border: none;
-      font-weight: bold;
-      padding: 12px 30px;
-      border-radius: 8px;
-      transition: background-color 0.3s ease-in-out;
-    }
-    .btn-preventivo:hover {
-      background-color: #ff99aa;
-    }
-  </style>
-</head>
-<body>
+  <!-- ⚙️ SEO META TAGS -->
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Sanificazione Ambienti a Pescara - Samy Pulizie</title>
 
-  <nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm">
-    <div class="container-xxl">
-      <a class="navbar-brand" href="/">
-        <img src="https://www.samypulizie.it/wp-content/uploads/2020/01/logo.png" alt="Logo Samy Pulizie" style="height: 40px;">
+  <meta name="description" content="Samy Pulizie offre servizi professionali di sanificazione a Pescara per uffici, condomini, palestre e aziende. Interventi certificati per ambienti sicuri e igienizzati.">
+  <meta name="keywords" content="sanificazione ambienti Pescara, pulizie professionali, disinfezione uffici, igienizzazione, impresa di pulizie Pescara, Samy Pulizie">
+  <meta name="author" content="Samy Pulizie">
+  <meta property="og:title" content="Sanificazione Ambienti a Pescara - Samy Pulizie">
+  <meta property="og:description" content="Interventi di sanificazione professionale e certificata per uffici, condomini e aziende. Ambienti sicuri e igienizzati con Samy Pulizie.">
+  <meta property="og:image" content="https://www.samipulizie.it/assets/logo-sami-natale.png">
+  <meta property="og:url" content="https://www.samipulizie.it/sanificazioni">
+  <meta name="robots" content="index, follow">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+  <link rel="canonical" href="https://www.samipulizie.it/sanificazioni">
+  <link rel="icon" href="assets/logo-sami-natale.png" type="image/png" />
+</head>
+
+<body class="bg-gold">
+  <canvas id="snowCanvas"></canvas>
+
+  <!-- 🧑‍🎄 NAVBAR -->
+  <nav class="navbar navbar-expand-xl navbar-light bg-light position-fixed top-0 start-0 w-100 shadow nav-elev" style="z-index:1050;">
+    <div class="container-md px-0">
+      <a class="navbar-brand logo l-logo" (click)="navigateToHomeSito()">
+        <img src="assets/logo-sami-natale.png" alt="Logo Samy Pulizie" class="logo h-auto" />
       </a>
-      <h1 class="d-none d-lg-block text-center w-100 fs-4 fw-bold">Servizio di Sanificazione a Pescara</h1>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+      <button class="navbar-toggler ms-auto" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
         <span class="navbar-toggler-icon"></span>
       </button>
-      <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav ms-auto">
+
+      <div class="collapse navbar-collapse ps-3" id="navbarNav">
+        <ul class="navbar-nav ms-auto mb-2 mb-lg-0 mx-auto">
           <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">Servizi</a>
+            <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">Servizi</a>
             <ul class="dropdown-menu">
               <li><a class="dropdown-item" (click)="navigateToSanificazioni()">Sanificazioni</a></li>
-              <li><a class="dropdown-item" (click)="navigateToUffici()">uffici privati/pubblici</a></li>
+              <li><a class="dropdown-item" (click)="navigateToUffici()">Uffici privati/pubblici</a></li>
               <li><a class="dropdown-item" (click)="navigateToCondomini1()">Pulizia Condomini</a></li>
               <li><a class="dropdown-item" (click)="navigateToPalestra()">Pulizia Palestre</a></li>
               <li><a class="dropdown-item" (click)="navigateToStraordinaria()">Pulizia Straordinaria</a></li>
-              <li><a class="dropdown-item" (click)="navigateToDomestica()">Pulizie Domestica</a></li>
+              <li><a class="dropdown-item" (click)="navigateToDomestica()">Pulizie Domestiche</a></li>
             </ul>
           </li>
-          <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+          <li class="nav-item"><a class="nav-link" (click)="navigateToHomeSito()">Home</a></li>
         </ul>
       </div>
     </div>
+    <div class="nav-lights"></div>
   </nav>
 
-  <main class="container py-5">
-    <section class="text-center">
-      <h2 class="fs-3 fw-bold mb-3">Sanificazione Ambienti Professionale a Pescara</h2>
-      <p>
-        Samy Pulizie propone un servizio di sanificazione ambienti professionale su misura, ideale per condomini, aziende, uffici, palestre e abitazioni. Affidati a un'impresa certificata con anni di esperienza per ambienti sicuri, igienizzati e a norma.
-      </p>
-    </section>
-
-    <section class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4 mt-4">
-      <div class="col"><img src="https://paolovaresi.it/wp-content/uploads/2020/05/sanificazione-750x500.jpg" alt="Sanificazione uffici" class="img-fluid"></div>
-      <div class="col"><img src="https://igeam.it/wp-content/uploads/2020/05/Sanificazione-ambienti-lavoro-covid-19-small.jpg" alt="Sanificazione ambienti covid-19" class="img-fluid"></div>
-      <div class="col"><img src="https://www.eliotec.net/wp-content/uploads/2022/05/SANIFICAZIONE-2.5ff211b2-e1676647696692.png" alt="Macchinari per sanificazione" class="img-fluid"></div>
-      <div class="col"><img src="https://i0.wp.com/giammariniconsulenza.com/wp-content/uploads/2020/07/derattizzazione.jpg?resize=1038%2C576&ssl=1" alt="Intervento di sanificazione e derattizzazione" class="img-fluid"></div>
-    </section>
-
-   
+  <!-- 🧴 INTRO -->
+  <main class="container pt-navfix text-center">
+    <h1 class="fw-bold mb-2">Sanificazione Ambienti a Pescara</h1>
+    <p class="fs-6 mb-4">
+      Samy Pulizie è specializzata nella <strong>sanificazione e disinfezione professionale</strong> di ambienti civili e industriali.
+      Interventi rapidi, certificati e su misura per uffici, aziende, condomini e abitazioni private.
+    </p>
   </main>
 
-  <section class="container py-5">
-    <iframe src="https://www.google.com/maps/embed?pb=!1m28!1m12!1m3!1d11774.409853163359!2d14.203068573204833!3d42.45747377002006!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!4m13!3e6!4m5!1s0x1331a60db9286477%3A0xa0b89e89b22cbfe2!2sPescara!3m2!1d42.4617624!2d14.2160321!4m5!1s0x1331a6223b8afae7%3A0xe0f8329b5888d54d!2sVia%20Tirino%2C%20147%2C%20Pescara!3m2!1d42.4462893!2d14.218147499999999!5e0!3m2!1sit!2sit!4v1713538014550!5m2!1sit!2sit"
-      width="100%" height="450" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+  <!-- 🧪 SERVIZI SANIFICAZIONE (stile Condomini) -->
+  <section class="container-xl my-4">
+    <h2 class="text-center fw-bold fs-3 mb-3">Cosa Include il Servizio</h2>
+    <div class="row row-cols-1 row-cols-md-3 g-3">
+      <div class="col">
+        <div class="card card-natale text-center p-3 h-100">
+          <span class="spark" style="top:10px;left:20px;"></span>
+          <img src="../../../../assets/sanificazioni-uffici.jpg" alt="Sanificazione ambienti di lavoro" class="card-img-top rounded mb-2">
+          <h3 class="h5 fw-bold mb-1">Sanificazione Uffici</h3>
+          <p class="mb-0">Disinfezione scrivanie, superfici, tastiere e postazioni con prodotti certificati e operatori specializzati.</p>
+        </div>
+      </div>
+
+      <div class="col">
+        <div class="card card-natale text-center p-3 h-100">
+          <span class="spark" style="top:20px;right:30px;"></span>
+          <img src="../../../../assets/sanificazioni-trattamenti-speciali.jpg" alt="Macchinari per sanificazione ambienti" class="card-img-top rounded mb-2">
+          <h3 class="h5 fw-bold mb-1">Trattamenti Professionali</h3>
+          <p class="mb-0">Nebulizzatori e ozonizzatori per la sanificazione profonda di locali, spogliatoi e aree comuni.</p>
+        </div>
+      </div>
+
+      <div class="col">
+        <div class="card card-natale text-center p-3 h-100">
+          <span class="spark" style="bottom:15px;left:40px;"></span>
+          <img src="../../../../assets/sanificazioni-certificati.jpg" alt="Sanificazione certificata" class="card-img-top rounded mb-2">
+          <h3 class="h5 fw-bold mb-1">Certificazione Interventi</h3>
+          <p class="mb-0">Rilascio di documentazione e certificazione a norma di legge per ogni intervento effettuato.</p>
+        </div>
+      </div>
+    </div>
   </section>
 
-  <section class="container py-5">
+  <!-- 💌 FORM PREVENTIVO -->
+  <section class="container my-5 text-center">
+    <h2 class="fw-bold fs-3 mb-3">Richiedi il tuo Preventivo Gratuito</h2>
+    <p class="mb-4">Compila il modulo qui sotto per ricevere una consulenza gratuita e un preventivo personalizzato per la sanificazione dei tuoi ambienti.</p>
     <app-preventivi></app-preventivi>
   </section>
 
+  <!-- 🗺️ MAPPA -->
+  <section class="container mt-4">
+    <h2 class="fw-bold fs-3 text-center mb-3">Dove Operiamo</h2>
+    <div class="ratio ratio-16x9 map-shell">
+      <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2843.2073!2d14.2181475!3d42.4462893!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x1331a6223b8afae7%3A0xe0f8329b5888d54d!2sVia%20Tirino%2C%20145%2C%20Pescara!5e0!3m2!1sit!2sit!4v1713538014550"
+      loading="lazy" style="border:0;" allowfullscreen></iframe>
+    </div>
+  </section>
 
-  <footer class="bg-light py-4 mt-5">
-    <div class="container text-center small">
-      <p>Contattaci: <a href="mailto:info@samipulizie.it">info&#64;samipulizie.it</a> | Tel: <a href="tel:08554360">08554360</a></p>
-      <p>&copy; 2024 Samy Pulizie - Tutti i diritti riservati</p>
+  <!-- 🎅 FOOTER -->
+  <footer class="bg-dark text-light mt-4 position-relative footer-natale">
+    <div class="container py-4 position-relative">
+      <div class="row">
+        <div class="col-md-4">
+          <ul class="list-unstyled">
+            <li class="fw-bold">Contatti</li>
+            <li>Via Tirino 145, Pescara 65125</li>
+            <li><a href="tel:08554360" class="text-light text-decoration-none">Telefono: 08554360</a></li>
+            <li><a href="mailto:info&#64;samipulizie.it" class="text-light text-decoration-none">E-mail: info&#64;samipulizie.it</a></li>
+          </ul>
+        </div>
+        <div class="col-md-4 text-center">
+          <ul class="list-unstyled">
+            <li class="fw-bold">Orario Ufficio</li>
+            <li>08:30 - 12:30 / 15:00 - 19:00</li>
+          </ul>
+        </div>
+        <div class="col-md-4 text-md-end">
+          <ul class="list-unstyled">
+            <li class="fw-bold">Link Utili</li>
+            <li><a (click)="navigateToHomeSito()" class="text-light text-decoration-none">Home</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="bg-secondary py-2">
+      <div class="container text-center">
+        <p class="text-light small mb-0">Realizzato da MV TechCore</p>
+      </div>
+    </div>
+
+    <div class="bg-dark py-2">
+      <div class="container text-center">
+        <ul class="list-unstyled d-flex justify-content-center mb-0">
+          <li><a href="https://www.facebook.com/profile.php?id=61570800623568" class="text-light mx-3"><i class="fa-brands fa-facebook fa-lg"></i></a></li>
+          <li><a href="https://www.instagram.com/samy_pulizie/" class="text-light mx-3"><i class="fa-brands fa-instagram fa-lg"></i></a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="bg-black py-1">
+      <div class="container text-center">
+        <p class="text-light small mb-0">© 2025 Samy Pulizie - Tutti i diritti riservati</p>
+      </div>
     </div>
   </footer>
 
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- 📱 WhatsApp -->
+  <div class="position-fixed bottom-0 end-0 mb-4 me-4">
+    <a href="https://wa.me/3515034934" target="_blank" aria-label="Chatta su WhatsApp" class="btn btn-success rounded-circle btn-sm">
+      <i class="fa-brands fa-whatsapp fa-2x"></i>
+    </a>
+  </div>
 </body>
 </html>

@@ -35,6 +35,7 @@ import { GestionePermessiComponent } from './admin/gestione-permessi/gestione-pe
 import { RiepilogoPresenzeComponent } from './admin/riepilogo-presenze/riepilogo-presenze.component';
 import { TimbratureHomeComponent } from './admin/timbrature-home/timbrature-home.component';
 import { TimbratureDettaglioComponent } from './admin/timbrature-dettaglio/timbrature-dettaglio.component';
+import { PreventiviSitoComponent } from '../../src/app/componenti/sito/preventivi/preventivi-sito.component';
 
 import { AuthGuard } from './auth.guard';
 import { AuthLevelGuard } from './auth-level.guard';
@@ -55,6 +56,7 @@ const routes: Routes = [
   { path: 'palestra', component: PalestraComponent },
   { path: 'straordinaria', component: StraordinariaComponent },
   { path: 'domestica', component: DomesticaComponent },
+  { path: 'preventivi-sito', component: PreventiviSitoComponent },
   { path: 'passworddimenticata', component: PassworddimenticataComponent },
 
   // 🔹 ADMIN AREA

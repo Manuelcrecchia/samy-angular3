@@ -1,3 +1,9 @@
+.logo{
+  width: 100%;
+}
+.logo img{
+  width: 300px;
+}
 .form-container {
   background-color: pink;
   padding: 20px;

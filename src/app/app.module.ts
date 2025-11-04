@@ -10,7 +10,7 @@ import { AppComponent } from './app.component';
 import { PrivateAreaComponent } from './componenti/login/private-area/private-area.component';
 import { HomeAdminComponent } from './admin/homeadmin/homeadmin.component';
 import { GlobalService } from './service/global.service';
-
+import { PreventiviSitoComponent } from './componenti/sito/preventivi/preventivi-sito.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import {
@@ -146,6 +146,7 @@ loadMessages(itMessages);
     TimbratureHomeComponent,
     TimbratureDettaglioComponent,
     GestioneAssenzeComponent,
+    PreventiviSitoComponent,
   ],
   imports: [
     BrowserModule,

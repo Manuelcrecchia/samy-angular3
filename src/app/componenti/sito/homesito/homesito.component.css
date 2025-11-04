@@ -12,6 +12,7 @@ body {
   border-bottom: 3px solid #d4af37;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   position: relative;
+  transition: all 0.3s ease;
 }
 
 .navbar-nav .nav-link {
@@ -207,21 +208,6 @@ body {
   pointer-events: none;
 }
 
-/* 🛷 Slitta animata */
-.slitta-move {
-  position: absolute;
-  bottom: 20px;
-  left: -200px;
-  width: 180px;
-  animation: slittaAnim 25s linear infinite;
-  pointer-events: none;
-}
-@keyframes slittaAnim {
-  0%   { transform: translateX(0) scale(1); opacity: 1; }
-  50%  { transform: translateX(100vw) scale(1.1); opacity: 1; }
-  100% { transform: translateX(0) scale(1); opacity: 1; }
-}
-
 /* ===== RECENSIONI ===== */
 .reviews-scroll::-webkit-scrollbar { height: 8px; }
 .reviews-scroll::-webkit-scrollbar-thumb {
@@ -254,3 +240,27 @@ body {
 .pt-navfix { padding-top: 130px; }
 .w-47 { width: 47%; }
 .text-light a { color: #ffd700; }
+
+/* =====================================================
+   🎄 AGGIUNTA: NAVBAR DINAMICA CON SCROLL
+   ===================================================== */
+.nav-large {
+  padding: 25px 0;
+  background-color: #ffffffd9 !important;
+}
+
+.nav-large .navbar-brand img {
+  width: 180px;
+  transition: width 0.3s ease;
+}
+
+.nav-small {
+  padding: 8px 0;
+  background-color: #fff !important;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
+}
+
+.nav-small .navbar-brand img {
+  width: 120px;
+  transition: width 0.3s ease;
+}
