@@ -40,6 +40,7 @@ import { PreventiviSitoComponent } from '../../src/app/componenti/sito/preventiv
 import { AuthGuard } from './auth.guard';
 import { AuthLevelGuard } from './auth-level.guard';
 import { GestioneAssenzeComponent } from './admin/gestione-assenze/gestione-assenze.component';
+import { LeaveSettingsComponent } from './admin/leave-settings/leave-settings.component';
 
 const routes: Routes = [
   { path: '', component: HomesitoComponent },
@@ -200,6 +201,12 @@ const routes: Routes = [
     component: TimbratureDettaglioComponent,
     canActivate: [AuthGuard, AuthLevelGuard],
     data: { level: 'S' },
+  },
+  {
+    path: 'leave-settings',
+    component: LeaveSettingsComponent,
+    canActivate: [AuthGuard, AuthLevelGuard],
+    data: { level: 'S' }, // 👑 Solo Superadmin
   },
 ];
 

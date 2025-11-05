@@ -93,6 +93,10 @@ export class HomeAdminComponent implements OnInit {
   navigateToGestioneemployees() {
     this.router.navigateByUrl('/gestioneemployees');
   }
+  navigateToLeaveSettings() {
+    this.router.navigateByUrl('/leave-settings');
+  }
+
   @HostListener('window:popstate', ['$event'])
   onPopState(event: PopStateEvent) {
     console.log('[AppComponent] Freccia indietro rilevata');

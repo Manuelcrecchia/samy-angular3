@@ -1,0 +1,24 @@
+<div class="container py-4">
+  <h2 class="text-center text-primary mb-4">Impostazioni Permessi</h2>
+
+  <div class="card shadow-sm p-4 mx-auto" style="max-width: 500px">
+    <label class="form-label fw-semibold mb-2">
+      Giorni minimi di preavviso per richiedere un permesso
+    </label>
+    <input
+      type="number"
+      class="form-control mb-3"
+      [(ngModel)]="limit"
+      min="0"
+      required
+    />
+
+    <button class="btn btn-primary w-100" (click)="saveLimit()">
+      💾 Salva impostazione
+    </button>
+
+    <div *ngIf="message" class="alert alert-success text-center mt-3">
+      {{ message }}
+    </div>
+  </div>
+</div>

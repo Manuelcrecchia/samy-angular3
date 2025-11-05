@@ -23,16 +23,17 @@ export class ShiftHomeComponent {
       keyRequired: boolean;
       cellulare?: string | null;
       colleghi?: string[];
+      published: boolean;
     }[];
   } = {};
+
   tooltipVisible: boolean = false;
   tooltipText: string = '';
   tooltipTarget: any = null;
   tooltipPosition = { top: 0, left: 0 };
-
-  groupedKeys(): string[] {
-    return Object.keys(this.groupedByEmployee || {}).sort();
-  }
+  selectedEmployees: number[] = [];
+  selectAll: boolean = false;
+  publishedState: { [empId: number]: boolean } = {};
 
   constructor(
     private http: HttpClient,
@@ -42,6 +43,76 @@ export class ShiftHomeComponent {
 
   ngOnInit(): void {
     this.loadShifts();
+  }
+  getEmpId(empName: string): number {
+    return this.groupedByEmployee[empName]?.[0]?.empId || 0;
+  }
+
+  formatDate(date: Date): string {
+    return date.toISOString().split('T')[0];
+  }
+
+  loadShifts() {
+    const dateStr = this.formatDate(this.selectedDate);
+    this.http
+      .get<any[]>(`${this.globalService.url}shifts/byDate/${dateStr}`)
+      .subscribe((data) => {
+        this.groupedByEmployee = this.organizeByEmployee(data);
+        this.shifts = data;
+
+        // inizializza stato pubblicazione da backend
+        this.publishedState = {};
+        for (const empName of this.groupedKeys()) {
+          const empId = this.groupedByEmployee[empName][0]?.empId;
+          const published =
+            this.groupedByEmployee[empName][0]?.published || false;
+          if (empId) this.publishedState[empId] = published;
+        }
+
+        this.updateSelectAllState();
+      });
+  }
+
+  groupedKeys(): string[] {
+    return Object.keys(this.groupedByEmployee || {}).sort();
+  }
+
+  toggleSelectAll() {
+    for (const empName of this.groupedKeys()) {
+      const empId = this.groupedByEmployee[empName][0]?.empId;
+      if (empId) this.publishedState[empId] = this.selectAll;
+    }
+  }
+
+  updateSelectAllState() {
+    const allEmpIds = this.groupedKeys().map(
+      (k) => this.groupedByEmployee[k][0]?.empId
+    );
+    this.selectAll = allEmpIds.every((id) => id && this.publishedState[id]);
+  }
+
+  savePublication() {
+    const dateStr = this.formatDate(this.selectedDate);
+    const employees = Object.keys(this.publishedState).map((id) => ({
+      id: Number(id),
+      published: this.publishedState[Number(id)],
+    }));
+
+    this.http
+      .post(`${this.globalService.url}shifts/publish`, {
+        date: dateStr,
+        employees,
+      })
+      .subscribe({
+        next: (res: any) => {
+          alert(res.message || 'Modifiche salvate correttamente.');
+          this.loadShifts();
+        },
+        error: (err) => {
+          console.error('Errore salvataggio:', err);
+          alert('Errore durante il salvataggio delle modifiche.');
+        },
+      });
   }
 
   getFormattedDate(): string {
@@ -61,10 +132,6 @@ export class ShiftHomeComponent {
     } else {
       this.showPreviousAssignees(appointmentId, date, target);
     }
-  }
-
-  formatDate(date: Date): string {
-    return date.toISOString().split('T')[0];
   }
 
   organizeByEmployee(shifts: any[]): any {
@@ -108,6 +175,7 @@ export class ShiftHomeComponent {
           cellulare: emp.cellulare || null,
           colleghi: colleghi,
           sortOrderByEmployee: sortMap,
+          published: shift.published || false,
         });
       }
     }
@@ -134,16 +202,6 @@ export class ShiftHomeComponent {
     }
 
     return result;
-  }
-
-  loadShifts() {
-    const dateStr = this.formatDate(this.selectedDate);
-    this.http
-      .get<any[]>(this.globalService.url + `shifts/byDate/${dateStr}`)
-      .subscribe((data) => {
-        this.groupedByEmployee = this.organizeByEmployee(data);
-        this.shifts = data;
-      });
   }
 
   prevDay(): void {

@@ -1,4 +1,5 @@
 <div class="container py-4">
+  <!-- 🔙 Torna indietro -->
   <div class="d-flex justify-content-start align-items-center mb-3">
     <button class="btn btn-outline-primary rounded-pill" (click)="back()">
       ⬅ Torna Indietro
@@ -7,67 +8,112 @@
 
   <h2 class="text-center mb-4">Gestione Turni</h2>
 
-  <div class="d-flex justify-content-between align-items-center mb-3">
-    <button class="btn btn-secondary rounded-pill" (click)="prevDay()">
-      &larr;
-    </button>
-    <h4 class="m-0">{{ selectedDate | date : "fullDate" }}</h4>
-    <button class="btn btn-secondary rounded-pill" (click)="nextDay()">
-      &rarr;
-    </button>
-  </div>
+  <!-- 🔹 Navigazione per data + Crea turno -->
+  <div
+    class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2"
+  >
+    <div class="d-flex align-items-center gap-2">
+      <button class="btn btn-secondary rounded-pill" (click)="prevDay()">
+        ←
+      </button>
+      <h4 class="m-0">{{ selectedDate | date : "fullDate" }}</h4>
+      <button class="btn btn-secondary rounded-pill" (click)="nextDay()">
+        →
+      </button>
+    </div>
 
-  <div class="text-center mb-4">
-    <button class="btn btn-success rounded-pill" (click)="createShifts()">
+    <button
+      class="btn btn-success rounded-pill px-4"
+      (click)="createShifts()"
+      title="Crea nuovi turni per questa data"
+    >
       ➕ Crea Turni
     </button>
   </div>
 
+  <!-- 🔹 Seleziona tutto + Salva -->
+  <div class="border rounded p-3 mb-4 bg-light shadow-sm">
+    <div class="d-flex justify-content-between align-items-center flex-wrap">
+      <div>
+        <input
+          type="checkbox"
+          id="selectAll"
+          [(ngModel)]="selectAll"
+          (change)="toggleSelectAll()"
+        />
+        <label for="selectAll" class="ms-1 fw-bold">Seleziona tutto</label>
+      </div>
+
+      <button class="btn btn-primary rounded-pill" (click)="savePublication()">
+        💾 Salva modifiche
+      </button>
+    </div>
+  </div>
+
+  <!-- 🔹 Lista turni -->
   <div *ngIf="shifts.length === 0" class="alert alert-info text-center">
     Nessun turno presente per il giorno selezionato.
   </div>
 
   <ul class="list-group" *ngIf="shifts.length > 0">
     <div *ngFor="let empName of groupedKeys()">
-      <h4 class="mt-4">
-        {{ empName.toUpperCase() }} –
-        {{ selectedDate | date : "EEEE d MMMM y" : "" : "it-IT" | uppercase }}
-      </h4>
-      <button class="btn btn-link p-0 ms-2" (click)="sendViaWhatsApp(empName)" title="Invia via WhatsApp">
-        <i class="fab fa-whatsapp fa-lg text-success"></i>
-      </button>
-      
+      <!-- Dipendente -->
+      <div class="d-flex align-items-center mt-3">
+        <input
+          type="checkbox"
+          class="form-check-input me-2"
+          [(ngModel)]="publishedState[getEmpId(empName)]"
+          (change)="updateSelectAllState()"
+        />
+        <h4 class="mb-0">
+          {{ empName.toUpperCase() }}
+          <small class="text-muted">
+            —
+            {{
+              selectedDate | date : "EEEE d MMMM y" : "" : "it-IT" | uppercase
+            }}
+          </small>
+        </h4>
 
+        <button
+          class="btn btn-link p-0 ms-2"
+          (click)="sendViaWhatsApp(empName)"
+          title="Invia via WhatsApp"
+        >
+          <i class="fab fa-whatsapp fa-lg text-success"></i>
+        </button>
+      </div>
+
+      <!-- Turni del dipendente -->
       <ul class="list-group list-group-flush">
         <li
           class="list-group-item d-flex justify-content-between align-items-center"
           *ngFor="let turno of groupedByEmployee[empName]"
+          [ngClass]="{ 'bg-light border-success': publishedState[turno.empId] }"
         >
-        <span>
-          {{ turno.title }}
-          <span *ngIf="turno.start">
-            — {{ turno.start | date : "HH:mm" }}
-          </span>
-          <span class="ms-2">
-            • Durata: {{ formatDuration(turno.duration) }}
-          </span>
-                    <br />
-          <small class="text-muted">
-            {{ turno.description }}
-            <span *ngIf="turno.colleghi && turno.colleghi.length > 0">
-              👥 Con: {{ turno.colleghi.join(', ') }}
+          <span>
+            <strong>{{ turno.title }}</strong>
+            <span *ngIf="turno.start">
+              — {{ turno.start | date : "HH:mm" }}
             </span>
-            <span *ngIf="!turno.colleghi || turno.colleghi.length === 0">
-              👤 Da solo
+            <span class="ms-2 text-muted small">
+              • Durata: {{ formatDuration(turno.duration) }}
             </span>
-          </small>
-                  </span>
-        
-        
+            <br />
+            <small class="text-muted">
+              {{ turno.description }}
+              <span *ngIf="turno.colleghi?.length">
+                👥 Con: {{ turno.colleghi?.join(", ") }}
+              </span>
+              <span *ngIf="!turno.colleghi?.length">👤 Da solo</span>
+            </small>
+          </span>
+
           <span
             *ngIf="turno.keyRequired"
             class="key-icon ms-2"
             (click)="handleClick($event, turno.appointmentId)"
+            title="Chiavi richieste"
           >
             🔑
           </span>
@@ -77,6 +123,7 @@
   </ul>
 </div>
 
+<!-- Tooltip -->
 <div
   class="tooltip-popup"
   *ngIf="tooltipVisible"
