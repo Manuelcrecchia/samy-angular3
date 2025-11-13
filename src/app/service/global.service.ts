@@ -6,9 +6,9 @@ import { AuthServiceService } from '../auth-service.service';
   providedIn: 'root',
 })
 export class GlobalService {
-  url = 'http://192.168.1.37:5001/';
-  //url = 'https://samipulizie.it:4000/';
-  version = '1.4.48';
+  //url = 'http://localhost:5001/';
+  url = 'https://samipulizie.it:4000/';
+  version = '1.4.49';
 
   constructor(private authService: AuthServiceService) {}
 

@@ -41,6 +41,7 @@ import { AuthGuard } from './auth.guard';
 import { AuthLevelGuard } from './auth-level.guard';
 import { GestioneAssenzeComponent } from './admin/gestione-assenze/gestione-assenze.component';
 import { LeaveSettingsComponent } from './admin/leave-settings/leave-settings.component';
+import { GestioneTagClienteComponent } from './gestione-tag-cliente/gestione-tag-cliente.component';
 
 const routes: Routes = [
   { path: '', component: HomesitoComponent },
@@ -114,6 +115,12 @@ const routes: Routes = [
     component: GestioneAssenzeComponent,
     canActivate: [AuthGuard, AuthLevelGuard],
     data: { level: 'A' }, // ✅ Solo Admin e Superadmin
+  },
+  {
+    path: 'gestioneTagCliente/:id',
+    component: GestioneTagClienteComponent,
+    canActivate: [AuthGuard, AuthLevelGuard],
+    data: { level: 'A' },
   },
 
   {

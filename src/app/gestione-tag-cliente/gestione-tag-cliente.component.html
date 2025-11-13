@@ -1,0 +1,42 @@
+<div class="container py-4">
+  <button
+    class="btn btn-outline-primary rounded-pill mb-3"
+    routerLink="/listCustomer"
+  >
+    ⬅ Torna Indietro
+  </button>
+
+  <h2 class="text-center mb-4">Gestione Posizione Tag</h2>
+
+  <div class="card p-4 shadow-sm">
+    <label class="form-label fw-bold">Posizione Tag</label>
+    <textarea
+      class="form-control mb-3"
+      [(ngModel)]="posizioneTag"
+      rows="3"
+    ></textarea>
+
+    <label class="form-label fw-bold">Immagine Posizione</label>
+
+    <div class="mb-3">
+      <input
+        type="file"
+        class="form-control"
+        (change)="onFileSelected($event)"
+      />
+    </div>
+
+    <div *ngIf="immagineAttuale" class="mb-3">
+      <p>Immagine attuale:</p>
+      <img
+        [src]="immagineAttuale"
+        class="img-fluid rounded"
+        style="max-width: 250px"
+      />
+    </div>
+
+    <button class="btn btn-success rounded-pill" (click)="salva()">
+      💾 Salva
+    </button>
+  </div>
+</div>

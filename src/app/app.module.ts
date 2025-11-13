@@ -97,6 +97,7 @@ import { TimbratureDettaglioComponent } from './admin/timbrature-dettaglio/timbr
 import { CustomModalComponent } from './admin/timbrature-dettaglio/custom-modal/custom-modal.component';
 import { GestioneAssenzeComponent } from './admin/gestione-assenze/gestione-assenze.component';
 import { LeaveSettingsComponent } from './admin/leave-settings/leave-settings.component';
+import { GestioneTagClienteComponent } from './gestione-tag-cliente/gestione-tag-cliente.component';
 
 loadMessages(itMessages);
 locale('it');
@@ -149,6 +150,7 @@ loadMessages(itMessages);
     GestioneAssenzeComponent,
     PreventiviSitoComponent,
     LeaveSettingsComponent,
+    GestioneTagClienteComponent,
   ],
   imports: [
     BrowserModule,

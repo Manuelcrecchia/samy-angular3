@@ -1,7 +1,9 @@
 <div class="container py-4">
   <!-- Pulsante Torna Indietro -->
   <div class="mb-3">
-    <button class="btn btn-outline-primary rounded-pill" (click)="back()">⬅ Torna Indietro</button>
+    <button class="btn btn-outline-primary rounded-pill" (click)="back()">
+      ⬅ Torna Indietro
+    </button>
   </div>
 
   <!-- Titolo -->
@@ -9,7 +11,9 @@
 
   <!-- Bottone Aggiungi Cliente -->
   <div class="text-end mb-4">
-    <button class="btn btn-pink rounded-pill" (click)="navigateToAddCustomer()">➕ Aggiungi Cliente</button>
+    <button class="btn btn-pink rounded-pill" (click)="navigateToAddCustomer()">
+      ➕ Aggiungi Cliente
+    </button>
   </div>
 
   <!-- Filtri -->
@@ -17,13 +21,21 @@
     <div class="col-md-4">
       <mat-form-field class="w-100" appearance="fill">
         <mat-label>Numero cliente</mat-label>
-        <input #inputNumeroCliente matInput (input)="searchNumeroCliente(inputNumeroCliente.value)" />
+        <input
+          #inputNumeroCliente
+          matInput
+          (input)="searchNumeroCliente(inputNumeroCliente.value)"
+        />
       </mat-form-field>
     </div>
     <div class="col-md-4">
       <mat-form-field class="w-100" appearance="fill">
         <mat-label>Nominativo</mat-label>
-        <input #inputNominativo matInput (input)="searchNominativo(inputNominativo.value)" />
+        <input
+          #inputNominativo
+          matInput
+          (input)="searchNominativo(inputNominativo.value)"
+        />
       </mat-form-field>
     </div>
     <div class="col-md-4">
@@ -42,7 +54,9 @@
 
   <!-- Tabella Clienti -->
   <div class="table-responsive">
-    <table class="table table-bordered table-striped align-middle text-center bg-white">
+    <table
+      class="table table-bordered table-striped align-middle text-center bg-white"
+    >
       <thead class="table-pink text-white">
         <tr>
           <th>Numero</th>
@@ -58,23 +72,53 @@
       <tbody>
         <tr *ngFor="let customer of customersFrEnd">
           <td>{{ customer.numeroCliente }}</td>
-          <td>{{ customer.tipoCliente === 'O' ? 'Ordinario' : 'Straordinario' }}</td>
+          <td>
+            {{ customer.tipoCliente === "O" ? "Ordinario" : "Straordinario" }}
+          </td>
           <td>{{ customer.nominativo }}</td>
           <td>{{ customer.email }}</td>
           <td>{{ customer.telefono }}</td>
           <td>{{ customer.referente }}</td>
           <td>
-            <span class="badge" [ngClass]="customer.key ? 'badge-success' : 'badge-danger'">
-              {{ customer.key ? 'Sì' : 'No' }}
+            <span
+              class="badge"
+              [ngClass]="customer.key ? 'badge-success' : 'badge-danger'"
+            >
+              {{ customer.key ? "Sì" : "No" }}
             </span>
           </td>
           <td>
-            <button class="btn btn-warning btn-sm rounded-pill me-1" (click)="navigateToEditCustomer(customer.numeroCliente)">✏ Modifica</button>
-            <button class="btn btn-danger btn-sm rounded-pill" (click)="exportAndDeleteCustomer(customer)">
+            <button
+              class="btn btn-purple btn-sm rounded-pill"
+              [routerLink]="['/gestioneTagCliente', customer.numeroCliente]"
+            >
+              🏷 Posizione Tag
+            </button>
+
+            <button
+              class="btn btn-warning btn-sm rounded-pill me-1"
+              (click)="navigateToEditCustomer(customer.numeroCliente)"
+            >
+              ✏ Modifica
+            </button>
+            <button
+              class="btn btn-danger btn-sm rounded-pill"
+              (click)="exportAndDeleteCustomer(customer)"
+            >
               🗑 Esporta ed Elimina
             </button>
-                        <button class="btn btn-primary btn-sm rounded-pill me-1" (click)="viewDocuments(customer.numeroCliente)">📄 Documenti</button>
-            <button class="btn btn-info btn-sm rounded-pill" [routerLink]="['/schedaCliente', customer.numeroCliente]">🧾 Scheda</button>
+            <button
+              class="btn btn-primary btn-sm rounded-pill me-1"
+              (click)="viewDocuments(customer.numeroCliente)"
+            >
+              📄 Documenti
+            </button>
+            <button
+              class="btn btn-info btn-sm rounded-pill"
+              [routerLink]="['/schedaCliente', customer.numeroCliente]"
+            >
+              🧾 Scheda
+            </button>
           </td>
         </tr>
       </tbody>
