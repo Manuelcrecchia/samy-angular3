@@ -31,6 +31,8 @@ export class TimbratureDettaglioComponent implements OnInit {
   };
   currentWork: any;
   currentStamp: any;
+  showNotesModal: boolean = false;
+  notes: any[] = [];
 
   constructor(
     private route: ActivatedRoute,
@@ -67,6 +69,27 @@ export class TimbratureDettaglioComponent implements OnInit {
           this.loading = false;
         },
       });
+  }
+  openNotesModal(work?: any) {
+    if (work) this.currentWork = work; // ⬅️ fondamentale
+
+    this.http
+      .get(`${this.global.url}admin/stamping/notes`, {
+        params: {
+          employeeId: this.employee.id,
+          date: this.date,
+          customerId: this.currentWork.customerId || '',
+          shiftId: this.currentWork.shiftId || '',
+        },
+        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+      })
+      .subscribe((res: any) => {
+        this.notes = res.notes || [];
+        this.showNotesModal = true;
+      });
+  }
+  closeNotesModal() {
+    this.showNotesModal = false;
   }
 
   // 🔹 Cambia data

@@ -57,6 +57,8 @@ export class ShiftHomeComponent {
     this.http
       .get<any[]>(`${this.globalService.url}shifts/byDate/${dateStr}`)
       .subscribe((data) => {
+        console.log('RAW SHIFTS FROM BACKEND:', data);
+
         this.groupedByEmployee = this.organizeByEmployee(data);
         this.shifts = data;
 

@@ -98,6 +98,7 @@ import { CustomModalComponent } from './admin/timbrature-dettaglio/custom-modal/
 import { GestioneAssenzeComponent } from './admin/gestione-assenze/gestione-assenze.component';
 import { LeaveSettingsComponent } from './admin/leave-settings/leave-settings.component';
 import { GestioneTagClienteComponent } from './gestione-tag-cliente/gestione-tag-cliente.component';
+import { RiepilogoPresenzeEditabileComponent } from './admin/riepilogo-presenze-editabile/riepilogo-presenze-editabile.component';
 
 loadMessages(itMessages);
 locale('it');
@@ -151,6 +152,7 @@ loadMessages(itMessages);
     PreventiviSitoComponent,
     LeaveSettingsComponent,
     GestioneTagClienteComponent,
+    RiepilogoPresenzeEditabileComponent,
   ],
   imports: [
     BrowserModule,
@@ -162,14 +164,8 @@ loadMessages(itMessages);
     FormsModule,
     MatSelectModule,
     MatButtonToggleModule,
-    BrowserModule,
-    AppRoutingModule,
-    HttpClientModule,
     BrowserAnimationsModule,
-    FormsModule,
     ReactiveFormsModule,
-    MatFormFieldModule,
-    MatSelectModule,
     MatGridListModule,
     MatInputModule,
     MatChipsModule,
@@ -183,7 +179,6 @@ loadMessages(itMessages);
     MatMenuModule,
     MatRadioModule,
     MatCheckboxModule,
-    MatSlideToggleModule,
     MatAutocompleteModule,
     MatExpansionModule,
     NgxExtendedPdfViewerModule,
@@ -193,10 +188,8 @@ loadMessages(itMessages);
     MatNativeDateModule,
     MatDatepickerModule,
     MatDialogModule,
-    CommonModule,
     DragDropModule,
     NgbModalModule,
-    CustomModalComponent,
   ],
   providers: [
     {
@@ -216,4 +209,3 @@ loadMessages(itMessages);
 // Remove the existing export statement for the AppModule class
 // export class AppModule { }
 export class AppModule {}
-export class YourModule {}

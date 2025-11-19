@@ -1,0 +1,9 @@
+{
+	"appId": "it.samipulizie.app",
+	"appName": "sami",
+	"webDir": "dist/y/browser",
+	"packageClassList": [
+		"AppPlugin",
+		"NativeBiometric"
+	]
+}

@@ -147,6 +147,11 @@
               <i class="fas fa-exclamation-triangle"></i> Gestisci
             </button>
           </td>
+          <td>
+            <button class="btn btn-info ms-2" (click)="openNotesModal(work)">
+              Info
+            </button>
+          </td>
         </tr>
       </tbody>
     </table>
@@ -167,11 +172,7 @@
     <div class="modal-content shadow-lg rounded-4">
       <div class="modal-header bg-primary text-white">
         <h5 class="modal-title">{{ modalTitle }}</h5>
-        <button
-          type="button"
-          class="btn-close btn-close-white"
-          data-bs-dismiss="modal"
-        ></button>
+        <button type="button" class="btn-close btn-close-white"></button>
       </div>
 
       <div class="modal-body">
@@ -275,6 +276,56 @@
         class="btn-close me-2 m-auto"
         data-bs-dismiss="toast"
       ></button>
+    </div>
+  </div>
+</div>
+
+<!-- Modale info -->
+
+<!-- MODALE INFO NOTE -->
+<div
+  class="modal fade"
+  tabindex="-1"
+  [ngClass]="{ show: showNotesModal }"
+  [ngStyle]="{ display: showNotesModal ? 'block' : 'none' }"
+>
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header bg-info text-white">
+        <h5 class="modal-title">Storico modifiche</h5>
+        <button
+          type="button"
+          class="btn-close btn-close-white"
+          (click)="closeNotesModal()"
+        ></button>
+      </div>
+
+      <div class="modal-body">
+        <div *ngIf="notes.length === 0" class="text-muted">
+          Nessuna nota disponibile
+        </div>
+
+        <div *ngFor="let n of notes" class="mb-3 p-2 rounded border">
+          <b>{{ n.action | uppercase }}</b>
+          <span class="ms-2">({{ n.createdAt | date : "dd/MM HH:mm" }})</span
+          ><br />
+          <small>Admin: {{ n.admin?.nome }} {{ n.admin?.cognome }}</small>
+
+          <p class="mt-2">{{ n.note }}</p>
+
+          <details class="mt-2">
+            <summary>Dettagli JSON</summary>
+            <pre class="mt-2">{{ n.oldValue || "-" }}</pre>
+            <pre>{{ n.newValue || "-" }}</pre>
+          </details>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-secondary" (click)="closeNotesModal()">
+          Chiudi
+        </button>
+      </div>
     </div>
   </div>
 </div>

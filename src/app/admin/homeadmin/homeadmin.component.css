@@ -1,0 +1,29 @@
+/* --- VERSIONE MOBILE --- */
+@media (max-width: 768px) {
+  /* Rende il pulsante solo una freccia rosa */
+  .btn-back {
+    background: #ff4da6; /* rosa Samy */
+    color: white;
+    border: none;
+    padding: 10px 14px;
+    border-radius: 50%;
+    font-size: 18px;
+    width: 45px;
+    height: 45px;
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Nasconde il testo "Torna indietro" mantenendo solo la freccia */
+  .btn-back::after {
+    content: "";
+  }
+
+  /* L'ingranaggio rimane a destra */
+  .menu-toggle {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+  }
+}

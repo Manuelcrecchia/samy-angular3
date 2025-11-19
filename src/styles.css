@@ -2,371 +2,397 @@
    RESET E BASE
 ====================================== */
 * {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-  }
-  
-  body {
-    font-family: 'Roboto', sans-serif;
-    background-color: #f8f9fa;
-    color: #333;
-    line-height: 1.5;
-  }
-  
-  h1, h2, h3, h4, h5, h6 {
-    font-weight: 600;
-    margin-bottom: 0.75rem;
-  }
-  
-  .container {
-    padding: 1rem;
-    margin: 0 auto;
-  }
-  
-  /* =====================================
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: "Roboto", sans-serif;
+  background-color: #f8f9fa;
+  color: #333;
+  line-height: 1.5;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+}
+
+.container {
+  padding: 1rem;
+  margin: 0 auto;
+}
+
+/* =====================================
      BOTTONI
   ====================================== */
-  button {
-    cursor: pointer;
-    font-size: 1rem;
-    border-radius: 50px;
-    transition: background-color 0.3s ease, transform 0.2s ease;
-    border: none;
-  }
-  
-  .btn {
-    padding: 0.5rem 1.2rem;
-    border-radius: 50px;
-    font-weight: 500;
-    display: inline-block;
-    text-align: center;
-  }
-  
-  .btn:hover {
-    transform: scale(1.02);
-  }
-  
-  .btn-pink, .btn-success {
-    background-color: #ec407a !important;
-    color: white !important;
-  }
-  
-  .btn-pink:hover, .btn-success:hover {
-    background-color: #d81b60 !important;
-  }
-  
-  .btn-outline-primary {
-    border: 1px solid #81d4fa;
-    color: #0288d1;
-  }
-  
-  .btn-outline-primary:hover {
-    background-color: #81d4fa;
-    color: white;
-  }
-  
-  .btn-back {
-    background-color: #ff4081;
-    color: white;
-    font-weight: bold;
-    padding: 0.5rem 1rem;
-    border: none;
-    border-radius: 50px;
-  }
-  
-  .menu-toggle {
-    position: absolute;
-    top: 1rem;
-    right: 1rem;
-    background: transparent;
-    border: none;
-    font-size: 1.5rem;
-    color: #ec407a;
-    z-index: 1000;
-  }
-  
-  .menu-toggle:hover {
-    color: #d81b60;
-  }
-  
-  .menu {
-    position: absolute;
-    top: 3rem;
-    right: 1rem;
-    background-color: #fff;
-    border: 1px solid #ccc;
-    border-radius: 10px;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-    padding: 1rem;
-    z-index: 999;
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-  }
-  
-  .menu a {
-    text-decoration: none;
-    color: #ec407a;
-    font-weight: 500;
-  }
-  
-  .menu a:hover {
-    color: #d81b60;
-  }
-  
-  /* =====================================
+button {
+  cursor: pointer;
+  font-size: 1rem;
+  border-radius: 50px;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  border: none;
+}
+
+.btn {
+  padding: 0.5rem 1.2rem;
+  border-radius: 50px;
+  font-weight: 500;
+  display: inline-block;
+  text-align: center;
+}
+
+.btn:hover {
+  transform: scale(1.02);
+}
+
+.btn-pink,
+.btn-success {
+  background-color: #ec407a !important;
+  color: white !important;
+}
+
+.btn-pink:hover,
+.btn-success:hover {
+  background-color: #d81b60 !important;
+}
+
+.btn-outline-primary {
+  border: 1px solid #81d4fa;
+  color: #0288d1;
+}
+
+.btn-outline-primary:hover {
+  background-color: #81d4fa;
+  color: white;
+}
+
+.btn-back {
+  background-color: #ff4081;
+  color: white;
+  font-weight: bold;
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 50px;
+}
+
+.menu-toggle {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: transparent;
+  border: none;
+  font-size: 1.5rem;
+  color: #ec407a;
+  z-index: 1000;
+}
+
+.menu-toggle:hover {
+  color: #d81b60;
+}
+
+.menu {
+  position: absolute;
+  top: 3rem;
+  right: 1rem;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 1rem;
+  z-index: 999;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.menu a {
+  text-decoration: none;
+  color: #ec407a;
+  font-weight: 500;
+}
+
+.menu a:hover {
+  color: #d81b60;
+}
+
+/* =====================================
      ANGULAR MATERIAL + FORM
   ====================================== */
-  .mat-form-field-appearance-fill .mat-form-field-flex {
-    background-color: #fce4ec;
-  }
-  
-  .mat-select-value, .mat-form-field-label {
-    color: #ec407a !important;
-  }
-  
-  input, select, textarea {
-    padding: 0.5rem;
-    border-radius: 4px;
-    border: 1px solid #ccc;
-    width: 100%;
-  }
-  
-  .form-group {
-    margin-bottom: 1rem;
-  }
-  
-  textarea {
-    resize: vertical;
-  }
-  
-  input:invalid {
-    border: 2px solid red;
-  }
-  
-  /* =====================================
+.mat-form-field-appearance-fill .mat-form-field-flex {
+  background-color: #fce4ec;
+}
+
+.mat-select-value,
+.mat-form-field-label {
+  color: #ec407a !important;
+}
+
+input,
+select,
+textarea {
+  padding: 0.5rem;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  width: 100%;
+}
+
+.form-group {
+  margin-bottom: 1rem;
+}
+
+textarea {
+  resize: vertical;
+}
+
+input:invalid {
+  border: 2px solid red;
+}
+
+/* =====================================
      TABELLE
   ====================================== */
-  .table {
-    width: 100%;
-    border-collapse: collapse;
-  }
-  
-  .table th, .table td {
-    padding: 0.75rem;
-    text-align: center;
-  }
-  
-  .table-pink {
-    background-color: #ec407a;
-    color: white;
-  }
-  
-  .table-bordered th, .table-bordered td {
-    border: 1px solid #f8bbd0;
-  }
-  
-  .table-striped tbody tr:nth-of-type(odd) {
-    background-color: #fce4ec;
-  }
-  
-  /* =====================================
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.table th,
+.table td {
+  padding: 0.75rem;
+  text-align: center;
+}
+
+.table-pink {
+  background-color: #ec407a;
+  color: white;
+}
+
+.table-bordered th,
+.table-bordered td {
+  border: 1px solid #f8bbd0;
+}
+
+.table-striped tbody tr:nth-of-type(odd) {
+  background-color: #fce4ec;
+}
+
+/* =====================================
      BADGES
   ====================================== */
-  .badge {
-    padding: 5px 10px;
-    font-size: 0.85rem;
-    border-radius: 1rem;
-    display: inline-block;
-  }
-  
-  .badge-success {
-    background-color: #81d4fa;
-    color: white;
-  }
-  
-  .badge-danger {
-    background-color: #ff8a80;
-    color: white;
-  }
-  
-  /* =====================================
+.badge {
+  padding: 5px 10px;
+  font-size: 0.85rem;
+  border-radius: 1rem;
+  display: inline-block;
+}
+
+.badge-success {
+  background-color: #81d4fa;
+  color: white;
+}
+
+.badge-danger {
+  background-color: #ff8a80;
+  color: white;
+}
+
+/* =====================================
      COMPONENTI SPECIALI
   ====================================== */
-  .key-icon {
-    margin-left: 8px;
-    cursor: pointer;
-    font-size: 16px;
-    user-select: none;
-  }
-  
-  .tooltip-popup {
-    position: absolute;
-    background: #333;
-    color: white;
-    padding: 6px 10px;
-    border-radius: 5px;
-    font-size: 13px;
-    z-index: 9999;
-    white-space: nowrap;
-  }
-  
-  .ngx-extended-pdf-viewer {
-    width: 100%;
-    min-height: 600px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    margin-top: 1rem;
-  }
-  
-  /* =====================================
+.key-icon {
+  margin-left: 8px;
+  cursor: pointer;
+  font-size: 16px;
+  user-select: none;
+}
+
+.tooltip-popup {
+  position: absolute;
+  background: #333;
+  color: white;
+  padding: 6px 10px;
+  border-radius: 5px;
+  font-size: 13px;
+  z-index: 9999;
+  white-space: nowrap;
+}
+
+.ngx-extended-pdf-viewer {
+  width: 100%;
+  min-height: 600px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  margin-top: 1rem;
+}
+
+/* =====================================
      CALENDARI GIORNI E MESI
   ====================================== */
-  .giorni {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    border: 2px solid #0288d1;
-    border-radius: 5px;
-    padding: 5px;
-    gap: 10px;
-  }
-  
-  .item {
-    text-align: center;
-    border: 2px solid #0288d1;
-    padding: 5px;
-    border-radius: 8px;
-    background-color: #e1f5fe;
-    flex: 1 1 calc(14.28% - 10px);
-    box-sizing: border-box;
-  }
-  
-  .mese {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-    gap: 20px;
-    padding: 20px;
-  }
-  
-  .inno {
-    border: 2px solid #0288d1;
-    border-radius: 10px;
-    padding: 10px;
-    text-align: center;
-    background-color: #f0f0f0;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-  }
-  
-  .inno:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  }
-  
-   /* categoryi calendario per categorie */
- .category-sopralluogo {
-    background-color: #81d4fa !important; /* azzurro */
-    color: #000 !important;
-  }
-  
-  .category-ordinario {
-    background-color: #c8e6c9 !important; /* verde chiaro */
-    color: #000 !important;
-  }
-  
-  .category-straordinario {
-    background-color: #ffe082 !important; /* giallo */
-    color: #000 !important;
-  }
-  
-  .category-lavorisvolti {
-    background-color: #aed581 !important; /* verde scuro */
-    color: #000 !important;
-  }
-  
-  .category-altro {
-    background-color: #e0e0e0 !important;
-    color: #000 !important;
-  }
-    
-  /* =====================================
+.giorni {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  border: 2px solid #0288d1;
+  border-radius: 5px;
+  padding: 5px;
+  gap: 10px;
+}
+
+.item {
+  text-align: center;
+  border: 2px solid #0288d1;
+  padding: 5px;
+  border-radius: 8px;
+  background-color: #e1f5fe;
+  flex: 1 1 calc(14.28% - 10px);
+  box-sizing: border-box;
+}
+
+.mese {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 20px;
+  padding: 20px;
+}
+
+.inno {
+  border: 2px solid #0288d1;
+  border-radius: 10px;
+  padding: 10px;
+  text-align: center;
+  background-color: #f0f0f0;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.inno:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* categoryi calendario per categorie */
+.category-sopralluogo {
+  background-color: #81d4fa !important; /* azzurro */
+  color: #000 !important;
+}
+
+.category-ordinario {
+  background-color: #c8e6c9 !important; /* verde chiaro */
+  color: #000 !important;
+}
+
+.category-straordinario {
+  background-color: #ffe082 !important; /* giallo */
+  color: #000 !important;
+}
+
+.category-lavorisvolti {
+  background-color: #aed581 !important; /* verde scuro */
+  color: #000 !important;
+}
+
+.category-altro {
+  background-color: #e0e0e0 !important;
+  color: #000 !important;
+}
+
+/* =====================================
      CARD E ADMIN
   ====================================== */
-  .admin-list {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-  }
-  
-  .admin-card {
-    width: 100%;
-    margin-bottom: 16px;
-  }
-  
-  .admin-details {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-  }
-  
-  .admin-form {
-    margin-top: 32px;
-  }
-  
-  .add-admin-form {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-  }
-  
-  /* =====================================
+.admin-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.admin-card {
+  width: 100%;
+  margin-bottom: 16px;
+}
+
+.admin-details {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.admin-form {
+  margin-top: 32px;
+}
+
+.add-admin-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* =====================================
      RESPONSIVE
   ====================================== */
-  @media (max-width: 768px) {
-    .example-form-field,
-    .btn,
-    .btn-back,
-    .form-group {
-      width: 100%;
-      margin-bottom: 0.75rem;
-    }
-    .mat-toolbar {
-      flex-wrap: wrap;
-    }
-    .ngx-extended-pdf-viewer {
-      min-height: 400px;
-    }
+@media (max-width: 768px) {
+  .example-form-field,
+  .btn,
+  .btn-back,
+  .form-group {
+    width: 100%;
+    margin-bottom: 0.75rem;
   }
-  
-  /* =====================================
+  .mat-toolbar {
+    flex-wrap: wrap;
+  }
+  .ngx-extended-pdf-viewer {
+    min-height: 400px;
+  }
+}
+
+/* =====================================
      EXTRA COMUNI
   ====================================== */
-  .text-center {
-    text-align: center;
-  }
-  
-  .mt-4 {
-    margin-top: 1.5rem;
-  }
-  
-  .mb-3 {
-    margin-bottom: 1rem;
-  }
-  
-  .me-1 {
-    margin-right: 0.5rem;
-  }
-  
-  .d-flex {
-    display: flex !important;
-  }
-  
-  .justify-content-between {
-    justify-content: space-between !important;
-  }
-  
-  .align-items-center {
-    align-items: center !important;
-  }
-  
+.text-center {
+  text-align: center;
+}
+
+.mt-4 {
+  margin-top: 1.5rem;
+}
+
+.mb-3 {
+  margin-bottom: 1rem;
+}
+
+.me-1 {
+  margin-right: 0.5rem;
+}
+
+.d-flex {
+  display: flex !important;
+}
+
+.justify-content-between {
+  justify-content: space-between !important;
+}
+
+.align-items-center {
+  align-items: center !important;
+}
+table input {
+  width: auto !important;
+  min-width: 50px !important;
+  padding: 2px !important;
+  height: 28px !important;
+  box-sizing: border-box !important;
+}
+td {
+  position: relative;
+}
+
+td input {
+  position: relative;
+  z-index: 10;
+}

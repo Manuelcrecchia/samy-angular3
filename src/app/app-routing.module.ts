@@ -42,23 +42,61 @@ import { AuthLevelGuard } from './auth-level.guard';
 import { GestioneAssenzeComponent } from './admin/gestione-assenze/gestione-assenze.component';
 import { LeaveSettingsComponent } from './admin/leave-settings/leave-settings.component';
 import { GestioneTagClienteComponent } from './gestione-tag-cliente/gestione-tag-cliente.component';
+import { MobileGuard } from './mobile.guard';
+import { RiepilogoPresenzeEditabileComponent } from './admin/riepilogo-presenze-editabile/riepilogo-presenze-editabile.component';
 
 const routes: Routes = [
-  { path: '', component: HomesitoComponent },
-  { path: 'homeSito', component: HomesitoComponent },
+  { path: '', component: HomesitoComponent, canActivate: [MobileGuard] },
+  {
+    path: 'homeSito',
+    component: HomesitoComponent,
+    canActivate: [MobileGuard],
+  },
   { path: 'loginPrivateArea', component: PrivateAreaComponent },
-  { path: 'privacy', component: PrivacyComponent },
-  { path: 'preventivi', component: PreventiviComponent },
-  { path: 'navbar', component: NavbarComponent },
-  { path: 'blog', component: BlogComponent },
-  { path: 'convenzioni-promozioni', component: ConvenzioniPromozioniComponent },
-  { path: 'sanificazioni', component: SanificazioniComponent },
-  { path: 'uffici', component: UfficiComponent },
-  { path: 'condomini1', component: Condomini1Component },
-  { path: 'palestra', component: PalestraComponent },
-  { path: 'straordinaria', component: StraordinariaComponent },
-  { path: 'domestica', component: DomesticaComponent },
-  { path: 'preventivi-sito', component: PreventiviSitoComponent },
+  { path: 'privacy', component: PrivacyComponent, canActivate: [MobileGuard] },
+  {
+    path: 'preventivi',
+    component: PreventiviComponent,
+    canActivate: [MobileGuard],
+  },
+  { path: 'navbar', component: NavbarComponent, canActivate: [MobileGuard] },
+  { path: 'blog', component: BlogComponent, canActivate: [MobileGuard] },
+  {
+    path: 'convenzioni-promozioni',
+    component: ConvenzioniPromozioniComponent,
+    canActivate: [MobileGuard],
+  },
+  {
+    path: 'sanificazioni',
+    component: SanificazioniComponent,
+    canActivate: [MobileGuard],
+  },
+  { path: 'uffici', component: UfficiComponent, canActivate: [MobileGuard] },
+  {
+    path: 'condomini1',
+    component: Condomini1Component,
+    canActivate: [MobileGuard],
+  },
+  {
+    path: 'palestra',
+    component: PalestraComponent,
+    canActivate: [MobileGuard],
+  },
+  {
+    path: 'straordinaria',
+    component: StraordinariaComponent,
+    canActivate: [MobileGuard],
+  },
+  {
+    path: 'domestica',
+    component: DomesticaComponent,
+    canActivate: [MobileGuard],
+  },
+  {
+    path: 'preventivi-sito',
+    component: PreventiviSitoComponent,
+    canActivate: [MobileGuard],
+  },
   { path: 'passworddimenticata', component: PassworddimenticataComponent },
 
   // 🔹 ADMIN AREA
@@ -158,6 +196,12 @@ const routes: Routes = [
     component: RiepilogoPresenzeComponent,
     canActivate: [AuthGuard, AuthLevelGuard],
     data: { level: 'B' },
+  },
+  {
+    path: 'riepilogo-presenze-editabile',
+    component: RiepilogoPresenzeEditabileComponent,
+    canActivate: [AuthGuard, AuthLevelGuard],
+    data: { level: 'A' },
   },
   {
     path: 'schedaCliente/:numeroCliente',

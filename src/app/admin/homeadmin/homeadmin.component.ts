@@ -83,6 +83,9 @@ export class HomeAdminComponent implements OnInit {
   goToHours() {
     this.router.navigate(['/riepilogo-presenze']);
   }
+  goToEditableHours() {
+    this.router.navigate(['/riepilogo-presenze-editabile']);
+  }
 
   back() {
     this.global.logout();

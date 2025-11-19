@@ -1,7 +1,9 @@
 <mat-toolbar color="primary">
   <span>Gestione Documenti</span>
   <span class="spacer"></span>
-  <button class="btn-back" type="button" (click)="back()">&larr; Torna Indietro</button>
+  <button class="btn-back" type="button" (click)="back()">
+    &larr; Torna Indietro
+  </button>
 </mat-toolbar>
 
 <div class="container">
@@ -10,10 +12,19 @@
     <h3>Cartelle</h3>
     <mat-list>
       <mat-list-item *ngFor="let folder of folders">
-        <button mat-button (click)="selectFolder(folder)" [class.selected]="folder === selectedFolder">
+        <button
+          mat-button
+          (click)="selectFolder(folder)"
+          [class.selected]="folder === selectedFolder"
+        >
           {{ folder }}
         </button>
-        <button mat-icon-button color="warn" (click)="deleteFolder(folder)" matTooltip="Elimina cartella">
+        <button
+          mat-icon-button
+          color="warn"
+          (click)="deleteFolder(folder)"
+          matTooltip="Elimina cartella"
+        >
           <mat-icon>delete</mat-icon>
         </button>
       </mat-list-item>
@@ -22,9 +33,15 @@
     <div class="new-folder">
       <mat-form-field appearance="fill">
         <mat-label>Nuova Cartella</mat-label>
-        <input matInput [(ngModel)]="newFolderName" placeholder="Inserisci nome">
+        <input
+          matInput
+          [(ngModel)]="newFolderName"
+          placeholder="Inserisci nome"
+        />
       </mat-form-field>
-      <button mat-raised-button color="accent" (click)="createFolder()">Crea</button>
+      <button mat-raised-button color="accent" (click)="createFolder()">
+        Crea
+      </button>
     </div>
   </div>
 
@@ -33,20 +50,44 @@
     <h3 *ngIf="selectedFolder">File in "{{ selectedFolder }}"</h3>
 
     <div class="file-upload" *ngIf="selectedFolder">
-      <input type="file" #fileInput (change)="uploadFile($event)" class="d-none" />
-      <button mat-raised-button color="primary" (click)="fileInput.click()">Carica File</button>
+      <input
+        type="file"
+        #fileInput
+        (change)="uploadFile($event)"
+        class="d-none"
+      />
+      <button mat-raised-button color="primary" (click)="fileInput.click()">
+        Carica File
+      </button>
     </div>
 
     <mat-list *ngIf="selectedFolder">
       <mat-list-item *ngFor="let file of files">
-        <button mat-button (click)="selectFile(file.filename)">{{ file.filename }}</button>
-        <button mat-icon-button color="primary" (click)="downloadFile(file.filename)" matTooltip="Download">
+        <button mat-button (click)="selectFile(file.filename)">
+          {{ file.filename }}
+        </button>
+        <button
+          mat-icon-button
+          color="primary"
+          (click)="downloadFile(file.filename)"
+          matTooltip="Download"
+        >
           <mat-icon>download</mat-icon>
         </button>
-        <button mat-icon-button color="warn" (click)="deleteFile(file.filename)" matTooltip="Elimina">
+        <button
+          mat-icon-button
+          color="warn"
+          (click)="deleteFile(file.filename)"
+          matTooltip="Elimina"
+        >
           <mat-icon>delete</mat-icon>
         </button>
-        <button mat-icon-button color="accent" (click)="sendFileMail(file.filename)" matTooltip="Invia via email">
+        <button
+          mat-icon-button
+          color="accent"
+          (click)="sendFileMail(file.filename)"
+          matTooltip="Invia via email"
+        >
           <mat-icon>mail</mat-icon>
         </button>
       </mat-list-item>
@@ -56,14 +97,24 @@
       <ngx-extended-pdf-viewer
         [base64Src]="pdfBase64"
         useBrowserLocale="true"
+        [showToolbar]="true"
+        [textLayer]="true"
         [height]="'100%'"
-        [customToolbar]="customToolbar">
+        mobileFriendlyZoom="100%"
+        [handTool]="true"
+        [showDownloadButton]="true"
+        [showPrintButton]="true"
+        [customToolbar]="customToolbar"
+      >
       </ngx-extended-pdf-viewer>
 
       <ng-template #customToolbar>
-        <div id="toolbarViewer">
-          <pdf-print></pdf-print>
-          <pdf-download></pdf-download>
+        <div style="padding: 10px; background: #fff; display: flex; gap: 15px">
+          <button mat-raised-button color="primary" pdfPrint>🖨 Stampa</button>
+
+          <button mat-raised-button color="accent" pdfDownload>
+            ⬇️ Scarica
+          </button>
         </div>
       </ng-template>
     </div>

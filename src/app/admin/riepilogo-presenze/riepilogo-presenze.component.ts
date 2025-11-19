@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { GlobalService } from '../../service/global.service';
 import { saveAs } from 'file-saver';
 import { Subject, debounceTime } from 'rxjs';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-riepilogo-presenze',
@@ -33,7 +34,11 @@ export class RiepilogoPresenzeComponent implements OnInit {
   loading = false;
   private noteChanges: { [id: number]: Subject<string> } = {};
 
-  constructor(private http: HttpClient, private globalService: GlobalService) {}
+  constructor(
+    private http: HttpClient,
+    private globalService: GlobalService,
+    private router: Router
+  ) {}
 
   ngOnInit() {
     this.generaGiorni();
@@ -129,6 +134,6 @@ export class RiepilogoPresenzeComponent implements OnInit {
   }
 
   back() {
-    window.location.href = '/homeAdmin';
+    this.router.navigate(['/homeAdmin']);
   }
 }

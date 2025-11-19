@@ -24,13 +24,7 @@
         Nessun lavoro per questo giorno.
       </div>
 
-      <div
-        *ngIf="!loading && appointments.length > 0"
-        cdkDropList
-        [cdkDropListData]="appointments"
-        (cdkDropListDropped)="dropGeneral($event)"
-        class="list-group"
-      >
+      <div *ngIf="!loading && appointments.length > 0" class="list-group">
         <div class="text-center mb-3">
           <button class="btn btn-outline-primary btn-sm" (click)="addExtra()">
             ➕ Aggiungi lavoro extra
@@ -40,7 +34,6 @@
         <div
           *ngFor="let a of appointments"
           class="list-group-item d-flex align-items-center justify-content-between"
-          cdkDrag
         >
           <div class="flex-grow-1 me-3">
             <div>
