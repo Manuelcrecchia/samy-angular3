@@ -6,6 +6,7 @@
   </div>
 
   <ngx-extended-pdf-viewer
+    #pdfViewer
     class="ngx-extended-pdf-viewer"
     [base64Src]="pdfPrev"
     useBrowserLocale="true"
@@ -18,9 +19,13 @@
 
   <ng-template #customToolbar>
     <div style="padding: 10px; background: #fff; display: flex; gap: 15px">
-      <button mat-raised-button color="primary" pdfPrint>🖨 Stampa</button>
+      <button mat-raised-button color="accent" (click)="printPdf()">
+        🖨️ Stampa
+      </button>
 
-      <button mat-raised-button color="accent" pdfDownload>⬇️ Scarica</button>
+      <button mat-raised-button color="accent" (click)="downloadPdf()">
+        ⬇️ Scarica
+      </button>
     </div>
   </ng-template>
 </div>
