@@ -10,7 +10,6 @@ import { AppComponent } from './app.component';
 import { PrivateAreaComponent } from './componenti/login/private-area/private-area.component';
 import { HomeAdminComponent } from './admin/homeadmin/homeadmin.component';
 import { GlobalService } from './service/global.service';
-import { PreventiviSitoComponent } from './componenti/sito/preventivi/preventivi-sito.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import {
@@ -37,7 +36,6 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { HomesitoComponent } from './componenti/sito/homesito/homesito.component';
 import { QuotesHomeComponent } from './admin/quotes-home/quotes-home.component';
 import { AddQuoteComponent } from './admin/add-quote/add-quote.component';
 import { EditQuoteComponent } from './admin/edit-quote/edit-quote.component';
@@ -45,14 +43,8 @@ import { FileDirective } from './file.directive';
 import { NgxExtendedPdfViewerModule } from 'ngx-extended-pdf-viewer';
 import { AddCustomerComponent } from './admin/add-customer/add-customer.component';
 import { ListCustomerComponent } from './admin/list-customer/list-customer.component';
-import { SanificazioniComponent } from './componenti/sito/sanificazioni/sanificazioni.component';
-import { UfficiComponent } from './componenti/sito/uffici/uffici.component';
-import { Condomini1Component } from './componenti/condomini1/condomini1.component';
 import { PopupComponentComponent } from './componenti/popup/popup-component/popup-component.component';
 import { DxSchedulerModule } from 'devextreme-angular';
-import { PalestraComponent } from './componenti/sito/palestra/palestra.component';
-import { StraordinariaComponent } from './componenti/sito/straordinaria/straordinaria.component';
-import { DomesticaComponent } from './componenti/sito/domestica/domestica.component';
 import { PassworddimenticataComponent } from './componenti/login/passworddimenticata/passworddimenticata.component';
 import { CambiapasswordComponent } from './componenti/admin/cambiapassword/cambiapassword.component';
 import { CalendarHomeComponent } from './admin/calendar/calendar-home/calendar-home.component';
@@ -70,9 +62,6 @@ import { MatNativeDateModule } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { PopUpComponent } from './admin/pop-up/pop-up.component';
 import { QuestionPopupComponent } from './componenti/popup/question-popup/question-popup.component';
-import { PrivacyComponent } from './sito/privacy/privacy.component';
-import { PreventiviComponent } from './sito/preventivi/preventivi.component';
-import { NavbarComponent } from './sito/navbar/navbar.component';
 import { GestioneEmployeesComponent } from './admin/gestione-employees/gestione-employees.component';
 import { SettingsEmployeesComponent } from './admin/settings-employees/settings-employees.component';
 import { DocumentManagerComponent } from './admin/document-manager/document-manager.component';
@@ -83,8 +72,6 @@ import { NgbModalModule } from '@ng-bootstrap/ng-bootstrap';
 
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { AuthInterceptorService } from './auth-interceptor.service';
-import { BlogComponent } from './componenti/sito/blog/blog.component';
-import { ConvenzioniPromozioniComponent } from './componenti/sito/convenzioni-promozioni/convenzioni-promozioni.component';
 import { EditCustomerComponent } from './admin/edit-customer/edit-customer.component';
 import { SchedaClienteComponent } from './admin/scheda-cliente/scheda-cliente.component';
 import { ShiftHomeComponent } from './admin/shift-home/shift-home.component';
@@ -111,34 +98,22 @@ loadMessages(itMessages);
     PrivateAreaComponent,
     HomeAdminComponent,
     UserSettingsComponent,
-    HomesitoComponent,
     QuotesHomeComponent,
     AddQuoteComponent,
     EditQuoteComponent,
     FileDirective,
     AddCustomerComponent,
     ListCustomerComponent,
-    SanificazioniComponent,
-    UfficiComponent,
-    Condomini1Component,
     PopupComponentComponent,
-    PalestraComponent,
-    StraordinariaComponent,
-    DomesticaComponent,
     PassworddimenticataComponent,
     CambiapasswordComponent,
     CalendarHomeComponent,
     PopUpComponent,
     QuestionPopupComponent,
-    PrivacyComponent,
-    PreventiviComponent,
-    NavbarComponent,
     GestioneEmployeesComponent,
     SettingsEmployeesComponent,
     ViewPdfComponent,
     DocumentManagerComponent,
-    BlogComponent,
-    ConvenzioniPromozioniComponent,
     EditCustomerComponent,
     SchedaClienteComponent,
     ShiftHomeComponent,
@@ -149,7 +124,6 @@ loadMessages(itMessages);
     TimbratureHomeComponent,
     TimbratureDettaglioComponent,
     GestioneAssenzeComponent,
-    PreventiviSitoComponent,
     LeaveSettingsComponent,
     GestioneTagClienteComponent,
     RiepilogoPresenzeEditabileComponent,

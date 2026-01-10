@@ -1,8 +1,29 @@
 <div class="container py-4">
-  <div class="d-flex justify-content-start align-items-center mb-3">
+  <div class="d-flex justify-content-between align-items-center mb-3">
     <button class="btn btn-outline-primary rounded-pill" (click)="back()">
       ⬅ Torna Indietro
     </button>
+
+    <!-- AZIONI SELEZIONE + INVIO -->
+    <div class="d-flex align-items-center gap-2">
+      <button
+        class="btn btn-outline-secondary rounded-pill"
+        (click)="toggleSelectAll()"
+        [disabled]="employees.length === 0"
+      >
+        {{ allSelected ? "Deseleziona tutto" : "Seleziona tutto" }}
+      </button>
+
+      <span class="badge bg-dark"> Selezionati: {{ selectedCount }} </span>
+
+      <button
+        class="btn btn-success rounded-pill"
+        (click)="openNotifyModal(notifyModal)"
+        [disabled]="selectedCount === 0"
+      >
+        🔔 Invia notifica
+      </button>
+    </div>
   </div>
 
   <h2 class="text-center mb-4">Gestione Dipendenti</h2>
@@ -10,15 +31,35 @@
   <table class="table table-striped table-bordered align-middle shadow-sm">
     <thead class="table-dark text-center">
       <tr>
+        <th style="width: 50px">
+          <!-- Checkbox header: seleziona tutti -->
+          <input
+            type="checkbox"
+            class="form-check-input"
+            [checked]="allSelected"
+            [indeterminate]="someSelected"
+            (change)="toggleSelectAll()"
+            [disabled]="employees.length === 0"
+          />
+        </th>
         <th>Nome</th>
         <th>Cognome</th>
         <th>Email</th>
         <th>Telefono</th>
-        <th>Azioni</th>
+        <th style="min-width: 220px">Azioni</th>
       </tr>
     </thead>
+
     <tbody class="text-center">
       <tr *ngFor="let emp of employees">
+        <td>
+          <input
+            type="checkbox"
+            class="form-check-input"
+            [checked]="isSelected(emp.id)"
+            (change)="toggleEmployee(emp.id)"
+          />
+        </td>
         <td>{{ emp.nome }}</td>
         <td>{{ emp.cognome }}</td>
         <td>{{ emp.email }}</td>
@@ -36,6 +77,12 @@
           >
             📁 Documenti
           </button>
+          <button
+            class="btn btn-outline-dark btn-sm rounded-pill ms-2"
+            (click)="openEmpNotifications(emp, empNotifModal)"
+          >
+            🔔 Notifiche
+          </button>
         </td>
       </tr>
     </tbody>
@@ -44,4 +91,128 @@
   <div *ngIf="employees.length === 0" class="alert alert-info text-center mt-3">
     Nessun dipendente trovato.
   </div>
+
+  <!-- MODAL INVIO NOTIFICA -->
+  <ng-template #notifyModal let-modal>
+    <div class="modal-header">
+      <h5 class="modal-title">🔔 Invia notifica</h5>
+      <button
+        type="button"
+        class="btn-close"
+        aria-label="Close"
+        (click)="modal.dismiss()"
+      ></button>
+    </div>
+
+    <div class="modal-body">
+      <div class="mb-2">
+        <div class="small text-muted">
+          Inviando a: <b>{{ selectedCount }}</b> dipendente/i
+        </div>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Titolo</label>
+        <input
+          type="text"
+          class="form-control"
+          [(ngModel)]="notifyTitle"
+          maxlength="80"
+          placeholder="Es. Avviso importante"
+        />
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Messaggio</label>
+        <textarea
+          class="form-control"
+          rows="4"
+          [(ngModel)]="notifyBody"
+          maxlength="500"
+          placeholder="Scrivi qui il testo della notifica..."
+        ></textarea>
+        <div class="small text-muted mt-1">
+          {{ notifyBody.length || 0 }}/500
+        </div>
+      </div>
+
+      <div *ngIf="notifyError" class="alert alert-danger py-2">
+        {{ notifyError }}
+      </div>
+
+      <div *ngIf="notifySuccess" class="alert alert-success py-2">
+        {{ notifySuccess }}
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <button
+        class="btn btn-outline-secondary"
+        (click)="modal.dismiss()"
+        [disabled]="sending"
+      >
+        Annulla
+      </button>
+      <button
+        class="btn btn-success"
+        (click)="sendNotification(modal)"
+        [disabled]="sending || !notifyTitle.trim() || !notifyBody.trim()"
+      >
+        <span
+          *ngIf="sending"
+          class="spinner-border spinner-border-sm me-2"
+        ></span>
+        Invia
+      </button>
+    </div>
+  </ng-template>
 </div>
+<ng-template #empNotifModal let-modal>
+  <div class="modal-header">
+    <h5 class="modal-title">
+      🔔 Notifiche di {{ activeEmp?.nome }} {{ activeEmp?.cognome }}
+    </h5>
+    <button type="button" class="btn-close" (click)="modal.dismiss()"></button>
+  </div>
+
+  <div class="modal-body">
+    <div *ngIf="empNotifLoading" class="text-center py-4">
+      <span class="spinner-border spinner-border-sm me-2"></span> Caricamento...
+    </div>
+
+    <div
+      *ngIf="!empNotifLoading && empNotifs.length === 0"
+      class="alert alert-info"
+    >
+      Nessuna notifica inviata a questo dipendente.
+    </div>
+
+    <div *ngIf="!empNotifLoading && empNotifs.length > 0" class="list-group">
+      <div class="list-group-item" *ngFor="let n of empNotifs">
+        <div class="d-flex justify-content-between align-items-start">
+          <div class="me-3">
+            <div class="fw-semibold">{{ n.title }}</div>
+            <div class="small text-muted">{{ n.body }}</div>
+            <div class="small text-muted mt-1">
+              Inviata: {{ formatDate(n.createdAt) }}
+            </div>
+          </div>
+
+          <span class="badge" [ngClass]="n.readAt ? 'bg-success' : 'bg-danger'">
+            {{ n.readAt ? "VISTA" : "NON VISTA" }}
+          </span>
+        </div>
+
+        <div *ngIf="n.readAt" class="small text-success mt-2">
+          Vista il: {{ formatDate(n.readAt) }}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-footer">
+    <button class="btn btn-outline-secondary" (click)="modal.dismiss()">
+      Chiudi
+    </button>
+  </div>
+</ng-template>

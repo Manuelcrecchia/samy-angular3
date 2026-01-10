@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { GlobalService } from '../../service/global.service';
 import { Router } from '@angular/router';
-import { NgbModal, NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-gestione-employees',
@@ -11,6 +11,19 @@ import { NgbModal, NgbModule } from '@ng-bootstrap/ng-bootstrap';
 })
 export class GestioneEmployeesComponent implements OnInit {
   employees: any[] = [];
+
+  // ✅ selezione
+  selected = new Set<number>();
+
+  // ✅ modal form
+  notifyTitle = '';
+  notifyBody = '';
+  notifyError = '';
+  notifySuccess = '';
+  sending = false;
+  activeEmp: any = null;
+  empNotifs: any[] = [];
+  empNotifLoading = false;
 
   constructor(
     private http: HttpClient,
@@ -23,7 +36,7 @@ export class GestioneEmployeesComponent implements OnInit {
     this.getEmployees();
   }
 
-  // Carica la lista dei dipendenti
+  // Carica lista dipendenti
   getEmployees(): void {
     this.http
       .get(this.globalService.url + 'employees/getAll', {
@@ -33,8 +46,16 @@ export class GestioneEmployeesComponent implements OnInit {
       .subscribe({
         next: (response) => {
           try {
-            let data = JSON.parse(response);
-            this.employees = data;
+            const data = JSON.parse(response);
+            this.employees = data || [];
+
+            // ✅ pulizia selezione: rimuovi id non presenti
+            const ids = new Set<number>(
+              this.employees.map((e: any) => Number(e.id))
+            );
+            this.selected.forEach((id) => {
+              if (!ids.has(id)) this.selected.delete(id);
+            });
           } catch (error) {
             console.error('Errore nel parse JSON dei dipendenti:', error);
           }
@@ -45,7 +66,138 @@ export class GestioneEmployeesComponent implements OnInit {
       });
   }
 
-  // Ottiene la lista di buste paga di un dipendente
+  // ---- SELEZIONE ----
+  isSelected(id: any): boolean {
+    return this.selected.has(Number(id));
+  }
+
+  toggleEmployee(id: any) {
+    const n = Number(id);
+    if (this.selected.has(n)) this.selected.delete(n);
+    else this.selected.add(n);
+  }
+
+  get selectedCount(): number {
+    return this.selected.size;
+  }
+
+  get allSelected(): boolean {
+    return (
+      this.employees.length > 0 && this.selected.size === this.employees.length
+    );
+  }
+
+  get someSelected(): boolean {
+    return this.selected.size > 0 && this.selected.size < this.employees.length;
+  }
+
+  toggleSelectAll() {
+    if (this.allSelected) {
+      this.selected.clear();
+      return;
+    }
+    this.selected.clear();
+    this.employees.forEach((e) => this.selected.add(Number(e.id)));
+  }
+
+  // ---- MODAL ----
+  openNotifyModal(content: any) {
+    this.notifyTitle = '';
+    this.notifyBody = '';
+    this.notifyError = '';
+    this.notifySuccess = '';
+    this.sending = false;
+
+    this.modalService.open(content, { centered: true, size: 'lg' });
+  }
+
+  sendNotification(modal: any) {
+    this.notifyError = '';
+    this.notifySuccess = '';
+
+    const title = (this.notifyTitle || '').trim();
+    const body = (this.notifyBody || '').trim();
+
+    if (!title || !body) {
+      this.notifyError = 'Titolo e messaggio sono obbligatori.';
+      return;
+    }
+
+    const employeeIds = Array.from(this.selected);
+
+    this.sending = true;
+
+    this.http
+      .post(
+        this.globalService.url + 'admin/notifications/send',
+        {
+          title,
+          body,
+          type: 'GENERICA',
+          payload: null,
+          employeeIds,
+          all: false,
+        },
+        {
+          headers: this.globalService.headers,
+          responseType: 'text',
+        }
+      )
+      .subscribe({
+        next: (res) => {
+          this.sending = false;
+          this.notifySuccess = 'Notifica inviata con successo ✅';
+
+          // chiudi dopo un attimo (facoltativo)
+          setTimeout(() => modal.close(), 600);
+        },
+        error: (err) => {
+          this.sending = false;
+          this.notifyError =
+            err?.error?.error ||
+            err?.error ||
+            'Errore durante l’invio della notifica.';
+        },
+      });
+  }
+
+  openEmpNotifications(emp: any, content: any) {
+    this.activeEmp = emp;
+    this.empNotifs = [];
+    this.empNotifLoading = true;
+
+    this.modalService.open(content, { centered: true, size: 'lg' });
+
+    this.http
+      .get(this.globalService.url + `admin/notifications/employee/${emp.id}`, {
+        headers: this.globalService.headers,
+        responseType: 'text',
+      })
+      .subscribe({
+        next: (res) => {
+          try {
+            this.empNotifs = JSON.parse(res);
+          } catch {
+            this.empNotifs = [];
+          }
+          this.empNotifLoading = false;
+        },
+        error: (err) => {
+          console.error('Errore notif dipendente:', err);
+          this.empNotifLoading = false;
+        },
+      });
+  }
+
+  formatDate(iso: string) {
+    try {
+      return new Date(iso).toLocaleString('it-IT');
+    } catch {
+      return iso;
+    }
+  }
+
+  // ---- NAV ----
   goToDocument(id: string): void {
     this.router.navigate(['/documenti/employee', id]);
   }

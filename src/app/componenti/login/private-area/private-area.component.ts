@@ -125,11 +125,4 @@ export class PrivateAreaComponent {
   togglePasswordVisibility(input: HTMLInputElement) {
     input.type = input.type === 'password' ? 'text' : 'password';
   }
-
-  /**
-   * Torna indietro
-   */
-  back() {
-    this.router.navigateByUrl('/');
-  }
 }

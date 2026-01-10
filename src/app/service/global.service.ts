@@ -8,8 +8,8 @@ import { AuthServiceService } from '../auth-service.service';
 export class GlobalService {
   //url = 'http://localhost:5001/';
   url = 'https://samipulizie.it:4000/';
-  version = '1.5.1';
-  forMobile: boolean = true;
+  version = '1.5.5';
+  forMobile: boolean = false;
   constructor(private authService: AuthServiceService) {}
 
   checkVersion(): Promise<boolean> {
@@ -53,7 +53,7 @@ export class GlobalService {
   get headers(): HttpHeaders {
     return new HttpHeaders({
       'Content-Type': 'application/json; charset=utf-8',
-      Authorization: `${this.token}`,
+      Authorization: `Bearer ${this.token}`,
     });
   }
 
