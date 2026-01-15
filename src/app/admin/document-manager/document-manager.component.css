@@ -18,3 +18,11 @@ ngx-extended-pdf-viewer {
   top: 0;
   z-index: 999;
 }
+.doc-status {
+  margin-left: auto;
+  font-size: 12px;
+  opacity: 0.85;
+}
+.doc-status.pending {
+  opacity: 0.6;
+}

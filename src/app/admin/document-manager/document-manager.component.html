@@ -58,6 +58,13 @@
       <mat-list-item *ngFor="let file of files">
         <button mat-button (click)="selectFile(file.filename)">
           {{ file.filename }}
+          <span class="doc-status" *ngIf="file.viewed">
+            ✅ Visualizzato {{ file.viewedAt | date : "dd/MM/yyyy HH:mm" }}
+          </span>
+
+          <span class="doc-status pending" *ngIf="!file.viewed">
+            ⏳ Non visualizzato
+          </span>
         </button>
 
         <button
