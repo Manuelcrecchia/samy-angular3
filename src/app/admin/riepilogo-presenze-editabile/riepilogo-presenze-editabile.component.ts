@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { GlobalService } from '../../service/global.service';
-import { Subject, debounceTime } from 'rxjs';
+import { Subject, debounceTime, lastValueFrom } from 'rxjs';
 import { Router } from '@angular/router';
 
 @Component({
@@ -272,17 +272,45 @@ export class RiepilogoPresenzeEditabileComponent implements OnInit {
       console.error('❌ Errore salvataggio nota editabile:', err);
     }
   }
+
   async generaPdf() {
-    const body = {
-      mese: this.meseSelezionato,
-      anno: this.annoSelezionato,
-    };
+    this.loading = true;
+    try {
+      const body = {
+        mese: this.meseSelezionato,
+        anno: this.annoSelezionato,
+      };
 
-    const res: any = await this.http
-      .post(`${this.globalService.url}admin/attendanceEdit/generatePdf`, body)
-      .toPromise();
+      // 1) genera PDF lato server
+      await lastValueFrom(
+        this.http.post(
+          `${this.globalService.url}admin/attendanceEdit/generatePdf`,
+          body
+        )
+      );
 
-    if (res?.url) window.open(res.url, '_blank');
+      // 2) scarica blob senza token
+      const blob = await lastValueFrom(
+        this.http.post(
+          `${this.globalService.url}admin/attendanceEdit/downloadSecure`,
+          body,
+          { responseType: 'blob' }
+        )
+      );
+
+      const filename = `Presenze_${this.annoSelezionato}-${this.meseSelezionato}_EDITABILE.pdf`;
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      a.click();
+      window.URL.revokeObjectURL(url);
+    } catch (err) {
+      console.error('Errore generazione/scarico PDF EDITABILE:', err);
+      alert('Errore durante la generazione o il download del PDF editabile.');
+    } finally {
+      this.loading = false;
+    }
   }
 
   back() {

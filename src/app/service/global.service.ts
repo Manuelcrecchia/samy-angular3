@@ -8,7 +8,7 @@ import { AuthServiceService } from '../auth-service.service';
 export class GlobalService {
   //url = 'http://localhost:5001/';
   url = 'https://samipulizie.it:4000/';
-  version = '1.5.6';
+  version = '1.5.7';
   forMobile: boolean = false;
   constructor(private authService: AuthServiceService) {}
 

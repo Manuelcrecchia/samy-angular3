@@ -40,12 +40,19 @@
           id="selectAll"
           [(ngModel)]="selectAll"
           (change)="toggleSelectAll()"
+          [disabled]="isSaving"
         />
+
         <label for="selectAll" class="ms-1 fw-bold">Seleziona tutto</label>
       </div>
 
-      <button class="btn btn-primary rounded-pill" (click)="savePublication()">
-        💾 Salva modifiche
+      <button
+        class="btn btn-primary rounded-pill"
+        (click)="savePublication()"
+        [disabled]="isSaving"
+      >
+        <span *ngIf="!isSaving">💾 Salva modifiche</span>
+        <span *ngIf="isSaving">⏳ Salvataggio...</span>
       </button>
     </div>
   </div>
@@ -64,7 +71,9 @@
           class="form-check-input me-2"
           [(ngModel)]="publishedState[getEmpId(empName)]"
           (change)="updateSelectAllState()"
+          [disabled]="isSaving"
         />
+
         <h4 class="mb-0">
           {{ empName.toUpperCase() }}
           <small class="text-muted">

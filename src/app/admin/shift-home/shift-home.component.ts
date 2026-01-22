@@ -26,7 +26,7 @@ export class ShiftHomeComponent {
       published: boolean;
     }[];
   } = {};
-
+  isSaving = false;
   tooltipVisible: boolean = false;
   tooltipText: string = '';
   tooltipTarget: any = null;
@@ -94,11 +94,16 @@ export class ShiftHomeComponent {
   }
 
   savePublication() {
+    // ✅ evita doppio click
+    if (this.isSaving) return;
+
     const dateStr = this.formatDate(this.selectedDate);
     const employees = Object.keys(this.publishedState).map((id) => ({
       id: Number(id),
       published: this.publishedState[Number(id)],
     }));
+
+    this.isSaving = true;
 
     this.http
       .post(`${this.globalService.url}shifts/publish`, {
@@ -109,10 +114,12 @@ export class ShiftHomeComponent {
         next: (res: any) => {
           alert(res.message || 'Modifiche salvate correttamente.');
           this.loadShifts();
+          this.isSaving = false;
         },
         error: (err) => {
           console.error('Errore salvataggio:', err);
           alert('Errore durante il salvataggio delle modifiche.');
+          this.isSaving = false;
         },
       });
   }

@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { GlobalService } from '../../service/global.service';
 import { saveAs } from 'file-saver';
-import { Subject, debounceTime } from 'rxjs';
+import { Subject, debounceTime, lastValueFrom } from 'rxjs';
 import { Router } from '@angular/router';
 
 @Component({
@@ -87,21 +87,39 @@ export class RiepilogoPresenzeComponent implements OnInit {
         dipendenti: this.dipendenti,
       };
 
-      const res: any = await this.http
-        .post(`${this.globalService.url}admin/attendance/generatePdf`, body)
-        .toPromise();
+      // 1) genera PDF lato server
+      await lastValueFrom(
+        this.http.post(
+          `${this.globalService.url}admin/attendance/generatePdf`,
+          body
+        )
+      );
 
-      if (res?.url) {
-        window.open(res.url, '_blank');
-      } else {
-        alert('PDF generato, ma link non trovato');
-      }
+      // 2) scarica come BLOB (stile preventivi)
+      const blob = await lastValueFrom(
+        this.http.post(
+          `${this.globalService.url}admin/attendance/downloadSecure`,
+          { mese: this.meseSelezionato, anno: this.annoSelezionato },
+          { responseType: 'blob' }
+        )
+      );
+
+      const filename = `Presenze_${this.annoSelezionato}-${this.meseSelezionato}.pdf`;
+
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      a.click();
+      window.URL.revokeObjectURL(url);
     } catch (err) {
-      console.error('Errore generazione PDF:', err);
+      console.error('Errore generazione/scarico PDF:', err);
+      alert('Errore durante la generazione o il download del PDF.');
     } finally {
       this.loading = false;
     }
   }
+
   onNotaChange(dipendente: any) {
     console.log('in');
     const id = dipendente.id;
