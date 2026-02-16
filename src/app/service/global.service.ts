@@ -8,7 +8,7 @@ import { AuthServiceService } from '../auth-service.service';
 export class GlobalService {
   //url = 'http://localhost:5001/';
   url = 'https://samipulizie.it:4000/';
-  version = '1.5.7';
+  version = '1.5.8';
   forMobile: boolean = false;
   constructor(private authService: AuthServiceService) {}
 
@@ -19,7 +19,7 @@ export class GlobalService {
         .then((data) => {
           if (data.version !== this.version) {
             alert(
-              `Versione non valida!\nApp: ${this.version}\nServer: ${data.version}`
+              `Versione non valida!\nApp: ${this.version}\nServer: ${data.version}`,
             );
             resolve(false);
             this.logout();

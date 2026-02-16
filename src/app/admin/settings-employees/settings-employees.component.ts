@@ -79,10 +79,11 @@ export class SettingsEmployeesComponent implements OnInit {
       });
   }
 
-  exportAndDeleteEmployee(emp: any): void {
+  exportAndArchiveEmployee(emp: any): void {
     if (
       !confirm(
-        `Vuoi esportare e cancellare il dipendente "${emp.nome} ${emp.cognome}"?`
+        `Vuoi esportare e ARCHIVIARE il dipendente "${emp.nome} ${emp.cognome}"?\n\n` +
+          `Lo storico (turni, presenze, timbrature) rimarrà nel sistema.`
       )
     )
       return;
@@ -92,6 +93,7 @@ export class SettingsEmployeesComponent implements OnInit {
     };
 
     this.http
+      // Compatibilità: l'endpoint non elimina più, esporta + disattiva.
       .post(this.globalService.url + 'employees/exportAndDeleteUser', body, {
         headers: this.globalService.headers,
         responseType: 'blob',
@@ -101,12 +103,12 @@ export class SettingsEmployeesComponent implements OnInit {
           const nomeFile = `dipendente_${emp.nome}_${emp.cognome}.zip`;
           saveAs(blob, nomeFile);
 
-          alert('Dipendente esportato e cancellato con successo.');
+          alert('Dipendente esportato e archiviato con successo.');
           this.ngOnInit(); // aggiorna la lista
         },
         error: (err) => {
           console.error('Errore:', err);
-          alert('Errore durante esportazione/eliminazione dipendente.');
+          alert('Errore durante esportazione/archiviazione dipendente.');
         },
       });
   }

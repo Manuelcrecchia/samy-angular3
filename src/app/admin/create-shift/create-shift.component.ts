@@ -476,6 +476,48 @@ export class CreateShiftComponent implements OnInit {
                 a.id === s.appointmentId ||
                 a.originalAppointmentId === s.appointmentId
             );
+            if (!app) {
+              // ✅ Se l'appuntamento non è presente (es. archiviato / escluso perché già generato),
+              // lo aggiungiamo partendo dai dati del turno salvato.
+              const newId = `existing-${s.appointmentId}`;
+              if (!this.appointments.some((a) => a.id === newId)) {
+                let sortMap = s.sortOrderByEmployee;
+                if (typeof sortMap === 'string') {
+                  try {
+                    sortMap = JSON.parse(sortMap);
+                  } catch {
+                    sortMap = {};
+                  }
+                }
+                if (!sortMap || typeof sortMap !== 'object') sortMap = {};
+
+                const title = s.appointment?.title || s.title || '';
+                const description = s.appointment?.description || s.description || '';
+
+                this.appointments.push({
+                  id: newId,
+                  originalAppointmentId: s.appointmentId,
+                  appointmentId: s.appointmentId,
+                  isExtra: false,
+                  title,
+                  description,
+                  startDate:
+                    s.startDate && s.startDate !== 'null' && s.startDate !== ''
+                      ? new Date(s.startDate)
+                      : null,
+                  duration: typeof s.duration === 'number' ? s.duration : 60,
+                  durationDisplay: this.formatDuration(
+                    typeof s.duration === 'number' ? s.duration : 60
+                  ),
+                  requiredEmployees: 0,
+                  sortOrderByEmployee: sortMap,
+                });
+              }
+
+              this.assignedShifts[newId] = (s.employees || []).map((e: any) => e.id);
+              continue;
+            }
+
             if (app) {
               if ('startDate' in s) {
                 app.startDate =
