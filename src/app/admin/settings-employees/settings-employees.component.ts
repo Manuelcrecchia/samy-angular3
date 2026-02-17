@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { saveAs } from 'file-saver';
 
 interface Employee {
+  id: number; // ✅ serve per /edit
   nome: string;
   cognome: string;
   email: string;
@@ -17,13 +18,22 @@ interface Employee {
   styleUrls: ['./settings-employees.component.css'],
 })
 export class SettingsEmployeesComponent implements OnInit {
-  employeesAdd: Employee = { nome: '', cognome: '', email: '', cellulare: '' };
+  employeesAdd: Omit<Employee, 'id'> = {
+    nome: '',
+    cognome: '',
+    email: '',
+    cellulare: '',
+  };
   employeess: Employee[] = [];
+
+  editingIndex: number | null = null;
+  employeeEdit: any = {};
+  private employeeEditOriginal: any = {};
 
   constructor(
     private http: HttpClient,
     public globalService: GlobalService,
-    private router: Router
+    private router: Router,
   ) {}
 
   ngOnInit() {
@@ -38,8 +48,7 @@ export class SettingsEmployeesComponent implements OnInit {
       })
       .subscribe({
         next: (response) => {
-          // Converti la risposta da testo a JSON come fai in AddQuoteComponent
-          let data = JSON.parse(response);
+          const data = JSON.parse(response);
           this.employeess = data;
         },
         error: (error) => {
@@ -48,8 +57,49 @@ export class SettingsEmployeesComponent implements OnInit {
       });
   }
 
+  startEdit(i: number) {
+    this.editingIndex = i;
+    this.employeeEditOriginal = { ...this.employeess[i] };
+    this.employeeEdit = { ...this.employeess[i] };
+  }
+
+  cancelEdit() {
+    this.editingIndex = null;
+    this.employeeEdit = {};
+    this.employeeEditOriginal = {};
+  }
+
+  saveEdit() {
+    if (this.editingIndex === null) return;
+
+    const body = {
+      id: this.employeeEdit.id,
+      nome: this.employeeEdit.nome,
+      cognome: this.employeeEdit.cognome,
+      email: this.employeeEdit.email,
+      cellulare: this.employeeEdit.cellulare,
+      // password opzionale se vuoi: password: this.employeeEdit.password
+    };
+
+    this.http
+      .post(this.globalService.url + 'employees/edit', body, {
+        headers: this.globalService.headers,
+        responseType: 'text',
+      })
+      .subscribe({
+        next: () => {
+          this.cancelEdit();
+          this.fetchEmployees();
+        },
+        error: (err) => {
+          console.error('Errore modifica dipendente:', err);
+          alert('Errore durante la modifica dipendente');
+        },
+      });
+  }
+
   addEmployees() {
-    let body = {
+    const body = {
       nome: this.employeesAdd.nome,
       cognome: this.employeesAdd.cognome,
       email: this.employeesAdd.email,
@@ -62,16 +112,14 @@ export class SettingsEmployeesComponent implements OnInit {
         responseType: 'text',
       })
       .subscribe({
-        next: (res) => {
-          // Svuota il form
+        next: () => {
           this.employeesAdd = {
             nome: '',
             cognome: '',
             email: '',
             cellulare: '',
           };
-          // Aggiorna la lista
-          this.ngOnInit();
+          this.fetchEmployees();
         },
         error: (error) => {
           console.error("Errore durante l'aggiunta del dipendente:", error);
@@ -83,7 +131,7 @@ export class SettingsEmployeesComponent implements OnInit {
     if (
       !confirm(
         `Vuoi esportare e ARCHIVIARE il dipendente "${emp.nome} ${emp.cognome}"?\n\n` +
-          `Lo storico (turni, presenze, timbrature) rimarrà nel sistema.`
+          `Lo storico (turni, presenze, timbrature) rimarrà nel sistema.`,
       )
     )
       return;

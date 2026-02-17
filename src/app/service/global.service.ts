@@ -6,8 +6,8 @@ import { AuthServiceService } from '../auth-service.service';
   providedIn: 'root',
 })
 export class GlobalService {
-  //url = 'http://localhost:5001/';
-  url = 'https://samipulizie.it:4000/';
+  url = 'http://localhost:5001/';
+  //url = 'https://samipulizie.it:4000/';
   version = '1.5.8';
   forMobile: boolean = false;
   constructor(private authService: AuthServiceService) {}

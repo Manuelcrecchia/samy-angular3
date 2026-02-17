@@ -21,6 +21,10 @@ export class CreateShiftComponent implements OnInit {
   previousWeekShiftList: { cliente: string; dipendenti: string[] }[] = [];
   durationOptions: number[] = Array.from({ length: 33 }, (_, i) => i * 15); // 0 → 480 minuti
 
+  // 🟣 Autosave debounce per singolo job
+  private autosaveTimers: { [jobId: string]: any } = {};
+  private autosaveDelayMs = 700;
+
   constructor(
     private http: HttpClient,
     private route: ActivatedRoute,
@@ -118,12 +122,64 @@ export class CreateShiftComponent implements OnInit {
     this.showPreviousWeekShifts();
   }
 
+  // =========================
+  // 🟣 AUTOSAVE
+  // =========================
+  private scheduleAutosave(app: any): void {
+    if (!app) return;
+    const id = String(app.id);
+    if (this.autosaveTimers[id]) {
+      clearTimeout(this.autosaveTimers[id]);
+    }
+    this.autosaveTimers[id] = setTimeout(() => {
+      this.autosaveTimers[id] = null;
+      this.autosave(app);
+    }, this.autosaveDelayMs);
+  }
+
+  private autosave(app: any): void {
+    const dateStr = this.formatDate(this.selectedDate);
+
+    // 🔹 startDate -> SQL datetime
+    let start: string | null = null;
+    if (app.startDate instanceof Date && !isNaN(app.startDate.getTime())) {
+      start = this.toSqlDateTime(app.startDate);
+    }
+
+    const payload: any = {
+      shiftId: app.shiftId || null,
+      appointmentId: app.isExtra ? null : app.originalAppointmentId || app.id,
+      data: dateStr,
+      employeeIds: this.assignedShifts[app.id] || [],
+      title: app.title,
+      description: app.description,
+      startDate: start,
+      duration: app.duration ?? 0,
+      sortOrderByEmployee: app.sortOrderByEmployee || {},
+    };
+
+    this.http
+      .post<any>(this.globalService.url + 'shifts/autosave', payload)
+      .subscribe({
+        next: (res) => {
+          // ✅ Per i turni extra appena creati, salva lo shiftId restituito
+          if (app.isExtra && !app.shiftId && res?.shiftId) {
+            app.shiftId = res.shiftId;
+          }
+        },
+        error: (err) => {
+          console.error('Autosave fallito:', err);
+        },
+      });
+  }
+
   // 🔹 Durata
   changeDuration(app: any, delta: number) {
     this.applyDuration(app);
     if (!app.duration) app.duration = 0;
     app.duration = Math.max(0, Math.min(480, app.duration + delta));
     app.durationDisplay = this.formatDuration(app.duration);
+    this.scheduleAutosave(app);
     this.socketService.emitUpdate({
       type: 'changeDuration',
       date: this.formatDate(this.selectedDate),
@@ -198,6 +254,8 @@ export class CreateShiftComponent implements OnInit {
       job.sortOrderByEmployee[empId] = i;
     });
     this.employeeList = [...this.employeeList];
+    // ✅ autosave dei job coinvolti (persisto sortOrderByEmployee)
+    event.container.data.forEach((job) => this.scheduleAutosave(job));
     this.socketService.emitUpdate({
       type: 'reorderEmployee',
       date: this.formatDate(this.selectedDate),
@@ -211,6 +269,7 @@ export class CreateShiftComponent implements OnInit {
   // 🔹 Aggiornamenti realtime
   onTitleChange(app: any, value: string) {
     app.title = value;
+    this.scheduleAutosave(app);
     this.socketService.emitUpdate({
       type: 'updateTitle',
       date: this.formatDate(this.selectedDate),
@@ -219,6 +278,7 @@ export class CreateShiftComponent implements OnInit {
   }
   onDescriptionChange(app: any, value: string) {
     app.description = value;
+    this.scheduleAutosave(app);
     this.socketService.emitUpdate({
       type: 'updateDescription',
       date: this.formatDate(this.selectedDate),
@@ -228,6 +288,7 @@ export class CreateShiftComponent implements OnInit {
   onTimeTextChange(app: any, value: string) {
     const d = this.parseHourInput(value);
     app.startDate = d;
+    this.scheduleAutosave(app);
     this.socketService.emitUpdate({
       type: 'updateStartDate',
       date: this.formatDate(this.selectedDate),
@@ -237,6 +298,7 @@ export class CreateShiftComponent implements OnInit {
   onDurationChange(app: any, value: number) {
     app.duration = value;
     app.durationDisplay = this.formatDuration(value);
+    this.scheduleAutosave(app);
     this.socketService.emitUpdate({
       type: 'updateDuration',
       date: this.formatDate(this.selectedDate),
@@ -564,6 +626,7 @@ export class CreateShiftComponent implements OnInit {
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
         this.assignedShifts[app.id] = result.employees || result;
+        this.scheduleAutosave(app);
         this.socketService.emitUpdate({
           type: 'assignEmployees',
           date: this.formatDate(this.selectedDate),
@@ -688,6 +751,8 @@ export class CreateShiftComponent implements OnInit {
     };
     this.appointments.push(newJob);
     this.sortAppointments();
+    // ✅ crea subito il record in DB (salvataggio incrementale)
+    this.scheduleAutosave(newJob);
     this.socketService.emitUpdate({
       type: 'addExtra',
       date: this.formatDate(this.selectedDate),
@@ -700,16 +765,21 @@ export class CreateShiftComponent implements OnInit {
     const dateStr = this.formatDate(this.selectedDate);
     const payload: any = { appointmentId: app.appointmentId, data: dateStr };
 
-    if (app.isExtra && app.id.startsWith('extra-')) {
-      const numericId = Number(app.id.replace('extra-', ''));
-      if (!isNaN(numericId)) {
-        payload.shiftId = numericId;
-      }
+    // ✅ Se è extra e l'autosave ha già creato il record, usa lo shiftId reale
+    if (app.isExtra) {
+      if (app.shiftId) payload.shiftId = app.shiftId;
+
       this.socketService.emitUpdate({
         type: 'removeExtra',
         date: this.formatDate(this.selectedDate),
         data: { id: app.id },
       });
+    }
+
+    // Se non esiste ancora su DB (nessun shiftId), basta rimuovere localmente
+    if (app.isExtra && !payload.shiftId) {
+      this.appointments = this.appointments.filter((a) => a.id !== app.id);
+      return;
     }
 
     this.http
