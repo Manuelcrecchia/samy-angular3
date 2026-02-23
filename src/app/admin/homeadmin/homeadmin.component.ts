@@ -21,7 +21,7 @@ export class HomeAdminComponent implements OnInit {
     public quoteModelService: QuoteModelService,
     private location: Location,
     private http: HttpClient,
-    private authService: AuthServiceService
+    private authService: AuthServiceService,
   ) {}
 
   isMenuOpen: boolean = false;
@@ -80,9 +80,6 @@ export class HomeAdminComponent implements OnInit {
     this.router.navigateByUrl('/timbratureHome');
   }
 
-  goToHours() {
-    this.router.navigate(['/riepilogo-presenze']);
-  }
   goToEditableHours() {
     this.router.navigate(['/riepilogo-presenze-editabile']);
   }

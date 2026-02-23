@@ -20,7 +20,6 @@ import { SchedaClienteComponent } from './admin/scheda-cliente/scheda-cliente.co
 import { ShiftHomeComponent } from './admin/shift-home/shift-home.component';
 import { CreateShiftComponent } from './admin/create-shift/create-shift.component';
 import { GestionePermessiComponent } from './admin/gestione-permessi/gestione-permessi.component';
-import { RiepilogoPresenzeComponent } from './admin/riepilogo-presenze/riepilogo-presenze.component';
 import { TimbratureHomeComponent } from './admin/timbrature-home/timbrature-home.component';
 import { TimbratureDettaglioComponent } from './admin/timbrature-dettaglio/timbrature-dettaglio.component';
 
@@ -128,12 +127,6 @@ const routes: Routes = [
     component: EditCustomerComponent,
     canActivate: [AuthGuard, AuthLevelGuard],
     data: { level: 'A' },
-  },
-  {
-    path: 'riepilogo-presenze',
-    component: RiepilogoPresenzeComponent,
-    canActivate: [AuthGuard, AuthLevelGuard],
-    data: { level: 'B' },
   },
   {
     path: 'riepilogo-presenze-editabile',

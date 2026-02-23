@@ -33,22 +33,24 @@
 
   <!-- Tabella -->
   <div *ngIf="!loading" class="scroll-wrapper">
-    <table class="table table-bordered align-middle">
+    <table class="presenze-table table table-bordered align-middle">
       <thead class="table-light">
         <tr>
-          <th>Dipendente</th>
-          <th *ngFor="let g of giorni">{{ g }}</th>
-          <th>Totale</th>
-          <th>Note</th>
+          <th class="sticky-col sticky-top corner">Dipendente</th>
+          <th *ngFor="let g of giorni" class="sticky-top text-center">
+            {{ g }}
+          </th>
+          <th class="sticky-top text-center">Totale</th>
+          <th class="sticky-top">Note</th>
         </tr>
       </thead>
 
       <tbody>
         <tr *ngFor="let d of dipendenti">
-          <td class="fw-bold">{{ d.nome }}</td>
+          <td class="sticky-col fw-bold bg-white">{{ d.nome }}</td>
 
           <td *ngFor="let g of giorni; let i = index" class="text-center">
-            <div style="min-width: 60px">
+            <div class="cell-wrap">
               <!-- SELECT CATEGORIA -->
               <select
                 class="form-select form-select-sm mb-1"
@@ -76,7 +78,7 @@
 
           <td class="text-center">{{ d.totale }}</td>
 
-          <td style="min-width: 250px">
+          <td class="note-col">
             <input
               type="text"
               class="form-control"

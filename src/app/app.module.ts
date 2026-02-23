@@ -78,7 +78,6 @@ import { ShiftHomeComponent } from './admin/shift-home/shift-home.component';
 import { CreateShiftComponent } from './admin/create-shift/create-shift.component';
 import { AssignDialogComponent } from './admin/assign-dialog/assign-dialog.component';
 import { GestionePermessiComponent } from './admin/gestione-permessi/gestione-permessi.component';
-import { RiepilogoPresenzeComponent } from './admin/riepilogo-presenze/riepilogo-presenze.component';
 import { TimbratureHomeComponent } from './admin/timbrature-home/timbrature-home.component';
 import { TimbratureDettaglioComponent } from './admin/timbrature-dettaglio/timbrature-dettaglio.component';
 import { CustomModalComponent } from './admin/timbrature-dettaglio/custom-modal/custom-modal.component';
@@ -120,7 +119,6 @@ loadMessages(itMessages);
     CreateShiftComponent,
     AssignDialogComponent,
     GestionePermessiComponent,
-    RiepilogoPresenzeComponent,
     TimbratureHomeComponent,
     TimbratureDettaglioComponent,
     GestioneAssenzeComponent,

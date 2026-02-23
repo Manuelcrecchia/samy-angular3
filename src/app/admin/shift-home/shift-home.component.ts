@@ -178,7 +178,11 @@ export class ShiftHomeComponent {
             shift.startDate !== ''
               ? shift.startDate
               : null,
-          duration: Number(shift.duration) || 0,
+          // ✅ durata per dipendente: se presente durationOverride sul join, usa quella
+          duration:
+            emp?.ShiftEmployees?.durationOverride != null
+              ? Number(emp.ShiftEmployees.durationOverride) || 0
+              : Number(shift.duration) || 0,
           appointmentId: shift.appointmentId,
           keyRequired: shift.appointment?.customer?.key === true,
           cellulare: emp.cellulare || null,
