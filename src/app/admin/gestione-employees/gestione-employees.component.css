@@ -1,0 +1,221 @@
+:host {
+  display: block;
+}
+
+/* ===== BRAND ONLY (NO ROSA) ===== */
+:root{
+  --brand-black:#0f172a;
+  --brand-orange:#ff7a00;
+  --brand-blue:#0d6efd;
+  --brand-sky:#8ec5ff;
+
+  --glass-bg: rgba(255,255,255,0.18);
+  --glass-border: rgba(255,255,255,0.35);
+  --shadow: 0 20px 60px rgba(2,6,23,0.18);
+}
+
+/* ===== BACKGROUND ===== */
+.page-wrap { position: relative; z-index: 1; }
+
+.clouds{
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  opacity: .35;
+  z-index: 0;
+  background:
+    radial-gradient(600px 220px at 20% 78%, rgba(255,255,255,.75), rgba(255,255,255,0) 70%),
+    radial-gradient(700px 260px at 80% 80%, rgba(255,255,255,.75), rgba(255,255,255,0) 70%),
+    radial-gradient(820px 300px at 50% 92%, rgba(255,255,255,.75), rgba(255,255,255,0) 70%);
+  filter: blur(2px);
+}
+
+/* Se stai usando sfondo globale già impostato, puoi anche togliere questo */
+:host ::ng-deep body{
+  background:
+    radial-gradient(1200px 520px at 50% 0%, rgba(255,255,255,.65), rgba(255,255,255,0) 60%),
+    linear-gradient(180deg, var(--brand-sky) 0%, #cfe7ff 35%, #eef6ff 100%);
+  background-attachment: fixed;
+}
+
+/* ===== TITLE ===== */
+.page-title{
+  font-weight: 900;
+  color: var(--brand-black);
+  letter-spacing: .3px;
+}
+
+/* ===== TOP ACTIONS GLASS ===== */
+.top-actions{
+  background: rgba(255,255,255,.70);
+  border: 1px solid rgba(255,255,255,.78);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-radius: 18px;
+  padding: 14px 16px;
+  box-shadow: 0 15px 40px rgba(0,0,0,.12);
+}
+
+/* ===== BUTTONS ===== */
+.btn-round{ border-radius: 14px !important; font-weight: 800; }
+
+.btn-back-glass{
+  border-radius: 14px;
+  font-weight: 900;
+  color: var(--brand-black);
+  background: rgba(255,255,255,.65);
+  border: 1px solid rgba(0,0,0,.08);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: 0 12px 30px rgba(2,6,23,.12);
+  transition: .2s ease;
+}
+.btn-back-glass:hover{
+  transform: translateY(-1px);
+  background: linear-gradient(135deg, var(--brand-orange), var(--brand-blue));
+  color: #fff;
+  border-color: transparent;
+}
+
+.btn-glass{
+  border-radius: 14px;
+  font-weight: 900;
+  color: var(--brand-black);
+  background: rgba(255,255,255,.60);
+  border: 1px solid rgba(0,0,0,.08);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  transition: .2s ease;
+}
+.btn-glass:hover{
+  transform: translateY(-1px);
+  background: rgba(255,255,255,.75);
+}
+
+.btn-glass-dark{
+  border-radius: 14px;
+  font-weight: 900;
+  color: var(--brand-black);
+  background: rgba(15,23,42,.06);
+  border: 1px solid rgba(15,23,42,.10);
+  transition: .2s ease;
+}
+.btn-glass-dark:hover{
+  transform: translateY(-1px);
+  background: rgba(15,23,42,.10);
+}
+
+.btn-brand-primary{
+  border-radius: 14px;
+  font-weight: 900;
+  border: 0;
+  color: #fff;
+  background: linear-gradient(135deg, var(--brand-orange), #ff9a3c);
+  box-shadow: 0 14px 34px rgba(255,122,0,.35);
+  transition: .2s ease;
+}
+.btn-brand-primary:hover{
+  transform: translateY(-1px);
+  filter: brightness(1.02);
+}
+
+.btn-brand-secondary{
+  border-radius: 14px;
+  font-weight: 900;
+  border: 0;
+  color: #fff;
+  background: linear-gradient(135deg, var(--brand-blue), #5aa8ff);
+  box-shadow: 0 14px 34px rgba(13,110,253,.30);
+  transition: .2s ease;
+}
+.btn-brand-secondary:hover{
+  transform: translateY(-1px);
+  filter: brightness(1.02);
+}
+
+.btn-outline-brand{
+  border-radius: 14px;
+  font-weight: 900;
+  color: var(--brand-blue);
+  background: rgba(13,110,253,.08);
+  border: 1px solid rgba(13,110,253,.25);
+}
+.btn-outline-brand:hover{
+  background: linear-gradient(135deg, var(--brand-blue), #5aa8ff);
+  color: #fff;
+  border-color: transparent;
+}
+
+/* ===== BADGES ===== */
+.badge-dark{
+  background: rgba(15,23,42,.90);
+  color: #fff;
+  padding: .45rem .6rem;
+  border-radius: 12px;
+  font-weight: 900;
+}
+
+/* ===== TABLE ===== */
+.table-wrapper{
+  background: rgba(255,255,255,.78);
+  border: 1px solid rgba(255,255,255,.82);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-radius: 22px;
+  padding: 10px;
+  box-shadow: 0 20px 60px rgba(0,0,0,.15);
+  overflow: hidden;
+}
+
+table thead{
+  background: linear-gradient(135deg, var(--brand-orange), var(--brand-blue));
+  color: #fff;
+}
+table thead th{
+  border: none !important;
+  font-weight: 900;
+}
+
+table tbody tr:hover{
+  background: rgba(13,110,253,.06);
+}
+
+.actions-cell{
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+/* ===== MODALS ===== */
+.modal-brand{
+  background: linear-gradient(135deg, var(--brand-orange), var(--brand-blue));
+  color: #fff;
+}
+
+.modal-body-glass{
+  background: rgba(255,255,255,.92);
+}
+
+.form-control-glass{
+  border-radius: 14px;
+  border: 1px solid rgba(0,0,0,.10);
+  background: rgba(255,255,255,.85);
+}
+
+.list-item-glass{
+  border-radius: 14px;
+  background: rgba(255,255,255,.75);
+  border: 1px solid rgba(0,0,0,.06);
+  margin-bottom: 10px;
+}
+
+/* ===== MOBILE ===== */
+@media (max-width: 768px){
+  .top-actions{
+    gap: 10px;
+  }
+  .table-wrapper{
+    padding: 8px;
+  }
+}

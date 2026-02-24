@@ -1,29 +1,141 @@
-<div class="container py-4">
+<style>
+  :root{
+    --brand-black:#0b0f14;
+    --brand-orange:#ff8a00;
+    --brand-sky:#2fb7ff;
+
+    --glass-border: rgba(255,255,255,0.18);
+    --radius-lg: 22px;
+  }
+
+  /* 🔥 SFONDO FULL SCREEN VERO */
+  html, body{
+    margin:0;
+    padding:0;
+    height:100%;
+    background:
+      radial-gradient(1000px 600px at 10% 10%, rgba(47,183,255,0.20), transparent 60%),
+      radial-gradient(1000px 600px at 90% 15%, rgba(255,138,0,0.20), transparent 65%),
+      linear-gradient(180deg, #0b0f14, #121c28);
+    background-attachment: fixed;
+  }
+
+  body::before{
+    content:"";
+    position:fixed;
+    inset:0;
+    z-index:-1;
+  }
+
+  .turni-page{
+    min-height:100vh;
+    width:100%;
+    padding:20px;
+    color:rgba(255,255,255,0.92);
+  }
+
+  /* ---------------- BUTTON BASE ---------------- */
+
+  .turni-page .btn{
+    color:#000 !important;
+    font-weight:800;
+    border-radius:999px !important;
+    border:1px solid rgba(255,255,255,0.25);
+    backdrop-filter:blur(10px);
+    box-shadow:0 10px 25px rgba(0,0,0,0.3);
+    transition:all .2s ease;
+  }
+
+  .turni-page .btn:hover{
+    transform:translateY(-2px);
+    box-shadow:0 14px 35px rgba(0,0,0,0.45);
+  }
+
+  /* 🔙 Back */
+  .btn-back-glass{
+    background:linear-gradient(135deg, rgba(47,183,255,0.30), rgba(255,138,0,0.30));
+  }
+
+  /* ⬅ ➡ Day Nav */
+  .btn-nav-glass{
+    background:rgba(255,255,255,0.18);
+  }
+
+  /* ✅ CREA TURNI (NO ROSA, BRAND STYLE) */
+  .btn-create-glass{
+    background:linear-gradient(135deg, var(--brand-orange), var(--brand-sky));
+  }
+
+  /* 💾 SALVA */
+  .btn-save-glass{
+    background:linear-gradient(135deg, rgba(255,138,0,0.45), rgba(47,183,255,0.35));
+  }
+
+  /* ---------------- GLASS PANELS ---------------- */
+
+  .glass-panel{
+    border-radius:var(--radius-lg);
+    border:1px solid var(--glass-border);
+    background:rgba(255,255,255,0.08);
+    backdrop-filter:blur(18px);
+    box-shadow:0 20px 60px rgba(0,0,0,0.45);
+  }
+
+  .emp-header{
+    padding:14px;
+  }
+
+  .turni-item{
+    border:0 !important;
+    background:rgba(255,255,255,0.06) !important;
+    color:white !important;
+    padding:14px;
+  }
+
+  .turni-item + .turni-item{
+    border-top:1px solid rgba(255,255,255,0.1) !important;
+  }
+
+  .turni-item.published{
+    background:linear-gradient(135deg, rgba(46,204,113,0.25), rgba(255,255,255,0.05)) !important;
+  }
+
+  .tooltip-popup{
+    position:fixed;
+    z-index:2000;
+    padding:12px 16px;
+    border-radius:16px;
+    background:rgba(0,0,0,0.85);
+    color:white;
+    backdrop-filter:blur(14px);
+    box-shadow:0 20px 60px rgba(0,0,0,0.6);
+  }
+</style>
+
+<div class="container py-4 turni-page">
   <!-- 🔙 Torna indietro -->
   <div class="d-flex justify-content-start align-items-center mb-3">
-    <button class="btn btn-outline-primary rounded-pill" (click)="back()">
+    <button class="btn btn-outline-primary rounded-pill btn-back-glass" (click)="back()">
       ⬅ Torna Indietro
     </button>
   </div>
 
-  <h2 class="text-center mb-4">Gestione Turni</h2>
+  <h2 class="text-center mb-4 turni-title">Gestione Turni</h2>
 
   <!-- 🔹 Navigazione per data + Crea turno -->
-  <div
-    class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2"
-  >
+  <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2 turni-date-row">
     <div class="d-flex align-items-center gap-2">
-      <button class="btn btn-secondary rounded-pill" (click)="prevDay()">
+      <button class="btn btn-secondary rounded-pill btn-nav-glass" (click)="prevDay()">
         ←
       </button>
       <h4 class="m-0">{{ selectedDate | date : "fullDate" }}</h4>
-      <button class="btn btn-secondary rounded-pill" (click)="nextDay()">
+      <button class="btn btn-secondary rounded-pill btn-nav-glass" (click)="nextDay()">
         →
       </button>
     </div>
 
     <button
-      class="btn btn-success rounded-pill px-4"
+      class="btn btn-primary rounded-pill px-4 btn-create-glass"
       (click)="createShifts()"
       title="Crea nuovi turni per questa data"
     >
@@ -32,22 +144,22 @@
   </div>
 
   <!-- 🔹 Seleziona tutto + Salva -->
-  <div class="border rounded p-3 mb-4 bg-light shadow-sm">
-    <div class="d-flex justify-content-between align-items-center flex-wrap">
-      <div>
+  <div class="border rounded p-3 mb-4 bg-light shadow-sm turni-controls">
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+      <div class="d-flex align-items-center">
         <input
           type="checkbox"
           id="selectAll"
+          class="form-check-input"
           [(ngModel)]="selectAll"
           (change)="toggleSelectAll()"
           [disabled]="isSaving"
         />
-
-        <label for="selectAll" class="ms-1 fw-bold">Seleziona tutto</label>
+        <label for="selectAll" class="ms-2 fw-bold">Seleziona tutto</label>
       </div>
 
       <button
-        class="btn btn-primary rounded-pill"
+        class="btn btn-primary rounded-pill btn-save-glass"
         (click)="savePublication()"
         [disabled]="isSaving"
       >
@@ -62,74 +174,76 @@
     Nessun turno presente per il giorno selezionato.
   </div>
 
-  <ul class="list-group" *ngIf="shifts.length > 0">
-    <div *ngFor="let empName of groupedKeys()">
-      <!-- Dipendente -->
-      <div class="d-flex align-items-center mt-3">
-        <input
-          type="checkbox"
-          class="form-check-input me-2"
-          [(ngModel)]="publishedState[getEmpId(empName)]"
-          (change)="updateSelectAllState()"
-          [disabled]="isSaving"
-        />
+  <div class="turni-list" *ngIf="shifts.length > 0">
+    <ul class="list-group">
+      <div *ngFor="let empName of groupedKeys()">
+        <!-- Dipendente -->
+        <div class="d-flex align-items-center mt-3 emp-header">
+          <input
+            type="checkbox"
+            class="form-check-input me-2"
+            [(ngModel)]="publishedState[getEmpId(empName)]"
+            (change)="updateSelectAllState()"
+            [disabled]="isSaving"
+          />
 
-        <h4 class="mb-0">
-          {{ empName.toUpperCase() }}
-          <small class="text-muted">
-            —
-            {{
-              selectedDate | date : "EEEE d MMMM y" : "" : "it-IT" | uppercase
-            }}
-          </small>
-        </h4>
-
-        <button
-          class="btn btn-link p-0 ms-2"
-          (click)="sendViaWhatsApp(empName)"
-          title="Invia via WhatsApp"
-        >
-          <i class="fab fa-whatsapp fa-lg text-success"></i>
-        </button>
-      </div>
-
-      <!-- Turni del dipendente -->
-      <ul class="list-group list-group-flush">
-        <li
-          class="list-group-item d-flex justify-content-between align-items-center"
-          *ngFor="let turno of groupedByEmployee[empName]"
-          [ngClass]="{ 'bg-light border-success': publishedState[turno.empId] }"
-        >
-          <span>
-            <strong>{{ turno.title }}</strong>
-            <span *ngIf="turno.start">
-              — {{ turno.start | date : "HH:mm" }}
-            </span>
-            <span class="ms-2 text-muted small">
-              • Durata: {{ formatDuration(turno.duration) }}
-            </span>
-            <br />
+          <h4 class="mb-0">
+            {{ empName.toUpperCase() }}
             <small class="text-muted">
-              {{ turno.description }}
-              <span *ngIf="turno.colleghi?.length">
-                👥 Con: {{ turno.colleghi?.join(", ") }}
-              </span>
-              <span *ngIf="!turno.colleghi?.length">👤 Da solo</span>
+              —
+              {{
+                selectedDate | date : "EEEE d MMMM y" : "" : "it-IT" | uppercase
+              }}
             </small>
-          </span>
+          </h4>
 
-          <span
-            *ngIf="turno.keyRequired"
-            class="key-icon ms-2"
-            (click)="handleClick($event, turno.appointmentId)"
-            title="Chiavi richieste"
+          <button
+            class="btn btn-link p-0 ms-2 btn-wa"
+            (click)="sendViaWhatsApp(empName)"
+            title="Invia via WhatsApp"
           >
-            🔑
-          </span>
-        </li>
-      </ul>
-    </div>
-  </ul>
+            <i class="fab fa-whatsapp fa-lg text-success"></i>
+          </button>
+        </div>
+
+        <!-- Turni del dipendente -->
+        <ul class="list-group list-group-flush mt-2">
+          <li
+            class="list-group-item d-flex justify-content-between align-items-center turni-item"
+            *ngFor="let turno of groupedByEmployee[empName]"
+            [ngClass]="{ 'published': publishedState[turno.empId], 'bg-light border-success': publishedState[turno.empId] }"
+          >
+            <span>
+              <strong>{{ turno.title }}</strong>
+              <span *ngIf="turno.start">
+                — {{ turno.start | date : "HH:mm" }}
+              </span>
+              <span class="ms-2 text-muted small">
+                • Durata: {{ formatDuration(turno.duration) }}
+              </span>
+              <br />
+              <small class="text-muted">
+                {{ turno.description }}
+                <span *ngIf="turno.colleghi?.length">
+                  👥 Con: {{ turno.colleghi?.join(", ") }}
+                </span>
+                <span *ngIf="!turno.colleghi?.length">👤 Da solo</span>
+              </small>
+            </span>
+
+            <span
+              *ngIf="turno.keyRequired"
+              class="key-icon ms-2"
+              (click)="handleClick($event, turno.appointmentId)"
+              title="Chiavi richieste"
+            >
+              🔑
+            </span>
+          </li>
+        </ul>
+      </div>
+    </ul>
+  </div>
 </div>
 
 <!-- Tooltip -->

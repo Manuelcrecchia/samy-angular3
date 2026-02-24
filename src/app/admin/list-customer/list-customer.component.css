@@ -1,0 +1,113 @@
+:root{
+  --brand-black:#0f172a;
+  --brand-orange:#ff7a00;
+  --brand-sky:#8ec5ff;
+  --brand-blue:#0d6efd;
+}
+
+/* Background cielo */
+.brand-bg{
+  position:fixed;
+  inset:0;
+  z-index:-1;
+  background:
+    radial-gradient(1000px 500px at 50% 0%, rgba(255,255,255,.7), transparent 60%),
+    linear-gradient(180deg,var(--brand-sky),#cfe7ff 40%,#eef6ff);
+}
+
+/* Title */
+.page-title{
+  font-weight:900;
+  color:var(--brand-black);
+  letter-spacing:.4px;
+}
+
+/* Wrapper */
+.table-wrapper{
+  background:rgba(255,255,255,.92);
+  border-radius:20px;
+  padding:14px;
+  box-shadow:0 20px 60px rgba(0,0,0,.15);
+}
+
+/* Table header */
+table thead{
+  background:linear-gradient(135deg,var(--brand-orange),var(--brand-blue));
+}
+
+table thead th{
+  color:#000; /* nero come richiesto */
+  font-weight:900;
+  border:none !important;
+}
+
+/* Action layout */
+.actions-cell{
+  display:flex;
+  flex-wrap:wrap;
+  gap:6px;
+  justify-content:center;
+}
+
+/* Rounded */
+.btn-round{
+  border-radius:14px !important;
+  font-weight:800;
+  color:#000 !important; /* SEMPRE NERO */
+}
+
+/* Orange button */
+.btn-brand-orange{
+  background:var(--brand-orange);
+  border:none;
+}
+
+.btn-brand-orange:hover{
+  background:#ff9333;
+  transform:translateY(-2px);
+}
+
+/* Sky button */
+.btn-brand-sky{
+  background:var(--brand-sky);
+  border:none;
+}
+
+.btn-brand-sky:hover{
+  background:#a9d7ff;
+  transform:translateY(-2px);
+}
+
+/* Back button */
+.btn-back-brand{
+  background:linear-gradient(135deg,var(--brand-sky),var(--brand-orange));
+  border:none;
+  color:#000 !important;
+}
+
+.btn-back-brand:hover{
+  filter:brightness(1.05);
+}
+
+/* Badge */
+.badge-key{
+  padding:6px 10px;
+  border-radius:12px;
+  font-weight:800;
+  color:#000;
+}
+
+.badge-yes{
+  background:rgba(13,110,253,.2);
+}
+
+.badge-no{
+  background:rgba(255,122,0,.2);
+}
+
+/* Responsive */
+@media(max-width:768px){
+  .actions-cell{
+    flex-direction:column;
+  }
+}

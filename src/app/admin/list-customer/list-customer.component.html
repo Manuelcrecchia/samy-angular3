@@ -1,17 +1,22 @@
-<div class="container py-4">
-  <!-- Pulsante Torna Indietro -->
+<div class="brand-bg"></div>
+
+<div class="container py-4 page-wrap">
+
+  <!-- Torna Indietro -->
   <div class="mb-3">
-    <button class="btn btn-outline-primary rounded-pill" (click)="back()">
+    <button class="btn btn-back-brand btn-round" (click)="back()">
       ⬅ Torna Indietro
     </button>
   </div>
 
   <!-- Titolo -->
-  <h2 class="text-center mb-4">Gestione Clienti</h2>
+  <h2 class="text-center page-title mb-4">
+    Gestione Clienti
+  </h2>
 
-  <!-- Bottone Aggiungi Cliente -->
+  <!-- Aggiungi Cliente -->
   <div class="text-end mb-4">
-    <button class="btn btn-pink rounded-pill" (click)="navigateToAddCustomer()">
+    <button class="btn btn-brand-orange btn-round" (click)="navigateToAddCustomer()">
       ➕ Aggiungi Cliente
     </button>
   </div>
@@ -21,23 +26,19 @@
     <div class="col-md-4">
       <mat-form-field class="w-100" appearance="fill">
         <mat-label>Numero cliente</mat-label>
-        <input
-          #inputNumeroCliente
-          matInput
-          (input)="searchNumeroCliente(inputNumeroCliente.value)"
-        />
+        <input #inputNumeroCliente matInput
+          (input)="searchNumeroCliente(inputNumeroCliente.value)" />
       </mat-form-field>
     </div>
+
     <div class="col-md-4">
       <mat-form-field class="w-100" appearance="fill">
         <mat-label>Nominativo</mat-label>
-        <input
-          #inputNominativo
-          matInput
-          (input)="searchNominativo(inputNominativo.value)"
-        />
+        <input #inputNominativo matInput
+          (input)="searchNominativo(inputNominativo.value)" />
       </mat-form-field>
     </div>
+
     <div class="col-md-4">
       <mat-form-field appearance="fill" class="w-100">
         <mat-label>Filtro clienti</mat-label>
@@ -52,76 +53,67 @@
     </div>
   </div>
 
-  <!-- Tabella Clienti -->
-  <div class="table-responsive">
-    <table
-      class="table table-bordered table-striped align-middle text-center bg-white"
-    >
-      <thead class="table-pink text-white">
+  <!-- Tabella -->
+  <div class="table-wrapper table-responsive">
+    <table class="table align-middle text-center mb-0">
+      <thead>
         <tr>
           <th>Numero</th>
           <th>Tipo</th>
           <th>Nominativo</th>
-          <th>Email</th>
-          <th>Telefono</th>
-          <th>Referente</th>
+          <th class="d-none d-md-table-cell">Email</th>
+          <th class="d-none d-lg-table-cell">Telefono</th>
           <th>Chiavi</th>
           <th>Azioni</th>
         </tr>
       </thead>
+
       <tbody>
         <tr *ngFor="let customer of customersFrEnd">
           <td>{{ customer.numeroCliente }}</td>
-          <td>
-            {{ customer.tipoCliente === "O" ? "Ordinario" : "Straordinario" }}
-          </td>
+          <td>{{ customer.tipoCliente === "O" ? "Ordinario" : "Straordinario" }}</td>
           <td>{{ customer.nominativo }}</td>
-          <td>{{ customer.email }}</td>
-          <td>{{ customer.telefono }}</td>
-          <td>{{ customer.referente }}</td>
+          <td class="d-none d-md-table-cell">{{ customer.email }}</td>
+          <td class="d-none d-lg-table-cell">{{ customer.telefono }}</td>
+
           <td>
-            <span
-              class="badge"
-              [ngClass]="customer.key ? 'badge-success' : 'badge-danger'"
-            >
+            <span class="badge badge-key"
+              [ngClass]="customer.key ? 'badge-yes' : 'badge-no'">
               {{ customer.key ? "Sì" : "No" }}
             </span>
           </td>
-          <td>
-            <button
-              class="btn btn-purple btn-sm rounded-pill"
-              [routerLink]="['/gestioneTagCliente', customer.numeroCliente]"
-            >
-              🏷 Posizione Tag
+
+          <td class="actions-cell">
+
+            <button class="btn btn-brand-sky btn-sm btn-round"
+              [routerLink]="['/gestioneTagCliente', customer.numeroCliente]">
+              🏷 Tag
             </button>
 
-            <button
-              class="btn btn-warning btn-sm rounded-pill me-1"
-              (click)="navigateToEditCustomer(customer.numeroCliente)"
-            >
+            <button class="btn btn-brand-orange btn-sm btn-round"
+              (click)="navigateToEditCustomer(customer.numeroCliente)">
               ✏ Modifica
             </button>
-            <button
-              class="btn btn-danger btn-sm rounded-pill"
-              (click)="exportAndDeleteCustomer(customer)"
-            >
-              🗑 Esporta ed Elimina
+
+            <button class="btn btn-outline-danger btn-sm btn-round"
+              (click)="exportAndDeleteCustomer(customer)">
+              🗑 Elimina
             </button>
-            <button
-              class="btn btn-primary btn-sm rounded-pill me-1"
-              (click)="viewDocuments(customer.numeroCliente)"
-            >
+
+            <button class="btn btn-brand-sky btn-sm btn-round"
+              (click)="viewDocuments(customer.numeroCliente)">
               📄 Documenti
             </button>
-            <button
-              class="btn btn-info btn-sm rounded-pill"
-              [routerLink]="['/schedaCliente', customer.numeroCliente]"
-            >
+
+            <button class="btn btn-brand-sky btn-sm btn-round"
+              [routerLink]="['/schedaCliente', customer.numeroCliente]">
               🧾 Scheda
             </button>
+
           </td>
         </tr>
       </tbody>
     </table>
   </div>
+
 </div>

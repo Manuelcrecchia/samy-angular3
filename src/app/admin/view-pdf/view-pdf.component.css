@@ -1,0 +1,111 @@
+:root{
+  --brand-black:#0f172a;
+  --brand-orange:#ff7a00;
+  --brand-orange-2:#ff9a3c;
+  --brand-blue:#0d6efd;
+  --brand-sky:#8ec5ff;
+}
+
+/* pagina */
+.pdf-page{
+  min-height: calc(100vh - 24px);
+}
+
+/* bottone back brand */
+.btn-back-brand{
+  border: 0;
+  font-weight: 950;
+  color: #000 !important;
+  background: linear-gradient(135deg, rgba(142,197,255,.75), rgba(255,122,0,.45));
+  box-shadow: 0 14px 34px rgba(2,6,23,.12);
+  padding: 10px 14px;
+  border-radius: 14px;
+  transition: .2s ease;
+}
+.btn-back-brand:hover{
+  transform: translateY(-1px);
+  filter: brightness(1.03);
+}
+
+/* contenitore viewer: glass + full screen */
+.pdf-shell{
+  height: calc(100vh - 120px); /* spazio per header/back */
+  border-radius: 22px;
+  overflow: hidden;
+  background:
+    linear-gradient(135deg, rgba(255,122,0,.14), rgba(13,110,253,.10)),
+    rgba(255,255,255,.6);
+  border: 1px solid rgba(255,255,255,.75);
+  box-shadow: 0 20px 60px rgba(2,6,23,.14);
+  backdrop-filter: blur(12px);
+}
+
+/* viewer dentro */
+.pdf-viewer{
+  height: 100% !important;
+}
+
+/* toolbar custom: sticky e bella */
+.pdf-toolbar{
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+
+  background: linear-gradient(135deg, rgba(255,122,0,.22), rgba(142,197,255,.35));
+  border-bottom: 1px solid rgba(0,0,0,.06);
+  backdrop-filter: blur(10px);
+}
+
+.pdf-toolbar-title{
+  font-weight: 950;
+  color: #000;
+  letter-spacing: .2px;
+}
+
+.pdf-toolbar-actions{
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+/* bottoni action: testo nero */
+.btn-pdf-action{
+  border-radius: 14px !important;
+  font-weight: 950 !important;
+  color: #000 !important;
+  box-shadow: 0 10px 22px rgba(2,6,23,.10) !important;
+}
+.btn-pdf-action.btn-orange{
+  background: linear-gradient(135deg, var(--brand-orange), var(--brand-orange-2)) !important;
+  border: 0 !important;
+}
+.btn-pdf-action.btn-sky{
+  background: linear-gradient(135deg, rgba(142,197,255,.9), rgba(13,110,253,.22)) !important;
+  border: 1px solid rgba(13,110,253,.18) !important;
+}
+
+/* responsive: su mobile toolbar in colonna + viewer più alto */
+@media (max-width: 768px){
+  .pdf-shell{
+    height: calc(100vh - 140px);
+  }
+
+  .pdf-toolbar{
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .pdf-toolbar-actions{
+    justify-content: stretch;
+  }
+
+  .btn-pdf-action{
+    width: 100%;
+  }
+}

@@ -1,88 +1,261 @@
 <!DOCTYPE html>
 <html lang="it">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Login</title>
-    <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
-      rel="stylesheet"
-    />
-  </head>
-  <body class="bg-light">
-    <!-- Header -->
-    <header class="py-3 border-bottom bg-white">
-      <div class="container d-flex justify-content-between align-items-center">
-        <a href="https://www.samipulizie.it" class="btn btn-outline-secondary">
-          ⬅ Torna Indietro
-        </a>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Login</title>
 
-        <span class="text-muted small">Versione {{ version }}</span>
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+  />
+
+  <style>
+    :root{
+      --glass-bg: rgba(255,255,255,0.18);
+      --glass-border: rgba(255,255,255,0.35);
+      --text-strong: #0f172a;
+      --text-soft: rgba(15,23,42,0.65);
+    }
+
+    body{
+      min-height:100vh;
+      margin:0;
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+
+      background:
+        radial-gradient(1200px 500px at 50% 0%, rgba(255,255,255,0.65), rgba(255,255,255,0) 60%),
+        linear-gradient(180deg,#8ec5ff 0%,#cfe7ff 30%,#eef6ff 100%);
+      background-attachment:fixed;
+    }
+
+    .clouds{
+      position:fixed;
+      inset:0;
+      pointer-events:none;
+      opacity:.35;
+      background:
+        radial-gradient(600px 220px at 20% 78%, rgba(255,255,255,.75), rgba(255,255,255,0) 70%),
+        radial-gradient(700px 260px at 80% 80%, rgba(255,255,255,.75), rgba(255,255,255,0) 70%),
+        radial-gradient(820px 300px at 50% 92%, rgba(255,255,255,.75), rgba(255,255,255,0) 70%);
+      filter:blur(2px);
+    }
+
+    header{
+      backdrop-filter:blur(10px);
+      -webkit-backdrop-filter:blur(10px);
+      background:rgba(255,255,255,.55)!important;
+      border-bottom:1px solid rgba(255,255,255,.65)!important;
+    }
+
+    .login-wrap{
+      position:relative;
+      z-index:1;
+    }
+
+    .glass-card{
+      width:100%;
+      max-width:420px;
+      border-radius:22px;
+      background:var(--glass-bg);
+      border:1px solid var(--glass-border);
+      box-shadow:
+        0 20px 60px rgba(2,6,23,.18),
+        inset 0 1px 0 rgba(255,255,255,.35);
+      backdrop-filter:blur(14px);
+      -webkit-backdrop-filter:blur(14px);
+      padding:28px 24px 24px;
+    }
+
+    /* BADGE PIÙ GRANDE */
+    .brand-badge{
+      width:120px;
+      height:120px;
+      aspect-ratio:1/1;
+      border-radius:26px;
+      padding:12px;
+      overflow:hidden;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      margin:0 auto 16px;
+
+      background:rgba(255,255,255,.70);
+      border:1px solid rgba(255,255,255,.85);
+      box-shadow:
+        0 14px 35px rgba(2,6,23,.15),
+        inset 0 1px 0 rgba(255,255,255,.45);
+    }
+
+    /* LOGO PIÙ GRANDE DENTRO */
+    .brand-badge img{
+      width:100%;
+      height:100%;
+      object-fit:contain;
+      transform:scale(1.25); /* <-- qui lo ingrandiamo bene */
+      display:block;
+    }
+
+    .title{
+      margin:0;
+      font-weight:800;
+      color:var(--text-strong);
+      letter-spacing:.2px;
+    }
+
+    .subtitle{
+      margin-top:6px;
+      margin-bottom:20px;
+      color:var(--text-soft);
+      font-size:.92rem;
+    }
+
+    .form-label{
+      font-weight:600;
+      color:rgba(15,23,42,.8);
+      font-size:.9rem;
+    }
+
+    .form-control{
+      border-radius:14px;
+      border:1px solid rgba(255,255,255,.65);
+      background:rgba(255,255,255,.55);
+      backdrop-filter:blur(10px);
+      padding:12px 14px;
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.35);
+    }
+
+    .form-control:focus{
+      border-color:rgba(0,0,0,.25);
+      box-shadow:0 0 0 .2rem rgba(0,0,0,.1);
+      background:rgba(255,255,255,.75);
+    }
+
+    .btn-eye{
+      border-radius:14px;
+      border:1px solid rgba(255,255,255,.65);
+      background:rgba(255,255,255,.55);
+    }
+
+    .forgot-row{
+      display:flex;
+      justify-content:flex-end;
+      margin-top:8px;
+    }
+
+    .forgot-link{
+      color:rgba(15,23,42,.75);
+      text-decoration:none;
+      font-weight:600;
+      font-size:.92rem;
+      cursor:pointer;
+    }
+
+    .forgot-link:hover{
+      text-decoration:underline;
+    }
+
+    /* LOGIN SEMPRE NERO */
+    .btn-login{
+      border-radius:16px;
+      padding:12px 14px;
+      font-weight:800;
+      border:1px solid rgba(0,0,0,.1);
+      color:#000 !important;
+      background:linear-gradient(135deg,rgba(255,255,255,.75),rgba(255,255,255,.4));
+      box-shadow:0 12px 30px rgba(2,6,23,.12);
+    }
+
+    .btn-login:hover{
+      filter:brightness(1.03);
+      transform:translateY(-1px);
+    }
+
+    .btn-login:active{
+      transform:translateY(0);
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="clouds"></div>
+
+<header class="py-3 border-bottom">
+  <div class="container d-flex justify-content-between align-items-center">
+    <span class="text-muted small">Versione {{ version }}</span>
+  </div>
+</header>
+
+<main class="login-wrap d-flex justify-content-center align-items-center min-vh-100 px-3">
+  <div class="glass-card">
+
+    <div class="text-center">
+      <div class="brand-badge">
+        <img src="../../../../assets/logo.png" alt="Logo"/>
       </div>
-    </header>
 
-    <!-- Main -->
-    <main class="d-flex justify-content-center align-items-center min-vh-100">
-      <div class="card shadow-sm p-4" style="width: 100%; max-width: 400px">
-        <div class="text-center mb-4">
-          <img
-            src="../../../../assets/logo.png"
-            alt="Logo"
-            class="img-fluid mb-3"
-            style="max-height: 80px"
+      <h4 class="title">Gestionale MVTech Core</h4>
+      <div class="subtitle">Inserisci i tuoi dati per accedere.</div>
+    </div>
+
+    <form (submit)="loginFunction(email.value, password.value)" novalidate>
+
+      <div class="mb-3">
+        <label for="email" class="form-label">E-mail</label>
+        <input
+          #email
+          type="email"
+          id="email"
+          class="form-control"
+          placeholder="Inserisci la tua email..."
+          required
+        />
+      </div>
+
+      <div class="mb-2">
+        <label for="password" class="form-label">Password</label>
+
+        <div class="input-group">
+          <input
+            #password
+            type="password"
+            id="password"
+            class="form-control"
+            placeholder="Inserisci la password..."
+            required
           />
-          <h4 class="fw-bold">Accedi al tuo account</h4>
+
+          <button
+            type="button"
+            class="btn btn-eye"
+            (click)="togglePasswordVisibility(password)"
+          >
+            👁️
+          </button>
         </div>
 
-        <form (submit)="loginFunction(email.value, password.value)" novalidate>
-          <div class="mb-3">
-            <label for="email" class="form-label">Email</label>
-            <input
-              #email
-              type="email"
-              id="email"
-              class="form-control"
-              placeholder="Inserisci la tua email"
-              required
-            />
-          </div>
-
-          <div class="mb-3">
-            <label for="password" class="form-label">Password</label>
-            <div class="input-group">
-              <input
-                #password
-                type="password"
-                id="password"
-                class="form-control"
-                placeholder="Inserisci la password"
-                required
-              />
-              <button
-                type="button"
-                class="btn btn-outline-secondary"
-                (click)="togglePasswordVisibility(password)"
-              >
-                👁️
-              </button>
-            </div>
-          </div>
-
-          <div class="d-grid mb-3">
-            <button type="submit" class="btn btn-primary">Accedi</button>
-          </div>
-
-          <div class="text-center">
-            <a
-              (click)="navigateToPassworddimenticata(email.value)"
-              class="btn btn-link p-0"
-              >Password dimenticata?</a
-            >
-          </div>
-        </form>
+        <div class="forgot-row">
+         <button
+  type="button"
+  (click)="navigateToPassworddimenticata(email.value)"
+  class="forgot-link btn btn-link p-0">
+  Password dimenticata?
+</button>
+        </div>
       </div>
-    </main>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-  </body>
+      <div class="d-grid mt-3">
+        <button type="submit" class="btn btn-login">
+          Login
+        </button>
+      </div>
+
+    </form>
+  </div>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
 </html>

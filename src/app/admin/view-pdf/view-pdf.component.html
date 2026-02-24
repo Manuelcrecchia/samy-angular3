@@ -1,31 +1,39 @@
-<div class="container py-4">
+<div class="container py-4 pdf-page">
   <div class="d-flex justify-content-start align-items-center mb-3">
-    <button class="btn btn-outline-primary rounded-pill" (click)="back()">
+    <button class="btn btn-back-brand rounded-pill" (click)="back()">
       ⬅ Torna Indietro
     </button>
   </div>
 
-  <ngx-extended-pdf-viewer
-    #pdfViewer
-    class="ngx-extended-pdf-viewer"
-    [base64Src]="pdfPrev"
-    useBrowserLocale="true"
-    backgroundColor="#ffffff"
-    [height]="'100%'"
-    [customToolbar]="customToolbar"
-    [filenameForDownload]="downloadName"
-  >
-  </ngx-extended-pdf-viewer>
+  <div class="pdf-shell">
+    <ngx-extended-pdf-viewer
+      #pdfViewer
+      class="ngx-extended-pdf-viewer pdf-viewer"
+      [base64Src]="pdfPrev"
+      useBrowserLocale="true"
+      backgroundColor="#ffffff"
+      [height]="'100%'"
+      [customToolbar]="customToolbar"
+      [filenameForDownload]="downloadName"
+    >
+    </ngx-extended-pdf-viewer>
+  </div>
 
   <ng-template #customToolbar>
-    <div style="padding: 10px; background: #fff; display: flex; gap: 15px">
-      <button mat-raised-button color="accent" (click)="printPdf()">
-        🖨️ Stampa
-      </button>
+    <div class="pdf-toolbar">
+      <div class="pdf-toolbar-left">
+        <span class="pdf-toolbar-title">Preventivo</span>
+      </div>
 
-      <button mat-raised-button color="accent" (click)="downloadPdf()">
-        ⬇️ Scarica
-      </button>
+      <div class="pdf-toolbar-actions">
+        <button mat-raised-button class="btn-pdf-action btn-sky" (click)="printPdf()">
+          🖨️ Stampa
+        </button>
+
+        <button mat-raised-button class="btn-pdf-action btn-orange" (click)="downloadPdf()">
+          ⬇️ Scarica
+        </button>
+      </div>
     </div>
   </ng-template>
 </div>
