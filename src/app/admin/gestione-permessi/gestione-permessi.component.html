@@ -1,11 +1,163 @@
-<div class="container mt-4">
+<style>
+:root{
+  --brand-black:#0b0f14;
+  --brand-orange:#ff8a00;
+  --brand-sky:#2fb7ff;
+
+  --glass-border: rgba(255,255,255,0.18);
+  --shadow-soft: 0 18px 60px rgba(0,0,0,0.22);
+  --shadow-card: 0 10px 30px rgba(0,0,0,0.18);
+
+  --radius-lg: 22px;
+  --radius-md: 16px;
+}
+
+/* Background full screen */
+html, body{
+  height:100%;
+  margin:0;
+  background:
+    radial-gradient(1000px 620px at 10% 10%, rgba(47,183,255,0.20), transparent 60%),
+    radial-gradient(1000px 620px at 90% 15%, rgba(255,138,0,0.20), transparent 65%),
+    linear-gradient(180deg, #0b0f14, #121c28);
+  background-attachment: fixed;
+}
+
+/* Container page */
+.container.mt-4{
+  min-height: 100vh;
+  color: rgba(255,255,255,0.92);
+  padding-bottom: 24px;
+}
+
+/* Titolo */
+.container.mt-4 h2{
+  font-weight: 950;
+  letter-spacing: .2px;
+  margin-bottom: 12px;
+}
+
+/* Buttons: testo sempre nero */
+.container.mt-4 .btn,
+.modal .btn{
+  color:#000 !important;
+  font-weight: 900;
+  border-radius: 999px !important;
+  border: 1px solid rgba(255,255,255,0.22);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: 0 10px 24px rgba(0,0,0,0.22);
+  transition: transform 140ms ease, box-shadow 140ms ease, background 160ms ease;
+}
+.container.mt-4 .btn:hover,
+.modal .btn:hover{
+  transform: translateY(-1px);
+  box-shadow: 0 14px 36px rgba(0,0,0,0.30);
+}
+
+/* Back button */
+.container.mt-4 .btn.btn-outline-secondary{
+  background: linear-gradient(135deg, rgba(47,183,255,0.24), rgba(255,138,0,0.22));
+}
+
+/* Accept / Reject NO rosa */
+.container.mt-4 .btn.btn-success{
+  background: linear-gradient(135deg, rgba(46,204,113,0.55), rgba(47,183,255,0.18));
+}
+.container.mt-4 .btn.btn-danger{
+  background: linear-gradient(135deg, rgba(255,77,77,0.60), rgba(255,138,0,0.16));
+}
+
+/* Spinner */
+.container.mt-4 .spinner-border{
+  width: 3rem;
+  height: 3rem;
+  color: var(--brand-sky) !important;
+}
+
+/* ✅ FIX: ALERT INFO visibile (testo nero) */
+.container.mt-4 .alert.alert-info{
+  border-radius: var(--radius-lg);
+  border: 1px solid rgba(0,0,0,0.10);
+  background: rgba(255,255,255,0.92);
+  color: #000 !important;
+  box-shadow: var(--shadow-card);
+}
+.container.mt-4 .alert.alert-info *{
+  color: #000 !important; /* se ci fossero tag interni */
+}
+
+/* List group glass */
+.container.mt-4 .list-group{
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  border: 1px solid rgba(255,255,255,0.14);
+  background: rgba(255,255,255,0.06);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  box-shadow: var(--shadow-soft);
+}
+
+/* Items */
+.container.mt-4 .list-group-item{
+  background: rgba(255,255,255,0.08) !important;
+  color: rgba(255,255,255,0.92) !important;
+  border: 0 !important;
+  padding: 14px 14px;
+}
+.container.mt-4 .list-group-item + .list-group-item{
+  border-top: 1px solid rgba(255,255,255,0.10) !important;
+}
+
+/* Modal glass */
+.modal-content{
+  border-radius: var(--radius-lg);
+  border: 1px solid rgba(255,255,255,0.18);
+  background: rgba(11,15,20,0.86);
+  color: rgba(255,255,255,0.92);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  box-shadow: var(--shadow-soft);
+}
+.modal .btn-close{ filter: invert(1); opacity: .9; }
+
+/* Modal inputs */
+.modal .form-select,
+.modal .form-control{
+  border-radius: 14px;
+  border: 1px solid rgba(0,0,0,0.12);
+  background: rgba(255,255,255,0.92);
+  color: #000;
+}
+.modal .form-select option{ color:#000; }
+
+/* Modal footer buttons */
+.modal .btn.btn-secondary{
+  background: rgba(255,255,255,0.16);
+}
+.modal .btn.btn-primary{
+  background: linear-gradient(135deg, var(--brand-orange), var(--brand-sky));
+}
+
+/* Responsive: azioni full width su mobile */
+@media (max-width: 575.98px){
+  .container.mt-4 .btn-group{
+    width: 100%;
+  }
+  .container.mt-4 .btn-group .btn{
+    width: 100%;
+  }
+}
+</style>
+
+<div class="container mt-4 permessi-page">
   <div class="d-flex justify-content-start align-items-center mb-3">
-    <button class="btn btn-outline-secondary" (click)="goBack()">
+    <button class="btn btn-outline-secondary btn-back-glass" (click)="goBack()">
       &larr; Torna Indietro
     </button>
   </div>
 
-  <h2>Gestione Permessi Richiesti</h2>
+  <h2 class="permessi-title text-dark">Gestione Permessi Richiesti</h2>
 
   <div *ngIf="loading" class="text-center my-3">
     <div class="spinner-border" role="status"></div>
@@ -15,30 +167,29 @@
     Nessuna richiesta di permesso in attesa.
   </div>
 
-  <div class="list-group mt-3" *ngIf="leaveRequests.length > 0">
-    <div class="list-group-item" *ngFor="let req of leaveRequests">
-      <div class="d-flex justify-content-between align-items-center flex-wrap">
-        <div>
-          <strong>{{ req.employee?.nome }} {{ req.employee?.cognome }}</strong
-          ><br />
-          Email: {{ req.employee?.email }}<br />
-          Tipo: <strong class="text-capitalize">{{ req.tipoPermesso }}</strong
-          ><br />
+  <div class="list-group mt-3 permessi-list" *ngIf="leaveRequests.length > 0">
+    <div class="list-group-item permessi-item" *ngFor="let req of leaveRequests">
+      <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+        <div class="req-meta">
+          <strong>{{ req.employee?.nome }} {{ req.employee?.cognome }}</strong><br />
+          <span class="label">Email:</span> {{ req.employee?.email }}<br />
+          <span class="label">Tipo:</span>
+          <strong class="text-capitalize">{{ req.tipoPermesso }}</strong><br />
 
           <ng-container *ngIf="req.fromDate === req.toDate">
-            Giorno: {{ req.fromDate | date : "mediumDate" }}
+            <span class="label">Giorno:</span> {{ req.fromDate | date : "mediumDate" }}
           </ng-container>
           <ng-container *ngIf="req.fromDate !== req.toDate">
-            Dal: {{ req.fromDate | date : "mediumDate" }}<br />
-            Al: {{ req.toDate | date : "mediumDate" }}
+            <span class="label">Dal:</span> {{ req.fromDate | date : "mediumDate" }}<br />
+            <span class="label">Al:</span> {{ req.toDate | date : "mediumDate" }}
           </ng-container>
         </div>
 
-        <div class="btn-group mt-2 mt-sm-0">
-          <button class="btn btn-success" (click)="openModal(req)">
+        <div class="btn-group mt-2 mt-sm-0 permessi-actions">
+          <button class="btn btn-success btn-accept-glass" (click)="openModal(req)">
             Accetta
           </button>
-          <button class="btn btn-danger" (click)="rifiuta(req.id)">
+          <button class="btn btn-danger btn-reject-glass" (click)="rifiuta(req.id)">
             Rifiuta
           </button>
         </div>
@@ -71,10 +222,10 @@
       <div class="modal-body">
         <p class="fw-semibold mb-3">
           Stai accettando la richiesta di
-          <strong
-            >{{ selectedRequest?.employee?.nome }}
-            {{ selectedRequest?.employee?.cognome }}</strong
-          >.
+          <strong>
+            {{ selectedRequest?.employee?.nome }}
+            {{ selectedRequest?.employee?.cognome }}
+          </strong>.
         </p>
 
         <div class="mb-3">
@@ -100,10 +251,10 @@
       </div>
 
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+        <button type="button" class="btn btn-secondary btn-cancel-glass" data-bs-dismiss="modal">
           Annulla
         </button>
-        <button type="button" class="btn btn-primary" (click)="confirmAccept()">
+        <button type="button" class="btn btn-primary btn-confirm-glass" (click)="confirmAccept()">
           Conferma
         </button>
       </div>

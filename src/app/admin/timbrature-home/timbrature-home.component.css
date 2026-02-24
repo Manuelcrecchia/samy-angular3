@@ -1,20 +1,181 @@
-.table-pink {
-  background-color: #f8c1d9;
-  color: #fff;
+:root{
+  --brand-black:#0b0f14;
+  --brand-orange:#ff8a00;
+  --brand-sky:#2fb7ff;
+
+  --glass-border: rgba(255,255,255,0.18);
+  --shadow-soft: 0 18px 60px rgba(0,0,0,0.22);
+  --shadow-card: 0 10px 30px rgba(0,0,0,0.18);
+
+  --radius-lg: 22px;
+  --radius-md: 16px;
 }
 
-.btn-back {
-  background: none;
-  border: none;
-  color: #ff4081;
-  font-weight: bold;
-  cursor: pointer;
+/* Sfondo full screen (solo estetica) */
+html, body{
+  height:100%;
+  margin:0;
+  background:
+    radial-gradient(1000px 620px at 10% 10%, rgba(47,183,255,0.20), transparent 60%),
+    radial-gradient(1000px 620px at 90% 15%, rgba(255,138,0,0.20), transparent 65%),
+    linear-gradient(180deg, #0b0f14, #121c28);
+  background-attachment: fixed;
 }
 
-.btn-back:hover {
-  text-decoration: underline;
+/* Page base */
+.container.py-4{
+  min-height: 100vh;
+  color: rgba(255,255,255,0.92);
 }
 
-.text-pink {
-  color: #ff4081 !important;
+/* Titolo */
+.container.py-4 h2{
+  font-weight: 950;
+  letter-spacing: .2px;
+}
+
+/* BACK button: glass + testo nero */
+.btn-back{
+  display:inline-flex;
+  align-items:center;
+  gap:10px;
+  padding:10px 14px;
+  border-radius:999px;
+  border:1px solid var(--glass-border);
+  background: linear-gradient(135deg, rgba(47,183,255,0.26), rgba(255,138,0,0.22));
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: 0 10px 26px rgba(0,0,0,0.20);
+  color:#000;
+  font-weight: 900;
+  cursor:pointer;
+  transition: transform 140ms ease, box-shadow 140ms ease, background 160ms ease;
+}
+.btn-back:hover{
+  transform: translateY(-1px);
+  box-shadow: 0 14px 36px rgba(0,0,0,0.26);
+  text-decoration: none;
+}
+
+/* Buttons bootstrap: testo sempre nero, NO rosa */
+.container.py-4 .btn{
+  color:#000 !important;
+  font-weight: 900;
+  border-radius: 999px !important;
+  border: 1px solid rgba(255,255,255,0.22) !important;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: 0 10px 24px rgba(0,0,0,0.22);
+  transition: transform 140ms ease, box-shadow 140ms ease, background 160ms ease;
+}
+.container.py-4 .btn:hover{
+  transform: translateY(-1px);
+  box-shadow: 0 14px 36px rgba(0,0,0,0.30);
+}
+
+/* Prev/Next date buttons */
+.container.py-4 .btn.btn-outline-secondary{
+  background: rgba(255,255,255,0.14);
+}
+
+/* Dettaglio */
+.container.py-4 .btn.btn-outline-primary{
+  background: linear-gradient(135deg, rgba(255,138,0,0.18), rgba(47,183,255,0.14));
+}
+
+/* Date input: sfondo chiaro + testo nero */
+.container.py-4 input[type="date"].form-control{
+  border-radius: 14px;
+  border: 1px solid rgba(0,0,0,0.12);
+  background: rgba(255,255,255,0.92);
+  color:#000;
+  box-shadow: 0 10px 22px rgba(0,0,0,0.12);
+}
+.container.py-4 input[type="date"].form-control:focus{
+  border-color: rgba(47,183,255,0.55);
+  box-shadow: 0 0 0 0.18rem rgba(47,183,255,0.20);
+  outline:none;
+}
+
+/* Table wrapper glass */
+.table-responsive{
+  border-radius: var(--radius-lg);
+  border: 1px solid rgba(255,255,255,0.16);
+  background: rgba(255,255,255,0.08);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  box-shadow: var(--shadow-soft);
+  padding: 10px;
+}
+
+/* TABLE base: chiara, testo nero (leggibile) */
+.table{
+  margin: 0;
+  border-radius: 16px;
+  overflow: hidden;
+  background: rgba(255,255,255,0.94);
+  color: #000;
+}
+
+/* Header (ex table-pink): brand gradient, testo NERO */
+.table-pink{
+  background: linear-gradient(135deg, var(--brand-orange), var(--brand-sky)) !important;
+  color: #000 !important;
+}
+.table thead th{
+  border-color: rgba(0,0,0,0.08) !important;
+  font-weight: 950;
+  letter-spacing: .15px;
+}
+
+/* Body */
+.table tbody td{
+  border-color: rgba(0,0,0,0.08) !important;
+}
+.table-hover tbody tr:hover{
+  background: rgba(47,183,255,0.08) !important;
+}
+
+/* Row errore: invece di rosso pieno, soft ma visibile */
+.table-danger{
+  background: rgba(255, 77, 77, 0.16) !important;
+}
+.table-danger td{
+  color:#000 !important;
+}
+
+/* Badge: testo nero sempre */
+.badge{
+  color:#000 !important;
+  font-weight: 950;
+  border: 1px solid rgba(0,0,0,0.10);
+}
+.badge.bg-danger{
+  background: rgba(255,77,77,0.75) !important;
+}
+.badge.bg-success{
+  background: rgba(46,204,113,0.65) !important;
+}
+
+/* Loading: niente pink */
+.text-pink{
+  color: var(--brand-sky) !important;
+}
+.spinner-border.text-pink{
+  color: var(--brand-sky) !important;
+}
+
+/* Empty state */
+.text-muted{
+  color: rgba(255,255,255,0.72) !important;
+}
+
+/* Mobile tweaks */
+@media (max-width: 575.98px){
+  .table-responsive{
+    padding: 8px;
+  }
+  .container.py-4 .btn.btn-outline-primary{
+    width: 100%;
+  }
 }

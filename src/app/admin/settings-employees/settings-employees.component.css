@@ -1,0 +1,174 @@
+:root{
+  --brand-black:#0b0f14;
+  --brand-orange:#ff8a00;
+  --brand-sky:#2fb7ff;
+
+  --glass-border: rgba(255,255,255,0.18);
+  --shadow-soft: 0 18px 60px rgba(0,0,0,0.30);
+  --radius-lg: 22px;
+  --radius-md: 16px;
+}
+
+/* ==============================
+   SFONDO FULL SCREEN (come altre pagine)
+================================= */
+html, body{
+  height:100%;
+  margin:0;
+  background:
+    radial-gradient(1100px 700px at 10% 10%, rgba(47,183,255,0.20), transparent 60%),
+    radial-gradient(1100px 700px at 90% 15%, rgba(255,138,0,0.20), transparent 65%),
+    linear-gradient(180deg, #0b0f14, #121c28);
+  background-attachment: fixed;
+}
+
+/* PAGE */
+.container.py-4{
+  min-height:100vh;
+  color: rgba(255,255,255,0.92);
+}
+
+/* TITLES */
+.container.py-4 h2{
+  font-weight: 950;
+  letter-spacing: .2px;
+}
+
+/* ==============================
+   BOTTONI (sempre testo nero)
+================================= */
+.container.py-4 .btn{
+  color:#000 !important;
+  font-weight: 900;
+  border-radius: 999px !important;
+  border: 1px solid rgba(255,255,255,0.22) !important;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: 0 10px 24px rgba(0,0,0,0.22);
+  transition: transform 140ms ease, box-shadow 140ms ease;
+}
+
+.container.py-4 .btn:hover{
+  transform: translateY(-1px);
+  box-shadow: 0 14px 36px rgba(0,0,0,0.30);
+}
+
+/* Back */
+.container.py-4 .btn.btn-outline-primary{
+  background: linear-gradient(135deg, rgba(47,183,255,0.26), rgba(255,138,0,0.22));
+}
+
+/* Submit */
+.container.py-4 .btn.btn-success{
+  background: linear-gradient(135deg, rgba(46,204,113,0.55), rgba(47,183,255,0.18)) !important;
+}
+
+/* Modifica */
+.container.py-4 .btn.btn-primary{
+  background: linear-gradient(135deg, rgba(255,138,0,0.22), rgba(47,183,255,0.18)) !important;
+}
+
+/* Warning */
+.container.py-4 .btn.btn-warning{
+  background: linear-gradient(135deg, rgba(255,193,7,0.75), rgba(255,138,0,0.20)) !important;
+}
+
+/* Secondary */
+.container.py-4 .btn.btn-secondary{
+  background: rgba(255,255,255,0.18) !important;
+}
+
+/* ==============================
+   FORM GLASS (non bianco morto)
+================================= */
+form.bg-white{
+  background: rgba(255,255,255,0.10) !important;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-radius: var(--radius-lg) !important;
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--shadow-soft);
+}
+
+/* Labels bianchi su sfondo dark */
+form .form-label{
+  color: rgba(255,255,255,0.92);
+  font-weight: 900;
+}
+
+/* Inputs sempre chiari con testo nero */
+form .form-control{
+  border-radius: 14px;
+  border: 1px solid rgba(0,0,0,0.12);
+  background: rgba(255,255,255,0.92);
+  color: #000;
+}
+
+form .form-control:focus{
+  border-color: rgba(47,183,255,0.55);
+  box-shadow: 0 0 0 0.18rem rgba(47,183,255,0.20);
+  outline: none;
+}
+
+/* ==============================
+   TABLE WRAPPER GLASS
+================================= */
+.table-responsive{
+  border-radius: var(--radius-lg);
+  border: 1px solid rgba(255,255,255,0.16);
+  background: rgba(255,255,255,0.08);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  box-shadow: var(--shadow-soft);
+  padding: 10px;
+}
+
+/* TABLE BASE: chiara + testo nero */
+table.table{
+  margin: 0;
+  border-radius: 16px;
+  overflow: hidden;
+  background: rgba(255,255,255,0.95) !important;
+  color:#000 !important;
+}
+
+/* Header gradient brand */
+.table-dark{
+  background: linear-gradient(135deg, var(--brand-orange), var(--brand-sky)) !important;
+}
+
+.table thead th{
+  background: transparent !important;
+  color:#000 !important;
+  font-weight: 950;
+}
+
+/* Celle */
+.table tbody td{
+  color:#000 !important;
+}
+
+/* Stripes soft */
+.table-striped > tbody > tr:nth-of-type(odd) > *{
+  --bs-table-accent-bg: rgba(47,183,255,0.06);
+}
+
+/* Border */
+.table-bordered td,
+.table-bordered th{
+  border-color: rgba(0,0,0,0.08) !important;
+}
+
+/* Edit inputs in table */
+.table .form-control.form-control-sm{
+  background: rgba(255,255,255,0.92);
+  color:#000;
+  border-radius: 12px;
+}
+
+/* Mobile */
+@media (max-width: 575.98px){
+  td.d-flex .btn{
+    width: 100%;
+  }
+}

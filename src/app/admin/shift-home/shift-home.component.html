@@ -6,9 +6,10 @@
 
     --glass-border: rgba(255,255,255,0.18);
     --radius-lg: 22px;
+    --radius-md: 16px;
   }
 
-  /* 🔥 SFONDO FULL SCREEN VERO */
+  /* 🔥 SFONDO FULL SCREEN */
   html, body{
     margin:0;
     padding:0;
@@ -35,15 +36,15 @@
   }
 
   /* ---------------- BUTTON BASE ---------------- */
-
   .turni-page .btn{
     color:#000 !important;
-    font-weight:800;
+    font-weight:900;
     border-radius:999px !important;
     border:1px solid rgba(255,255,255,0.25);
     backdrop-filter:blur(10px);
-    box-shadow:0 10px 25px rgba(0,0,0,0.3);
-    transition:all .2s ease;
+    -webkit-backdrop-filter: blur(10px);
+    box-shadow:0 10px 25px rgba(0,0,0,0.30);
+    transition:transform .14s ease, box-shadow .14s ease, background .16s ease;
   }
 
   .turni-page .btn:hover{
@@ -51,55 +52,151 @@
     box-shadow:0 14px 35px rgba(0,0,0,0.45);
   }
 
-  /* 🔙 Back */
   .btn-back-glass{
     background:linear-gradient(135deg, rgba(47,183,255,0.30), rgba(255,138,0,0.30));
   }
 
-  /* ⬅ ➡ Day Nav */
   .btn-nav-glass{
     background:rgba(255,255,255,0.18);
   }
 
-  /* ✅ CREA TURNI (NO ROSA, BRAND STYLE) */
   .btn-create-glass{
     background:linear-gradient(135deg, var(--brand-orange), var(--brand-sky));
   }
 
-  /* 💾 SALVA */
   .btn-save-glass{
     background:linear-gradient(135deg, rgba(255,138,0,0.45), rgba(47,183,255,0.35));
   }
 
   /* ---------------- GLASS PANELS ---------------- */
-
   .glass-panel{
     border-radius:var(--radius-lg);
     border:1px solid var(--glass-border);
     background:rgba(255,255,255,0.08);
     backdrop-filter:blur(18px);
+    -webkit-backdrop-filter: blur(18px);
     box-shadow:0 20px 60px rgba(0,0,0,0.45);
   }
 
+  /* Header dipendente (glass) */
   .emp-header{
     padding:14px;
+    border-radius: var(--radius-lg);
+    border: 1px solid rgba(255,255,255,0.14);
+    background: rgba(255,255,255,0.06);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    box-shadow: 0 12px 30px rgba(0,0,0,0.22);
   }
 
+  /* Checkbox */
+  .turni-page .form-check-input{
+    width:18px;
+    height:18px;
+    border-radius:6px;
+    border:1px solid rgba(255,255,255,0.26);
+    background: rgba(255,255,255,0.10);
+    box-shadow: 0 10px 22px rgba(0,0,0,0.18);
+  }
+  .turni-page .form-check-input:checked{
+    background-color: rgba(47,183,255,0.65);
+    border-color: rgba(47,183,255,0.85);
+  }
+
+  /* ✅ CONTROLS: hai bg-light (chiaro) -> testo NERO */
+  .turni-controls{
+    border-radius: var(--radius-lg) !important;
+    border: 1px solid rgba(255,255,255,0.18) !important;
+    background: rgba(255,255,255,0.92) !important; /* chiaro */
+    color: #000 !important;
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    box-shadow: 0 20px 60px rgba(0,0,0,0.35);
+  }
+  .turni-controls *{
+    color:#000 !important;
+  }
+  .turni-controls .text-muted{
+    color: rgba(0,0,0,0.60) !important;
+  }
+
+  /* ✅ ALERT INFO: chiaro + testo nero */
+  .turni-page .alert.alert-info{
+    background: rgba(255,255,255,0.92) !important;
+    border: 1px solid rgba(0,0,0,0.10) !important;
+    color: #000 !important;
+    border-radius: var(--radius-lg);
+    box-shadow: 0 14px 36px rgba(0,0,0,0.22);
+  }
+  .turni-page .alert.alert-info *{ color:#000 !important; }
+
+  /* LIST WRAPPER */
+  .turni-list .list-group{
+    background: transparent !important;
+  }
+
+  .turni-list .list-group-flush{
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    border: 1px solid rgba(255,255,255,0.14);
+    background: rgba(255,255,255,0.05);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    box-shadow: 0 12px 30px rgba(0,0,0,0.22);
+  }
+
+  /* Riga turno (default scura) */
   .turni-item{
     border:0 !important;
-    background:rgba(255,255,255,0.06) !important;
-    color:white !important;
+    background: rgba(255,255,255,0.06) !important;
+    color: rgba(255,255,255,0.92) !important;
     padding:14px;
   }
-
   .turni-item + .turni-item{
-    border-top:1px solid rgba(255,255,255,0.1) !important;
+    border-top:1px solid rgba(255,255,255,0.10) !important;
   }
 
+  /* ✅ Se Angular applica bg-light al turno pubblicato -> testo NERO */
+  .turni-item.bg-light{
+    background: rgba(255,255,255,0.92) !important;
+    color: #000 !important;
+  }
+  .turni-item.bg-light *{
+    color:#000 !important;
+  }
+  .turni-item.bg-light .text-muted{
+    color: rgba(0,0,0,0.60) !important;
+  }
+
+  /* Published highlight (senza rompere testo) */
   .turni-item.published{
-    background:linear-gradient(135deg, rgba(46,204,113,0.25), rgba(255,255,255,0.05)) !important;
+    background: linear-gradient(135deg, rgba(46,204,113,0.22), rgba(255,255,255,0.06)) !important;
+    box-shadow: inset 0 0 0 1px rgba(46,204,113,0.28);
   }
 
+  /* muted su dark */
+  .turni-page .text-muted{
+    color: rgba(255,255,255,0.70) !important;
+  }
+
+  /* Key icon */
+  .key-icon{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    width:40px;
+    height:40px;
+    border-radius:14px;
+    border:1px solid rgba(255,255,255,0.18);
+    background: linear-gradient(135deg, rgba(255,138,0,0.22), rgba(47,183,255,0.16));
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    box-shadow: 0 10px 22px rgba(0,0,0,0.22);
+    cursor:pointer;
+    user-select:none;
+  }
+
+  /* Tooltip */
   .tooltip-popup{
     position:fixed;
     z-index:2000;
@@ -108,7 +205,9 @@
     background:rgba(0,0,0,0.85);
     color:white;
     backdrop-filter:blur(14px);
-    box-shadow:0 20px 60px rgba(0,0,0,0.6);
+    -webkit-backdrop-filter: blur(14px);
+    box-shadow:0 20px 60px rgba(0,0,0,0.60);
+    pointer-events:none;
   }
 </style>
 
@@ -120,7 +219,7 @@
     </button>
   </div>
 
-  <h2 class="text-center mb-4 turni-title">Gestione Turni</h2>
+  <h2 class="text-center mb-4 turni-title text-dark">Gestione Turni</h2>
 
   <!-- 🔹 Navigazione per data + Crea turno -->
   <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2 turni-date-row">
@@ -128,7 +227,7 @@
       <button class="btn btn-secondary rounded-pill btn-nav-glass" (click)="prevDay()">
         ←
       </button>
-      <h4 class="m-0">{{ selectedDate | date : "fullDate" }}</h4>
+      <h4 class="m-0 text-dark">{{ selectedDate | date : "fullDate" }}</h4>
       <button class="btn btn-secondary rounded-pill btn-nav-glass" (click)="nextDay()">
         →
       </button>

@@ -32,4 +32,5 @@ export class LeaveSettingsComponent implements OnInit {
           (this.message = 'Errore durante il salvataggio delle impostazioni.'),
       });
   }
+  
 }

@@ -1,14 +1,216 @@
-<div class="container-fluid py-4">
+<style>
+:root{
+  --brand-black:#0b0f14;
+  --brand-orange:#ff8a00;
+  --brand-sky:#2fb7ff;
+
+  --glass-border: rgba(255,255,255,0.18);
+  --shadow-soft: 0 18px 60px rgba(0,0,0,0.18);
+  --shadow-card: 0 10px 30px rgba(0,0,0,0.16);
+
+  --radius-lg: 22px;
+  --radius-md: 16px;
+}
+
+/* Sfondo full screen (solo estetica) */
+html, body{
+  height:100%;
+  margin:0;
+  background:
+    radial-gradient(1000px 620px at 10% 10%, rgba(47,183,255,0.20), transparent 60%),
+    radial-gradient(1000px 620px at 90% 15%, rgba(255,138,0,0.20), transparent 65%),
+    linear-gradient(180deg, #0b0f14, #121c28);
+  background-attachment: fixed;
+}
+
+/* Container */
+.container-fluid.py-4{
+  min-height: 100vh;
+  color: rgba(255,255,255,0.92);
+  padding-left: 12px;
+  padding-right: 12px;
+}
+
+/* Back button (testo nero) */
+.btn-back{
+  display:inline-flex;
+  align-items:center;
+  gap:10px;
+  padding:10px 14px;
+  border-radius:999px;
+  border:1px solid var(--glass-border);
+  background: linear-gradient(135deg, rgba(47,183,255,0.26), rgba(255,138,0,0.22));
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: 0 10px 26px rgba(0,0,0,0.20);
+  color:#000;
+  font-weight:900;
+}
+.btn-back:hover{ transform: translateY(-1px); box-shadow: 0 14px 36px rgba(0,0,0,0.26); }
+
+/* Filtri: sfondo chiaro + TESTO NERO */
+.d-flex.justify-content-center.align-items-center.gap-3.mb-3{
+  padding: 12px;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--glass-border);
+  background: rgba(255,255,255,0.10);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  box-shadow: var(--shadow-card);
+}
+
+/* IMPORTANTISSIMO: input/select devono avere TESTO NERO */
+.form-select,
+.form-control{
+  border-radius: 14px;
+  border: 1px solid rgba(0,0,0,0.12);
+  background: rgba(255,255,255,0.92);
+  color: #000;
+  box-shadow: 0 10px 22px rgba(0,0,0,0.12);
+}
+.form-select:focus,
+.form-control:focus{
+  border-color: rgba(47,183,255,0.55);
+  box-shadow: 0 0 0 0.18rem rgba(47,183,255,0.20);
+  outline: none;
+}
+.form-select option{ color:#000; }
+
+/* Wrapper scroll glass */
+.scroll-wrapper{
+  border-radius: var(--radius-lg);
+  border: 1px solid rgba(255,255,255,0.16);
+  background: rgba(255,255,255,0.08);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  box-shadow: var(--shadow-soft);
+  overflow: auto;
+  max-height: calc(100vh - 280px);
+}
+
+/* Tabella: base chiara (TESTI NERI), così non “spariscono” i numeri in alto */
+.presenze-table{
+  margin: 0;
+  min-width: 980px;
+  background: rgba(255,255,255,0.92);
+  color: #000;
+}
+
+/* Header (giorni in alto): chiaro + testo nero */
+.presenze-table thead th{
+  background: rgba(255,255,255,0.96) !important;
+  color: #000 !important;
+  border-color: rgba(0,0,0,0.08) !important;
+  font-weight: 950;
+  letter-spacing: .15px;
+}
+
+/* Celle */
+.presenze-table td,
+.presenze-table th{
+  border-color: rgba(0,0,0,0.08) !important;
+  vertical-align: middle;
+}
+.presenze-table tbody td{
+  background: rgba(255,255,255,0.94) !important;
+  color: #000 !important;
+}
+.presenze-table tbody tr:hover td{
+  background: rgba(47,183,255,0.06) !important;
+}
+
+/* Sticky header */
+.sticky-top{
+  position: sticky;
+  top: 0;
+  z-index: 3;
+}
+
+/* Sticky colonna dipendente: resta CHIARA con testo nero */
+.sticky-col{
+  position: sticky;
+  left: 0;
+  z-index: 4;
+  background: rgba(255,255,255,0.98) !important;
+  color: #000 !important;
+}
+
+/* Angolo top-left sopra tutto */
+.corner{
+  z-index: 6 !important;
+  background: rgba(255,255,255,0.98) !important;
+  color: #000 !important;
+}
+
+/* Layout cella (select + input) */
+.cell-wrap{
+  display: grid;
+  gap: 6px;
+  min-width: 90px;
+}
+.cell-wrap .form-select.form-select-sm{
+  padding-top: 4px;
+  padding-bottom: 4px;
+  font-weight: 900;
+}
+.cell-wrap .form-control{
+  height: 30px;
+  font-weight: 900;
+}
+
+/* Note col */
+.note-col{
+  min-width: 280px;
+}
+
+/* Bottone PDF: gradiente brand, testo nero, NO rosa */
+.btn.btn-primary.px-5{
+  color:#000 !important;
+  font-weight: 950;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,0.22);
+  background: linear-gradient(135deg, var(--brand-orange), var(--brand-sky));
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: 0 14px 40px rgba(0,0,0,0.22);
+}
+.btn.btn-primary.px-5:hover{
+  transform: translateY(-1px);
+  box-shadow: 0 18px 52px rgba(0,0,0,0.28);
+}
+.btn.btn-primary.px-5:disabled{
+  opacity: .75;
+  transform: none !important;
+}
+
+/* Mobile: filtri in colonna */
+@media (max-width: 575.98px){
+  .d-flex.justify-content-center.align-items-center.gap-3.mb-3{
+    flex-direction: column;
+    align-items: stretch !important;
+  }
+  .d-flex.justify-content-center.align-items-center.gap-3.mb-3 .form-select,
+  .d-flex.justify-content-center.align-items-center.gap-3.mb-3 .form-control{
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+  .scroll-wrapper{
+    max-height: calc(100vh - 320px);
+  }
+}
+</style>
+
+<div class="container-fluid py-4 presenze-page">
   <div class="d-flex justify-content-start align-items-center mb-3">
     <button class="btn-back me-3" type="button" (click)="back()">
       &larr; Torna Indietro
     </button>
   </div>
 
-  <h4 class="text-center fw-bold mb-4">Modifica Presenze</h4>
+  <h4 class="text-center fw-bold mb-4 presenze-title text-dark">Modifica Presenze</h4>
 
   <!-- Filtri -->
-  <div class="d-flex justify-content-center align-items-center gap-3 mb-3">
+  <div class="d-flex justify-content-center align-items-center gap-3 mb-3 filters-panel filters-row">
     <select
       [(ngModel)]="meseSelezionato"
       (change)="cambiaMeseAnno()"
@@ -47,7 +249,7 @@
 
       <tbody>
         <tr *ngFor="let d of dipendenti">
-          <td class="sticky-col fw-bold bg-white">{{ d.nome }}</td>
+          <td class="sticky-col emp-name">{{ d.nome }}</td>
 
           <td *ngFor="let g of giorni; let i = index" class="text-center">
             <div class="cell-wrap">
@@ -76,7 +278,7 @@
             </div>
           </td>
 
-          <td class="text-center">{{ d.totale }}</td>
+          <td class="text-center total-col">{{ d.totale }}</td>
 
           <td class="note-col">
             <input
@@ -91,9 +293,10 @@
       </tbody>
     </table>
   </div>
+
   <div class="text-center mt-4">
     <button
-      class="btn btn-primary px-5"
+      class="btn btn-primary px-5 btn-genera"
       (click)="generaPdf()"
       [disabled]="loading"
     >

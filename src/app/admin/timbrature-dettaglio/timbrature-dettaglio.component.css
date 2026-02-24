@@ -1,24 +1,276 @@
-.table-pink {
-  background-color: #f8c1d9;
-  color: #fff;
+:root{
+  --brand-black:#0b0f14;
+  --brand-orange:#ff8a00;
+  --brand-sky:#2fb7ff;
+
+  --glass-border: rgba(255,255,255,0.18);
+  --shadow-soft: 0 18px 60px rgba(0,0,0,0.22);
+  --shadow-card: 0 10px 30px rgba(0,0,0,0.18);
+
+  --radius-lg: 22px;
+  --radius-md: 16px;
 }
 
-.btn-back {
-  background: none;
-  border: none;
-  color: #ff4081;
-  font-weight: bold;
-  cursor: pointer;
+/* ✅ SFONDO FULL SCREEN */
+html, body{
+  height:100%;
+  margin:0;
+  background:
+    radial-gradient(1100px 680px at 10% 10%, rgba(47,183,255,0.20), transparent 60%),
+    radial-gradient(1100px 680px at 90% 15%, rgba(255,138,0,0.20), transparent 65%),
+    linear-gradient(180deg, #0b0f14, #121c28);
+  background-attachment: fixed;
 }
 
-.btn-back:hover {
-  text-decoration: underline;
+/* Page container */
+.container.py-4{
+  min-height: 100vh;
+  color: rgba(255,255,255,0.92);
 }
 
-.text-pink {
-  color: #ff4081 !important;
+/* Title */
+.container.py-4 h2{
+  font-weight: 950;
+  letter-spacing: .2px;
 }
 
-.badge.bg-warning {
-  background-color: #ffc107 !important;
+/* ✅ BACK (testo nero, no rosa) */
+.btn-back{
+  display:inline-flex;
+  align-items:center;
+  gap:10px;
+  padding:10px 14px;
+  border-radius:999px;
+  border:1px solid var(--glass-border);
+  background: linear-gradient(135deg, rgba(47,183,255,0.26), rgba(255,138,0,0.22));
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: 0 10px 26px rgba(0,0,0,0.20);
+  color:#000;
+  font-weight: 950;
+  cursor:pointer;
+  transition: transform 140ms ease, box-shadow 140ms ease;
+}
+.btn-back:hover{
+  transform: translateY(-1px);
+  box-shadow: 0 14px 36px rgba(0,0,0,0.28);
+  text-decoration: none;
+}
+
+/* ✅ BOTTONI: testo sempre nero, no colori rosa */
+.container.py-4 .btn,
+.modal .btn{
+  color:#000 !important;
+  font-weight: 900;
+  border-radius: 999px !important;
+  border: 1px solid rgba(255,255,255,0.22) !important;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: 0 10px 24px rgba(0,0,0,0.22);
+  transition: transform 140ms ease, box-shadow 140ms ease, background 160ms ease;
+}
+.container.py-4 .btn:hover,
+.modal .btn:hover{
+  transform: translateY(-1px);
+  box-shadow: 0 14px 36px rgba(0,0,0,0.30);
+}
+
+/* Prev/Next date buttons */
+.container.py-4 .btn.btn-outline-secondary{
+  background: rgba(255,255,255,0.14);
+}
+
+/* Info button */
+.container.py-4 .btn.btn-info{
+  background: linear-gradient(135deg, rgba(47,183,255,0.45), rgba(255,255,255,0.12)) !important;
+}
+
+/* Add button */
+.container.py-4 .btn.btn-outline-primary{
+  background: linear-gradient(135deg, rgba(255,138,0,0.18), rgba(47,183,255,0.14)) !important;
+}
+
+/* Delete button */
+.container.py-4 .btn.btn-outline-danger{
+  background: linear-gradient(135deg, rgba(255,77,77,0.55), rgba(255,138,0,0.10)) !important;
+}
+
+/* Stamps buttons */
+.container.py-4 .btn.btn-outline-secondary.btn-sm{
+  background: rgba(255,255,255,0.16) !important;
+}
+
+/* Date input: chiaro + testo nero */
+.container.py-4 input[type="date"].form-control{
+  border-radius: 14px;
+  border: 1px solid rgba(0,0,0,0.12);
+  background: rgba(255,255,255,0.92);
+  color:#000;
+  box-shadow: 0 10px 22px rgba(0,0,0,0.12);
+}
+.container.py-4 input[type="date"].form-control:focus{
+  border-color: rgba(47,183,255,0.55);
+  box-shadow: 0 0 0 0.18rem rgba(47,183,255,0.20);
+  outline:none;
+}
+
+/* ✅ TABLE WRAPPER GLASS */
+.table{
+  border-radius: 16px;
+  overflow: hidden;
+  background: rgba(255,255,255,0.94);
+  color:#000;
+  box-shadow: var(--shadow-card);
+}
+
+/* Header table-light: testo nero */
+.table thead th{
+  background: rgba(255,255,255,0.98) !important;
+  color:#000 !important;
+  border-color: rgba(0,0,0,0.08) !important;
+  font-weight: 950;
+  letter-spacing: .15px;
+}
+
+/* Hover row */
+.table-hover tbody tr:hover{
+  background: rgba(47,183,255,0.08) !important;
+}
+
+/* Row states: soft (leggibile) */
+.table-success{
+  background: rgba(46,204,113,0.16) !important;
+}
+.table-warning{
+  background: rgba(255,193,7,0.18) !important;
+}
+.table-danger{
+  background: rgba(255,77,77,0.16) !important;
+}
+.table-success td,
+.table-warning td,
+.table-danger td{
+  color:#000 !important;
+}
+
+/* Diff colors */
+.text-success{ color: #1e7e34 !important; font-weight: 950; }
+.text-danger{ color: #b02a37 !important; font-weight: 950; }
+
+/* ✅ BADGE: testo nero sempre */
+.badge{
+  color:#000 !important;
+  font-weight: 950;
+  border: 1px solid rgba(0,0,0,0.10);
+}
+.badge.bg-success{
+  background: rgba(46,204,113,0.65) !important;
+}
+.badge.bg-danger{
+  background: rgba(255,77,77,0.75) !important;
+}
+.badge.bg-warning{
+  background: rgba(255,193,7,0.85) !important;
+  color:#000 !important;
+}
+
+/* Loader */
+.spinner-border.text-primary{
+  color: var(--brand-sky) !important;
+}
+
+/* ❌ RIMOSSO PINK */
+.table-pink{ background: transparent !important; }
+.text-pink{ color: var(--brand-sky) !important; }
+
+/* ✅ MODALI GLASS (sia modalTimbratura che note modal) */
+.modal-backdrop.show{
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  background-color: rgba(0,0,0,0.55) !important;
+}
+
+.modal-content{
+  border-radius: var(--radius-lg) !important;
+  border: 1px solid rgba(255,255,255,0.18) !important;
+  background: rgba(11,15,20,0.88);
+  color: rgba(255,255,255,0.92);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  box-shadow: var(--shadow-soft);
+}
+
+/* Modal header: brand gradient + testo nero (no blu) */
+.modal-header.bg-primary,
+.modal-header.bg-info{
+  background: linear-gradient(135deg, var(--brand-orange), var(--brand-sky)) !important;
+  color:#000 !important;
+  border-bottom: 1px solid rgba(255,255,255,0.12) !important;
+}
+
+.modal .modal-title{
+  font-weight: 950;
+  letter-spacing: .2px;
+}
+
+.modal .btn-close{
+  filter: invert(1);
+  opacity: .9;
+}
+
+/* Inputs in modal: chiari + testo nero */
+.modal .form-select,
+.modal .form-control{
+  border-radius: 14px;
+  border: 1px solid rgba(0,0,0,0.12);
+  background: rgba(255,255,255,0.92);
+  color:#000;
+}
+.modal .form-select option{ color:#000; }
+
+/* Footer */
+.modal-footer{
+  border-top: 1px solid rgba(255,255,255,0.12) !important;
+  gap: 10px;
+}
+
+/* Buttons in modal */
+.modal .btn.btn-secondary{
+  background: rgba(255,255,255,0.16) !important;
+}
+.modal .btn.btn-primary{
+  background: linear-gradient(135deg, var(--brand-orange), var(--brand-sky)) !important;
+}
+
+/* ✅ TOAST */
+.toast{
+  border-radius: 16px;
+  background: rgba(255,255,255,0.92);
+  color:#000;
+  border: 1px solid rgba(0,0,0,0.10) !important;
+  box-shadow: 0 16px 44px rgba(0,0,0,0.35);
+}
+.toast-body{ color:#000; font-weight: 800; }
+.toast .btn-close{ filter: none; opacity: .85; }
+
+/* Notes modal content blocks */
+.modal-body .border{
+  border-color: rgba(255,255,255,0.16) !important;
+}
+.modal-body pre{
+  background: rgba(255,255,255,0.10);
+  border-radius: 12px;
+  padding: 10px;
+  color: rgba(255,255,255,0.92);
+  border: 1px solid rgba(255,255,255,0.14);
+  overflow: auto;
+}
+
+/* Responsive: azioni full width su mobile */
+@media (max-width: 575.98px){
+  .container.py-4 .btn.btn-info{
+    width: 100%;
+    margin-left: 0 !important;
+    margin-top: 8px;
+  }
 }

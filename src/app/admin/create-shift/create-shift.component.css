@@ -1,74 +1,243 @@
-/* Contenitore generale */
-.list-group {
-  border: none;
-  padding: 0;
+:root{
+  --brand-black:#0b0f14;
+  --brand-orange:#ff8a00;
+  --brand-sky:#2fb7ff;
+
+  --glass-border: rgba(255,255,255,0.18);
+  --shadow-soft: 0 18px 60px rgba(0,0,0,0.30);
+  --shadow-card: 0 10px 30px rgba(0,0,0,0.18);
+
+  --radius-lg: 22px;
+  --radius-md: 16px;
 }
 
-/* Ogni riga (cliente o extra) */
-.list-group-item {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  border: 1px solid #dee2e6;
-  border-radius: 8px;
+/* Background full screen */
+html, body{
+  height:100%;
+  margin:0;
+  background:
+    radial-gradient(1100px 680px at 10% 10%, rgba(47,183,255,0.20), transparent 60%),
+    radial-gradient(1100px 680px at 90% 15%, rgba(255,138,0,0.20), transparent 65%),
+    linear-gradient(180deg, #0b0f14, #121c28);
+  background-attachment: fixed;
+}
+
+/* Page */
+.container-fluid.py-4{
+  min-height: 100vh;
+  color: rgba(255,255,255,0.92);
+}
+
+/* Titoli */
+.container-fluid.py-4 h2{
+  font-weight: 950;
+  letter-spacing: .2px;
+}
+.container-fluid.py-4 h4,
+.container-fluid.py-4 h5{
+  font-weight: 900;
+}
+
+/* Back button (coerente) */
+.btn-back{
+  display:inline-flex;
+  align-items:center;
+  gap:10px;
+  padding:10px 14px;
+  border-radius:999px;
+  border:1px solid rgba(255,255,255,0.22);
+  background: linear-gradient(135deg, rgba(47,183,255,0.30), rgba(255,138,0,0.28));
+  color:#000 !important;
+  font-weight: 950;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: 0 10px 26px rgba(0,0,0,0.22);
+  transition: transform 140ms ease, box-shadow 140ms ease;
+}
+.btn-back:hover{
+  transform: translateY(-1px);
+  box-shadow: 0 14px 36px rgba(0,0,0,0.30);
+}
+
+/* Buttons: testo sempre nero */
+.container-fluid.py-4 .btn{
+  color:#000 !important;
+  font-weight: 900;
+  border-radius: 999px !important;
+  border: 1px solid rgba(255,255,255,0.22) !important;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: 0 10px 24px rgba(0,0,0,0.22);
+  transition: transform 140ms ease, box-shadow 140ms ease, background 160ms ease;
+}
+.container-fluid.py-4 .btn:hover{
+  transform: translateY(-1px);
+  box-shadow: 0 14px 36px rgba(0,0,0,0.30);
+}
+
+/* Specific buttons */
+.container-fluid.py-4 .btn.btn-secondary{
+  background: rgba(255,255,255,0.16) !important;
+}
+.container-fluid.py-4 .btn.btn-outline-primary{
+  background: linear-gradient(135deg, rgba(255,138,0,0.18), rgba(47,183,255,0.14)) !important;
+}
+.container-fluid.py-4 .btn.btn-success{
+  background: linear-gradient(135deg, rgba(46,204,113,0.55), rgba(47,183,255,0.18)) !important;
+}
+.container-fluid.py-4 .btn.btn-outline-danger{
+  background: linear-gradient(135deg, rgba(255,77,77,0.60), rgba(255,138,0,0.10)) !important;
+}
+
+/* Layout: colonne come pannelli glass */
+.row[style*="height: calc(100vh - 150px)"]{
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  border: 1px solid rgba(255,255,255,0.14);
+  background: rgba(255,255,255,0.06);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  box-shadow: var(--shadow-soft);
+}
+
+.col-md-8.border-end{
+  border-right: 1px solid rgba(255,255,255,0.14) !important;
+}
+
+/* Alerts: chiari + testo nero (leggibili) */
+.alert{
+  border-radius: var(--radius-lg);
+  border: 1px solid rgba(0,0,0,0.10) !important;
+  background: rgba(255,255,255,0.92) !important;
+  color:#000 !important;
+  box-shadow: var(--shadow-card);
+}
+.alert *{ color:#000 !important; }
+
+/* List group reset */
+.list-group{
+  border: none !important;
+  padding: 0 !important;
+  background: transparent !important;
+}
+
+/* Appointments item -> card chiara */
+.list-group-item{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap: 10px;
+
+  border: 1px solid rgba(0,0,0,0.10) !important;
+  border-radius: var(--radius-md) !important;
   margin-bottom: 10px;
   padding: 12px;
-  background: #fff;
-  transition: box-shadow 0.2s ease;
+
+  background: rgba(255,255,255,0.92) !important;
+  color:#000 !important;
+  box-shadow: 0 10px 24px rgba(0,0,0,0.14);
+  transition: transform 140ms ease, box-shadow 140ms ease;
+}
+.list-group-item:hover{
+  transform: translateY(-1px);
+  box-shadow: 0 14px 34px rgba(0,0,0,0.20);
 }
 
-.list-group-item:hover {
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-}
-
-/* Testo cliente/lavoro */
-.list-group-item strong {
+/* Text inside item */
+.list-group-item strong{
   font-size: 14px;
-  color: #212529;
+  color: #000 !important;
+  font-weight: 950;
 }
-
-.list-group-item small {
+.list-group-item small{
   font-size: 12px;
-  color: #6c757d;
+  color: rgba(0,0,0,0.60) !important;
 }
 
-/* Input orario */
-.list-group-item input[type="time"] {
-  width: 90px;
-  font-size: 13px;
-  padding: 4px;
-}
-
-/* Input titolo e descrizione per extra */
+/* Inputs/selects/textarea in items: chiari + testo nero */
 .list-group-item input[type="text"],
-.list-group-item textarea {
+.list-group-item textarea,
+.list-group-item select,
+.list-group-item .form-control,
+.list-group-item .form-select{
+  border-radius: 14px !important;
+  border: 1px solid rgba(0,0,0,0.12) !important;
+  background: rgba(255,255,255,0.95) !important;
+  color:#000 !important;
   font-size: 13px;
-  margin-bottom: 4px;
+  box-shadow: 0 10px 22px rgba(0,0,0,0.10);
+}
+.list-group-item textarea{
   resize: vertical;
+  min-height: 48px;
+}
+.list-group-item input::placeholder,
+.list-group-item textarea::placeholder{
+  color: rgba(0,0,0,0.55) !important;
 }
 
-/* Pulsanti extra */
-.list-group-item .btn-outline-danger {
-  font-size: 12px;
-  padding: 2px 6px;
-}
-
-/* Pulsanti aggiungi */
-.btn-outline-primary.btn-sm {
-  font-size: 13px;
-  border-radius: 20px;
-}
-
-/* Pulsante salva */
-.btn-success {
-  font-size: 15px;
-  padding: 8px 20px;
-  border-radius: 30px;
-}
-/* Input orario più largo e ben visibile */
-.list-group-item input[type="time"] {
-  width: 110px;       /* un po’ più largo */
-  min-width: 110px;   /* evita che Bootstrap lo stringa */
-  text-align: center; /* ore al centro */
+/* Orario: più largo e centrato */
+.list-group-item input[type="time"],
+.list-group-item input[placeholder="HH:mm"]{
+  width: 110px;
+  min-width: 110px;
+  text-align: center;
   font-size: 14px;
+}
+
+/* Error marker */
+.text-danger{
+  color: #b02a37 !important;
+  font-weight: 950;
+}
+
+/* Colonna destra: card dipendente glass */
+.card{
+  border-radius: var(--radius-lg) !important;
+  border: 1px solid rgba(255,255,255,0.14) !important;
+  background: rgba(255,255,255,0.06) !important;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  box-shadow: var(--shadow-card) !important;
+  overflow: hidden;
+}
+.card-header.bg-light{
+  background: rgba(255,255,255,0.92) !important;
+  color:#000 !important;
+  border-bottom: 1px solid rgba(0,0,0,0.10) !important;
+}
+.card-header .text-muted{
+  color: rgba(0,0,0,0.60) !important;
+}
+.card-body{
+  background: rgba(255,255,255,0.04) !important;
+}
+
+/* Drag items (bg-white) -> testo nero sicuro */
+.bg-white{
+  background: rgba(255,255,255,0.92) !important;
+  color:#000 !important;
+}
+.bg-white *{
+  color:#000 !important;
+}
+.bg-white .text-muted{
+  color: rgba(0,0,0,0.60) !important;
+}
+
+/* Previous week list items (right) */
+.col-md-4 .list-group-item{
+  background: rgba(255,255,255,0.92) !important;
+  color:#000 !important;
+}
+
+/* Mobile: meno padding e più fluid */
+@media (max-width: 767.98px){
+  .row[style*="height: calc(100vh - 150px)"]{
+    height: auto !important;
+  }
+  .col-md-8.border-end{
+    border-right: 0 !important;
+    border-bottom: 1px solid rgba(255,255,255,0.14) !important;
+  }
 }
