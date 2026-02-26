@@ -53,6 +53,10 @@ export class HomeAdminComponent implements OnInit {
     this.router.navigateByUrl('/calendarHome');
   }
 
+  navigateToInternalDocuments() {
+    this.router.navigateByUrl('/internal-documents');
+  }
+
   navigateToUserSettings() {
     this.router.navigateByUrl('/userSettings');
   }

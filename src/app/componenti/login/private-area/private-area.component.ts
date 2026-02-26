@@ -82,7 +82,7 @@ export class PrivateAreaComponent {
         this.authService.email = email;
         this.authService.userCode = res['codiceOperatore'];
         this.authService.token = res['token'];
-        this.authService.admin = res['admin'];
+        this.authService.permissions = res['permissions'] || [];
 
         console.log(automatic ? '🤖 Login automatico' : '📩 Login manuale');
 

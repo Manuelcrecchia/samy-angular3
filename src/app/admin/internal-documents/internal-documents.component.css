@@ -1,0 +1,28 @@
+.pdf-viewer {
+  height: calc(100vh - 120px); /* oppure 100% se preferisci */
+  width: 100%;
+  overflow: hidden;
+  display: block;
+}
+
+ngx-extended-pdf-viewer {
+  height: 100% !important;
+  width: 100% !important;
+}
+#toolbarViewer {
+  display: flex;
+  gap: 10px;
+  padding: 10px;
+  background: #fff;
+  position: sticky;
+  top: 0;
+  z-index: 999;
+}
+.doc-status {
+  margin-left: auto;
+  font-size: 12px;
+  opacity: 0.85;
+}
+.doc-status.pending {
+  opacity: 0.6;
+}

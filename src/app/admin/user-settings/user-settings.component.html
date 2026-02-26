@@ -16,55 +16,22 @@
           <p><strong>Cognome:</strong> {{ admin.cognome }}</p>
           <p><strong>Email:</strong> {{ admin.email }}</p>
           <p><strong>Codice Operatore:</strong> {{ admin.codiceOperatore }}</p>
-          <p><strong>Ruolo:</strong> {{ admin.admin }}</p>
+          <p><strong>Permessi:</strong> {{ (admin.permissions || []).join(', ') }}</p>
         </div>
 
         <!-- EDIT MODE -->
         <div *ngIf="editingIndex === i" class="mb-3">
-          <mat-form-field appearance="outline" class="w-100 mb-2">
-            <mat-label>Nome</mat-label>
-            <input
-              matInput
-              [(ngModel)]="adminEdit.nome"
-              name="edit_nome_{{ i }}"
-            />
-          </mat-form-field>
-
-          <mat-form-field appearance="outline" class="w-100 mb-2">
-            <mat-label>Cognome</mat-label>
-            <input
-              matInput
-              [(ngModel)]="adminEdit.cognome"
-              name="edit_cognome_{{ i }}"
-            />
-          </mat-form-field>
-
-          <mat-form-field appearance="outline" class="w-100 mb-2">
-            <mat-label>Email</mat-label>
-            <input
-              matInput
-              [(ngModel)]="adminEdit.email"
-              name="edit_email_{{ i }}"
-            />
-          </mat-form-field>
-
-          <mat-form-field appearance="outline" class="w-100 mb-2">
-            <mat-label>Codice operatore</mat-label>
-            <input
-              matInput
-              [(ngModel)]="adminEdit.codiceOperatore"
-              name="edit_codice_{{ i }}"
-            />
-          </mat-form-field>
-
-          <mat-form-field appearance="outline" class="w-100 mb-2">
-            <mat-label>Admin</mat-label>
-            <mat-select [(ngModel)]="adminEdit.admin" name="edit_admin_{{ i }}">
-              <mat-option value="S">Super admin</mat-option>
-              <mat-option value="A">Admin</mat-option>
-              <mat-option value="B">Base</mat-option>
-            </mat-select>
-          </mat-form-field>
+          <div class="mb-2">
+  <p class="mb-1"><strong>Permessi</strong></p>
+  <div class="permissions-grid">
+    <label class="perm-item" *ngFor="let p of permissionOptions">
+      <input type="checkbox"
+        [checked]="(adminEdit.permissions || []).includes(p.key)"
+        (change)="togglePermission(adminEdit, p.key)" />
+      <span>{{ p.label }}</span>
+    </label>
+  </div>
+</div>
         </div>
 
         <div class="d-flex gap-2">
@@ -107,54 +74,17 @@
       <mat-card-title>Aggiungi Nuovo Admin</mat-card-title>
       <mat-card-content>
         <form class="add-admin-form">
-          <mat-form-field appearance="outline">
-            <mat-label>Nome</mat-label>
-            <input
-              matInput
-              [(ngModel)]="adminAdd.nome"
-              name="nome"
-              pattern="[\D ]+"
-            />
-          </mat-form-field>
-
-          <mat-form-field appearance="outline">
-            <mat-label>Cognome</mat-label>
-            <input
-              matInput
-              [(ngModel)]="adminAdd.cognome"
-              name="cognome"
-              pattern="[\D ]+"
-            />
-          </mat-form-field>
-
-          <mat-form-field appearance="outline">
-            <mat-label>Email</mat-label>
-            <input
-              matInput
-              [(ngModel)]="adminAdd.email"
-              name="email"
-              pattern="\w+@\w+\.\D{2,}"
-            />
-          </mat-form-field>
-
-          <mat-form-field appearance="outline">
-            <mat-label>Codice operatore</mat-label>
-            <input
-              matInput
-              [(ngModel)]="adminAdd.codiceOperatore"
-              name="codiceOperatore"
-              pattern="[A-Z][A-Z]|[0-9][0-9]"
-            />
-          </mat-form-field>
-
-          <mat-form-field appearance="outline">
-            <mat-label>Admin</mat-label>
-            <mat-select [(ngModel)]="adminAdd.admin" name="admin">
-              <mat-option value="S">Super admin</mat-option>
-              <mat-option value="A">Admin</mat-option>
-              <mat-option value="B">Base</mat-option>
-            </mat-select>
-          </mat-form-field>
+          <div class="mb-2">
+  <p class="mb-1"><strong>Permessi</strong></p>
+  <div class="permissions-grid">
+    <label class="perm-item" *ngFor="let p of permissionOptions">
+      <input type="checkbox"
+        [checked]="(adminAdd.permissions || []).includes(p.key)"
+        (change)="togglePermission(adminAdd, p.key)" />
+      <span>{{ p.label }}</span>
+    </label>
+  </div>
+</div>
 
           <button mat-raised-button color="primary" (click)="addAdmin()">
             Aggiungi

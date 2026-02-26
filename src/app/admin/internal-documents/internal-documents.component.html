@@ -1,0 +1,117 @@
+<mat-toolbar color="primary">
+  <span>Gestione Documenti</span>
+  <span class="spacer"></span>
+  <button class="btn-back" type="button" (click)="back()">
+    &larr; Torna Indietro
+  </button>
+</mat-toolbar>
+
+<div class="container">
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <h3>Cartelle</h3>
+
+    <mat-list>
+      <mat-list-item *ngFor="let folder of folders">
+        <button
+          mat-button
+          (click)="selectFolder(folder)"
+          [class.selected]="folder === selectedFolder"
+        >
+          {{ folder }}
+        </button>
+
+        <button
+          mat-icon-button
+          color="warn"
+          (click)="deleteFolder(folder)"
+          matTooltip="Elimina"
+        >
+          <mat-icon>delete</mat-icon>
+        </button>
+      </mat-list-item>
+    </mat-list>
+
+    <div class="new-folder">
+      <mat-form-field appearance="fill">
+        <mat-label>Nuova cartella</mat-label>
+        <input matInput [(ngModel)]="newFolderName" />
+      </mat-form-field>
+      <button mat-raised-button color="accent" (click)="createFolder()">
+        Crea
+      </button>
+    </div>
+  </div>
+
+  <!-- Main -->
+  <div class="main">
+    <h3 *ngIf="selectedFolder">File in "{{ selectedFolder }}"</h3>
+
+    <div class="file-upload" *ngIf="selectedFolder">
+      <input type="file" #fileInput (change)="uploadFile($event)" hidden />
+      <button mat-raised-button color="primary" (click)="fileInput.click()">
+        Carica File
+      </button>
+    </div>
+
+    <mat-list *ngIf="selectedFolder">
+      <mat-list-item *ngFor="let file of files">
+        <button mat-button (click)="selectFile(file.filename)">
+          {{ file.filename }}
+          <span class="doc-status" *ngIf="file.viewed">
+            ✅ Visualizzato {{ file.viewedAt | date: "dd/MM/yyyy HH:mm" }}
+          </span>
+
+          <span class="doc-status pending" *ngIf="!file.viewed">
+            ⏳ Non visualizzato
+          </span>
+        </button>
+
+        <button
+          mat-icon-button
+          color="primary"
+          (click)="downloadCurrentFile(file.filename)"
+        >
+          <mat-icon>download</mat-icon>
+        </button>
+
+        <button
+          mat-icon-button
+          color="warn"
+          (click)="deleteFile(file.filename)"
+        >
+          <mat-icon>delete</mat-icon>
+        </button>
+      </mat-list-item>
+    </mat-list>
+
+    <div *ngIf="pdfBase64" class="pdf-viewer">
+      <ngx-extended-pdf-viewer
+        [base64Src]="pdfBase64"
+        useBrowserLocale="true"
+        height="90vh"
+        [customToolbar]="customToolbar"
+      ></ngx-extended-pdf-viewer>
+
+      <ng-template #customToolbar>
+        <div style="padding: 10px; background: white; display: flex; gap: 15px">
+          <button
+            mat-raised-button
+            color="accent"
+            (click)="printFile(currentFilename)"
+          >
+            🖨️ Stampa
+          </button>
+
+          <button
+            mat-raised-button
+            color="accent"
+            (click)="downloadCurrentFile(currentFilename)"
+          >
+            ⬇️ Scarica
+          </button>
+        </div>
+      </ng-template>
+    </div>
+  </div>
+</div>

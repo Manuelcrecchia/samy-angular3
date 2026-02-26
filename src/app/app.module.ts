@@ -85,6 +85,7 @@ import { GestioneAssenzeComponent } from './admin/gestione-assenze/gestione-asse
 import { LeaveSettingsComponent } from './admin/leave-settings/leave-settings.component';
 import { GestioneTagClienteComponent } from './gestione-tag-cliente/gestione-tag-cliente.component';
 import { RiepilogoPresenzeEditabileComponent } from './admin/riepilogo-presenze-editabile/riepilogo-presenze-editabile.component';
+import { InternalDocumentsComponent } from './admin/internal-documents/internal-documents.component';
 
 loadMessages(itMessages);
 locale('it');
@@ -125,6 +126,7 @@ loadMessages(itMessages);
     LeaveSettingsComponent,
     GestioneTagClienteComponent,
     RiepilogoPresenzeEditabileComponent,
+    InternalDocumentsComponent,
   ],
   imports: [
     BrowserModule,

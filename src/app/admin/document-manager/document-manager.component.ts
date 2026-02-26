@@ -26,7 +26,7 @@ export class DocumentManagerComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private http: HttpClient,
-    public globalService: GlobalService
+    public globalService: GlobalService,
   ) {}
 
   ngOnInit(): void {
@@ -170,7 +170,7 @@ export class DocumentManagerComponent implements OnInit {
     formData.append('folder', this.selectedFolder);
     formData.append(
       this.isCustomer ? 'numeroCliente' : 'employeeId',
-      this.userId
+      this.userId,
     );
     formData.append('prefix', this.prefix);
 
@@ -235,7 +235,7 @@ export class DocumentManagerComponent implements OnInit {
 
           if (!newWindow) {
             alert(
-              '⚠️ Popup bloccato dal browser. Consenti i popup per la stampa.'
+              '⚠️ Popup bloccato dal browser. Consenti i popup per la stampa.',
             );
             return;
           }
@@ -252,7 +252,7 @@ export class DocumentManagerComponent implements OnInit {
             }, 300);
           };
         },
-        (err) => console.error('Errore stampa:', err)
+        (err) => console.error('Errore stampa:', err),
       );
   }
 

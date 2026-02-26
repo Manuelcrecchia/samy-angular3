@@ -9,7 +9,9 @@ export class AuthServiceService {
   private logoutTimer: any;
   private _token: string | null = sessionStorage.getItem('token') || null;
   private _userCode: string | null = sessionStorage.getItem('userCode') || null;
-  private _admin: string | null = sessionStorage.getItem('admin') || null;
+  private _permissions: string[] = (() => {
+    try { return JSON.parse(sessionStorage.getItem('permissions') || '[]'); } catch { return []; }
+  })();
   private _email: string | null = sessionStorage.getItem('email') || null;
 
   constructor(private router: Router) {
@@ -44,13 +46,12 @@ export class AuthServiceService {
     return this._userCode;
   }
 
-  set admin(value: string | null) {
-    this._admin = value;
-    if (value) sessionStorage.setItem('admin', value);
-    else sessionStorage.removeItem('admin');
+  set permissions(value: string[] | null) {
+    this._permissions = Array.isArray(value) ? value : [];
+    sessionStorage.setItem('permissions', JSON.stringify(this._permissions));
   }
-  get admin(): string | null {
-    return this._admin;
+  get permissions(): string[] {
+    return this._permissions;
   }
 
   set email(value: string | null) {
@@ -97,7 +98,6 @@ export class AuthServiceService {
     console.log('[AuthService] Logout eseguito o automatico');
   sessionStorage.clear();
   this._token = null;
-  this._admin = null;
   this._email = null;
   this._userCode = null;
   this.clearLogoutTimer();

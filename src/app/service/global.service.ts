@@ -42,8 +42,12 @@ export class GlobalService {
     return this.authService.userCode || '';
   }
 
-  get admin(): string {
-    return this.authService.admin || '';
+  get permissions(): string[] {
+    return this.authService.permissions || [];
+  }
+
+  hasPermission(key: string): boolean {
+    return this.permissions.includes(key);
   }
 
   get email(): string {
