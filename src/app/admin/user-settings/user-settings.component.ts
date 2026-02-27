@@ -44,7 +44,33 @@ export class UserSettingsComponent implements OnInit {
 
   editingIndex: number | null = null;
   adminEdit: any = {}; // buffer edit
-  private adminEditOriginal: any = {}; // per annulla
+  private adminEditOriginal: any = {};
+
+  permissionGroups: Array<{
+    title: string;
+    items: PermissionOption[];
+  }> = [];
+
+  private permissionDeps: Record<string, string[]> = {
+    // child -> parents (se selezioni child, seleziona anche parents)
+    QUOTES_MANAGE: ['QUOTES_VIEW'],
+    CUSTOMERS_MANAGE: ['CUSTOMERS_VIEW'],
+    SHIFTS_MANAGE: ['SHIFTS_VIEW'],
+    ATTENDANCE_MANAGE: ['ATTENDANCE_VIEW'],
+    STAMPING_MANAGE: ['STAMPING_VIEW'],
+    CALENDAR_EVENT_MANAGE: ['CALENDAR_VIEW'],
+
+    // admin: se vuoi, puoi legare CREATE/EDIT/DELETE a VIEW
+    ADMIN_CREATE: ['ADMIN_VIEW'],
+    ADMIN_EDIT: ['ADMIN_VIEW'],
+    ADMIN_DELETE: ['ADMIN_VIEW'],
+
+    EMPLOYEE_CREATE: ['EMPLOYEE_VIEW'],
+    EMPLOYEE_EDIT: ['EMPLOYEE_VIEW'],
+    EMPLOYEE_DELETE: ['EMPLOYEE_VIEW'],
+    EMPLOYEE_DOCS_MANAGE: ['EMPLOYEE_VIEW'],
+    EMPLOYEE_PERMITS_MANAGE: ['EMPLOYEE_VIEW'],
+  };
 
   constructor(
     private http: HttpClient,
@@ -84,6 +110,9 @@ export class UserSettingsComponent implements OnInit {
                   : [];
 
           this.permissionOptions = arr;
+          this.permissionGroups = this.buildPermissionGroups(
+            this.permissionOptions,
+          );
         },
         error: (err) => {
           console.error('Errore permissions/list:', err);
@@ -137,6 +166,78 @@ export class UserSettingsComponent implements OnInit {
           this.admins = [];
         },
       });
+  }
+
+  private buildPermissionGroups(options: PermissionOption[]) {
+    const byKey = new Map(options.map((o) => [o.key, o]));
+
+    const pick = (keys: string[]) =>
+      keys.map((k) => byKey.get(k)).filter(Boolean) as PermissionOption[];
+
+    return [
+      {
+        title: 'Amministratori',
+        items: pick([
+          'ADMIN_VIEW',
+          'ADMIN_CREATE',
+          'ADMIN_EDIT',
+          'ADMIN_DELETE',
+          'SETTINGS_ADMIN',
+        ]),
+      },
+      {
+        title: 'Dipendenti',
+        items: pick([
+          'EMPLOYEE_VIEW',
+          'EMPLOYEE_CREATE',
+          'EMPLOYEE_EDIT',
+          'EMPLOYEE_DELETE',
+          'EMPLOYEE_DOCS_MANAGE',
+          'EMPLOYEE_PERMITS_MANAGE',
+        ]),
+      },
+      { title: 'Documenti interni', items: pick(['INTERNAL_DOCS_ACCESS']) },
+      { title: 'Preventivi', items: pick(['QUOTES_VIEW', 'QUOTES_MANAGE']) },
+      { title: 'Clienti', items: pick(['CUSTOMERS_VIEW', 'CUSTOMERS_MANAGE']) },
+      { title: 'Turni', items: pick(['SHIFTS_VIEW', 'SHIFTS_MANAGE']) },
+      {
+        title: 'Presenze',
+        items: pick(['ATTENDANCE_VIEW', 'ATTENDANCE_MANAGE']),
+      },
+      {
+        title: 'Timbrature',
+        items: pick(['STAMPING_VIEW', 'STAMPING_MANAGE']),
+      },
+      {
+        title: 'Calendario',
+        items: pick(['CALENDAR_VIEW', 'CALENDAR_EVENT_MANAGE']),
+      },
+    ].filter((g) => g.items.length > 0);
+  }
+
+  private ensurePermissionDeps(
+    target: { permissions: string[] },
+    key: string,
+    checked: boolean,
+  ) {
+    if (!target.permissions) target.permissions = [];
+
+    if (checked) {
+      // child selezionato -> aggiungi parent
+      const parents = this.permissionDeps[key] || [];
+      for (const p of parents) {
+        if (!target.permissions.includes(p)) target.permissions.push(p);
+      }
+    } else {
+      // parent tolto -> togli anche i children che dipendono da lui
+      const children = Object.keys(this.permissionDeps).filter((child) =>
+        (this.permissionDeps[child] || []).includes(key),
+      );
+      for (const c of children) {
+        const idx = target.permissions.indexOf(c);
+        if (idx >= 0) target.permissions.splice(idx, 1);
+      }
+    }
   }
 
   addAdmin() {

@@ -1,12 +1,17 @@
 <div class="container py-4">
   <div class="d-flex justify-content-start align-items-center mb-3">
-    <button class="btn btn-outline-primary rounded-pill" (click)="back()">
+    <button
+      class="btn btn-outline-primary rounded-pill"
+      type="button"
+      (click)="back()"
+    >
       ⬅ Torna Indietro
     </button>
   </div>
 
   <h2 class="text-center mb-4">Gestione Amministratori</h2>
 
+  <!-- LISTA ADMIN -->
   <div class="admin-list mb-5">
     <mat-card *ngFor="let admin of admins; let i = index" class="admin-card">
       <mat-card-content>
@@ -16,28 +21,87 @@
           <p><strong>Cognome:</strong> {{ admin.cognome }}</p>
           <p><strong>Email:</strong> {{ admin.email }}</p>
           <p><strong>Codice Operatore:</strong> {{ admin.codiceOperatore }}</p>
-          <p><strong>Permessi:</strong> {{ (admin.permissions || []).join(', ') }}</p>
+          <p>
+            <strong>Permessi:</strong>
+            {{ (admin.permissions || []).join(", ") }}
+          </p>
         </div>
 
         <!-- EDIT MODE -->
         <div *ngIf="editingIndex === i" class="mb-3">
-          <div class="mb-2">
-  <p class="mb-1"><strong>Permessi</strong></p>
-  <div class="permissions-grid">
-    <label class="perm-item" *ngFor="let p of permissionOptions">
-      <input type="checkbox"
-        [checked]="(adminEdit.permissions || []).includes(p.key)"
-        (change)="togglePermission(adminEdit, p.key)" />
-      <span>{{ p.label }}</span>
-    </label>
-  </div>
-</div>
+          <div class="row g-2 mb-3">
+            <div class="col-12 col-md-6">
+              <mat-form-field appearance="outline" class="w-100">
+                <mat-label>Nome</mat-label>
+                <input
+                  matInput
+                  [(ngModel)]="adminEdit.nome"
+                  name="edit_nome_{{ i }}"
+                />
+              </mat-form-field>
+            </div>
+
+            <div class="col-12 col-md-6">
+              <mat-form-field appearance="outline" class="w-100">
+                <mat-label>Cognome</mat-label>
+                <input
+                  matInput
+                  [(ngModel)]="adminEdit.cognome"
+                  name="edit_cognome_{{ i }}"
+                />
+              </mat-form-field>
+            </div>
+
+            <div class="col-12 col-md-6">
+              <mat-form-field appearance="outline" class="w-100">
+                <mat-label>Email</mat-label>
+                <input
+                  matInput
+                  type="email"
+                  [(ngModel)]="adminEdit.email"
+                  name="edit_email_{{ i }}"
+                />
+              </mat-form-field>
+            </div>
+
+            <div class="col-12 col-md-6">
+              <mat-form-field appearance="outline" class="w-100">
+                <mat-label>Codice Operatore</mat-label>
+                <input
+                  matInput
+                  [(ngModel)]="adminEdit.codiceOperatore"
+                  name="edit_codice_{{ i }}"
+                />
+              </mat-form-field>
+            </div>
+          </div>
+
+          <p class="mb-1"><strong>Permessi</strong></p>
+
+          <div class="perm-groups">
+            <div class="perm-group" *ngFor="let g of permissionGroups">
+              <div class="perm-group-title">{{ g.title }}</div>
+
+              <div class="permissions-grid">
+                <label class="perm-item" *ngFor="let p of g.items">
+                  <input
+                    type="checkbox"
+                    [checked]="(adminEdit.permissions || []).includes(p.key)"
+                    (change)="togglePermission(adminEdit, p.key)"
+                  />
+                  <span>{{ p.label }}</span>
+                </label>
+              </div>
+            </div>
+          </div>
         </div>
 
-        <div class="d-flex gap-2">
+        <!-- AZIONI -->
+        <div class="d-flex gap-2 flex-wrap">
           <button
             mat-raised-button
             color="primary"
+            type="button"
             *ngIf="editingIndex !== i"
             (click)="startEditAdmin(i)"
           >
@@ -47,6 +111,7 @@
           <button
             mat-raised-button
             color="accent"
+            type="button"
             *ngIf="editingIndex === i"
             (click)="saveEditAdmin()"
           >
@@ -55,13 +120,19 @@
 
           <button
             mat-raised-button
+            type="button"
             *ngIf="editingIndex === i"
             (click)="cancelEditAdmin()"
           >
             Annulla
           </button>
 
-          <button mat-raised-button color="warn" (click)="deleteAdmin(i)">
+          <button
+            mat-raised-button
+            color="warn"
+            type="button"
+            (click)="deleteAdmin(i)"
+          >
             Elimina
           </button>
         </div>
@@ -69,24 +140,80 @@
     </mat-card>
   </div>
 
+  <!-- FORM AGGIUNTA -->
   <div class="admin-form">
     <mat-card>
       <mat-card-title>Aggiungi Nuovo Admin</mat-card-title>
       <mat-card-content>
         <form class="add-admin-form">
-          <div class="mb-2">
-  <p class="mb-1"><strong>Permessi</strong></p>
-  <div class="permissions-grid">
-    <label class="perm-item" *ngFor="let p of permissionOptions">
-      <input type="checkbox"
-        [checked]="(adminAdd.permissions || []).includes(p.key)"
-        (change)="togglePermission(adminAdd, p.key)" />
-      <span>{{ p.label }}</span>
-    </label>
-  </div>
-</div>
+          <div class="row g-2 mb-3">
+            <div class="col-12 col-md-6">
+              <mat-form-field appearance="outline" class="w-100">
+                <mat-label>Nome</mat-label>
+                <input matInput [(ngModel)]="adminAdd.nome" name="add_nome" />
+              </mat-form-field>
+            </div>
 
-          <button mat-raised-button color="primary" (click)="addAdmin()">
+            <div class="col-12 col-md-6">
+              <mat-form-field appearance="outline" class="w-100">
+                <mat-label>Cognome</mat-label>
+                <input
+                  matInput
+                  [(ngModel)]="adminAdd.cognome"
+                  name="add_cognome"
+                />
+              </mat-form-field>
+            </div>
+
+            <div class="col-12 col-md-6">
+              <mat-form-field appearance="outline" class="w-100">
+                <mat-label>Email</mat-label>
+                <input
+                  matInput
+                  type="email"
+                  [(ngModel)]="adminAdd.email"
+                  name="add_email"
+                />
+              </mat-form-field>
+            </div>
+
+            <div class="col-12 col-md-6">
+              <mat-form-field appearance="outline" class="w-100">
+                <mat-label>Codice Operatore</mat-label>
+                <input
+                  matInput
+                  [(ngModel)]="adminAdd.codiceOperatore"
+                  name="add_codiceOperatore"
+                />
+              </mat-form-field>
+            </div>
+          </div>
+
+          <p class="mb-1"><strong>Permessi</strong></p>
+
+          <div class="perm-groups mb-3">
+            <div class="perm-group" *ngFor="let g of permissionGroups">
+              <div class="perm-group-title">{{ g.title }}</div>
+
+              <div class="permissions-grid">
+                <label class="perm-item" *ngFor="let p of g.items">
+                  <input
+                    type="checkbox"
+                    [checked]="(adminAdd.permissions || []).includes(p.key)"
+                    (change)="togglePermission(adminAdd, p.key)"
+                  />
+                  <span>{{ p.label }}</span>
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <button
+            type="button"
+            mat-raised-button
+            color="primary"
+            (click)="addAdmin()"
+          >
             Aggiungi
           </button>
         </form>
