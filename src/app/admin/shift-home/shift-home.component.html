@@ -113,12 +113,6 @@
     -webkit-backdrop-filter: blur(16px);
     box-shadow: 0 20px 60px rgba(0,0,0,0.35);
   }
-  .turni-controls *{
-    color:#000 !important;
-  }
-  .turni-controls .text-muted{
-    color: rgba(0,0,0,0.60) !important;
-  }
 
   /* ✅ ALERT INFO: chiaro + testo nero */
   .turni-page .alert.alert-info{
@@ -128,7 +122,6 @@
     border-radius: var(--radius-lg);
     box-shadow: 0 14px 36px rgba(0,0,0,0.22);
   }
-  .turni-page .alert.alert-info *{ color:#000 !important; }
 
   /* LIST WRAPPER */
   .turni-list .list-group{
@@ -161,12 +154,6 @@
     background: rgba(255,255,255,0.92) !important;
     color: #000 !important;
   }
-  .turni-item.bg-light *{
-    color:#000 !important;
-  }
-  .turni-item.bg-light .text-muted{
-    color: rgba(0,0,0,0.60) !important;
-  }
 
   /* Published highlight (senza rompere testo) */
   .turni-item.published{
@@ -174,7 +161,7 @@
     box-shadow: inset 0 0 0 1px rgba(46,204,113,0.28);
   }
 
-  /* muted su dark */
+  /* muted su dark (default) */
   .turni-page .text-muted{
     color: rgba(255,255,255,0.70) !important;
   }
@@ -209,6 +196,65 @@
     box-shadow:0 20px 60px rgba(0,0,0,0.60);
     pointer-events:none;
   }
+
+  /* =========================================================
+     ✅✅ FORZA TESTI NERI SU QUALSIASI SFONDO CHIARO
+     (anche roba generata automaticamente dentro quei blocchi)
+     ---------------------------------------------------------
+     Se dentro un blocco chiaro ci finisce qualsiasi tag,
+     deve diventare NERO.
+  ========================================================= */
+
+  /* Blocchi chiari certi */
+  .turni-controls,
+  .turni-page .alert.alert-info,
+  .turni-item.bg-light{
+    color:#000 !important;
+  }
+
+  /* TUTTO il contenuto dentro blocchi chiari -> nero */
+  .turni-controls *,
+  .turni-page .alert.alert-info *,
+  .turni-item.bg-light *{
+    color:#000 !important;
+  }
+
+  /* Forza anche muted dentro blocchi chiari */
+  .turni-controls .text-muted,
+  .turni-page .alert.alert-info .text-muted,
+  .turni-item.bg-light .text-muted,
+  .turni-item.bg-light small,
+  .turni-item.bg-light .small{
+    color: rgba(0,0,0,0.60) !important;
+  }
+
+  /* Bootstrap utility che può sbiancare */
+  .turni-controls .text-white,
+  .turni-page .alert.alert-info .text-white,
+  .turni-item.bg-light .text-white{
+    color:#000 !important;
+  }
+
+  /* Form / label nel box chiaro */
+  .turni-controls label,
+  .turni-controls input,
+  .turni-controls span,
+  .turni-controls small,
+  .turni-controls strong{
+    color:#000 !important;
+  }
+
+  /* Icone dentro box chiari */
+  .turni-controls i,
+  .turni-item.bg-light i{
+    color:#000 !important;
+  }
+
+  /* WhatsApp icon lasciata com'è */
+  .btn-wa .text-success{
+    color: #25D366 !important;
+  }
+
 </style>
 
 <div class="container py-4 turni-page">

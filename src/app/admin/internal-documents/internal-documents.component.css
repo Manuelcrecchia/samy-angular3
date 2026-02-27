@@ -1,28 +1,290 @@
-.pdf-viewer {
-  height: calc(100vh - 120px); /* oppure 100% se preferisci */
+:root{
+  --brand-black:#0b0f14;
+  --brand-orange:#ff8a00;
+  --brand-sky:#2fb7ff;
+
+  --glass-border: rgba(255,255,255,0.18);
+  --shadow-soft: 0 18px 60px rgba(0,0,0,0.30);
+  --shadow-card: 0 10px 30px rgba(0,0,0,0.18);
+
+  --radius-lg: 22px;
+  --radius-md: 16px;
+}
+
+/* Background full screen */
+html, body{
+  height:100%;
+  margin:0;
+  background:
+    radial-gradient(1100px 680px at 10% 10%, rgba(47,183,255,0.20), transparent 60%),
+    radial-gradient(1100px 680px at 90% 15%, rgba(255,138,0,0.20), transparent 65%),
+    linear-gradient(180deg, #0b0f14, #121c28);
+  background-attachment: fixed;
+}
+
+/* ================= Toolbar ================= */
+.docs-toolbar{
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  border-bottom: 1px solid rgba(255,255,255,0.10);
+  background: rgba(255,255,255,0.06) !important;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+
+.toolbar-title{
+  font-weight: 950;
+  letter-spacing: .2px;
+  color: rgba(255,255,255,0.92);
+}
+
+.spacer{ flex: 1 1 auto; }
+
+/* Back button: testo nero */
+.btn-back-glass{
+  border: 1px solid rgba(255,255,255,0.22);
+  border-radius: 999px;
+  padding: 10px 14px;
+  background: linear-gradient(135deg, rgba(47,183,255,0.30), rgba(255,138,0,0.25));
+  color: #000 !important;
+  font-weight: 950;
+  box-shadow: 0 10px 24px rgba(0,0,0,0.22);
+  transition: transform .14s ease, box-shadow .14s ease;
+}
+.btn-back-glass:hover{
+  transform: translateY(-1px);
+  box-shadow: 0 14px 36px rgba(0,0,0,0.30);
+}
+
+/* ================= Layout page ================= */
+.docs-page{
+  min-height: calc(100vh - 64px);
+  padding: 16px;
+  color: rgba(255,255,255,0.92);
+}
+
+.docs-shell{
+  display: grid;
+  grid-template-columns: 360px 1fr;
+  gap: 16px;
+  align-items: start;
+}
+
+/* Glass panels */
+.glass-panel{
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--glass-border);
+  background: rgba(255,255,255,0.08);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  box-shadow: var(--shadow-soft);
+  overflow: hidden;
+}
+
+/* Sidebar */
+.sidebar{
+  padding: 14px;
+}
+
+.sidebar-head{
+  display:flex;
+  align-items:center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.sidebar-title{
+  margin: 0;
+  font-weight: 950;
+  letter-spacing: .2px;
+}
+
+.folder-list{
+  background: transparent !important;
+}
+
+.folder-item{
+  border-radius: var(--radius-md);
+  margin: 8px 0;
+  border: 1px solid rgba(255,255,255,0.10);
+  background: rgba(255,255,255,0.06);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  overflow: hidden;
+}
+
+.folder-btn{
+  width: 100%;
+  justify-content: flex-start;
+  color: rgba(255,255,255,0.92) !important;
+  font-weight: 850;
+}
+
+.folder-btn.selected{
+  background: linear-gradient(135deg, rgba(255,138,0,0.20), rgba(47,183,255,0.16));
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,0.10);
+}
+
+.icon-btn{
+  border-radius: 14px !important;
+  border: 1px solid rgba(255,255,255,0.18) !important;
+  background: rgba(255,255,255,0.10) !important;
+  color:#000 !important;
+}
+.icon-btn mat-icon{ color:#000 !important; }
+
+.icon-primary{
+  background: linear-gradient(135deg, rgba(47,183,255,0.30), rgba(255,255,255,0.10)) !important;
+}
+.icon-danger{
+  background: linear-gradient(135deg, rgba(255,77,77,0.35), rgba(255,138,0,0.10)) !important;
+}
+
+/* New folder box */
+.glass-subpanel{
+  margin-top: 14px;
+  padding: 12px;
+  border-radius: var(--radius-lg);
+  border: 1px solid rgba(255,255,255,0.14);
+  background: rgba(255,255,255,0.06);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+
+/* Main */
+.main{
+  padding: 14px;
+}
+
+.main-head{
+  display:flex;
+  align-items:center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+
+.main-title{
+  margin: 0;
+  font-weight: 950;
+}
+
+.empty-hint{
+  padding: 14px;
+  border-radius: var(--radius-lg);
+  border: 1px solid rgba(255,255,255,0.12);
+  background: rgba(255,255,255,0.06);
+}
+
+/* File list */
+.file-list{
+  background: transparent !important;
+}
+
+.file-item{
+  border-radius: var(--radius-md);
+  margin: 8px 0;
+  border: 1px solid rgba(255,255,255,0.10);
+  background: rgba(255,255,255,0.06);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  overflow: hidden;
+}
+
+.file-btn{
+  width: 100%;
+  justify-content: flex-start;
+  gap: 10px;
+  color: rgba(255,255,255,0.92) !important;
+  font-weight: 800;
+}
+
+.file-name{
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.file-actions{
+  display:flex;
+  gap: 8px;
+  margin-left: 8px;
+}
+
+.doc-status{
+  margin-left: auto;
+  font-size: 12px;
+  opacity: 0.95;
+  color: rgba(255,255,255,0.85);
+}
+.doc-status.pending{
+  opacity: 0.70;
+}
+
+/* Buttons brand: testo nero sempre */
+.btn-brand{
+  background: linear-gradient(135deg, var(--brand-orange), var(--brand-sky)) !important;
+  color:#000 !important;
+  font-weight: 950 !important;
+  border-radius: 999px !important;
+  border: 1px solid rgba(255,255,255,0.22) !important;
+  box-shadow: 0 14px 36px rgba(0,0,0,0.28);
+  transition: transform .14s ease, box-shadow .14s ease;
+}
+.btn-brand:hover{
+  transform: translateY(-1px);
+  box-shadow: 0 18px 45px rgba(0,0,0,0.38);
+}
+
+/* ================= PDF Viewer ================= */
+.pdf-viewer{
+  margin-top: 14px;
+  height: calc(100vh - 180px);
   width: 100%;
   overflow: hidden;
   display: block;
+  border-radius: var(--radius-lg);
+  border: 1px solid rgba(255,255,255,0.14);
+  background: rgba(255,255,255,0.06);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  box-shadow: var(--shadow-soft);
 }
 
-ngx-extended-pdf-viewer {
+ngx-extended-pdf-viewer{
   height: 100% !important;
   width: 100% !important;
 }
-#toolbarViewer {
-  display: flex;
-  gap: 10px;
+
+/* Custom toolbar for PDF: chiara + testo nero */
+.pdf-toolbar{
   padding: 10px;
-  background: #fff;
-  position: sticky;
-  top: 0;
-  z-index: 999;
+  background: rgba(255,255,255,0.92);
+  display: flex;
+  gap: 12px;
+  border-bottom: 1px solid rgba(0,0,0,0.10);
 }
-.doc-status {
-  margin-left: auto;
-  font-size: 12px;
-  opacity: 0.85;
+
+/* ================= Angular Material fields in sidebar ================= */
+.mat-mdc-text-field-wrapper{
+  background: rgba(255,255,255,0.92) !important;
+  border-radius: 16px !important;
+  border: 1px solid rgba(0,0,0,0.12);
+  box-shadow: 0 10px 22px rgba(0,0,0,0.12);
 }
-.doc-status.pending {
-  opacity: 0.6;
+.mat-mdc-floating-label{ color:#000 !important; font-weight: 800; }
+.mat-mdc-input-element{ color:#000 !important; }
+.mdc-line-ripple::after{ border-bottom-color: var(--brand-sky) !important; }
+.mat-mdc-form-field-focus-overlay{ background: transparent !important; }
+
+/* ================= Responsive ================= */
+@media (max-width: 992px){
+  .docs-shell{
+    grid-template-columns: 1fr;
+  }
+  .pdf-viewer{
+    height: 70vh;
+  }
 }
