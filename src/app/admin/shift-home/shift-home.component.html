@@ -1,200 +1,228 @@
 <style>
-  :root{
-    --brand-black:#0b0f14;
-    --brand-orange:#ff8a00;
-    --brand-sky:#2fb7ff;
+  :root {
+    --brand-black: #0b0f14;
+    --brand-orange: #ff8a00;
+    --brand-sky: #2fb7ff;
 
-    --glass-border: rgba(255,255,255,0.18);
+    --glass-border: rgba(255, 255, 255, 0.18);
     --radius-lg: 22px;
     --radius-md: 16px;
   }
 
   /* 🔥 SFONDO FULL SCREEN */
-  html, body{
-    margin:0;
-    padding:0;
-    height:100%;
+  html,
+  body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
     background:
-      radial-gradient(1000px 600px at 10% 10%, rgba(47,183,255,0.20), transparent 60%),
-      radial-gradient(1000px 600px at 90% 15%, rgba(255,138,0,0.20), transparent 65%),
+      radial-gradient(
+        1000px 600px at 10% 10%,
+        rgba(47, 183, 255, 0.2),
+        transparent 60%
+      ),
+      radial-gradient(
+        1000px 600px at 90% 15%,
+        rgba(255, 138, 0, 0.2),
+        transparent 65%
+      ),
       linear-gradient(180deg, #0b0f14, #121c28);
     background-attachment: fixed;
   }
 
-  body::before{
-    content:"";
-    position:fixed;
-    inset:0;
-    z-index:-1;
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: -1;
   }
 
-  .turni-page{
-    min-height:100vh;
-    width:100%;
-    padding:20px;
-    color:rgba(255,255,255,0.92);
+  .turni-page {
+    min-height: 100vh;
+    width: 100%;
+    padding: 20px;
+    color: rgba(255, 255, 255, 0.92);
   }
 
   /* ---------------- BUTTON BASE ---------------- */
-  .turni-page .btn{
-    color:#000 !important;
-    font-weight:900;
-    border-radius:999px !important;
-    border:1px solid rgba(255,255,255,0.25);
-    backdrop-filter:blur(10px);
+  .turni-page .btn {
+    color: #000 !important;
+    font-weight: 900;
+    border-radius: 999px !important;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
-    box-shadow:0 10px 25px rgba(0,0,0,0.30);
-    transition:transform .14s ease, box-shadow .14s ease, background .16s ease;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+    transition:
+      transform 0.14s ease,
+      box-shadow 0.14s ease,
+      background 0.16s ease;
   }
 
-  .turni-page .btn:hover{
-    transform:translateY(-2px);
-    box-shadow:0 14px 35px rgba(0,0,0,0.45);
+  .turni-page .btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 14px 35px rgba(0, 0, 0, 0.45);
   }
 
-  .btn-back-glass{
-    background:linear-gradient(135deg, rgba(47,183,255,0.30), rgba(255,138,0,0.30));
+  .btn-back-glass {
+    background: linear-gradient(
+      135deg,
+      rgba(47, 183, 255, 0.3),
+      rgba(255, 138, 0, 0.3)
+    );
   }
 
-  .btn-nav-glass{
-    background:rgba(255,255,255,0.18);
+  .btn-nav-glass {
+    background: rgba(255, 255, 255, 0.18);
   }
 
-  .btn-create-glass{
-    background:linear-gradient(135deg, var(--brand-orange), var(--brand-sky));
+  .btn-create-glass {
+    background: linear-gradient(135deg, var(--brand-orange), var(--brand-sky));
   }
 
-  .btn-save-glass{
-    background:linear-gradient(135deg, rgba(255,138,0,0.45), rgba(47,183,255,0.35));
+  .btn-save-glass {
+    background: linear-gradient(
+      135deg,
+      rgba(255, 138, 0, 0.45),
+      rgba(47, 183, 255, 0.35)
+    );
   }
 
   /* ---------------- GLASS PANELS ---------------- */
-  .glass-panel{
-    border-radius:var(--radius-lg);
-    border:1px solid var(--glass-border);
-    background:rgba(255,255,255,0.08);
-    backdrop-filter:blur(18px);
+  .glass-panel {
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--glass-border);
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(18px);
     -webkit-backdrop-filter: blur(18px);
-    box-shadow:0 20px 60px rgba(0,0,0,0.45);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.45);
   }
 
   /* Header dipendente (glass) */
-  .emp-header{
-    padding:14px;
+  .emp-header {
+    padding: 14px;
     border-radius: var(--radius-lg);
-    border: 1px solid rgba(255,255,255,0.14);
-    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    background: rgba(255, 255, 255, 0.06);
     backdrop-filter: blur(14px);
     -webkit-backdrop-filter: blur(14px);
-    box-shadow: 0 12px 30px rgba(0,0,0,0.22);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.22);
   }
 
   /* Checkbox */
-  .turni-page .form-check-input{
-    width:18px;
-    height:18px;
-    border-radius:6px;
-    border:1px solid rgba(255,255,255,0.26);
-    background: rgba(255,255,255,0.10);
-    box-shadow: 0 10px 22px rgba(0,0,0,0.18);
+  .turni-page .form-check-input {
+    width: 18px;
+    height: 18px;
+    border-radius: 6px;
+    border: 1px solid rgba(255, 255, 255, 0.26);
+    background: rgba(255, 255, 255, 0.1);
+    box-shadow: 0 10px 22px rgba(0, 0, 0, 0.18);
   }
-  .turni-page .form-check-input:checked{
-    background-color: rgba(47,183,255,0.65);
-    border-color: rgba(47,183,255,0.85);
+  .turni-page .form-check-input:checked {
+    background-color: rgba(47, 183, 255, 0.65);
+    border-color: rgba(47, 183, 255, 0.85);
   }
 
   /* ✅ CONTROLS: hai bg-light (chiaro) -> testo NERO */
-  .turni-controls{
+  .turni-controls {
     border-radius: var(--radius-lg) !important;
-    border: 1px solid rgba(255,255,255,0.18) !important;
-    background: rgba(255,255,255,0.92) !important; /* chiaro */
+    border: 1px solid rgba(255, 255, 255, 0.18) !important;
+    background: rgba(255, 255, 255, 0.92) !important; /* chiaro */
     color: #000 !important;
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
-    box-shadow: 0 20px 60px rgba(0,0,0,0.35);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
   }
 
   /* ✅ ALERT INFO: chiaro + testo nero */
-  .turni-page .alert.alert-info{
-    background: rgba(255,255,255,0.92) !important;
-    border: 1px solid rgba(0,0,0,0.10) !important;
+  .turni-page .alert.alert-info {
+    background: rgba(255, 255, 255, 0.92) !important;
+    border: 1px solid rgba(0, 0, 0, 0.1) !important;
     color: #000 !important;
     border-radius: var(--radius-lg);
-    box-shadow: 0 14px 36px rgba(0,0,0,0.22);
+    box-shadow: 0 14px 36px rgba(0, 0, 0, 0.22);
   }
 
   /* LIST WRAPPER */
-  .turni-list .list-group{
+  .turni-list .list-group {
     background: transparent !important;
   }
 
-  .turni-list .list-group-flush{
+  .turni-list .list-group-flush {
     border-radius: var(--radius-lg);
     overflow: hidden;
-    border: 1px solid rgba(255,255,255,0.14);
-    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    background: rgba(255, 255, 255, 0.05);
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
-    box-shadow: 0 12px 30px rgba(0,0,0,0.22);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.22);
   }
 
   /* Riga turno (default scura) */
-  .turni-item{
-    border:0 !important;
-    background: rgba(255,255,255,0.06) !important;
-    color: rgba(255,255,255,0.92) !important;
-    padding:14px;
+  .turni-item {
+    border: 0 !important;
+    background: rgba(255, 255, 255, 0.06) !important;
+    color: rgba(255, 255, 255, 0.92) !important;
+    padding: 14px;
   }
-  .turni-item + .turni-item{
-    border-top:1px solid rgba(255,255,255,0.10) !important;
+  .turni-item + .turni-item {
+    border-top: 1px solid rgba(255, 255, 255, 0.1) !important;
   }
 
   /* ✅ Se Angular applica bg-light al turno pubblicato -> testo NERO */
-  .turni-item.bg-light{
-    background: rgba(255,255,255,0.92) !important;
+  .turni-item.bg-light {
+    background: rgba(255, 255, 255, 0.92) !important;
     color: #000 !important;
   }
 
   /* Published highlight (senza rompere testo) */
-  .turni-item.published{
-    background: linear-gradient(135deg, rgba(46,204,113,0.22), rgba(255,255,255,0.06)) !important;
-    box-shadow: inset 0 0 0 1px rgba(46,204,113,0.28);
+  .turni-item.published {
+    background: linear-gradient(
+      135deg,
+      rgba(46, 204, 113, 0.22),
+      rgba(255, 255, 255, 0.06)
+    ) !important;
+    box-shadow: inset 0 0 0 1px rgba(46, 204, 113, 0.28);
   }
 
   /* muted su dark (default) */
-  .turni-page .text-muted{
-    color: rgba(255,255,255,0.70) !important;
+  .turni-page .text-muted {
+    color: rgba(255, 255, 255, 0.7) !important;
   }
 
   /* Key icon */
-  .key-icon{
-    display:inline-flex;
-    align-items:center;
-    justify-content:center;
-    width:40px;
-    height:40px;
-    border-radius:14px;
-    border:1px solid rgba(255,255,255,0.18);
-    background: linear-gradient(135deg, rgba(255,138,0,0.22), rgba(47,183,255,0.16));
+  .key-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 14px;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    background: linear-gradient(
+      135deg,
+      rgba(255, 138, 0, 0.22),
+      rgba(47, 183, 255, 0.16)
+    );
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
-    box-shadow: 0 10px 22px rgba(0,0,0,0.22);
-    cursor:pointer;
-    user-select:none;
+    box-shadow: 0 10px 22px rgba(0, 0, 0, 0.22);
+    cursor: pointer;
+    user-select: none;
   }
 
   /* Tooltip */
-  .tooltip-popup{
-    position:fixed;
-    z-index:2000;
-    padding:12px 16px;
-    border-radius:16px;
-    background:rgba(0,0,0,0.85);
-    color:white;
-    backdrop-filter:blur(14px);
+  .tooltip-popup {
+    position: fixed;
+    z-index: 2000;
+    padding: 12px 16px;
+    border-radius: 16px;
+    background: rgba(0, 0, 0, 0.85);
+    color: white;
+    backdrop-filter: blur(14px);
     -webkit-backdrop-filter: blur(14px);
-    box-shadow:0 20px 60px rgba(0,0,0,0.60);
-    pointer-events:none;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+    pointer-events: none;
   }
 
   /* =========================================================
@@ -208,15 +236,15 @@
   /* Blocchi chiari certi */
   .turni-controls,
   .turni-page .alert.alert-info,
-  .turni-item.bg-light{
-    color:#000 !important;
+  .turni-item.bg-light {
+    color: #000 !important;
   }
 
   /* TUTTO il contenuto dentro blocchi chiari -> nero */
   .turni-controls *,
   .turni-page .alert.alert-info *,
-  .turni-item.bg-light *{
-    color:#000 !important;
+  .turni-item.bg-light * {
+    color: #000 !important;
   }
 
   /* Forza anche muted dentro blocchi chiari */
@@ -224,15 +252,15 @@
   .turni-page .alert.alert-info .text-muted,
   .turni-item.bg-light .text-muted,
   .turni-item.bg-light small,
-  .turni-item.bg-light .small{
-    color: rgba(0,0,0,0.60) !important;
+  .turni-item.bg-light .small {
+    color: rgba(0, 0, 0, 0.6) !important;
   }
 
   /* Bootstrap utility che può sbiancare */
   .turni-controls .text-white,
   .turni-page .alert.alert-info .text-white,
-  .turni-item.bg-light .text-white{
-    color:#000 !important;
+  .turni-item.bg-light .text-white {
+    color: #000 !important;
   }
 
   /* Form / label nel box chiaro */
@@ -240,27 +268,29 @@
   .turni-controls input,
   .turni-controls span,
   .turni-controls small,
-  .turni-controls strong{
-    color:#000 !important;
+  .turni-controls strong {
+    color: #000 !important;
   }
 
   /* Icone dentro box chiari */
   .turni-controls i,
-  .turni-item.bg-light i{
-    color:#000 !important;
+  .turni-item.bg-light i {
+    color: #000 !important;
   }
 
   /* WhatsApp icon lasciata com'è */
-  .btn-wa .text-success{
-    color: #25D366 !important;
+  .btn-wa .text-success {
+    color: #25d366 !important;
   }
-
 </style>
 
 <div class="container py-4 turni-page">
   <!-- 🔙 Torna indietro -->
   <div class="d-flex justify-content-start align-items-center mb-3">
-    <button class="btn btn-outline-primary rounded-pill btn-back-glass" (click)="back()">
+    <button
+      class="btn btn-outline-primary rounded-pill btn-back-glass"
+      (click)="back()"
+    >
       ⬅ Torna Indietro
     </button>
   </div>
@@ -268,13 +298,21 @@
   <h2 class="text-center mb-4 turni-title text-dark">Gestione Turni</h2>
 
   <!-- 🔹 Navigazione per data + Crea turno -->
-  <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2 turni-date-row">
+  <div
+    class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2 turni-date-row"
+  >
     <div class="d-flex align-items-center gap-2">
-      <button class="btn btn-secondary rounded-pill btn-nav-glass" (click)="prevDay()">
+      <button
+        class="btn btn-secondary rounded-pill btn-nav-glass"
+        (click)="prevDay()"
+      >
         ←
       </button>
-      <h4 class="m-0 text-dark">{{ selectedDate | date : "fullDate" }}</h4>
-      <button class="btn btn-secondary rounded-pill btn-nav-glass" (click)="nextDay()">
+      <h4 class="m-0 text-dark">{{ selectedDate | date: "fullDate" }}</h4>
+      <button
+        class="btn btn-secondary rounded-pill btn-nav-glass"
+        (click)="nextDay()"
+      >
         →
       </button>
     </div>
@@ -290,7 +328,9 @@
 
   <!-- 🔹 Seleziona tutto + Salva -->
   <div class="border rounded p-3 mb-4 bg-light shadow-sm turni-controls">
-    <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+    <div
+      class="d-flex justify-content-between align-items-center flex-wrap gap-2"
+    >
       <div class="d-flex align-items-center">
         <input
           type="checkbox"
@@ -332,12 +372,12 @@
             [disabled]="isSaving"
           />
 
-          <h4 class="mb-0">
+          <h4 class="mb-0 text-dark">
             {{ empName.toUpperCase() }}
-            <small class="text-muted">
+            <small class="text-dark">
               —
               {{
-                selectedDate | date : "EEEE d MMMM y" : "" : "it-IT" | uppercase
+                selectedDate | date: "EEEE d MMMM y" : "" : "it-IT" | uppercase
               }}
             </small>
           </h4>
@@ -356,18 +396,21 @@
           <li
             class="list-group-item d-flex justify-content-between align-items-center turni-item"
             *ngFor="let turno of groupedByEmployee[empName]"
-            [ngClass]="{ 'published': publishedState[turno.empId], 'bg-light border-success': publishedState[turno.empId] }"
+            [ngClass]="{
+              published: publishedState[turno.empId],
+              'bg-light border-success': publishedState[turno.empId],
+            }"
           >
-            <span>
+            <span class="text-dark">
               <strong>{{ turno.title }}</strong>
               <span *ngIf="turno.start">
-                — {{ turno.start | date : "HH:mm" }}
+                — {{ turno.start | date: "HH:mm" }}
               </span>
-              <span class="ms-2 text-muted small">
+              <span class="ms-2 small text-dark">
                 • Durata: {{ formatDuration(turno.duration) }}
               </span>
               <br />
-              <small class="text-muted">
+              <small class="text-dark">
                 {{ turno.description }}
                 <span *ngIf="turno.colleghi?.length">
                   👥 Con: {{ turno.colleghi?.join(", ") }}

@@ -1,125 +1,254 @@
-<mat-toolbar color="primary">
-  <span>Gestione Documenti</span>
+<!-- ===== MV TECH UI | Gestione Documenti ===== -->
+
+<mat-toolbar class="mv-toolbar" color="primary">
+  <div class="mv-toolbar__left">
+    <span class="mv-title">Gestione Documenti</span>
+  </div>
+
   <span class="spacer"></span>
-  <button class="btn-back" type="button" (click)="back()">
-    &larr; Torna Indietro
+
+  <!-- stesso bottone / stessa funzione -->
+  <button class="mv-back-btn" type="button" (click)="back()">
+    <span class="mv-back-btn__icon">←</span>
+    <span class="mv-back-btn__label">Torna Indietro</span>
   </button>
 </mat-toolbar>
 
-<div class="container">
-  <!-- Sidebar -->
-  <div class="sidebar">
-    <h3>Cartelle</h3>
+<!-- background -->
+<div class="mv-bg">
+  <div class="mv-glow mv-glow--a"></div>
+  <div class="mv-glow mv-glow--b"></div>
+  <div class="mv-noise"></div>
 
-    <mat-list>
-      <mat-list-item *ngFor="let folder of folders">
-        <button
-          mat-button
-          (click)="selectFolder(folder)"
-          [class.selected]="folder === selectedFolder"
-        >
-          {{ folder }}
-        </button>
-
-        <button
-          mat-icon-button
-          color="warn"
-          (click)="deleteFolder(folder)"
-          matTooltip="Elimina"
-        >
-          <mat-icon>delete</mat-icon>
-        </button>
-      </mat-list-item>
-    </mat-list>
-
-    <div class="new-folder">
-      <mat-form-field appearance="fill">
-        <mat-label>Nuova cartella</mat-label>
-        <input matInput [(ngModel)]="newFolderName" />
-      </mat-form-field>
-      <button mat-raised-button color="accent" (click)="createFolder()">
-        Crea
-      </button>
-    </div>
-  </div>
-
-  <!-- Main -->
-  <div class="main">
-    <h3 *ngIf="selectedFolder">File in "{{ selectedFolder }}"</h3>
-
-    <div class="file-upload" *ngIf="selectedFolder">
-      <input type="file" #fileInput (change)="uploadFile($event)" hidden />
-      <button mat-raised-button color="primary" (click)="fileInput.click()">
-        Carica File
-      </button>
-    </div>
-
-    <mat-list *ngIf="selectedFolder">
-      <mat-list-item *ngFor="let file of files">
-        <button mat-button (click)="selectFile(file.filename)">
-          {{ file.filename }}
-          <span class="doc-status" *ngIf="file.viewed">
-            ✅ Visualizzato {{ file.viewedAt | date : "dd/MM/yyyy HH:mm" }}
-          </span>
-
-          <span class="doc-status pending" *ngIf="!file.viewed">
-            ⏳ Non visualizzato
-          </span>
-        </button>
-
-        <button
-          mat-icon-button
-          color="primary"
-          (click)="downloadCurrentFile(file.filename)"
-        >
-          <mat-icon>download</mat-icon>
-        </button>
-
-        <button
-          mat-icon-button
-          color="accent"
-          (click)="sendFileMail(file.filename)"
-        >
-          <mat-icon>mail</mat-icon>
-        </button>
-
-        <button
-          mat-icon-button
-          color="warn"
-          (click)="deleteFile(file.filename)"
-        >
-          <mat-icon>delete</mat-icon>
-        </button>
-      </mat-list-item>
-    </mat-list>
-
-    <div *ngIf="pdfBase64" class="pdf-viewer">
-      <ngx-extended-pdf-viewer
-        [base64Src]="pdfBase64"
-        useBrowserLocale="true"
-        height="90vh"
-        [customToolbar]="customToolbar"
-      ></ngx-extended-pdf-viewer>
-
-      <ng-template #customToolbar>
-        <div style="padding: 10px; background: white; display: flex; gap: 15px">
-          <button
-            mat-raised-button
-            color="accent"
-            (click)="printFile(currentFilename)"
-          >
-            🖨️ Stampa
-          </button>
-
-          <button
-            mat-raised-button
-            color="accent"
-            (click)="downloadCurrentFile(currentFilename)"
-          >
-            ⬇️ Scarica
-          </button>
+  <div class="mv-page container-fluid">
+    <div class="mv-shell">
+      <!-- SIDEBAR -->
+      <aside class="mv-card mv-sidebar">
+        <div class="mv-card__head">
+          <h3 class="mv-h3">Cartelle</h3>
+          <p class="mv-sub">Gestisci cartelle e file interni</p>
         </div>
-      </ng-template>
+
+        <div class="mv-card__body">
+          <mat-list class="mv-list">
+            <mat-list-item class="mv-list-item" *ngFor="let folder of folders">
+              <!-- stesso click + selected -->
+              <button
+                mat-button
+                class="mv-folder-btn"
+                (click)="selectFolder(folder)"
+                [class.selected]="folder === selectedFolder"
+                type="button"
+              >
+                <span class="mv-folder-dot"></span>
+                <span class="mv-folder-name">{{ folder }}</span>
+              </button>
+
+              <!-- stesso click -->
+              <button
+                mat-icon-button
+                class="mv-icon-btn mv-icon-btn--danger"
+                (click)="deleteFolder(folder)"
+                matTooltip="Elimina"
+                type="button"
+              >
+                <mat-icon>delete</mat-icon>
+              </button>
+            </mat-list-item>
+          </mat-list>
+        </div>
+
+        <div class="mv-divider"></div>
+
+        <!-- NEW FOLDER -->
+        <div class="mv-card__footer">
+          <div class="mv-inline">
+            <mat-form-field appearance="fill" class="mv-field">
+              <mat-label>Nuova cartella</mat-label>
+              <input matInput [(ngModel)]="newFolderName" />
+            </mat-form-field>
+
+            <button
+              mat-raised-button
+              class="mv-cta"
+              color="accent"
+              (click)="createFolder()"
+              type="button"
+            >
+              + Crea
+            </button>
+          </div>
+        </div>
+      </aside>
+
+      <!-- MAIN -->
+      <main class="mv-main">
+        <section class="mv-card mv-main-card">
+          <div class="mv-card__head mv-main-head">
+            <div>
+              <h3 class="mv-h3">
+                <span *ngIf="selectedFolder"
+                  >File in “{{ selectedFolder }}”</span
+                >
+                <span *ngIf="!selectedFolder">Seleziona una cartella</span>
+              </h3>
+
+              <p class="mv-sub">
+                <span *ngIf="selectedFolder"
+                  >Carica, invia o scarica documenti</span
+                >
+                <span *ngIf="!selectedFolder"
+                  >Scegli una cartella dalla colonna a sinistra</span
+                >
+              </p>
+            </div>
+
+            <!-- UPLOAD (stesso funzionamento) -->
+            <div class="mv-actions" *ngIf="selectedFolder">
+              <input
+                type="file"
+                #fileInput
+                (change)="uploadFile($event)"
+                hidden
+              />
+
+              <button
+                mat-raised-button
+                class="mv-cta mv-cta--primary"
+                color="primary"
+                (click)="fileInput.click()"
+                type="button"
+              >
+                ⬆️ Carica File
+              </button>
+            </div>
+          </div>
+
+          <div class="mv-card__body">
+            <!-- LISTA FILE -->
+            <mat-list *ngIf="selectedFolder" class="mv-files">
+              <div class="mv-file-row" *ngFor="let file of files">
+                <!-- CLICK SOLO SU NOME/ICONA -->
+                <button
+                  mat-button
+                  class="mv-file-btn"
+                  (click)="selectFile(file.filename)"
+                  type="button"
+                >
+                  <div class="mv-file-left">
+                    <div class="mv-file-ico">📄</div>
+
+                    <div class="mv-file-meta">
+                      <div class="mv-file-name">{{ file.filename }}</div>
+                    </div>
+                  </div>
+                </button>
+
+                <!-- STATO: ATTACCATO AI BOTTONI A DESTRA -->
+                <div class="mv-file-status-right">
+                  <span class="mv-badge mv-badge--ok" *ngIf="file.viewed">
+                    ✅ Visualizzato
+                    {{ file.viewedAt | date: "dd/MM/yyyy HH:mm" }}
+                  </span>
+
+                  <span class="mv-badge mv-badge--pending" *ngIf="!file.viewed">
+                    ⏳ Non visualizzato
+                  </span>
+                </div>
+
+                <!-- AZIONI -->
+                <div class="mv-file-actions">
+                  <button
+                    mat-icon-button
+                    class="mv-icon-btn"
+                    (click)="downloadCurrentFile(file.filename)"
+                    matTooltip="Scarica"
+                    type="button"
+                  >
+                    <mat-icon>download</mat-icon>
+                  </button>
+
+                  <button
+                    mat-icon-button
+                    class="mv-icon-btn mv-icon-btn--accent"
+                    (click)="sendFileMail(file.filename)"
+                    matTooltip="Invia via mail"
+                    type="button"
+                  >
+                    <mat-icon>mail</mat-icon>
+                  </button>
+
+                  <button
+                    mat-icon-button
+                    class="mv-icon-btn mv-icon-btn--danger"
+                    (click)="deleteFile(file.filename)"
+                    matTooltip="Elimina"
+                    type="button"
+                  >
+                    <mat-icon>delete</mat-icon>
+                  </button>
+                </div>
+              </div>
+            </mat-list>
+
+            <!-- EMPTY STATE -->
+            <div
+              class="mv-empty"
+              *ngIf="selectedFolder && (!files || files.length === 0)"
+            >
+              <div class="mv-empty__icon">📁</div>
+              <div class="mv-empty__title">Nessun file in questa cartella</div>
+              <div class="mv-empty__text">
+                Carica un documento per iniziare.
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- PDF VIEWER -->
+        <section class="mv-card mv-viewer" *ngIf="pdfBase64">
+          <div class="mv-card__head mv-viewer-head">
+            <div>
+              <h3 class="mv-h3">Anteprima PDF</h3>
+              <p class="mv-sub">Stampa o scarica rapidamente il documento</p>
+            </div>
+          </div>
+
+          <div class="mv-card__body mv-viewer-body">
+            <ngx-extended-pdf-viewer
+              class="mv-pdf"
+              [base64Src]="pdfBase64"
+              useBrowserLocale="true"
+              height="90vh"
+              [customToolbar]="customToolbar"
+            ></ngx-extended-pdf-viewer>
+
+            <ng-template #customToolbar>
+              <div class="mv-pdf-toolbar">
+                <button
+                  mat-raised-button
+                  class="mv-cta mv-cta--soft"
+                  color="accent"
+                  (click)="printFile(currentFilename)"
+                  type="button"
+                >
+                  🖨️ Stampa
+                </button>
+
+                <button
+                  mat-raised-button
+                  class="mv-cta mv-cta--soft"
+                  color="accent"
+                  (click)="downloadCurrentFile(currentFilename)"
+                  type="button"
+                >
+                  ⬇️ Scarica
+                </button>
+              </div>
+            </ng-template>
+          </div>
+        </section>
+      </main>
     </div>
   </div>
 </div>

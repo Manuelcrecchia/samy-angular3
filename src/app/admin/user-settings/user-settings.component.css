@@ -1,46 +1,236 @@
-.permissions-grid {
+:host {
+  display: block;
+}
+
+/* ========== Layout Single Column ========== */
+
+.mv-shell--single {
+  display: block;
+}
+
+.mv-main {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  gap: 8px;
-  max-height: 220px;
-  overflow: auto;
-  padding: 8px;
-  border: 1px solid #e5e5e5;
-  border-radius: 10px;
+  gap: 24px;
 }
-.perm-item {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 14px;
+
+/* ========== Admin Grid ========== */
+
+.mv-admin-grid {
+  display: grid;
+  gap: 18px;
 }
-.perm-groups {
+
+@media (min-width: 992px) {
+  .mv-admin-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* ========== Admin Card ========== */
+
+.mv-admin-card {
+  border-radius: 22px !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  background: rgba(255, 255, 255, 0.06) !important;
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.45);
+  transition:
+    transform 0.2s ease,
+    filter 0.2s ease;
+}
+
+.mv-admin-card:hover {
+  transform: translateY(-4px);
+  filter: brightness(1.05);
+}
+
+/* ========== Key Value Layout ========== */
+
+.mv-kv {
   display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  margin-bottom: 10px;
+}
+
+.mv-kv--full {
   flex-direction: column;
-  gap: 12px;
 }
-.perm-group {
-  border: 1px solid #e5e5e5;
-  border-radius: 12px;
-  padding: 10px;
+
+.mv-k {
+  font-weight: 800;
+  color: rgba(255, 255, 255, 0.75);
+  min-width: 120px;
 }
-.perm-group-title {
+
+.mv-v {
+  font-weight: 600;
+  text-align: right;
+  word-break: break-word;
+}
+
+.mv-v--mono {
+  font-family: monospace;
+  font-size: 0.9rem;
+}
+
+.mv-v--pill {
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: rgba(34, 211, 238, 0.15);
+  border: 1px solid rgba(34, 211, 238, 0.3);
+}
+
+/* ========== Permissions Preview Chips ========== */
+
+.mv-perms-preview {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  justify-content: flex-end;
+}
+
+.mv-chip {
+  padding: 5px 10px;
+  border-radius: 999px;
+  font-size: 0.75rem;
   font-weight: 700;
-  margin-bottom: 8px;
+  background: rgba(47, 124, 255, 0.2);
+  border: 1px solid rgba(47, 124, 255, 0.35);
 }
-.permissions-grid {
+
+.mv-muted {
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+/* ========== Edit Form ========== */
+
+.mv-form-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  gap: 8px;
-  max-height: 220px;
-  overflow: auto;
-  padding: 8px;
-  border: 1px solid #efefef;
-  border-radius: 10px;
+  gap: 14px;
 }
-.perm-item {
+
+@media (min-width: 768px) {
+  .mv-form-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.mv-field {
+  width: 100%;
+}
+
+/* ========== Permissions Groups ========== */
+
+.mv-perms-head {
+  margin: 18px 0 10px;
+}
+
+.mv-h4 {
+  font-weight: 900;
+  font-size: 1rem;
+}
+
+.mv-sub--tight {
+  margin-top: 4px;
+  font-size: 0.85rem;
+  opacity: 0.8;
+}
+
+.mv-perm-groups {
+  display: grid;
+  gap: 18px;
+}
+
+.mv-perm-group {
+  padding: 14px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.mv-perm-group__title {
+  font-weight: 800;
+  margin-bottom: 10px;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.mv-permissions-grid {
+  display: grid;
+  gap: 8px;
+}
+
+@media (min-width: 768px) {
+  .mv-permissions-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.mv-perm-item {
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 14px;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.mv-perm-item input {
+  accent-color: #2f7cff;
+}
+
+/* ========== Action Buttons Row ========== */
+
+.mv-actions-row {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 18px;
+}
+
+.mv-actions-row--end {
+  justify-content: flex-end;
+}
+
+/* ========== CTA Variants ========== */
+
+.mv-cta--danger {
+  background: rgba(255, 77, 77, 0.2) !important;
+  border: 1px solid rgba(255, 77, 77, 0.4) !important;
+  color: #ff4d4d !important;
+}
+
+/* ========== Add Form ========== */
+
+.mv-add-form {
+  display: grid;
+  gap: 18px;
+}
+
+/* ========== Empty State ========== */
+
+.mv-empty {
+  border-radius: 22px;
+  border: 1px dashed rgba(255, 255, 255, 0.18);
+  background: rgba(255, 255, 255, 0.04);
+  padding: 26px;
+  text-align: center;
+  color: rgba(255, 255, 255, 0.65);
+}
+
+.mv-empty__icon {
+  font-size: 30px;
+  margin-bottom: 10px;
+}
+
+.mv-empty__title {
+  font-weight: 900;
+  font-size: 1rem;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.mv-empty__text {
+  margin-top: 4px;
 }
