@@ -55,8 +55,6 @@ const routes: Routes = [
     path: 'homeAdmin',
     component: HomeAdminComponent,
     canActivate: [AuthGuard, AuthLevelGuard],
-    // accesso base pannello admin: uso EMPLOYEE_VIEW perché è una delle funzioni "core"
-    data: { permission: 'EMPLOYEE_VIEW' },
   },
 
   // gestione amministratori
@@ -151,7 +149,7 @@ const routes: Routes = [
     path: 'leave-settings',
     component: LeaveSettingsComponent,
     canActivate: [AuthGuard, AuthLevelGuard],
-    data: { permission: 'SETTINGS_ADMIN' },
+    data: { permission: 'EMPLOYEE_PERMITS_MANAGE' },
   },
 
   // documenti dipendenti / clienti
@@ -165,7 +163,6 @@ const routes: Routes = [
     path: 'documenti/client/:id',
     component: DocumentManagerComponent,
     canActivate: [AuthGuard, AuthLevelGuard],
-    // nel backend non esiste CUSTOMER_DOCS_MANAGE, quindi uso CUSTOMERS_MANAGE (esiste)
     data: { permission: 'CUSTOMERS_MANAGE' },
   },
 
