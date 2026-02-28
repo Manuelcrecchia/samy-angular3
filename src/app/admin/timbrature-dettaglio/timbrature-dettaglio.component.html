@@ -1,7 +1,9 @@
+<!-- timbrature-dettaglio.component.html -->
+
 <div class="container py-4">
   <!-- 🔙 Torna indietro -->
   <div class="d-flex justify-content-start align-items-center mb-3">
-    <button class="btn-back" (click)="back()">
+    <button class="btn-back" type="button" (click)="back()">
       <i class="fas fa-arrow-left me-2"></i> Torna Indietro
     </button>
   </div>
@@ -15,7 +17,7 @@
   <div
     class="d-flex justify-content-center align-items-center mb-4 gap-3 flex-wrap"
   >
-    <button class="btn btn-outline-secondary" (click)="changeDate(-1)">
+    <button class="btn btn-outline-secondary" type="button" (click)="changeDate(-1)">
       <i class="fas fa-chevron-left"></i>
     </button>
 
@@ -27,7 +29,7 @@
       style="max-width: 200px"
     />
 
-    <button class="btn btn-outline-secondary" (click)="changeDate(1)">
+    <button class="btn btn-outline-secondary" type="button" (click)="changeDate(1)">
       <i class="fas fa-chevron-right"></i>
     </button>
   </div>
@@ -44,6 +46,7 @@
           <th>Stato</th>
           <th>Timbrature</th>
           <th>Azioni</th>
+          <th>Info</th>
         </tr>
       </thead>
 
@@ -53,11 +56,9 @@
           [ngClass]="{
             'table-success': !work.errorType,
             'table-warning':
-              work.errorType === 'STRAORDINARIO' ||
-              work.errorType === 'RIDUZIONE',
+              work.errorType === 'STRAORDINARIO' || work.errorType === 'RIDUZIONE',
             'table-danger':
-              work.errorType === 'TURNO_NON_PREVISTO' ||
-              work.errorType === 'nonPianificata'
+              work.errorType === 'TURNO_NON_PREVISTO' || work.errorType === 'nonPianificata'
           }"
         >
           <!-- 🏷 Cliente/Lavoro -->
@@ -88,11 +89,9 @@
               class="badge"
               [ngClass]="{
                 'bg-danger':
-                  work.errorType === 'TURNO_NON_PREVISTO' ||
-                  work.errorType === 'nonPianificata',
+                  work.errorType === 'TURNO_NON_PREVISTO' || work.errorType === 'nonPianificata',
                 'bg-warning text-dark':
-                  work.errorType === 'STRAORDINARIO' ||
-                  work.errorType === 'RIDUZIONE'
+                  work.errorType === 'STRAORDINARIO' || work.errorType === 'RIDUZIONE'
               }"
               (click)="resolveError(work)"
               style="cursor: pointer"
@@ -112,13 +111,16 @@
           <td>
             <div *ngFor="let stamp of work.stamps" class="mb-1 d-flex gap-1">
               <button
+                type="button"
                 class="btn btn-sm btn-outline-secondary flex-grow-1"
                 (click)="editStamping(stamp)"
               >
                 {{ stamp.tipo | uppercase }} -
                 {{ stamp.timestamp | date : "HH:mm" }}
               </button>
+
               <button
+                type="button"
                 class="btn btn-sm btn-outline-danger"
                 (click)="deleteStamping(stamp)"
               >
@@ -130,6 +132,7 @@
           <!-- ➕ Azioni -->
           <td>
             <button
+              type="button"
               class="btn btn-sm btn-outline-primary"
               (click)="addStamping(work)"
             >
@@ -141,14 +144,21 @@
                 work.errorType === 'TURNO_NON_PREVISTO' ||
                 work.errorType === 'nonPianificata'
               "
+              type="button"
               class="btn btn-sm btn-outline-danger ms-1"
               (click)="resolveError(work)"
             >
               <i class="fas fa-exclamation-triangle"></i> Gestisci
             </button>
           </td>
+
+          <!-- ℹ️ Info -->
           <td>
-            <button class="btn btn-info ms-2" (click)="openNotesModal(work)">
+            <button
+              type="button"
+              class="btn btn-sm btn-info ms-2"
+              (click)="openNotesModal(work)"
+            >
               Info
             </button>
           </td>
@@ -166,16 +176,31 @@
   </ng-template>
 </div>
 
-<!-- 🧩 Modale -->
-<div class="modal fade" id="modalTimbratura" tabindex="-1" #timbraturaModal>
+<!-- =========================================================
+     🧩 MODALE TIMBRATURA (IMPORTANTE: id + #timbraturaModal)
+========================================================= -->
+<div
+  class="modal fade"
+  id="modalTimbratura"
+  tabindex="-1"
+  aria-hidden="true"
+  #timbraturaModal
+>
   <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content shadow-lg rounded-4">
-      <div class="modal-header bg-primary text-white">
+    <div class="modal-content mv-modal shadow-lg rounded-4">
+      <div class="modal-header mv-modal__header">
         <h5 class="modal-title">{{ modalTitle }}</h5>
-        <button type="button" class="btn-close btn-close-white"></button>
+
+        <!-- ✅ chiusura bootstrap -->
+        <button
+          type="button"
+          class="btn-close btn-close-white"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
       </div>
 
-      <div class="modal-body">
+      <div class="modal-body mv-modal__body">
         <!-- Aggiungi o modifica -->
         <div *ngIf="modalMode !== 'delete' && modalMode !== 'resolve'">
           <ng-container *ngIf="modalMode === 'add'; else editMode">
@@ -183,15 +208,16 @@
               <label class="form-label">Entrata (HH:mm)</label>
               <input
                 type="time"
-                class="form-control"
+                class="form-control mv-input"
                 [(ngModel)]="modalData.entrata"
               />
             </div>
+
             <div class="mb-3">
               <label class="form-label">Uscita (HH:mm)</label>
               <input
                 type="time"
-                class="form-control"
+                class="form-control mv-input"
                 [(ngModel)]="modalData.uscita"
               />
             </div>
@@ -202,15 +228,16 @@
               <label class="form-label">Entrata (HH:mm)</label>
               <input
                 type="time"
-                class="form-control"
+                class="form-control mv-input"
                 [(ngModel)]="modalData.entrata"
               />
             </div>
+
             <div class="mb-3" *ngIf="modalData.tipo === 'uscita'">
               <label class="form-label">Uscita (HH:mm)</label>
               <input
                 type="time"
-                class="form-control"
+                class="form-control mv-input"
                 [(ngModel)]="modalData.uscita"
               />
             </div>
@@ -220,7 +247,7 @@
         <!-- Resolve error -->
         <div *ngIf="modalMode === 'resolve'" class="mb-3">
           <label class="form-label">Azione da eseguire</label>
-          <select class="form-select" [(ngModel)]="modalData.action">
+          <select class="form-select mv-input" [(ngModel)]="modalData.action">
             <option *ngFor="let opt of modalData.solutions" [value]="opt.code">
               {{ opt.label }}
             </option>
@@ -242,20 +269,25 @@
           </label>
           <input
             type="text"
-            class="form-control"
+            class="form-control mv-input"
             [(ngModel)]="modalData.note"
             placeholder="Inserisci una nota"
           />
         </div>
       </div>
 
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-          Annulla
-        </button>
+      <div class="modal-footer mv-modal__footer">
         <button
           type="button"
-          class="btn btn-primary"
+          class="btn btn-secondary mv-btn"
+          data-bs-dismiss="modal"
+        >
+          Annulla
+        </button>
+
+        <button
+          type="button"
+          class="btn btn-primary mv-btn"
           (click)="confirmModal()"
           data-bs-dismiss="modal"
         >
@@ -266,7 +298,9 @@
   </div>
 </div>
 
-<!-- ✅ Toast -->
+<!-- =========================================================
+     ✅ TOAST (come tuo)
+========================================================= -->
 <div class="toast-container position-fixed bottom-0 end-0 p-3">
   <div id="liveToast" class="toast align-items-center border-0" role="alert">
     <div class="d-flex">
@@ -280,38 +314,49 @@
   </div>
 </div>
 
-<!-- Modale info -->
-
-<!-- MODALE INFO NOTE -->
+<!-- =========================================================
+     🧾 MODALE NOTE (BOOTSTRAP VERO: id + #notesModal)
+     (NON più ngClass/ngStyle)
+========================================================= -->
 <div
   class="modal fade"
+  id="notesModal"
   tabindex="-1"
-  [ngClass]="{ show: showNotesModal }"
-  [ngStyle]="{ display: showNotesModal ? 'block' : 'none' }"
+  aria-hidden="true"
+  #notesModal
 >
   <div class="modal-dialog modal-lg modal-dialog-centered">
-    <div class="modal-content">
-      <div class="modal-header bg-info text-white">
+    <div class="modal-content mv-modal">
+      <div class="modal-header mv-modal__header">
         <h5 class="modal-title">Storico modifiche</h5>
+
         <button
           type="button"
           class="btn-close btn-close-white"
+          data-bs-dismiss="modal"
+          aria-label="Close"
           (click)="closeNotesModal()"
         ></button>
       </div>
 
-      <div class="modal-body">
+      <div class="modal-body mv-modal__body">
         <div *ngIf="notes.length === 0" class="text-muted">
           Nessuna nota disponibile
         </div>
 
-        <div *ngFor="let n of notes" class="mb-3 p-2 rounded border">
-          <b>{{ n.action | uppercase }}</b>
-          <span class="ms-2">({{ n.createdAt | date : "dd/MM HH:mm" }})</span
-          ><br />
-          <small>Admin: {{ n.admin?.nome }} {{ n.admin?.cognome }}</small>
+        <div *ngFor="let n of notes" class="mv-note">
+          <div class="mv-note__top">
+            <b>{{ n.action | uppercase }}</b>
+            <span class="mv-note__date">
+              ({{ n.createdAt | date : "dd/MM HH:mm" }})
+            </span>
+          </div>
 
-          <p class="mt-2">{{ n.note }}</p>
+          <small class="mv-note__admin">
+            Admin: {{ n.admin?.nome }} {{ n.admin?.cognome }}
+          </small>
+
+          <p class="mt-2 mb-2">{{ n.note }}</p>
 
           <details class="mt-2">
             <summary>Dettagli JSON</summary>
@@ -321,8 +366,13 @@
         </div>
       </div>
 
-      <div class="modal-footer">
-        <button class="btn btn-secondary" (click)="closeNotesModal()">
+      <div class="modal-footer mv-modal__footer">
+        <button
+          type="button"
+          class="btn btn-secondary mv-btn"
+          data-bs-dismiss="modal"
+          (click)="closeNotesModal()"
+        >
           Chiudi
         </button>
       </div>

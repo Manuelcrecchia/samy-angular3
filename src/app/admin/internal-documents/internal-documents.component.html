@@ -1,5 +1,5 @@
 <mat-toolbar color="primary" class="docs-toolbar">
-  <span class="toolbar-title">Gestione Documenti</span>
+  <span class="toolbar-title text-dark">Gestione Documenti</span>
   <span class="spacer"></span>
 
   <button class="btn-back-glass" type="button" (click)="back()">
@@ -80,41 +80,53 @@
       </div>
 
       <mat-list *ngIf="selectedFolder" class="file-list">
-        <mat-list-item *ngFor="let file of files" class="file-item">
-          <button mat-button (click)="selectFile(file.filename)" class="file-btn">
-            <span class="file-name">{{ file.filename }}</span>
+        <mat-list *ngIf="selectedFolder" class="file-list">
+  <mat-list-item *ngFor="let file of files" class="file-item">
+    <div *ngIf="selectedFolder" class="file-list">
+  <div class="file-row" *ngFor="let file of files">
+    <!-- click su riga = seleziona file -->
+    <button
+      type="button"
+      class="file-main"
+      (click)="selectFile(file.filename)"
+    >
+      <span class="file-name">{{ file.filename }}</span>
 
-            <span class="doc-status" *ngIf="file.viewed">
-              ✅ Visualizzato {{ file.viewedAt | date: "dd/MM/yyyy HH:mm" }}
-            </span>
+      <span class="doc-status" *ngIf="file.viewed">
+        ✅ Visualizzato {{ file.viewedAt | date: "dd/MM/yyyy HH:mm" }}
+      </span>
 
-            <span class="doc-status pending" *ngIf="!file.viewed">
-              ⏳ Non visualizzato
-            </span>
-          </button>
+      <span class="doc-status pending" *ngIf="!file.viewed">
+        ⏳ Non visualizzato
+      </span>
+    </button>
 
-          <div class="file-actions">
-            <button
-              mat-icon-button
-              color="primary"
-              (click)="downloadCurrentFile(file.filename)"
-              class="icon-btn icon-primary"
-              title="Scarica"
-            >
-              <mat-icon>download</mat-icon>
-            </button>
+    <!-- azioni SEMPRE a destra -->
+    <div class="file-actions">
+      <button
+        mat-icon-button
+        class="icon-btn icon-primary"
+        title="Scarica"
+        type="button"
+        (click)="downloadCurrentFile(file.filename); $event.stopPropagation()"
+      >
+        <mat-icon>download</mat-icon>
+      </button>
 
-            <button
-              mat-icon-button
-              color="warn"
-              (click)="deleteFile(file.filename)"
-              class="icon-btn icon-danger"
-              title="Elimina"
-            >
-              <mat-icon>delete</mat-icon>
-            </button>
-          </div>
-        </mat-list-item>
+      <button
+        mat-icon-button
+        class="icon-btn icon-danger"
+        title="Elimina"
+        type="button"
+        (click)="deleteFile(file.filename); $event.stopPropagation()"
+      >
+        <mat-icon>delete</mat-icon>
+      </button>
+    </div>
+  </div>
+</div>
+  </mat-list-item>
+</mat-list>
       </mat-list>
 
       <div *ngIf="pdfBase64" class="pdf-viewer">

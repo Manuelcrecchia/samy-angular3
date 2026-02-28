@@ -1,236 +1,195 @@
+/* =========================================
+   FIX: niente scroll orizzontale / pagina che slitta
+   ========================================= */
 :host {
   display: block;
+  overflow-x: hidden;
 }
 
-/* ========== Layout Single Column ========== */
-
-.mv-shell--single {
-  display: block;
-}
-
-.mv-main {
-  display: grid;
-  gap: 24px;
-}
-
-/* ========== Admin Grid ========== */
-
-.mv-admin-grid {
-  display: grid;
-  gap: 18px;
-}
-
-@media (min-width: 992px) {
-  .mv-admin-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-/* ========== Admin Card ========== */
-
-.mv-admin-card {
-  border-radius: 22px !important;
-  border: 1px solid rgba(255, 255, 255, 0.12) !important;
-  background: rgba(255, 255, 255, 0.06) !important;
-  backdrop-filter: blur(18px);
-  -webkit-backdrop-filter: blur(18px);
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.45);
-  transition:
-    transform 0.2s ease,
-    filter 0.2s ease;
-}
-
-.mv-admin-card:hover {
-  transform: translateY(-4px);
-  filter: brightness(1.05);
-}
-
-/* ========== Key Value Layout ========== */
-
-.mv-kv {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: 16px;
-  margin-bottom: 10px;
-}
-
-.mv-kv--full {
-  flex-direction: column;
-}
-
-.mv-k {
-  font-weight: 800;
-  color: rgba(255, 255, 255, 0.75);
-  min-width: 120px;
-}
-
-.mv-v {
-  font-weight: 600;
-  text-align: right;
-  word-break: break-word;
+.mv-page,
+.mv-shell,
+.mv-main,
+.mv-card,
+.mv-card__body,
+.mv-admin-card,
+mat-card,
+mat-card-content {
+  max-width: 100%;
+  overflow-x: hidden;
 }
 
 .mv-v--mono {
-  font-family: monospace;
-  font-size: 0.9rem;
+  word-break: break-word;
+  overflow-wrap: anywhere;
 }
 
-.mv-v--pill {
-  padding: 4px 10px;
-  border-radius: 999px;
-  background: rgba(34, 211, 238, 0.15);
-  border: 1px solid rgba(34, 211, 238, 0.3);
-}
-
-/* ========== Permissions Preview Chips ========== */
-
+/* Chips permessi: NON devono mai allargare la pagina */
 .mv-perms-preview {
   display: flex;
   flex-wrap: wrap;
-  gap: 6px;
+  gap: 8px;
   justify-content: flex-end;
+  max-width: 100%;
 }
 
 .mv-chip {
-  padding: 5px 10px;
-  border-radius: 999px;
-  font-size: 0.75rem;
-  font-weight: 700;
-  background: rgba(47, 124, 255, 0.2);
-  border: 1px solid rgba(47, 124, 255, 0.35);
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
-.mv-muted {
-  font-size: 0.85rem;
-  color: rgba(255, 255, 255, 0.6);
-}
-
-/* ========== Edit Form ========== */
-
-.mv-form-grid {
+/* =========================================
+   Accordion MV (details/summary)
+   ========================================= */
+.mv-perm-wrap {
   display: grid;
   gap: 14px;
+  max-width: 100%;
 }
 
-@media (min-width: 768px) {
-  .mv-form-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-.mv-field {
-  width: 100%;
-}
-
-/* ========== Permissions Groups ========== */
-
-.mv-perms-head {
-  margin: 18px 0 10px;
-}
-
-.mv-h4 {
-  font-weight: 900;
-  font-size: 1rem;
-}
-
-.mv-sub--tight {
-  margin-top: 4px;
-  font-size: 0.85rem;
-  opacity: 0.8;
-}
-
-.mv-perm-groups {
-  display: grid;
-  gap: 18px;
-}
-
-.mv-perm-group {
-  padding: 14px;
+.mv-accordion {
   border-radius: 16px;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(0,0,0,0.10);
+  background: rgba(255,255,255,0.92);
+  overflow: hidden;
 }
 
-.mv-perm-group__title {
-  font-weight: 800;
-  margin-bottom: 10px;
-  color: rgba(255, 255, 255, 0.9);
-}
-
-.mv-permissions-grid {
-  display: grid;
-  gap: 8px;
-}
-
-@media (min-width: 768px) {
-  .mv-permissions-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-.mv-perm-item {
+.mv-accordion__summary {
+  list-style: none;
   display: flex;
   align-items: center;
-  gap: 8px;
-  font-size: 0.9rem;
+  justify-content: space-between;
+
+  padding: 14px 14px;
   cursor: pointer;
+  user-select: none;
+
+  background: linear-gradient(
+    135deg,
+    rgba(47,183,255,0.10),
+    rgba(255,138,0,0.08)
+  );
+  border-bottom: 1px solid rgba(0,0,0,0.08);
 }
 
-.mv-perm-item input {
-  accent-color: #2f7cff;
+.mv-accordion__summary::-webkit-details-marker {
+  display: none;
 }
 
-/* ========== Action Buttons Row ========== */
-
-.mv-actions-row {
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
-  margin-top: 18px;
+.mv-accordion__title {
+  font-weight: 950;
+  color: #111;
+  letter-spacing: 0.2px;
 }
 
-.mv-actions-row--end {
-  justify-content: flex-end;
+.mv-accordion__chev {
+  width: 10px;
+  height: 10px;
+  border-right: 2px solid rgba(0,0,0,0.55);
+  border-bottom: 2px solid rgba(0,0,0,0.55);
+  transform: rotate(45deg);
+  transition: transform .18s ease;
+  flex: 0 0 auto;
 }
 
-/* ========== CTA Variants ========== */
-
-.mv-cta--danger {
-  background: rgba(255, 77, 77, 0.2) !important;
-  border: 1px solid rgba(255, 77, 77, 0.4) !important;
-  color: #ff4d4d !important;
+details[open] .mv-accordion__chev {
+  transform: rotate(-135deg);
 }
 
-/* ========== Add Form ========== */
-
-.mv-add-form {
-  display: grid;
-  gap: 18px;
+.mv-accordion__body {
+  padding: 14px;
+  max-width: 100%;
 }
 
-/* ========== Empty State ========== */
-
-.mv-empty {
-  border-radius: 22px;
-  border: 1px dashed rgba(255, 255, 255, 0.18);
-  background: rgba(255, 255, 255, 0.04);
-  padding: 26px;
-  text-align: center;
-  color: rgba(255, 255, 255, 0.65);
-}
-
-.mv-empty__icon {
-  font-size: 30px;
-  margin-bottom: 10px;
-}
-
-.mv-empty__title {
+/* Titoletti per "Altri permessi" */
+.mv-perm-subtitle {
+  margin: 12px 0 8px;
   font-weight: 900;
-  font-size: 1rem;
-  color: rgba(255, 255, 255, 0.9);
+  color: #111;
 }
 
-.mv-empty__text {
-  margin-top: 4px;
+/* =========================================
+   Tabella permessi (checkbox + label + key)
+   NON deve mai allargare, va a capo quando serve
+   ========================================= */
+.mv-permissions-table {
+  display: grid;
+  gap: 10px;
+  max-width: 100%;
+}
+
+/* 2 colonne su desktop, 1 su mobile */
+@media (min-width: 900px) {
+  .mv-permissions-table {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* Riga permesso stile “tabella” */
+.mv-perm-row {
+  display: grid;
+  grid-template-columns: 34px 1fr;
+  grid-template-areas:
+    "c l"
+    "c k";
+
+  gap: 2px 10px;
+
+  padding: 12px 12px;
+  border-radius: 14px;
+
+  border: 1px solid rgba(0,0,0,0.10);
+  background: rgba(255,255,255,0.88);
+
+  cursor: pointer;
+  max-width: 100%;
+  overflow: hidden;
+
+  transition: transform .14s ease, box-shadow .14s ease, border-color .14s ease;
+}
+
+.mv-perm-row:hover {
+  transform: translateY(-2px);
+  border-color: rgba(47,183,255,0.25);
+  box-shadow: 0 10px 24px rgba(0,0,0,0.10);
+}
+
+.mv-perm-row__check { grid-area: c; display:flex; align-items:flex-start; padding-top: 2px; }
+.mv-perm-row__label { grid-area: l; font-weight: 850; color:#111; line-height:1.15; }
+.mv-perm-row__key   { grid-area: k; font-size: 12px; color: #555; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; overflow-wrap:anywhere; }
+
+/* Checkbox custom pulito */
+.mv-perm-row input[type="checkbox"]{
+  appearance: none;
+  -webkit-appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 6px;
+  border: 1px solid rgba(0,0,0,0.18);
+  background: rgba(255,255,255,0.9);
+  display: grid;
+  place-items: center;
+}
+
+.mv-perm-row input[type="checkbox"]::after{
+  content:"";
+  width: 10px;
+  height: 6px;
+  border-left: 2px solid transparent;
+  border-bottom: 2px solid transparent;
+  transform: rotate(-45deg) translateY(-1px);
+  opacity: 0;
+  transition: opacity .12s ease;
+}
+
+.mv-perm-row input[type="checkbox"]:checked{
+  background: linear-gradient(135deg, #2fb7ff, #ff8a00);
+  border-color: rgba(0,0,0,0.15);
+}
+
+.mv-perm-row input[type="checkbox"]:checked::after{
+  border-left-color: #111;
+  border-bottom-color: #111;
+  opacity: 1;
 }
