@@ -20,6 +20,8 @@ import { HttpClientModule } from '@angular/common/http';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { UserSettingsComponent } from './admin/user-settings/user-settings.component';
+import { VehiclesSettingsComponent } from './admin/vehicles-settings/vehicles-settings.component';
+import { VehicleAssignDialogComponent } from './admin/vehicle-assign-dialog/vehicle-assign-dialog.component';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatInputModule } from '@angular/material/input';
 import { MatChipsModule } from '@angular/material/chips';
@@ -119,6 +121,8 @@ loadMessages(itMessages);
     ShiftHomeComponent,
     CreateShiftComponent,
     AssignDialogComponent,
+    VehicleAssignDialogComponent,
+    VehiclesSettingsComponent,
     GestionePermessiComponent,
     TimbratureHomeComponent,
     TimbratureDettaglioComponent,

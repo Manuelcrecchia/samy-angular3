@@ -1,0 +1,31 @@
+<h2 class="dialog-title">Assegna mezzo</h2>
+
+<div class="body">
+  <div *ngIf="loading" class="muted">Caricamento...</div>
+
+  <div class="list" *ngIf="!loading">
+    <label class="row-item" *ngFor="let v of vehicles">
+      <input
+        type="checkbox"
+        [checked]="selectedVehicleId === v.id"
+        (change)="toggleVehicle(v.id)"
+      />
+      <div class="meta">
+        <div class="name">{{ v.name }}</div>
+        <div class="plate" *ngIf="v.plate">{{ v.plate }}</div>
+      </div>
+    </label>
+
+    <div class="text-center py-3" *ngIf="vehicles.length === 0">
+      Nessun mezzo disponibile. Aggiungilo da Impostazioni → Gestione mezzi.
+    </div>
+  </div>
+</div>
+
+<div class="actions">
+  <div class="spacer"></div>
+  <button class="btn btn-outline-light text-dark" (click)="cancel()">
+    Annulla
+  </button>
+  <button class="btn btn-primary" (click)="save()">Salva</button>
+</div>

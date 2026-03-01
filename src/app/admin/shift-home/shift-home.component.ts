@@ -3,104 +3,249 @@ import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { GlobalService } from '../../service/global.service';
 
+interface ShiftRow {
+  empId: number;
+  title: string;
+  description: string;
+  start: string | null;
+  duration: number;
+  appointmentId: number;
+  keyRequired: boolean;
+  cellulare?: string | null;
+  colleghi?: string[];
+  published: boolean;
+  vehicleName?: string | null;
+  vehiclePlate?: string | null;
+}
+
 @Component({
   selector: 'app-shift-home',
   templateUrl: './shift-home.component.html',
   styleUrl: './shift-home.component.css',
 })
-export class ShiftHomeComponent {
-  selectedDate = new Date();
+export class ShiftHomeComponent implements OnInit {
+  selectedDate: Date = new Date();
+
   shifts: any[] = [];
-  groupedByEmployee: {
-    [key: string]: {
-      empId: number;
-      title: string;
-      description: string;
-      start: string;
-      duration: number;
-      appointmentId: number;
-      sortOrderByEmployee: { [key: number]: number };
-      keyRequired: boolean;
-      cellulare?: string | null;
-      colleghi?: string[];
-      published: boolean;
-    }[];
-  } = {};
-  isSaving = false;
-  tooltipVisible: boolean = false;
-  tooltipText: string = '';
-  tooltipTarget: any = null;
-  tooltipPosition = { top: 0, left: 0 };
+  groupedByEmployee: { [key: string]: ShiftRow[] } = {};
+
   selectedEmployees: number[] = [];
   selectAll: boolean = false;
-  publishedState: { [empId: number]: boolean } = {};
+  isSaving: boolean = false;
+
+  tooltipVisible: boolean = false;
+  tooltipText: string = '';
+  tooltipPosition = { top: 0, left: 0 };
+  tooltipTarget: HTMLElement | null = null;
 
   constructor(
     private http: HttpClient,
     private router: Router,
-    private globalService: GlobalService
+    private globalService: GlobalService,
   ) {}
 
   ngOnInit(): void {
     this.loadShifts();
   }
-  getEmpId(empName: string): number {
-    return this.groupedByEmployee[empName]?.[0]?.empId || 0;
-  }
 
-  formatDate(date: Date): string {
-    return date.toISOString().split('T')[0];
-  }
-
-  loadShifts() {
-    const dateStr = this.formatDate(this.selectedDate);
-    this.http
-      .get<any[]>(`${this.globalService.url}shifts/byDate/${dateStr}`)
-      .subscribe((data) => {
-        console.log('RAW SHIFTS FROM BACKEND:', data);
-
-        this.groupedByEmployee = this.organizeByEmployee(data);
-        this.shifts = data;
-
-        // inizializza stato pubblicazione da backend
-        this.publishedState = {};
-        for (const empName of this.groupedKeys()) {
-          const empId = this.groupedByEmployee[empName][0]?.empId;
-          const published =
-            this.groupedByEmployee[empName][0]?.published || false;
-          if (empId) this.publishedState[empId] = published;
-        }
-
-        this.updateSelectAllState();
-      });
-  }
+  // ======================================================
+  // Helpers
+  // ======================================================
 
   groupedKeys(): string[] {
     return Object.keys(this.groupedByEmployee || {}).sort();
   }
 
-  toggleSelectAll() {
-    for (const empName of this.groupedKeys()) {
-      const empId = this.groupedByEmployee[empName][0]?.empId;
-      if (empId) this.publishedState[empId] = this.selectAll;
+  getEmpId(empName: string): number {
+    return this.groupedByEmployee[empName]?.[0]?.empId ?? 0;
+  }
+
+  private isEmployeePublished(empId: number): boolean {
+    if (!empId) return false;
+
+    // prendo tutte le righe di quell'empId tra i gruppi
+    const rows = Object.values(this.groupedByEmployee || {})
+      .flat()
+      .filter((r) => r.empId === empId);
+
+    if (rows.length === 0) return false;
+
+    // "pubblicato" se TUTTI i suoi turni del giorno sono published
+    return rows.every((r) => r.published === true);
+  }
+
+  private formatDate(date: Date): string {
+    return date.toISOString().split('T')[0];
+  }
+
+  formatDuration(minutes: number): string {
+    if (!minutes) return '0 minuti';
+
+    const h = Math.floor(minutes / 60);
+    const m = minutes % 60;
+
+    if (h > 0 && m > 0) {
+      return `${h} ${h === 1 ? 'ora' : 'ore'} e ${m} minuti`;
+    }
+
+    if (h > 0) {
+      return `${h} ${h === 1 ? 'ora' : 'ore'}`;
+    }
+
+    return `${m} minuti`;
+  }
+
+  // ======================================================
+  // Load
+  // ======================================================
+
+  loadShifts(): void {
+    const dateStr = this.formatDate(this.selectedDate);
+
+    this.http
+      .get<any[]>(`${this.globalService.url}shifts/byDate/${dateStr}`)
+      .subscribe({
+        next: (data: any[]) => {
+          const shiftsArray = Array.isArray(data) ? data : [];
+
+          this.shifts = shiftsArray;
+          this.groupedByEmployee = this.organizeByEmployee(shiftsArray);
+
+          // ✅ Pre-seleziona i dipendenti che risultano già pubblicati dal DB
+          const allIds = this.groupedKeys()
+            .map((name) => this.getEmpId(name))
+            .filter((id) => id > 0);
+
+          this.selectedEmployees = allIds.filter((id) =>
+            this.isEmployeePublished(id),
+          );
+
+          // aggiorna anche lo stato del "seleziona tutto"
+          this.updateSelectAllState();
+        },
+        error: (err) => {
+          console.error('Errore caricamento turni:', err);
+          alert('Errore nel caricamento dei turni');
+        },
+      });
+  }
+
+  private organizeByEmployee(shifts: any[]): { [key: string]: ShiftRow[] } {
+    const result: { [key: string]: ShiftRow[] } = {};
+
+    for (const shift of shifts) {
+      const employees = Array.isArray(shift.employees) ? shift.employees : [];
+
+      const allNames: string[] = employees.map((e: any) =>
+        `${e?.nome ?? ''} ${e?.cognome ?? ''}`.trim(),
+      );
+
+      for (const emp of employees) {
+        const key: string = `${emp?.nome ?? ''} ${emp?.cognome ?? ''}`.trim();
+        if (!result[key]) result[key] = [];
+
+        const colleghi: string[] = allNames.filter(
+          (name: string) => name !== key,
+        );
+
+        // ✅ published per dipendente viene dal JOIN
+        const joinPublished: boolean = emp?.ShiftEmployees?.published === true;
+
+        result[key].push({
+          empId: Number(emp?.id) || 0,
+          title: shift?.appointment?.title || shift?.title || '-',
+          description: shift?.description || '',
+          start:
+            shift?.startDate &&
+            shift?.startDate !== 'null' &&
+            shift?.startDate !== ''
+              ? shift.startDate
+              : null,
+
+          // ✅ durata per dipendente: se presente durationOverride sul join, usa quella
+          duration:
+            emp?.ShiftEmployees?.durationOverride != null
+              ? Number(emp.ShiftEmployees.durationOverride) || 0
+              : Number(shift?.duration) || 0,
+
+          appointmentId: Number(shift?.appointmentId) || 0,
+          keyRequired: shift?.appointment?.customer?.key === true,
+          cellulare: emp?.cellulare ?? null,
+          colleghi,
+          published: joinPublished,
+          vehicleName: shift?.vehicle?.name ?? null,
+          vehiclePlate: shift?.vehicle?.plate ?? null,
+        });
+      }
+    }
+
+    return result;
+  }
+
+  // ======================================================
+  // Selezione (chi vuoi pubblicare)
+  // ======================================================
+
+  toggleEmployeeSelection(empId: number): void {
+    if (!empId) return;
+
+    const index = this.selectedEmployees.indexOf(empId);
+
+    if (index >= 0) {
+      this.selectedEmployees.splice(index, 1);
+    } else {
+      this.selectedEmployees.push(empId);
+    }
+
+    this.updateSelectAllState();
+  }
+
+  toggleSelectAll(): void {
+    const allIds = this.groupedKeys()
+      .map((name) => this.getEmpId(name))
+      .filter((id) => id > 0);
+
+    if (this.selectAll) {
+      this.selectedEmployees = [...allIds];
+    } else {
+      this.selectedEmployees = [];
     }
   }
 
-  updateSelectAllState() {
-    const allEmpIds = this.groupedKeys().map(
-      (k) => this.groupedByEmployee[k][0]?.empId
-    );
-    this.selectAll = allEmpIds.every((id) => id && this.publishedState[id]);
+  private updateSelectAllState(): void {
+    const allIds = this.groupedKeys()
+      .map((name) => this.getEmpId(name))
+      .filter((id) => id > 0);
+
+    this.selectAll =
+      allIds.length > 0 &&
+      allIds.every((id) => this.selectedEmployees.includes(id));
   }
 
-  savePublication() {
-    // ✅ evita doppio click
+  // ======================================================
+  // Pubblica (solo selezionati)
+  // ======================================================
+
+  savePublication(): void {
     if (this.isSaving) return;
 
     const dateStr = this.formatDate(this.selectedDate);
-    const employees = Object.keys(this.publishedState).map((id) => ({
-      id: Number(id),
-      published: this.publishedState[Number(id)],
+
+    const allIds = this.groupedKeys()
+      .map((name) => this.getEmpId(name))
+      .filter((id) => id > 0);
+
+    if (allIds.length === 0) {
+      alert('Nessun dipendente presente per questa data.');
+      return;
+    }
+
+    // ✅ Per OGNI dipendente del giorno invio lo stato desiderato:
+    // spuntato => published true
+    // non spuntato => published false (depubblica)
+    const employees = allIds.map((id) => ({
+      id,
+      published: this.selectedEmployees.includes(id),
     }));
 
     this.isSaving = true;
@@ -112,122 +257,33 @@ export class ShiftHomeComponent {
       })
       .subscribe({
         next: (res: any) => {
-          alert(res.message || 'Modifiche salvate correttamente.');
-          this.loadShifts();
           this.isSaving = false;
+          this.loadShifts();
+          if (res?.message) alert(res.message);
         },
         error: (err) => {
-          console.error('Errore salvataggio:', err);
-          alert('Errore durante il salvataggio delle modifiche.');
+          console.error('Errore pubblicazione:', err);
           this.isSaving = false;
+          alert('Errore durante la pubblicazione.');
         },
       });
   }
 
-  getFormattedDate(): string {
-    return this.formatDate(this.selectedDate);
-  }
-
-  get windowRef() {
-    return window;
-  }
-
-  handleClick(event: MouseEvent, appointmentId: number) {
-    const target = event.target as HTMLElement;
-    const date = this.getFormattedDate();
-
-    if (this.tooltipVisible && this.tooltipTarget === target) {
-      this.hideTooltip();
-    } else {
-      this.showPreviousAssignees(appointmentId, date, target);
-    }
-  }
-
-  organizeByEmployee(shifts: any[]): any {
-    const result: { [key: string]: any[] } = {};
-
-    for (const shift of shifts) {
-      // 👇 Normalizza sempre sortOrderByEmployee
-      let sortMap: any = shift.sortOrderByEmployee;
-      if (typeof sortMap === 'string') {
-        try {
-          sortMap = JSON.parse(sortMap);
-        } catch {
-          sortMap = {};
-        }
-      }
-      if (!sortMap) sortMap = {};
-
-      const allNames = shift.employees.map(
-        (e: any) => `${e.nome} ${e.cognome}`
-      );
-
-      for (const emp of shift.employees) {
-        const key = `${emp.nome} ${emp.cognome}`;
-        if (!result[key]) result[key] = [];
-
-        const colleghi = allNames.filter((name: string) => name !== key);
-
-        result[key].push({
-          empId: emp.id,
-          title: shift.appointment?.title || shift.title,
-          description: shift.description,
-          start:
-            shift.startDate &&
-            shift.startDate !== 'null' &&
-            shift.startDate !== ''
-              ? shift.startDate
-              : null,
-          // ✅ durata per dipendente: se presente durationOverride sul join, usa quella
-          duration:
-            emp?.ShiftEmployees?.durationOverride != null
-              ? Number(emp.ShiftEmployees.durationOverride) || 0
-              : Number(shift.duration) || 0,
-          appointmentId: shift.appointmentId,
-          keyRequired: shift.appointment?.customer?.key === true,
-          cellulare: emp.cellulare || null,
-          colleghi: colleghi,
-          sortOrderByEmployee: sortMap,
-          published: shift.published || false,
-        });
-      }
-    }
-
-    // 👇 Ordina i turni di ogni dipendente
-    for (const k in result) {
-      const empId = result[k][0]?.empId;
-
-      result[k].sort((a, b) => {
-        const sa = empId != null ? a.sortOrderByEmployee?.[empId] : undefined;
-        const sb = empId != null ? b.sortOrderByEmployee?.[empId] : undefined;
-
-        if (sa != null && sb != null) return sa - sb;
-        if (sa != null) return -1;
-        if (sb != null) return 1;
-
-        if (a.start && b.start)
-          return new Date(a.start).getTime() - new Date(b.start).getTime();
-        if (a.start && !b.start) return -1;
-        if (!a.start && b.start) return 1;
-
-        return 0;
-      });
-    }
-
-    return result;
-  }
+  // ======================================================
+  // Navigazione
+  // ======================================================
 
   prevDay(): void {
-    const newDate = new Date(this.selectedDate);
-    newDate.setDate(newDate.getDate() - 1);
-    this.selectedDate = newDate;
+    const d = new Date(this.selectedDate);
+    d.setDate(d.getDate() - 1);
+    this.selectedDate = d;
     this.loadShifts();
   }
 
   nextDay(): void {
-    const newDate = new Date(this.selectedDate);
-    newDate.setDate(newDate.getDate() + 1);
-    this.selectedDate = newDate;
+    const d = new Date(this.selectedDate);
+    d.setDate(d.getDate() + 1);
+    this.selectedDate = d;
     this.loadShifts();
   }
 
@@ -237,130 +293,132 @@ export class ShiftHomeComponent {
     });
   }
 
-  showPreviousAssignees(
+  back(): void {
+    this.router.navigate(['/homeAdmin']);
+  }
+
+  // ======================================================
+  // TOOLTIP - Assegnati precedenti
+  // ======================================================
+
+  handleClick(event: MouseEvent, appointmentId: number): void {
+    const target = event.target as HTMLElement;
+    const dateStr = this.formatDate(this.selectedDate);
+
+    if (this.tooltipVisible && this.tooltipTarget === target) {
+      this.hideTooltip();
+      return;
+    }
+
+    this.showPreviousAssignees(appointmentId, dateStr, target);
+  }
+
+  private showPreviousAssignees(
     appointmentId: number,
-    date: string,
-    target: HTMLElement
-  ) {
+    dateStr: string,
+    target: HTMLElement,
+  ): void {
     this.tooltipVisible = true;
     this.tooltipText = 'Caricamento...';
     this.tooltipTarget = target;
 
     const rect = target.getBoundingClientRect();
-    const tooltipWidth = 200; // stima larghezza del tooltip
-    const tooltipHeight = 40; // stima altezza
+    const tooltipWidth = 260;
+    const tooltipHeight = 44;
 
     let left = rect.left + window.scrollX;
-    let top = rect.bottom + window.scrollY + 5;
+    let top = rect.bottom + window.scrollY + 8;
 
-    // 👉 Se tooltip esce a destra, spostalo a sinistra
     if (left + tooltipWidth > window.innerWidth) {
-      left = window.innerWidth - tooltipWidth - 10;
+      left = window.innerWidth - tooltipWidth - 12;
     }
 
-    // 👉 Se tooltip esce in basso, spostalo sopra
     if (top + tooltipHeight > window.innerHeight + window.scrollY) {
-      top = rect.top + window.scrollY - tooltipHeight - 5;
+      top = rect.top + window.scrollY - tooltipHeight - 8;
     }
 
     this.tooltipPosition = { top, left };
 
     this.http
-      .post<any[]>(this.globalService.url + 'shifts/getPreviousAssignees', {
-        appointmentId: appointmentId,
-        currentDate: date,
+      .post<any[]>(`${this.globalService.url}shifts/getPreviousAssignees`, {
+        appointmentId,
+        currentDate: dateStr,
       })
-      .subscribe(
-        (employees) => {
-          if (employees.length === 0) {
+      .subscribe({
+        next: (employees: any[]) => {
+          if (!Array.isArray(employees) || employees.length === 0) {
             this.tooltipText = 'Nessun assegnato precedente';
-          } else {
-            this.tooltipText = employees
-              .map((e) => `${e.nome} ${e.cognome}`)
-              .join(', ');
+            return;
           }
+
+          this.tooltipText = employees
+            .map((e: any) => `${e?.nome ?? ''} ${e?.cognome ?? ''}`.trim())
+            .filter((name: string) => !!name)
+            .join(', ');
         },
-        (err) => {
+        error: () => {
           this.tooltipText = 'Errore nel recupero';
-        }
-      );
-  }
-
-  formatDuration(minutes: number): string {
-    if (!minutes) return '0 minuti';
-    const h = Math.floor(minutes / 60);
-    const m = minutes % 60;
-
-    if (h > 0 && m > 0) {
-      return `${h} ${h === 1 ? 'ora' : 'ore'} e ${m} minuti`;
-    } else if (h > 0) {
-      return `${h} ${h === 1 ? 'ora' : 'ore'}`;
-    } else {
-      return `${m} minuti`;
-    }
-  }
-
-  sendViaWhatsApp(empName: string): void {
-    const dateStr = this.getFormattedDate();
-
-    // Trovo un numero cellulare dal primo turno di quel dipendente
-    const numeroGrezzo = this.groupedByEmployee[empName]?.[0]?.cellulare;
-    if (!numeroGrezzo) {
-      alert('Nessun numero di telefono trovato per questo dipendente');
-      return;
-    }
-    const safeName = empName.trim().replace(/\s+/g, ' ');
-
-    // Richiesta al backend per ottenere il link sicuro
-    this.http
-      .get<{ url: string }>(
-        `${
-          this.globalService.url
-        }shifts/pdf-link?date=${dateStr}&empName=${encodeURIComponent(empName)}`
-      )
-      .subscribe(
-        (res) => {
-          const pdfLink = res.url;
-
-          // Pulizia numero → solo cifre
-          const numeroPulito = numeroGrezzo.replace(/\D/g, '');
-          const numeroConPrefisso = '39' + numeroPulito;
-
-          // Messaggio WhatsApp
-          const msg =
-            `Ciao ${empName}, ecco i tuoi turni di oggi 📄\n\n` +
-            `Scarica qui il PDF:\n${pdfLink}`;
-
-          const encoded = encodeURIComponent(msg);
-
-          // Apertura WhatsApp
-          window.location.href = `whatsapp://send?phone=${numeroConPrefisso}&text=${encoded}`;
         },
-        (err) => {
-          console.error('Errore recuperando link PDF:', err);
-          alert('Errore nel recupero del link PDF');
-        }
-      );
+      });
   }
 
-  formatHour(date: string | Date | null): string {
-    if (!date) return ''; // 👈 se è null/undefined/stringa vuota → ritorna vuoto
-
-    const d = typeof date === 'string' ? new Date(date) : date;
-    if (isNaN(d.getTime())) return ''; // 👈 se non è data valida
-    return d.toLocaleTimeString('it-IT', {
-      hour: '2-digit',
-      minute: '2-digit',
-    });
-  }
-
-  hideTooltip() {
+  private hideTooltip(): void {
     this.tooltipVisible = false;
     this.tooltipText = '';
     this.tooltipTarget = null;
   }
 
-  back() {
-    this.router.navigate(['/homeAdmin']);
+  // ======================================================
+  // WHATSAPP + LINK PDF
+  // ======================================================
+
+  sendViaWhatsApp(empName: string): void {
+    const dateStr = this.formatDate(this.selectedDate);
+
+    const phoneRaw = this.groupedByEmployee[empName]?.[0]?.cellulare ?? null;
+
+    if (!phoneRaw) {
+      alert('Nessun numero di telefono trovato per questo dipendente');
+      return;
+    }
+
+    this.http
+      .get<{
+        url: string;
+      }>(
+        `${this.globalService.url}shifts/pdf-link?date=${dateStr}&empName=${encodeURIComponent(empName)}`,
+      )
+      .subscribe({
+        next: (res) => {
+          const pdfLink = res?.url;
+
+          if (!pdfLink) {
+            alert('Link PDF non disponibile');
+            return;
+          }
+
+          const phoneDigits = String(phoneRaw).replace(/\D/g, '');
+
+          if (!phoneDigits) {
+            alert('Numero di telefono non valido');
+            return;
+          }
+
+          const phoneWithPrefix = phoneDigits.startsWith('39')
+            ? phoneDigits
+            : `39${phoneDigits}`;
+
+          const message =
+            `Ciao ${empName}, ecco i tuoi turni 📄\n\n` +
+            `Scarica qui il PDF:\n${pdfLink}`;
+
+          const encoded = encodeURIComponent(message);
+
+          window.location.href = `https://wa.me/${phoneWithPrefix}?text=${encoded}`;
+        },
+        error: () => {
+          alert('Errore nel recupero del link PDF');
+        },
+      });
   }
 }

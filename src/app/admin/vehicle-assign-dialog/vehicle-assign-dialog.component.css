@@ -1,0 +1,39 @@
+:host {
+  display: block;
+  color: #000 !important;
+}
+
+.body {
+  background: rgba(255, 255, 255, 0.95) !important;
+  color: #000 !important;
+  border-radius: 16px;
+  padding: 12px;
+}
+
+.list {
+  max-height: 55vh;
+  overflow: auto;
+}
+
+.row-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 14px;
+  background: #fff;
+  cursor: pointer;
+  margin-bottom: 8px;
+}
+
+.row-item .meta .name,
+.row-item .meta .plate,
+.dialog-title,
+.muted {
+  color: #000 !important;
+}
+
+.row-item input[type="radio"] {
+  transform: scale(1.15);
+}

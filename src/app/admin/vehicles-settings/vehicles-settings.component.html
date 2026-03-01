@@ -1,0 +1,126 @@
+<div class="page-wrap">
+  <div class="topbar">
+    <button class="btn-back" (click)="back()">← Indietro</button>
+    <h2 class="title">Gestione mezzi</h2>
+  </div>
+
+  <div class="card glass">
+    <h4 class="section-title">Aggiungi mezzo</h4>
+
+    <div class="row g-3 align-items-end">
+      <div class="col-12 col-md-6">
+        <label class="form-label">Nome mezzo *</label>
+        <input
+          class="form-control"
+          [(ngModel)]="addForm.name"
+          placeholder="Es. Fiorino bianco"
+        />
+      </div>
+      <div class="col-12 col-md-4">
+        <label class="form-label">Targa (opzionale)</label>
+        <input
+          class="form-control"
+          [(ngModel)]="addForm.plate"
+          placeholder="Es. AB123CD"
+        />
+      </div>
+      <div class="col-12 col-md-2 d-grid">
+        <button class="btn btn-primary" (click)="addVehicle()">Aggiungi</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="card glass mt-3">
+    <div class="d-flex justify-content-between align-items-center mb-2">
+      <h4 class="section-title mb-0">Elenco mezzi</h4>
+      <button class="btn btn-outline-light btn-sm" (click)="loadVehicles()">
+        ↻ Aggiorna
+      </button>
+    </div>
+
+    <div *ngIf="loading" class="muted">Caricamento...</div>
+
+    <div class="table-responsive" *ngIf="!loading">
+      <table class="table table-hover align-middle text-dark">
+        <thead>
+          <tr>
+            <th class="text-dark">Nome</th>
+            <th class="text-dark">Targa</th>
+            <th class="text-end text-dark">Azioni</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr *ngFor="let v of vehicles">
+            <td>
+              <ng-container *ngIf="editingId !== v.id; else editName">
+                <strong>{{ v.name }}</strong>
+              </ng-container>
+              <ng-template #editName>
+                <input
+                  class="form-control form-control-sm"
+                  [(ngModel)]="editForm.name"
+                />
+              </ng-template>
+            </td>
+
+            <td style="max-width: 200px">
+              <ng-container *ngIf="editingId !== v.id; else editPlate">
+                <span
+                  class="badge plate text-dark"
+                  *ngIf="v.plate; else noPlate"
+                  >{{ v.plate }}</span
+                >
+                <ng-template #noPlate><span>—</span></ng-template>
+              </ng-container>
+              <ng-template #editPlate>
+                <input
+                  class="form-control form-control-sm"
+                  [(ngModel)]="editForm.plate"
+                />
+              </ng-template>
+            </td>
+
+            <td class="text-end">
+              <ng-container *ngIf="editingId !== v.id; else editActions">
+                <button
+                  class="btn btn-sm btn-outline-light me-2 text-dark"
+                  (click)="startEdit(v)"
+                >
+                  Modifica
+                </button>
+                <button
+                  class="btn btn-sm btn-danger"
+                  (click)="deleteVehicle(v)"
+                >
+                  Elimina
+                </button>
+              </ng-container>
+
+              <ng-template #editActions>
+                <button
+                  class="btn btn-sm btn-success me-2"
+                  (click)="saveEdit()"
+                >
+                  Salva
+                </button>
+                <button
+                  class="btn btn-sm btn-outline-light"
+                  (click)="cancelEdit()"
+                >
+                  Annulla
+                </button>
+              </ng-template>
+            </td>
+          </tr>
+
+          <tr *ngIf="vehicles.length === 0">
+            <td colspan="3" class="text-center muted py-4">
+              Nessun mezzo inserito
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

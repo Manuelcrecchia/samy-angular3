@@ -6,6 +6,7 @@ import { PassworddimenticataComponent } from './componenti/login/passworddimenti
 
 import { HomeAdminComponent } from './admin/homeadmin/homeadmin.component';
 import { UserSettingsComponent } from './admin/user-settings/user-settings.component';
+import { VehiclesSettingsComponent } from './admin/vehicles-settings/vehicles-settings.component';
 
 import { QuotesHomeComponent } from './admin/quotes-home/quotes-home.component';
 import { AddQuoteComponent } from './admin/add-quote/add-quote.component';
@@ -64,6 +65,12 @@ const routes: Routes = [
     canActivate: [AuthGuard, AuthLevelGuard],
     // pagina gestione admin → basta avere la visione admin (e poi bottoni in UI per create/edit/delete)
     data: { permission: 'ADMIN_VIEW' },
+  },
+  // gestione mezzi
+  {
+    path: 'vehiclesSettings',
+    component: VehiclesSettingsComponent,
+    canActivate: [AuthGuard, AuthLevelGuard],
   },
 
   // preventivi

@@ -3,6 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { MatDialog } from '@angular/material/dialog';
 import { AssignDialogComponent } from '../assign-dialog/assign-dialog.component';
+import { VehicleAssignDialogComponent } from '../vehicle-assign-dialog/vehicle-assign-dialog.component';
 import { GlobalService } from '../../service/global.service';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { SocketService } from '../../service/soket.service';
@@ -16,6 +17,8 @@ export class CreateShiftComponent implements OnInit {
   selectedDate: Date = new Date();
   appointments: any[] = [];
   assignedShifts: { [appointmentId: string]: number[] } = {};
+  assignedVehicles: { [appointmentId: string]: number | null } = {};
+  vehiclesCache: any[] = [];
   loading = false;
   employeeList: any[] = [];
   previousWeekShiftList: { cliente: string; dipendenti: string[] }[] = [];
@@ -31,7 +34,7 @@ export class CreateShiftComponent implements OnInit {
     private router: Router,
     private dialog: MatDialog,
     private globalService: GlobalService,
-    private socketService: SocketService
+    private socketService: SocketService,
   ) {}
 
   ngOnInit(): void {
@@ -39,6 +42,7 @@ export class CreateShiftComponent implements OnInit {
     if (queryDate) this.selectedDate = new Date(queryDate);
 
     this.loadAppointments();
+    this.loadVehiclesCache();
 
     // ✅ Socket listener
     this.socketService.onShiftUpdate().subscribe((update: any) => {
@@ -57,7 +61,7 @@ export class CreateShiftComponent implements OnInit {
 
         case 'removeExtra':
           this.appointments = this.appointments.filter(
-            (a) => a.id !== update.data.id
+            (a) => a.id !== update.data.id,
           );
           break;
 
@@ -71,13 +75,13 @@ export class CreateShiftComponent implements OnInit {
           break;
         case 'updateTitle':
           const jobTitle = this.appointments.find(
-            (a) => a.id === update.data.id
+            (a) => a.id === update.data.id,
           );
           if (jobTitle) jobTitle.title = update.data.title;
           break;
         case 'updateDescription':
           const jobDesc = this.appointments.find(
-            (a) => a.id === update.data.id
+            (a) => a.id === update.data.id,
           );
           if (jobDesc) jobDesc.description = update.data.description;
           break;
@@ -95,7 +99,7 @@ export class CreateShiftComponent implements OnInit {
           this.appointments.sort(
             (a, b) =>
               update.data.find((o: any) => o.id === a.id)?.order -
-              update.data.find((o: any) => o.id === b.id)?.order
+              update.data.find((o: any) => o.id === b.id)?.order,
           );
           break;
         case 'reorderEmployee':
@@ -109,6 +113,7 @@ export class CreateShiftComponent implements OnInit {
           break;
         case 'reload':
           this.loadAppointments();
+          this.loadVehiclesCache();
           break;
       }
 
@@ -156,7 +161,9 @@ export class CreateShiftComponent implements OnInit {
       startDate: start,
       duration: app.duration ?? 0,
       sortOrderByEmployee: app.sortOrderByEmployee || {},
+      vehicleId: this.assignedVehicles[app.id] ?? null,
     };
+    console.log('AUTOSAVE PAYLOAD ->', payload);
 
     this.http
       .post<any>(this.globalService.url + 'shifts/autosave', payload)
@@ -229,7 +236,7 @@ export class CreateShiftComponent implements OnInit {
     moveItemInArray(
       event.container.data,
       event.previousIndex,
-      event.currentIndex
+      event.currentIndex,
     );
     event.container.data.forEach((job, i) => {
       // 👇 qui forzi sempre oggetto
@@ -324,6 +331,7 @@ export class CreateShiftComponent implements OnInit {
         startDate: start,
         duration: app.duration || 60,
         sortOrderByEmployee: app.sortOrderByEmployee || {},
+        vehicleId: this.assignedVehicles[app.id] ?? null,
       };
     });
     this.http
@@ -336,6 +344,13 @@ export class CreateShiftComponent implements OnInit {
         alert('Turni salvati');
         this.router.navigate(['/admin/shifts']);
       });
+  }
+
+  loadVehiclesCache() {
+    this.http.get<any[]>(this.globalService.url + 'vehicles/getAll').subscribe({
+      next: (res) => (this.vehiclesCache = res || []),
+      error: () => (this.vehiclesCache = []),
+    });
   }
 
   // 🔹 Helpers
@@ -400,7 +415,7 @@ export class CreateShiftComponent implements OnInit {
         }
 
         this.previousWeekShiftList = Object.entries(mappa).map(
-          ([cliente, dipendenti]) => ({ cliente, dipendenti })
+          ([cliente, dipendenti]) => ({ cliente, dipendenti }),
         );
       });
   }
@@ -426,11 +441,11 @@ export class CreateShiftComponent implements OnInit {
                   originalAppointmentId: a.id,
                   description: a.description || '',
                 }
-              : { ...a }
+              : { ...a },
           )
           .filter(
             (a) =>
-              a.categories === 'ordinario' || a.categories === 'straordinario'
+              a.categories === 'ordinario' || a.categories === 'straordinario',
           )
           .map((a) => {
             if (a.startDate && a.startDate !== 'null' && a.startDate !== '') {
@@ -444,7 +459,7 @@ export class CreateShiftComponent implements OnInit {
 
               if (a.startDate && a.endDate) {
                 const diffMinutes = Math.floor(
-                  (a.endDate.getTime() - a.startDate.getTime()) / 60000
+                  (a.endDate.getTime() - a.startDate.getTime()) / 60000,
                 );
                 a.duration = diffMinutes > 0 ? diffMinutes : 0;
               }
@@ -528,7 +543,7 @@ export class CreateShiftComponent implements OnInit {
               });
             }
             this.assignedShifts[extraId] = (s.employees || []).map(
-              (e: any) => e.id
+              (e: any) => e.id,
             );
           }
           // Caso 2: turno normale
@@ -536,7 +551,7 @@ export class CreateShiftComponent implements OnInit {
             const app = this.appointments.find(
               (a) =>
                 a.id === s.appointmentId ||
-                a.originalAppointmentId === s.appointmentId
+                a.originalAppointmentId === s.appointmentId,
             );
             if (!app) {
               // ✅ Se l'appuntamento non è presente (es. archiviato / escluso perché già generato),
@@ -554,7 +569,8 @@ export class CreateShiftComponent implements OnInit {
                 if (!sortMap || typeof sortMap !== 'object') sortMap = {};
 
                 const title = s.appointment?.title || s.title || '';
-                const description = s.appointment?.description || s.description || '';
+                const description =
+                  s.appointment?.description || s.description || '';
 
                 this.appointments.push({
                   id: newId,
@@ -569,14 +585,17 @@ export class CreateShiftComponent implements OnInit {
                       : null,
                   duration: typeof s.duration === 'number' ? s.duration : 60,
                   durationDisplay: this.formatDuration(
-                    typeof s.duration === 'number' ? s.duration : 60
+                    typeof s.duration === 'number' ? s.duration : 60,
                   ),
                   requiredEmployees: 0,
                   sortOrderByEmployee: sortMap,
                 });
               }
 
-              this.assignedShifts[newId] = (s.employees || []).map((e: any) => e.id);
+              this.assignedShifts[newId] = (s.employees || []).map(
+                (e: any) => e.id,
+              );
+              this.assignedVehicles[newId] = s.vehicleId ?? null;
               continue;
             }
 
@@ -604,7 +623,7 @@ export class CreateShiftComponent implements OnInit {
               if (!s.sortOrderByEmployee) s.sortOrderByEmployee = {};
               app.sortOrderByEmployee = s.sortOrderByEmployee || {};
               this.assignedShifts[app.id] = (s.employees || []).map(
-                (e: any) => e.id
+                (e: any) => e.id,
               );
             }
           }
@@ -612,6 +631,38 @@ export class CreateShiftComponent implements OnInit {
         this.sortAppointments();
       });
   }
+  openVehicleDialog(app: any): void {
+    if (!this.vehiclesCache || this.vehiclesCache.length === 0) {
+      this.loadVehiclesCache();
+      alert(
+        'Nessun mezzo trovato. Se li hai appena creati, riprova tra 1 secondo.',
+      );
+      return;
+    }
+    const dialogRef = this.dialog.open(VehicleAssignDialogComponent, {
+      width: '520px',
+      data: {
+        assignedVehicleId: this.assignedVehicles[app.id] ?? null,
+        vehicles: this.vehiclesCache || [], // ✅ AGGIUNGI QUESTO
+      },
+      panelClass: 'glass-dialog',
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        this.assignedVehicles[app.id] = result.vehicleId ?? null;
+        this.scheduleAutosave(app);
+      }
+    });
+  }
+
+  getVehicleLabel(appId: string): string {
+    const id = this.assignedVehicles[appId];
+    if (!id) return '';
+    const v = (this.vehiclesCache || []).find((x: any) => x.id === id);
+    return v ? (v.plate ? `${v.name} (${v.plate})` : v.name) : '';
+  }
+
   openAssignmentDialog(app: any): void {
     const dialogRef = this.dialog.open(AssignDialogComponent, {
       width: '500px',
@@ -642,13 +693,13 @@ export class CreateShiftComponent implements OnInit {
     const jobs = this.getEmployeeShifts(empId);
     const totalMinutes = jobs.reduce(
       (sum, job) => sum + (job.duration || 0),
-      0
+      0,
     );
     return this.formatDuration(totalMinutes);
   }
   getEmployeeShifts(empId: number): any[] {
     const jobs = this.appointments.filter((app) =>
-      (this.assignedShifts[app.id] || []).includes(empId)
+      (this.assignedShifts[app.id] || []).includes(empId),
     );
 
     return jobs.sort((a, b) => {
@@ -687,7 +738,7 @@ export class CreateShiftComponent implements OnInit {
           return d;
         }
         const d = new Date(
-          val.includes(' ') && !val.includes('T') ? val.replace(' ', 'T') : val
+          val.includes(' ') && !val.includes('T') ? val.replace(' ', 'T') : val,
         );
         return isNaN(d.getTime()) ? null : d;
       }
@@ -696,7 +747,8 @@ export class CreateShiftComponent implements OnInit {
     };
 
     for (const a of this.appointments) {
-      a.startDate = a.startDate != null ? normalize(a.startDate) ?? null : null;
+      a.startDate =
+        a.startDate != null ? (normalize(a.startDate) ?? null) : null;
       if (typeof a.duration !== 'number') a.duration = 0;
       a.durationDisplay = this.formatDuration(a.duration);
     }
@@ -723,6 +775,7 @@ export class CreateShiftComponent implements OnInit {
     d.setDate(d.getDate() - 1);
     this.selectedDate = d;
     this.loadAppointments();
+    this.loadVehiclesCache();
     this.showPreviousWeekShifts();
   }
 
@@ -732,6 +785,7 @@ export class CreateShiftComponent implements OnInit {
     d.setDate(d.getDate() + 1);
     this.selectedDate = d;
     this.loadAppointments();
+    this.loadVehiclesCache();
     this.showPreviousWeekShifts();
   }
 
