@@ -6,9 +6,9 @@ import { AuthServiceService } from '../auth-service.service';
   providedIn: 'root',
 })
 export class GlobalService {
-  url = 'http://localhost:5001/';
-  //url = 'https://nodesami.mvtechcore.it/';
-  version = '1.5.8';
+  //url = 'http://localhost:5001/';
+  url = 'https://nodesami.mvtechcore.it/';
+  version = '2.0';
   forMobile: boolean = false;
   constructor(private authService: AuthServiceService) {}
 
