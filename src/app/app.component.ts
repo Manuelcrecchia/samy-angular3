@@ -11,10 +11,11 @@ import { App as CapacitorApp } from '@capacitor/app';
 })
 export class AppComponent {
   title = 'samyangularapp';
-  constructor(private global: GlobalService, private router: Router) {
-    if (this.global.forMobile) {
-      this.router.navigate(['/loginPrivateArea']);
-    }
+  constructor(
+    private global: GlobalService,
+    private router: Router,
+  ) {
+    this.router.navigate(['/loginPrivateArea']);
   }
   ngOnInit() {
     CapacitorApp.addListener('backButton', ({ canGoBack }) => {

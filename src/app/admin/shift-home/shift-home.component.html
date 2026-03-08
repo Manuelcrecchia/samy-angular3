@@ -1,5 +1,4 @@
 <div class="container py-4 turni-page">
-  <!-- 🔙 Torna indietro -->
   <div class="d-flex justify-content-start align-items-center mb-3">
     <button
       class="btn btn-outline-primary rounded-pill btn-back-glass"
@@ -11,7 +10,6 @@
 
   <h2 class="text-center mb-4 turni-title text-dark">Gestione Turni</h2>
 
-  <!-- 🔹 Navigazione per data -->
   <div
     class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2"
   >
@@ -44,7 +42,6 @@
     </button>
   </div>
 
-  <!-- 🔹 Seleziona e Pubblica -->
   <div class="border rounded p-3 mb-4 bg-light shadow-sm turni-controls">
     <div
       class="d-flex justify-content-between align-items-center flex-wrap gap-2"
@@ -75,16 +72,13 @@
     </div>
   </div>
 
-  <!-- 🔹 Nessun turno -->
   <div *ngIf="shifts.length === 0" class="alert alert-info text-center">
     Nessun turno presente per il giorno selezionato.
   </div>
 
-  <!-- 🔹 Lista -->
   <div class="turni-list" *ngIf="shifts.length > 0">
     <ul class="list-group">
       <div *ngFor="let empName of groupedKeys()">
-        <!-- Header Dipendente -->
         <div class="d-flex align-items-center mt-3 emp-header">
           <input
             type="checkbox"
@@ -109,18 +103,17 @@
             (click)="sendViaWhatsApp(empName)"
             title="Invia via WhatsApp"
           >
-            <i class="fab fa-whatsapp fa-lg text-success"></i>
+            📲
           </button>
         </div>
 
-        <!-- Turni -->
-        <ul class="list-group list-group-flush mt-2">
+        <ul class="list-group mt-2">
           <li
             *ngFor="let turno of groupedByEmployee[empName]"
             class="list-group-item d-flex justify-content-between align-items-center turni-item"
             [ngClass]="{
               published: turno.published,
-              'bg-light border-success': turno.published
+              'bg-light border-success': turno.published,
             }"
           >
             <span class="text-dark">
@@ -155,7 +148,7 @@
             </span>
 
             <span
-              *ngIf="turno.keyRequired"
+              *ngIf="tenantService.isSami && turno.keyRequired"
               class="key-icon ms-2"
               (click)="handleClick($event, turno.appointmentId)"
               title="Chiavi richieste"
@@ -169,7 +162,6 @@
   </div>
 </div>
 
-<!-- Tooltip -->
 <div
   class="tooltip-popup"
   *ngIf="tooltipVisible"

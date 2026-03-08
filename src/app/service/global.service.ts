@@ -1,16 +1,33 @@
 import { Injectable } from '@angular/core';
 import { HttpHeaders } from '@angular/common/http';
 import { AuthServiceService } from '../auth-service.service';
+import { TenantService } from './tenant.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class GlobalService {
-  //url = 'http://localhost:5001/';
-  url = 'https://nodesami.mvtechcore.it/';
   version = '2.0';
-  forMobile: boolean = false;
-  constructor(private authService: AuthServiceService) {}
+
+  constructor(
+    private authService: AuthServiceService,
+    private tenantService: TenantService,
+  ) {}
+
+  get url(): string {
+    const host = window.location.hostname.toLowerCase();
+
+    if (host.includes('localhost') || host.includes('127.0.0.1')) {
+      console.log('DEVI AVVIARE ANGULAR CON IL COMANDO --host');
+      return '';
+    }
+
+    if (this.tenantService.isEmmeci) {
+      return 'https://nodeemmeci.mvtechcore.it/';
+    }
+
+    return 'https://nodesami.mvtechcore.it/';
+  }
 
   checkVersion(): Promise<boolean> {
     return new Promise((resolve) => {
@@ -62,6 +79,6 @@ export class GlobalService {
   }
 
   logout(): void {
-    this.authService.logout(); // delega al servizio principale
+    this.authService.logout();
   }
 }

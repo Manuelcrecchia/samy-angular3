@@ -13,6 +13,7 @@ import { AutomaticAddInspectionToCalendarService } from '../../../service/automa
 import { PopupServiceService } from '../../../componenti/popup/popup-service.service';
 import { MatDialog } from '@angular/material/dialog';
 import { formatDate } from '@angular/common';
+import { TenantService } from '../../../service/tenant.service';
 
 @Component({
   selector: 'app-calendar-home',
@@ -31,13 +32,9 @@ export class CalendarHomeComponent {
 
   @ViewChild(DxSchedulerComponent, { static: false })
   scheduler!: DxSchedulerComponent;
-  categories = [
-    { id: 'ordinario', text: 'Ordinario' },
-    { id: 'straordinario', text: 'Straordinario' },
-    { id: 'sopralluogo', text: 'Sopralluogo' },
-    { id: 'lavoriSvolti', text: 'Lavori svolti' },
-    { id: 'altro', text: 'Altro' },
-  ];
+
+  categories: { id: string; text: string }[] = [];
+
   nPreventiviArray: string[] = [];
   descrizioneArray: string[] = [];
   categoriaArray: string[] = [];
@@ -49,12 +46,16 @@ export class CalendarHomeComponent {
     private router: Router,
     private automaticAddInspectionToCalendarservice: AutomaticAddInspectionToCalendarService,
     private popup: PopupServiceService,
-    private dialog: MatDialog
-  ) {} // Inject HttpClient module
+    private dialog: MatDialog,
+    public tenantService: TenantService,
+  ) {}
 
   ngOnInit() {
+    this.categories = this.getCategoriesForTenant();
+
     this.saveRecurrenceRule = '';
     this.recurrenceRuleisVisible = false;
+
     this.http
       .get(this.globalService.url + 'appointments/getAll', {
         headers: this.globalService.headers,
@@ -63,44 +64,51 @@ export class CalendarHomeComponent {
       .subscribe((response) => {
         this.events = JSON.parse(response);
         this.filteredEvents = this.events;
+
         if (this.automaticAddInspectionToCalendarservice.pass) {
           this.automaticAddInspectionToCalendarservice.pass = false;
+
           const startDate = new Date();
           const endDate = new Date();
           endDate.setMinutes(endDate.getMinutes() + 30);
+
           let descrizione =
             'Contatto ' +
             this.automaticAddInspectionToCalendarservice.nominativo +
             '   Telefono: ' +
             this.automaticAddInspectionToCalendarservice.telefono;
+
           this.scheduler.instance.showAppointmentPopup(
             {
               startDate: startDate,
               endDate: endDate,
               title: `${this.automaticAddInspectionToCalendarservice.numeroPreventivo} - ${this.automaticAddInspectionToCalendarservice.nominativo}`,
               description: descrizione,
-              categories: 'sopralluogo',
+              categories: this.getDefaultSopralluogoCategory(),
             },
-            true
+            true,
           );
         }
+
         this.http
           .get(this.globalService.url + 'quotes/getAll', {
             headers: this.globalService.headers,
             responseType: 'text',
           })
-          .subscribe((response) => {
-            const data = JSON.parse(response);
+          .subscribe((quotesResponse) => {
+            const data = JSON.parse(quotesResponse);
+
             this.nPreventiviArray = data
-              .filter((item: any) => !item.complete) // solo quelli non completati
+              .filter((item: any) => !item.complete)
               .map(
-                (item: any) => `${item.numeroPreventivo} - ${item.nominativo}`
+                (item: any) => `${item.numeroPreventivo} - ${item.nominativo}`,
               );
 
             this.descrizioneArray = data.map(
               (item: any) =>
-                `Contatto: ${item.nominativo} Telefono: ${item.telefono}`
+                `Contatto: ${item.nominativo} Telefono: ${item.telefono}`,
             );
+
             this.categoriaArray = data.map((item: any) => item.tipoPreventivo);
           });
       });
@@ -115,139 +123,184 @@ export class CalendarHomeComponent {
       });
   }
 
+  private getCategoriesForTenant(): { id: string; text: string }[] {
+    if (this.tenantService.isEmmeci) {
+      return [
+        { id: 'ordinario', text: 'Ordinario' },
+        { id: 'sopralluogo', text: 'Sopralluogo' },
+        { id: 'altro', text: 'Altro' },
+      ];
+    }
+
+    return [
+      { id: 'ordinario', text: 'Ordinario' },
+      { id: 'straordinario', text: 'Straordinario' },
+      { id: 'sopralluogo', text: 'Sopralluogo' },
+      { id: 'lavoriSvolti', text: 'Lavori svolti' },
+      { id: 'altro', text: 'Altro' },
+    ];
+  }
+
+  private getDefaultSopralluogoCategory(): string {
+    const found = this.categories.find((c) => c.id === 'sopralluogo');
+    return found ? found.id : this.categories[0]?.id || 'altro';
+  }
+
+  private tenantSupportsStraordinario(): boolean {
+    return this.categories.some((c) => c.id === 'straordinario');
+  }
+
+  private normalize(s: string): string {
+    return (s || '')
+      .normalize('NFD')
+      .replace(/\p{Diacritic}/gu, '')
+      .toLowerCase()
+      .trim();
+  }
+
   convertDateToICSFormat(date: Date) {
-    // Crea un oggetto Date a partire dalla stringa fornita
     const parsedDate = new Date(date);
 
-    // Estrai le componenti della data
     const year = parsedDate.getUTCFullYear();
-    const month = String(parsedDate.getUTCMonth() + 1).padStart(2, '0'); // I mesi sono zero-indexed, quindi +1
+    const month = String(parsedDate.getUTCMonth() + 1).padStart(2, '0');
     const day = String(parsedDate.getUTCDate()).padStart(2, '0');
     const hours = String(parsedDate.getUTCHours()).padStart(2, '0');
     const minutes = String(parsedDate.getUTCMinutes()).padStart(2, '0');
     const seconds = String(parsedDate.getUTCSeconds()).padStart(2, '0');
 
-    // Crea la stringa nel formato desiderato
     return `${year}${month}${day}T${hours}${minutes}${seconds}Z`;
   }
 
-  private normalize(s: string): string {
-    return (s || '')
-      .normalize('NFD')                // separa lettere e accenti
-      .replace(/\p{Diacritic}/gu, '')  // elimina diacritici
-      .toLowerCase()
-      .trim();
+  getCategoryClass(category: string): string {
+    const supported = [
+      'sopralluogo',
+      'ordinario',
+      'straordinario',
+      'lavoriSvolti',
+      'altro',
+    ];
+
+    return supported.includes(category)
+      ? `category-${category}`
+      : 'category-default';
   }
-  
-  
+
   private updateNavigatorCaption() {
     if (!this.scheduler) return;
+
     const rawDate = this.scheduler.instance.option('currentDate');
     if (!rawDate) return;
-  
+
     const date = new Date(rawDate as string | number | Date);
     const formatted = formatDate(date, 'EEEE d MMMM yyyy', 'it-IT');
-  
+
     const toolbar = this.scheduler.instance
       .element()
       .querySelector('.dx-scheduler-navigator-caption');
+
     if (toolbar) {
       toolbar.textContent = formatted!;
     }
   }
 
   onSchedulerContentReady() {
-    // Chiamato ogni volta che lo scheduler ha finito di renderizzare la vista
-   this.updateNavigatorCaption();
+    this.updateNavigatorCaption();
   }
-  
+
   onCurrentViewChange(event: any) {
-    // Aggiorna la view corrente
     if (event.name === 'currentView' || event.name === 'currentDate') {
       this.currentView = event.value;
       this.updateNavigatorCaption();
     }
   }
-  
+
   ngAfterViewInit() {
-    // quando lo scheduler è pronto, aggiorna subito il titolo
     this.updateNavigatorCaption();
   }
-  
 
   onAppointmentFormOpening(e: any) {
     const form = e.form;
-  const popup = e.popup;
+    const popup = e.popup;
 
-  const toolbarItems = popup.option('toolbarItems');
-  toolbarItems.forEach((item: any) => {
-    if (item.shortcut === 'cancel') {
-      this.currentDate = new Date();
-      this.currentView = 'day';
-      this.recurrenceRuleisVisible = false;
-      this.saveRecurrenceRule = '';
-      form.itemOption('recurrenceRule', 'visible', false);
-    }
-  });
-  popup.option('toolbarItems', toolbarItems);
+    const toolbarItems = popup.option('toolbarItems');
+    toolbarItems.forEach((item: any) => {
+      if (item.shortcut === 'cancel') {
+        this.currentDate = new Date();
+        this.currentView = 'day';
+        this.recurrenceRuleisVisible = false;
+        this.saveRecurrenceRule = '';
+        form.itemOption('recurrenceRule', 'visible', false);
+      }
+    });
+    popup.option('toolbarItems', toolbarItems);
 
-  const startDate = form.getEditor('startDate').option('value');
-  this.selectedDate = new Date(startDate);
-  const endDate = new Date(startDate);
-  endDate.setMinutes(endDate.getMinutes() + 30);
-  form.getEditor('endDate').option('value', endDate);
+    const startDate = form.getEditor('startDate').option('value');
+    this.selectedDate = new Date(startDate);
 
-  const categories = this.categories;
+    const endDate = new Date(startDate);
+    endDate.setMinutes(endDate.getMinutes() + 30);
+    form.getEditor('endDate').option('value', endDate);
 
-  const searchFieldConfig = {
-    dataField: 'title',
-    editorType: 'dxAutocomplete',
-    editorOptions: {
-      dataSource: [
-        ...this.nPreventiviArray,
-        ...this.clientiArray.map(c => `${c.numeroCliente} - ${c.nominativo}`),
-      ],
-      minSearchLength: 0,
-      showDropDownButton: true,
-      valueExpr: undefined,
-      placeholder: 'Cerca preventivo o cliente...',
-      onOpened: (e: any) => e.component.option('opened', true),
-      onFocusIn: (e: any) => e.component.open(),
-      onValueChanged: (args: any) => {
-        const selectedValue: string = args.value;
-        const formCategoria = form.getEditor('categories');
+    const categories = this.categories;
 
-        // PREVENTIVO
-        const idxPrev = this.nPreventiviArray.findIndex(
-          item => this.normalize(item) === this.normalize(selectedValue)
-        );
-        if (idxPrev !== -1) {
-          const descrizione = `Sopralluogo – ${this.descrizioneArray[idxPrev]}`;
-          formCategoria.option('value', 'sopralluogo');
-          form.getEditor('description').option('value', descrizione);
-          return;
-        }
+    const searchFieldConfig = {
+      dataField: 'title',
+      editorType: 'dxAutocomplete',
+      editorOptions: {
+        dataSource: [
+          ...this.nPreventiviArray,
+          ...this.clientiArray.map(
+            (c) => `${c.numeroCliente} - ${c.nominativo}`,
+          ),
+        ],
+        minSearchLength: 0,
+        showDropDownButton: true,
+        valueExpr: undefined,
+        placeholder: 'Cerca preventivo o cliente...',
+        onOpened: (e: any) => e.component.option('opened', true),
+        onFocusIn: (e: any) => e.component.open(),
+        onValueChanged: (args: any) => {
+          const selectedValue: string = args.value;
+          const formCategoria = form.getEditor('categories');
 
-        // CLIENTE
-        const cliente = this.clientiArray.find(
-          c =>
-            this.normalize(`${c.numeroCliente} - ${c.nominativo}`) ===
-            this.normalize(selectedValue)
-        );
-        if (cliente) {
-          const categoria =
-            cliente.tipoCliente === 'O' ? 'ordinario' : 'straordinario';
-          formCategoria.option('value', categoria);
-          return;
-        }
+          const idxPrev = this.nPreventiviArray.findIndex(
+            (item) => this.normalize(item) === this.normalize(selectedValue),
+          );
 
-        // VALORE NON VALIDO
-        formCategoria.option('value', null);
-        form.getEditor('description').option('value', '');
+          if (idxPrev !== -1) {
+            const descrizione = `Sopralluogo – ${this.descrizioneArray[idxPrev]}`;
+            formCategoria.option('value', 'sopralluogo');
+            form.getEditor('description').option('value', descrizione);
+            return;
+          }
+
+          const cliente = this.clientiArray.find(
+            (c) =>
+              this.normalize(`${c.numeroCliente} - ${c.nominativo}`) ===
+              this.normalize(selectedValue),
+          );
+
+          if (cliente) {
+            let categoria = 'ordinario';
+
+            if (
+              this.tenantService.isSami &&
+              this.tenantSupportsStraordinario()
+            ) {
+              categoria =
+                cliente.tipoCliente === 'O' ? 'ordinario' : 'straordinario';
+            }
+
+            formCategoria.option('value', categoria);
+            return;
+          }
+
+          formCategoria.option('value', null);
+          form.getEditor('description').option('value', '');
+        },
       },
-    },
-    label: { text: 'Numero preventivo' },
-  };
+      label: { text: 'Numero preventivo / cliente' },
+    };
 
     const switchConfig = {
       dataField: 'enableRecurrence',
@@ -282,13 +335,11 @@ export class CalendarHomeComponent {
         },
 
         onValueChanged: (args: any) => {
-          // Gestione per la ricorrenza settimanale
           if (
             args.value != null &&
             args.value.startsWith('FREQ=WEEKLY;') &&
             (args.previousValue == null ||
-              (args.previousValue != null &&
-                !args.previousValue.startsWith('FREQ=WEEKLY;')))
+              !args.previousValue.startsWith('FREQ=WEEKLY;'))
           ) {
             const dayOfWeek = this.selectedDate.getDay();
             const recurrenceEditor = args.component;
@@ -297,31 +348,26 @@ export class CalendarHomeComponent {
               'value',
               `FREQ=WEEKLY;BYDAY=${
                 ['SU', 'MO', 'TU', 'WE', 'TH', 'FR', 'SA'][dayOfWeek]
-              }`
+              }`,
             );
-          }
-          // Gestione per la ricorrenza mensile
-          else if (
+          } else if (
             args.value != null &&
             args.value.startsWith('FREQ=MONTHLY;') &&
             (args.previousValue == null ||
-              (args.previousValue != null &&
-                !args.previousValue.startsWith('FREQ=MONTHLY;')))
+              !args.previousValue.startsWith('FREQ=MONTHLY;'))
           ) {
             const dayOfMonth = this.selectedDate.getDate();
             const recurrenceEditor = args.component;
             this.saveRecurrenceRule = args.value;
             recurrenceEditor.option(
               'value',
-              `FREQ=MONTHLY;BYMONTHDAY=${dayOfMonth}`
+              `FREQ=MONTHLY;BYMONTHDAY=${dayOfMonth}`,
             );
-          }
-          // Altrimenti, aggiorna solo la regola di ricorrenza salvata
-          else {
+          } else {
             this.saveRecurrenceRule = args.value;
           }
         },
-        onInitialized: (args: any) => {
+        onInitialized: () => {
           this.saveRecurrenceRule = 'FREQ=DAILY';
         },
       },
@@ -366,11 +412,11 @@ export class CalendarHomeComponent {
           items: categories,
           displayExpr: 'text',
           valueExpr: 'id',
-          onValueChanged: (e: any) => {
-            this.selectedCategoria = e.value;
+          onValueChanged: (evt: any) => {
+            this.selectedCategoria = evt.value;
             form
               .getEditor('title')
-              .option('dataSource', this.getAutocompleteSource(e.value));
+              .option('dataSource', this.getAutocompleteSource(evt.value));
           },
         },
       },
@@ -391,15 +437,28 @@ export class CalendarHomeComponent {
   }
 
   getAutocompleteSource(categoria: string): string[] {
-    if (categoria === 'sopralluogo') return this.nPreventiviArray;
-    if (categoria === 'ordinario')
+    if (categoria === 'sopralluogo') {
+      return this.nPreventiviArray;
+    }
+
+    if (categoria === 'ordinario') {
+      if (this.tenantService.isEmmeci) {
+        return this.clientiArray.map(
+          (c) => `${c.numeroCliente} - ${c.nominativo}`,
+        );
+      }
+
       return this.clientiArray
         .filter((c) => c.tipoCliente === 'O')
         .map((c) => `${c.numeroCliente} - ${c.nominativo}`);
-    if (categoria === 'straordinario')
+    }
+
+    if (categoria === 'straordinario' && this.tenantService.isSami) {
       return this.clientiArray
         .filter((c) => c.tipoCliente === 'S')
         .map((c) => `${c.numeroCliente} - ${c.nominativo}`);
+    }
+
     return [];
   }
 
@@ -409,9 +468,21 @@ export class CalendarHomeComponent {
     const categoria = data.categories;
 
     if (categoria === 'sopralluogo') {
-      this.router.navigate(['/editQuote', codice]); // preventivo
-    } else if (categoria === 'ordinario' || categoria === 'straordinario') {
-      this.router.navigate(['/editCustomer', codice]); // cliente
+      this.router.navigate(['/editQuote', codice]);
+      return;
+    }
+
+    if (this.tenantService.isSami) {
+      if (categoria === 'ordinario' || categoria === 'straordinario') {
+        this.router.navigate(['/editCustomer', codice]);
+      }
+      return;
+    }
+
+    if (this.tenantService.isEmmeci) {
+      if (categoria === 'ordinario') {
+        this.router.navigate(['/editCustomer', codice]);
+      }
     }
   }
 
@@ -426,30 +497,38 @@ export class CalendarHomeComponent {
       categories: e.appointmentData['categories'],
       recurrenceException: e.appointmentData['recurrenceException'],
     };
+
     const codice = body.title?.split(' - ')[0];
     const categoria = body.categories;
-  
-    // Obbligatori
+
     if (!body.title || !body.startDate || !body.endDate || !body.categories) {
       this.popup.text = 'Compilare tutti i campi obbligatori';
       this.popup.openPopup();
       this.ngOnInit();
       return;
     }
-  
-    // Verifica che il codice esista nel DB
+
     const codiceValido =
       (categoria === 'sopralluogo' &&
-        this.nPreventiviArray.some(p =>
-          this.normalize(p).startsWith(this.normalize(codice + ' -'))
+        this.nPreventiviArray.some((p) =>
+          this.normalize(p).startsWith(this.normalize(codice + ' -')),
         )) ||
-      ((categoria === 'ordinario' || categoria === 'straordinario') &&
+      (categoria === 'ordinario' &&
         this.clientiArray.some(
-          c =>
-            this.normalize(c.numeroCliente.toString()) === this.normalize(codice)
+          (c) =>
+            this.normalize(c.numeroCliente.toString()) ===
+            this.normalize(codice),
         )) ||
-      categoria === 'altro';
-  
+      (this.tenantService.isSami &&
+        categoria === 'straordinario' &&
+        this.clientiArray.some(
+          (c) =>
+            this.normalize(c.numeroCliente.toString()) ===
+            this.normalize(codice),
+        )) ||
+      categoria === 'altro' ||
+      categoria === 'lavoriSvolti';
+
     if (!codiceValido) {
       this.popup.text =
         'Codice non valido o non esistente per la categoria selezionata';
@@ -458,7 +537,7 @@ export class CalendarHomeComponent {
       this.scheduler.instance.hideAppointmentPopup();
       return;
     }
-  
+
     this.http
       .post(this.globalService.url + 'appointments/add', body, {
         headers: this.globalService.headers,
@@ -466,12 +545,14 @@ export class CalendarHomeComponent {
       })
       .subscribe(() => {
         this.ngOnInit();
+
         if (body.categories == 'sopralluogo') {
           this.http
             .post(
-              this.globalService.url + 'appointments/sendInspectionConfirmation',
+              this.globalService.url +
+                'appointments/sendInspectionConfirmation',
               body,
-              { headers: this.globalService.headers, responseType: 'text' }
+              { headers: this.globalService.headers, responseType: 'text' },
             )
             .subscribe((response) => {
               if (response == 'NO') {
@@ -487,15 +568,18 @@ export class CalendarHomeComponent {
   onAppointmentUpdating(e: AppointmentUpdatingEvent) {
     let body = {
       id: e.oldData['id'],
-      title: e.newData['title'],
-      startDate: e.newData['startDate'],
-      endDate: e.newData['endDate'],
-      recurrenceRule: e.newData['recurrenceRule'],
-      dayLong: e.newData['dayLong'],
-      description: e.newData['description'],
-      categories: e.newData['categories'],
-      recurrenceException: e.newData['recurrenceException'],
+      title: e.newData['title'] ?? e.oldData['title'],
+      startDate: e.newData['startDate'] ?? e.oldData['startDate'],
+      endDate: e.newData['endDate'] ?? e.oldData['endDate'],
+      recurrenceRule:
+        e.newData['recurrenceRule'] ?? e.oldData['recurrenceRule'],
+      dayLong: e.newData['dayLong'] ?? e.oldData['dayLong'],
+      description: e.newData['description'] ?? e.oldData['description'],
+      categories: e.newData['categories'] ?? e.oldData['categories'],
+      recurrenceException:
+        e.newData['recurrenceException'] ?? e.oldData['recurrenceException'],
     };
+
     if (
       body.title == undefined ||
       body.startDate == undefined ||
@@ -505,51 +589,51 @@ export class CalendarHomeComponent {
       this.popup.text = 'Compilare tutti i campi obbligatori';
       this.popup.openPopup();
       this.ngOnInit();
-    } else {
-      this.http
-        .post(this.globalService.url + 'appointments/edit', body, {
-          headers: this.globalService.headers,
-          responseType: 'text',
-        })
-        .subscribe((response) => {
-          this.ngOnInit();
-          if (body.categories == 'sopralluogo') {
-            this.http
-              .post(
-                this.globalService.url +
-                  'appointments/sendInspectionConfirmation',
-                body,
-                {
-                  headers: this.globalService.headers,
-                  responseType: 'text',
-                }
-              )
-              .subscribe((response) => {
-                if (response == 'NO') {
-                  this.popup.text =
-                    "Non è stato possibile inviare la mail di conferma dell'appuntamento perchè non è presente nessuna mail associata al preventivo";
-                  this.popup.openPopup();
-                }
-              });
-          }
-        });
+      return;
     }
+
+    this.http
+      .post(this.globalService.url + 'appointments/edit', body, {
+        headers: this.globalService.headers,
+        responseType: 'text',
+      })
+      .subscribe(() => {
+        this.ngOnInit();
+
+        if (body.categories == 'sopralluogo') {
+          this.http
+            .post(
+              this.globalService.url +
+                'appointments/sendInspectionConfirmation',
+              body,
+              {
+                headers: this.globalService.headers,
+                responseType: 'text',
+              },
+            )
+            .subscribe((response) => {
+              if (response == 'NO') {
+                this.popup.text =
+                  "Non è stato possibile inviare la mail di conferma dell'appuntamento perchè non è presente nessuna mail associata al preventivo";
+                this.popup.openPopup();
+              }
+            });
+        }
+      });
   }
 
   onAppointmentDeletedQuestion(e: AppointmentDeletedEvent) {
     const appointmentData = e.appointmentData;
-    // Controlla se l'evento ha una regola di ricorrenza
+
     if (
       appointmentData.recurrenceRule &&
       appointmentData.recurrenceRule.trim() !== ''
     ) {
-      // Se ha una regola di ricorrenza, chiama appointmentsDeleted
       this.appointmentsDeleted(e);
     } else {
       if (appointmentData.recurrenceRule == '') {
         this.appointmentsDeleted(e);
       } else {
-        // Altrimenti, chiama appointmentDeleted
         this.appointmentDeleted(e);
       }
     }
@@ -560,6 +644,7 @@ export class CalendarHomeComponent {
       id: e.appointmentData['id'],
       occurrenceDate: this.convertDateToICSFormat(this.selectedDate),
     };
+
     this.http
       .post(
         this.globalService.url + 'appointments/deleteSingleOccurrence',
@@ -567,9 +652,9 @@ export class CalendarHomeComponent {
         {
           headers: this.globalService.headers,
           responseType: 'text',
-        }
+        },
       )
-      .subscribe((response) => {
+      .subscribe(() => {
         this.ngOnInit();
       });
   }
@@ -578,23 +663,25 @@ export class CalendarHomeComponent {
     let body = {
       id: e.appointmentData['id'],
     };
+
     this.http
       .post(this.globalService.url + 'appointments/delete', body, {
         headers: this.globalService.headers,
         responseType: 'text',
       })
-      .subscribe((response) => {
+      .subscribe(() => {
         this.ngOnInit();
       });
   }
 
   onFilterChange(event: any) {
     const filterType = event.target.value;
+
     if (filterType === 'all') {
       this.filteredEvents = this.events;
     } else {
-      this.filteredEvents = this.events.filter((event) => {
-        return event.categories === filterType;
+      this.filteredEvents = this.events.filter((ev) => {
+        return ev.categories === filterType;
       });
     }
   }

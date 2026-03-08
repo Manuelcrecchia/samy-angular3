@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { GlobalService } from '../../service/global.service';
+import { TenantService } from '../../service/tenant.service';
 
 interface ShiftRow {
   empId: number;
@@ -42,15 +43,12 @@ export class ShiftHomeComponent implements OnInit {
     private http: HttpClient,
     private router: Router,
     private globalService: GlobalService,
+    public tenantService: TenantService,
   ) {}
 
   ngOnInit(): void {
     this.loadShifts();
   }
-
-  // ======================================================
-  // Helpers
-  // ======================================================
 
   groupedKeys(): string[] {
     return Object.keys(this.groupedByEmployee || {}).sort();
@@ -63,19 +61,27 @@ export class ShiftHomeComponent implements OnInit {
   private isEmployeePublished(empId: number): boolean {
     if (!empId) return false;
 
-    // prendo tutte le righe di quell'empId tra i gruppi
     const rows = Object.values(this.groupedByEmployee || {})
       .flat()
       .filter((r) => r.empId === empId);
 
     if (rows.length === 0) return false;
 
-    // "pubblicato" se TUTTI i suoi turni del giorno sono published
     return rows.every((r) => r.published === true);
   }
 
   private formatDate(date: Date): string {
     return date.toISOString().split('T')[0];
+  }
+
+  private resolveKeyRequired(shift: any): boolean {
+    if (!this.tenantService.isSami) return false;
+
+    return (
+      shift?.keyRequired === true ||
+      shift?.appointment?.keyRequired === true ||
+      shift?.appointment?.customer?.key === true
+    );
   }
 
   formatDuration(minutes: number): string {
@@ -95,10 +101,6 @@ export class ShiftHomeComponent implements OnInit {
     return `${m} minuti`;
   }
 
-  // ======================================================
-  // Load
-  // ======================================================
-
   loadShifts(): void {
     const dateStr = this.formatDate(this.selectedDate);
 
@@ -111,7 +113,6 @@ export class ShiftHomeComponent implements OnInit {
           this.shifts = shiftsArray;
           this.groupedByEmployee = this.organizeByEmployee(shiftsArray);
 
-          // ✅ Pre-seleziona i dipendenti che risultano già pubblicati dal DB
           const allIds = this.groupedKeys()
             .map((name) => this.getEmpId(name))
             .filter((id) => id > 0);
@@ -120,7 +121,6 @@ export class ShiftHomeComponent implements OnInit {
             this.isEmployeePublished(id),
           );
 
-          // aggiorna anche lo stato del "seleziona tutto"
           this.updateSelectAllState();
         },
         error: (err) => {
@@ -148,7 +148,6 @@ export class ShiftHomeComponent implements OnInit {
           (name: string) => name !== key,
         );
 
-        // ✅ published per dipendente viene dal JOIN
         const joinPublished: boolean = emp?.ShiftEmployees?.published === true;
 
         result[key].push({
@@ -161,15 +160,12 @@ export class ShiftHomeComponent implements OnInit {
             shift?.startDate !== ''
               ? shift.startDate
               : null,
-
-          // ✅ durata per dipendente: se presente durationOverride sul join, usa quella
           duration:
             emp?.ShiftEmployees?.durationOverride != null
               ? Number(emp.ShiftEmployees.durationOverride) || 0
               : Number(shift?.duration) || 0,
-
           appointmentId: Number(shift?.appointmentId) || 0,
-          keyRequired: shift?.appointment?.customer?.key === true,
+          keyRequired: this.resolveKeyRequired(shift),
           cellulare: emp?.cellulare ?? null,
           colleghi,
           published: joinPublished,
@@ -181,10 +177,6 @@ export class ShiftHomeComponent implements OnInit {
 
     return result;
   }
-
-  // ======================================================
-  // Selezione (chi vuoi pubblicare)
-  // ======================================================
 
   toggleEmployeeSelection(empId: number): void {
     if (!empId) return;
@@ -222,10 +214,6 @@ export class ShiftHomeComponent implements OnInit {
       allIds.every((id) => this.selectedEmployees.includes(id));
   }
 
-  // ======================================================
-  // Pubblica (solo selezionati)
-  // ======================================================
-
   savePublication(): void {
     if (this.isSaving) return;
 
@@ -240,9 +228,6 @@ export class ShiftHomeComponent implements OnInit {
       return;
     }
 
-    // ✅ Per OGNI dipendente del giorno invio lo stato desiderato:
-    // spuntato => published true
-    // non spuntato => published false (depubblica)
     const employees = allIds.map((id) => ({
       id,
       published: this.selectedEmployees.includes(id),
@@ -269,10 +254,6 @@ export class ShiftHomeComponent implements OnInit {
       });
   }
 
-  // ======================================================
-  // Navigazione
-  // ======================================================
-
   prevDay(): void {
     const d = new Date(this.selectedDate);
     d.setDate(d.getDate() - 1);
@@ -297,11 +278,9 @@ export class ShiftHomeComponent implements OnInit {
     this.router.navigate(['/homeAdmin']);
   }
 
-  // ======================================================
-  // TOOLTIP - Assegnati precedenti
-  // ======================================================
-
   handleClick(event: MouseEvent, appointmentId: number): void {
+    if (!this.tenantService.isSami) return;
+
     const target = event.target as HTMLElement;
     const dateStr = this.formatDate(this.selectedDate);
 
@@ -367,10 +346,6 @@ export class ShiftHomeComponent implements OnInit {
     this.tooltipText = '';
     this.tooltipTarget = null;
   }
-
-  // ======================================================
-  // WHATSAPP + LINK PDF
-  // ======================================================
 
   sendViaWhatsApp(empName: string): void {
     const dateStr = this.formatDate(this.selectedDate);

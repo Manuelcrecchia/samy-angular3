@@ -5,33 +5,44 @@ import { NgxExtendedPdfViewerService } from 'ngx-extended-pdf-viewer';
 import { GlobalService } from '../../service/global.service';
 import { QuoteModelService } from '../../service/quote-model.service';
 import { PopupServiceService } from '../../componenti/popup/popup-service.service';
-import { DxSchedulerComponent } from "devextreme-angular";
+import { DxSchedulerComponent } from 'devextreme-angular';
 import { AutomaticAddInspectionToCalendarService } from '../../service/automatic-add-inspection-to-calendar.service';
 import { Location } from '@angular/common';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { CustomerModelService } from '../../service/customer-model.service';
-
+import { TenantService } from '../../service/tenant.service';
 
 @Component({
   selector: 'app-quotes-home',
   templateUrl: './quotes-home.component.html',
-  styleUrl: './quotes-home.component.css'
+  styleUrl: './quotes-home.component.css',
 })
-export class QuotesHomeComponent   {@Input() color: any;
+export class QuotesHomeComponent {
+  @Input() color: any;
   numeroClienteSelezionato = '';
   showCompletedQuotes = false;
+
   quotesFrEnd: {
     numeroPreventivo: string;
     nominativo: string;
     complete: string;
   }[] = [];
-  
+
+  private allQuotes: {
+    numeroPreventivo: string;
+    nominativo: string;
+    complete: string;
+  }[] = [];
 
   pdfPrev!: string;
   pdfTsSelezionato = false;
-  @ViewChild(DxSchedulerComponent, { static: false }) scheduler!: DxSchedulerComponent;
 
-  constructor(private http: HttpClient,private snackBar: MatSnackBar,
+  @ViewChild(DxSchedulerComponent, { static: false })
+  scheduler!: DxSchedulerComponent;
+
+  constructor(
+    private http: HttpClient,
+    private snackBar: MatSnackBar,
     private pdfService: NgxExtendedPdfViewerService,
     private globalService: GlobalService,
     private router: Router,
@@ -39,301 +50,426 @@ export class QuotesHomeComponent   {@Input() color: any;
     private popup: PopupServiceService,
     private automaticAddInspectionToCalendarService: AutomaticAddInspectionToCalendarService,
     private location: Location,
-    private customerModelService : CustomerModelService
-   ){}
+    private customerModelService: CustomerModelService,
+    public tenantService: TenantService,
+  ) {}
 
-addInspection(numeroPreventivo: string, nominativo: string) {
-  this.automaticAddInspectionToCalendarService.pass = true;
-  this.automaticAddInspectionToCalendarService.nominativo = nominativo;
-  this.automaticAddInspectionToCalendarService.numeroPreventivo = numeroPreventivo;
-  let body = { numeroPreventivo: numeroPreventivo };
-  this.http
-    .post(this.globalService.url + 'quotes/getQuote', body,{
-      headers: this.globalService.headers,
-      responseType: 'text',
-    })
-    .subscribe((response) => {
-      let temp = JSON.parse(response)
-      this.automaticAddInspectionToCalendarService.telefono = temp[0].telefono;
-      this.router.navigateByUrl('/calendarHome');
-    }
-    );}
+  addInspection(numeroPreventivo: string, nominativo: string) {
+    this.automaticAddInspectionToCalendarService.pass = true;
+    this.automaticAddInspectionToCalendarService.nominativo = nominativo;
+    this.automaticAddInspectionToCalendarService.numeroPreventivo =
+      numeroPreventivo;
 
-navigateToAddQuote(){
-  this.router.navigateByUrl('/addQuote');
-}
+    const body = { numeroPreventivo };
 
+    this.http
+      .post<any[]>(this.globalService.url + 'quotes/getQuote', body, {
+        headers: this.globalService.headers,
+      })
+      .subscribe({
+        next: (response) => {
+          const temp = Array.isArray(response) ? response : [];
+          this.automaticAddInspectionToCalendarService.telefono =
+            temp[0]?.telefono || '';
+          this.router.navigateByUrl('/calendarHome');
+        },
+        error: (err) => {
+          console.error('Errore addInspection:', err);
+        },
+      });
+  }
 
-ngOnInit() {
-  this.http
-    .get(this.globalService.url + 'quotes/getAll', {
-      headers: this.globalService.headers,
-      responseType: 'text',
-    })
-    .subscribe((response) => {
-      const allQuotes = JSON.parse(response) as any[];
+  navigateToAddQuote() {
+    this.router.navigateByUrl('/addQuote');
+  }
 
-      const filteredQuotes = this.showCompletedQuotes
-  ? allQuotes.filter(q => q.complete === 'A' || q.complete === 'R')
-  : allQuotes.filter(q => !q.complete || q.complete === '');
+  ngOnInit() {
+    this.loadQuotes();
+  }
 
+  private loadQuotes() {
+    this.http
+      .get<any[]>(this.globalService.url + 'quotes/getAll', {
+        headers: this.globalService.headers,
+      })
+      .subscribe({
+        next: (response) => {
+          const allQuotes = Array.isArray(response) ? response : [];
 
-      this.quotesFrEnd = filteredQuotes.sort(
-        (a, b) => parseInt(b.numeroPreventivo) - parseInt(a.numeroPreventivo)
-      );
+          const filteredQuotes = this.showCompletedQuotes
+            ? allQuotes.filter((q) => q.complete === 'A' || q.complete === 'R')
+            : allQuotes.filter((q) => !q.complete || q.complete === '');
 
-      if (this.quotesFrEnd.length > 0) {
-        this.pdfTsSelezionato = true;
-        this.numeroClienteSelezionato = this.quotesFrEnd[0].numeroPreventivo;
-      }
-    });
-}
+          this.allQuotes = filteredQuotes.sort(
+            (a, b) =>
+              parseInt(b.numeroPreventivo) - parseInt(a.numeroPreventivo),
+          );
 
+          this.quotesFrEnd = [...this.allQuotes];
 
-viewPdf(numeroPreventivo:string){
-  this.router.navigate(['/view-pdf'], { queryParams: { numeroPreventivo } });}
+          if (this.quotesFrEnd.length > 0) {
+            this.pdfTsSelezionato = true;
+            this.numeroClienteSelezionato =
+              this.quotesFrEnd[0].numeroPreventivo;
+          } else {
+            this.pdfTsSelezionato = false;
+            this.numeroClienteSelezionato = '';
+          }
+        },
+        error: (err) => {
+          console.error('Errore caricamento preventivi:', err);
+        },
+      });
+  }
+
+  viewPdf(numeroPreventivo: string) {
+    this.router.navigate(['/view-pdf'], { queryParams: { numeroPreventivo } });
+  }
 
   private normalize(s: string): string {
     return (s || '')
-      .normalize('NFD')                // separa lettere e accenti
-      .replace(/\p{Diacritic}/gu, '')  // elimina i segni diacritici
+      .normalize('NFD')
+      .replace(/\p{Diacritic}/gu, '')
       .toLowerCase()
       .trim();
   }
-  
+
   searchNumeroPreventivo(v: string): void {
     const q = this.normalize(v);
+
     this.quotesFrEnd = q
-      ? this.quotesFrEnd.filter(quote =>
-          this.normalize(quote?.numeroPreventivo?.toString()).startsWith(q)
+      ? this.allQuotes.filter((quote) =>
+          this.normalize(quote?.numeroPreventivo?.toString()).startsWith(q),
         )
-      : [...this.quotesFrEnd];
+      : [...this.allQuotes];
   }
-  
+
   searchNominativo(v: string): void {
     const q = this.normalize(v);
+
     this.quotesFrEnd = q
-      ? this.quotesFrEnd.filter(quote =>
-          this.normalize(quote?.nominativo).includes(q)
+      ? this.allQuotes.filter((quote) =>
+          this.normalize(quote?.nominativo).includes(q),
         )
-      : [...this.quotesFrEnd];
+      : [...this.allQuotes];
   }
-  
 
+  navigateToEditQuote(numeroPreventivo: string) {
+    const body = { numeroPreventivo };
 
-navigateToEditQuote(numeroPreventivo: string){
-  const body = { numeroPreventivo: numeroPreventivo };
-this.http
-          .post(
-            this.globalService.url + 'quotes/getQuote',
-            body,
-            {
-              headers: this.globalService.headers,
-              responseType: 'text',
-            }
-          )
-          .subscribe((response) => {
-            if(response == 'Unauthorized') {
-              this.router.navigateByUrl('/')
-            }
-            else {
-              let quoteJson = (JSON.parse(response)[0]);
-              this.quoteModel.numeroPreventivo = quoteJson["numeroPreventivo"];
-              this.quoteModel.codiceOperatore = quoteJson["codiceOperatore"];
-              this.quoteModel.tipoPreventivo = quoteJson["tipoPreventivo"];
-              this.quoteModel.data = quoteJson["data"];
-              this.quoteModel.nominativo = quoteJson["nominativo"];
-              this.quoteModel.cfpi = quoteJson["cfpi"];
-              this.quoteModel.cittaDiFatturazione = quoteJson["cittaDiFatturazione"];
-              this.quoteModel.selettorePrefissoViaDiFatturazione = quoteJson["selettorePrefissoViaDiFatturazione"];
-              this.quoteModel.viaDiFatturazione = quoteJson["viaDiFatturazione"];
-              this.quoteModel.capDiFatturazione = quoteJson["capDiFatturazione"];
-              this.quoteModel.citta = quoteJson["citta"];
-              this.quoteModel.selettorePrefissoVia = quoteJson["selettorePrefissoVia"];
-              this.quoteModel.via = quoteJson["via"];
-              this.quoteModel.cap = quoteJson["cap"];
-              this.quoteModel.email = quoteJson["email"];
-              this.quoteModel.telefono = quoteJson["telefono"];
-              this.quoteModel.referente = quoteJson["referente"];
-              this.quoteModel.descrizioneImmobile = quoteJson["descrizioneImmobile"];
-              this.quoteModel.servizi = JSON.parse(quoteJson["servizi"]);
-              this.quoteModel.interventi = JSON.parse(quoteJson["interventi"]);
-              this.quoteModel.imponibile = parseFloat(quoteJson["imponibile"]).toFixed(2);
-              this.quoteModel.iva = quoteJson["iva"];
-              this.quoteModel.pagamento = quoteJson["pagamento"];
-              this.quoteModel.tempistica = quoteJson["tempistica"];
-              this.quoteModel.dataInizioContratto = quoteJson["dataInizioContratto"];
-              this.quoteModel.dataInizioContrattoDate = quoteJson["dataInizioContratto"]
-              ? this.parseDateIT(quoteJson["dataInizioContratto"])
-              : null;              this.quoteModel.durataContratto = quoteJson["durataContratto"];
-              this.quoteModel.note = quoteJson["note"];
-              this.router.navigateByUrl('/editQuote');
-            }
-          });
-}
-
-private parseDateIT(value: string): Date | null {
-  if (!value) return null;
-  const [dd, mm, yyyy] = value.split('/');
-  return new Date(+yyyy, +mm - 1, +dd);
-}
-
-delete(numeroPreventivo: string){
-  const body = { numeroPreventivo: numeroPreventivo };
-
-  this.http
-  .post(
-    this.globalService.url + 'quotes/delete',
-    body, {
-      headers: this.globalService.headers,
-      responseType: 'text',
-    })
-    .subscribe((response)=>{
-      if(response == 'Unauthorized') {
-        this.router.navigateByUrl('/')
-      }
-      else {
-      this.ngOnInit();
-      }
-    })
-}
-
-conferm(numeroPreventivo: string) {
-  const body = { numeroPreventivo };
-
-  this.http
-    .post(this.globalService.url + 'quotes/getQuote', body, {
-      headers: this.globalService.headers,
-      responseType: 'text',
-    })
-    .subscribe((response) => {
-      if (response === 'Unauthorized') {
-        this.router.navigateByUrl('/');
-        return;
-      }
-
-      const quote = JSON.parse(response)[0];
-
-      // Popola il modello per la pagina AddCustomer
-      this.customerModelService.tipoCliente = quote.tipoPreventivo;
-      this.customerModelService.nominativo = quote.nominativo;
-      this.customerModelService.cfpi = quote.cfpi;
-      this.customerModelService.cittaDiFatturazione = quote.cittaDiFatturazione;
-      this.customerModelService.selettorePrefissoViaDiFatturazione = quote.selettorePrefissoViaDiFatturazione;
-      this.customerModelService.viaDiFatturazione = quote.viaDiFatturazione;
-      this.customerModelService.capDiFatturazione = quote.capDiFatturazione;
-      this.customerModelService.citta = quote.citta;
-      this.customerModelService.selettorePrefissoVia = quote.selettorePrefissoVia;
-      this.customerModelService.via = quote.via;
-      this.customerModelService.cap = quote.cap;
-      this.customerModelService.email = quote.email;
-      this.customerModelService.telefono = quote.telefono;
-      this.customerModelService.referente = quote.referente;
-      this.customerModelService.descrizioneImmobile = quote.descrizioneImmobile;
-      this.customerModelService.servizi = JSON.parse(quote.servizi);
-      this.customerModelService.interventi = JSON.parse(quote.interventi);
-      this.customerModelService.imponibile = parseFloat(quote.imponibile).toFixed(2);
-      this.customerModelService.iva = quote.iva;
-      this.customerModelService.pagamento = quote.pagamento;
-      this.customerModelService.tempistica = quote.tempistica;
-      this.customerModelService.note = quote.note;
-
-      // ✅ Imposta complete = true nel backend
-      this.http.post(this.globalService.url + 'quotes/setComplete', { numeroPreventivo }, {
+    this.http
+      .post<any[]>(this.globalService.url + 'quotes/getQuote', body, {
         headers: this.globalService.headers,
-        responseType: 'text'
-      }).subscribe(() => {
-        // Naviga alla pagina di aggiunta cliente
-        this.router.navigateByUrl('/addCustomer');
+      })
+      .subscribe({
+        next: (response) => {
+          const quoteJson = Array.isArray(response) ? response[0] : null;
+
+          if (!quoteJson) {
+            this.popup.text = 'Preventivo non trovato';
+            this.popup.openPopup();
+            return;
+          }
+
+          this.quoteModel.numeroPreventivo = quoteJson['numeroPreventivo'];
+          this.quoteModel.codiceOperatore = quoteJson['codiceOperatore'];
+          this.quoteModel.tipoPreventivo = quoteJson['tipoPreventivo'];
+          this.quoteModel.data = quoteJson['data'];
+          this.quoteModel.nominativo = quoteJson['nominativo'];
+          this.quoteModel.cfpi = quoteJson['cfpi'];
+
+          // campi SAMI
+          this.quoteModel.cittaDiFatturazione =
+            quoteJson['cittaDiFatturazione'] || '';
+          this.quoteModel.selettorePrefissoViaDiFatturazione =
+            quoteJson['selettorePrefissoViaDiFatturazione'] || '';
+          this.quoteModel.viaDiFatturazione =
+            quoteJson['viaDiFatturazione'] || '';
+          this.quoteModel.capDiFatturazione =
+            quoteJson['capDiFatturazione'] || '';
+          this.quoteModel.citta = quoteJson['citta'] || '';
+          this.quoteModel.selettorePrefissoVia =
+            quoteJson['selettorePrefissoVia'] || '';
+          this.quoteModel.via = quoteJson['via'] || '';
+          this.quoteModel.cap = quoteJson['cap'] || '';
+          this.quoteModel.referente = quoteJson['referente'] || '';
+          this.quoteModel.descrizioneImmobile =
+            quoteJson['descrizioneImmobile'] || '';
+
+          // campi comuni
+          this.quoteModel.email = quoteJson['email'] || '';
+          this.quoteModel.telefono = quoteJson['telefono'] || '';
+          this.quoteModel.pagamento = quoteJson['pagamento'] || '';
+          this.quoteModel.note = quoteJson['note'] || '';
+
+          // array SAMI
+          this.quoteModel.servizi = this.parseMaybeJsonArray(
+            quoteJson['servizi'],
+          );
+          this.quoteModel.interventi = this.parseMaybeJsonArray(
+            quoteJson['interventi'],
+          );
+
+          this.quoteModel.imponibile = quoteJson['imponibile']
+            ? parseFloat(quoteJson['imponibile']).toFixed(2)
+            : '0.00';
+
+          this.quoteModel.iva = quoteJson['iva'] || '';
+          this.quoteModel.dataInizioContratto =
+            quoteJson['dataInizioContratto'] || '';
+          this.quoteModel.dataInizioContrattoDate = quoteJson[
+            'dataInizioContratto'
+          ]
+            ? this.parseDateIT(quoteJson['dataInizioContratto'])
+            : null;
+
+          this.quoteModel.durataContratto = quoteJson['durataContratto'] || '';
+
+          // campi EMMECI
+          (this.quoteModel as any).ragSociale = quoteJson['ragSociale'] || '';
+          (this.quoteModel as any).cittaDiPartenza =
+            quoteJson['cittaDiPartenza'] || '';
+          (this.quoteModel as any).selettorePrefissoViaDiPartenza =
+            quoteJson['selettorePrefissoViaDiPartenza'] || '';
+          (this.quoteModel as any).viaDiPartenza =
+            quoteJson['viaDiPartenza'] || '';
+          (this.quoteModel as any).pianoDiPartenza =
+            quoteJson['pianoDiPartenza'] || '';
+          (this.quoteModel as any).occupazioneSuoloPubblicoDiPartenza =
+            quoteJson['occupazioneSuoloPubblicoDiPartenza'] || '';
+          (this.quoteModel as any).capDiPartenza =
+            quoteJson['capDiPartenza'] || '';
+
+          (this.quoteModel as any).cittaDiArrivo =
+            quoteJson['cittaDiArrivo'] || '';
+          (this.quoteModel as any).selettorePrefissoViaDiArrivo =
+            quoteJson['selettorePrefissoViaDiArrivo'] || '';
+          (this.quoteModel as any).viaDiArrivo = quoteJson['viaDiArrivo'] || '';
+          (this.quoteModel as any).pianoDiArrivo =
+            quoteJson['pianoDiArrivo'] || '';
+          (this.quoteModel as any).occupazioneSuoloPubblicoDiArrivo =
+            quoteJson['occupazioneSuoloPubblicoDiArrivo'] || '';
+          (this.quoteModel as any).capDiArrivo = quoteJson['capDiArrivo'] || '';
+
+          (this.quoteModel as any).altreDestinazioni =
+            quoteJson['altreDestinazioni'] || '';
+          (this.quoteModel as any).stanzeEOggetti = this.parseMaybeJsonArray(
+            quoteJson['stanzeEOggetti'],
+          );
+
+          (this.quoteModel as any).lampadari = !!quoteJson['lampadari'];
+          (this.quoteModel as any).imballaggio = !!quoteJson['imballaggio'];
+          (this.quoteModel as any).smaltimentoMaterialiDiRisulta =
+            !!quoteJson['smaltimentoMaterialiDiRisulta'];
+          (this.quoteModel as any).riposizionamentoContenutiDegliArredi =
+            !!quoteJson['riposizionamentoContenutiDegliArredi'];
+          (this.quoteModel as any).smontaggioEImballaggioDegliArredi =
+            !!quoteJson['smontaggioEImballaggioDegliArredi'];
+          (this.quoteModel as any).caricoSuNostroMezzoIdoneo =
+            !!quoteJson['caricoSuNostroMezzoIdoneo'];
+          (this.quoteModel as any).trasporto = !!quoteJson['trasporto'];
+          (this.quoteModel as any).scaricoEConsegnaAlPiano =
+            !!quoteJson['scaricoEConsegnaAlPiano'];
+          (this.quoteModel as any).montaggioDegliArredi =
+            !!quoteJson['montaggioDegliArredi'];
+          (this.quoteModel as any).ausilioDiElevatoreEsternoOvePossibile =
+            !!quoteJson['ausilioDiElevatoreEsternoOvePossibile'];
+          (this.quoteModel as any).assicurazioneControIRischiDiTrasporto =
+            !!quoteJson['assicurazioneControIRischiDiTrasporto'];
+          (this.quoteModel as any).fornituraMaterialiDaImballo =
+            !!quoteJson['fornituraMaterialiDaImballo'];
+          (this.quoteModel as any).imballaggioDeiContenuti =
+            !!quoteJson['imballaggioDeiContenuti'];
+          (this.quoteModel as any).custodiaInDeposito =
+            !!quoteJson['custodiaInDeposito'];
+          (this.quoteModel as any).ospCarico = !!quoteJson['ospCarico'];
+          (this.quoteModel as any).ospScarico = !!quoteJson['ospScarico'];
+
+          (this.quoteModel as any).prezzoTrasloco =
+            quoteJson['prezzoTrasloco'] || 0;
+          (this.quoteModel as any).prezzoFornituraMaterialiDaImballo =
+            quoteJson['prezzoFornituraMaterialiDaImballo'] || 0;
+          (this.quoteModel as any).prezzoImballaggioDeiContenuti =
+            quoteJson['prezzoImballaggioDeiContenuti'] || 0;
+          (this.quoteModel as any).prezzoPassaggioInDeposito =
+            quoteJson['prezzoPassaggioInDeposito'] || 0;
+          (this.quoteModel as any).prezzoOccupazioneSuoloPubblico =
+            quoteJson['prezzoOccupazioneSuoloPubblico'] || 0;
+          (this.quoteModel as any).prezzoMensileCustodiaMobili =
+            quoteJson['prezzoMensileCustodiaMobili'] || 0;
+          (this.quoteModel as any).stato = quoteJson['stato'] || '';
+
+          this.router.navigateByUrl('/editQuote');
+        },
+        error: (err) => {
+          console.error('Errore navigateToEditQuote:', err);
+        },
       });
-    });
+  }
 
-}
+  private parseMaybeJsonArray(value: any): any[] {
+    if (Array.isArray(value)) return value;
+    if (!value) return [];
 
-refuse(numeroPreventivo: string) {
-  const body = { numeroPreventivo };
+    try {
+      return JSON.parse(value);
+    } catch {
+      return [];
+    }
+  }
 
-  this.http
-    .post(this.globalService.url + 'quotes/setRefused', body, {
-      headers: this.globalService.headers,
-      responseType: 'text',
-    })
-    .subscribe((response) => {
-      if (response === 'Unauthorized') {
-        this.router.navigateByUrl('/');
-      } else {
-        this.ngOnInit();
-      }
-    });
-}
+  private parseDateIT(value: string): Date | null {
+    if (!value) return null;
+    const [dd, mm, yyyy] = value.split('/');
+    return new Date(+yyyy, +mm - 1, +dd);
+  }
 
+  delete(numeroPreventivo: string) {
+    const body = { numeroPreventivo };
 
+    this.http
+      .post(this.globalService.url + 'quotes/delete', body, {
+        headers: this.globalService.headers,
+        responseType: 'text',
+      })
+      .subscribe({
+        next: () => {
+          this.ngOnInit();
+        },
+        error: (err) => {
+          console.error('Errore delete quote:', err);
+        },
+      });
+  }
 
+  conferm(numeroPreventivo: string) {
+    const body = { numeroPreventivo };
 
-invio(numeroPreventivo: string){
-  const body = { numeroPreventivo: numeroPreventivo };
-this.http
-  .post(
-    this.globalService.url + 'quotes/sendPdf',
-    body, {
-      headers: this.globalService.headers,
-      responseType: 'text',
-    })
-    .subscribe((response)=>{
-      if(response == 'Unauthorized') {
-        this.router.navigateByUrl('/')
-      }
-      else {
-        if(response == 'NO'){
-          this.popup.text = 'NEL PREVENTIVO NON E PRESENTE LA MAIL';
-        this.popup.openPopup();
-        }
-        else {
-          this.popup.text = 'INVIO DELLE MAIL RIUSCITO';
-        this.popup.openPopup();
-        }
-      }
-    })
-}
+    this.http
+      .post<any[]>(this.globalService.url + 'quotes/getQuote', body, {
+        headers: this.globalService.headers,
+      })
+      .subscribe({
+        next: (response) => {
+          const quote = Array.isArray(response) ? response[0] : null;
 
-// invioWhatsApp(numeroPreventivo: string) {
-//   const body = { numeroPreventivo: numeroPreventivo };
-//   this.http
-//     .post(
-//       this.globalService.url + 'quotes/sendWhatsApp',
-//       body,
-//       {
-//         headers: this.globalService.headers,
-//         responseType: 'text',
-//       }
-//     )
-//     .subscribe((response) => {
-//       if (response == 'Unauthorized') {
-//         this.router.navigateByUrl('/');
-//       } else {
-//         if (response == 'NO') {
-//           this.popup.text = 'NEL PREVENTIVO NON È PRESENTE UN NUMERO DI TELEFONO';
-//           this.popup.openPopup();
-//         } else {
-//           this.popup.text = 'INVIO SU WHATSAPP RIUSCITO';
-//           this.popup.openPopup();
-//         }
-//       }
-//     });
-// }
+          if (!quote) {
+            this.popup.text = 'Preventivo non trovato';
+            this.popup.openPopup();
+            return;
+          }
 
+          // SAMI
+          this.customerModelService.tipoCliente =
+            quote.tipoPreventivo === 'S' ? 'S' : 'O';
+          this.customerModelService.nominativo = quote.nominativo || '';
+          this.customerModelService.cfpi = quote.cfpi || '';
+          this.customerModelService.cittaDiFatturazione =
+            quote.cittaDiFatturazione || '';
+          this.customerModelService.selettorePrefissoViaDiFatturazione =
+            quote.selettorePrefissoViaDiFatturazione || '';
+          this.customerModelService.viaDiFatturazione =
+            quote.viaDiFatturazione || '';
+          this.customerModelService.capDiFatturazione =
+            quote.capDiFatturazione || '';
+          this.customerModelService.citta = quote.citta || '';
+          this.customerModelService.selettorePrefissoVia =
+            quote.selettorePrefissoVia || '';
+          this.customerModelService.via = quote.via || '';
+          this.customerModelService.cap = quote.cap || '';
+          this.customerModelService.email = quote.email || '';
+          this.customerModelService.telefono = quote.telefono || '';
+          this.customerModelService.referente = quote.referente || '';
+          this.customerModelService.descrizioneImmobile =
+            quote.descrizioneImmobile || '';
+          this.customerModelService.servizi = this.parseMaybeJsonArray(
+            quote.servizi,
+          );
+          this.customerModelService.interventi = this.parseMaybeJsonArray(
+            quote.interventi,
+          );
+          this.customerModelService.imponibile = quote.imponibile
+            ? parseFloat(quote.imponibile).toFixed(2)
+            : '0.00';
+          this.customerModelService.iva = quote.iva || '';
+          this.customerModelService.pagamento = quote.pagamento || '';
+          this.customerModelService.tempistica = quote.tempistica || '';
+          this.customerModelService.note = quote.note || '';
 
+          this.http
+            .post(
+              this.globalService.url + 'quotes/setComplete',
+              { numeroPreventivo },
+              {
+                headers: this.globalService.headers,
+                responseType: 'text',
+              },
+            )
+            .subscribe({
+              next: () => {
+                this.router.navigateByUrl('/addCustomer');
+              },
+              error: (err) => {
+                console.error('Errore setComplete:', err);
+              },
+            });
+        },
+        error: (err) => {
+          console.error('Errore conferm quote:', err);
+        },
+      });
+  }
 
-back(){
-  this.router.navigateByUrl('/homeAdmin')
-}
+  refuse(numeroPreventivo: string) {
+    const body = { numeroPreventivo };
 
-@HostListener('window:popstate', ['$event'])
+    this.http
+      .post(this.globalService.url + 'quotes/setRefused', body, {
+        headers: this.globalService.headers,
+        responseType: 'text',
+      })
+      .subscribe({
+        next: () => {
+          this.ngOnInit();
+        },
+        error: (err) => {
+          console.error('Errore refuse quote:', err);
+        },
+      });
+  }
+
+  invio(numeroPreventivo: string) {
+    const body = { numeroPreventivo };
+
+    this.http
+      .post(this.globalService.url + 'quotes/sendPdf', body, {
+        headers: this.globalService.headers,
+        responseType: 'text',
+      })
+      .subscribe({
+        next: (response) => {
+          if (response == 'NO') {
+            this.popup.text = 'NEL PREVENTIVO NON E PRESENTE LA MAIL';
+            this.popup.openPopup();
+          } else {
+            this.popup.text = 'INVIO DELLE MAIL RIUSCITO';
+            this.popup.openPopup();
+          }
+        },
+        error: (err) => {
+          console.error('Errore invio PDF:', err);
+        },
+      });
+  }
+
+  back() {
+    this.router.navigateByUrl('/homeAdmin');
+  }
+
+  @HostListener('window:popstate', ['$event'])
   onBrowserBackBtnClose(event: Event): void {
     event.preventDefault();
     this.location.replaceState('/homeAdmin');
     this.router.navigateByUrl('/homeAdmin');
   }
-
-
 }

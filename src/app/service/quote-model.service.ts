@@ -4,12 +4,19 @@ import { Injectable } from '@angular/core';
   providedIn: 'root',
 })
 export class QuoteModelService {
+  // comuni
   numeroPreventivo = '';
-  tipoPreventivo = '';
   codiceOperatore = '';
   data = '';
   nominativo = '';
   cfpi = '';
+  email = '';
+  telefono = '';
+  pagamento = '';
+  note = '';
+
+  // SAMI
+  tipoPreventivo = '';
   cittaDiFatturazione = '';
   selettorePrefissoViaDiFatturazione = '';
   viaDiFatturazione = '';
@@ -18,32 +25,75 @@ export class QuoteModelService {
   selettorePrefissoVia = '';
   via = '';
   cap = '';
-  email = '';
-  telefono = '';
   referente = '';
   descrizioneImmobile = '';
   servizi = ['', '', '', '', '', '', '', '', '', '', '', '', '', ''];
   interventi = ['', '', '', '', '', '', '', '', '', '', '', '', '', ''];
-
   imponibile = '0.00';
   iva = 'N';
-  pagamento = '';
-  tempistica = '';
   dataInizioContratto = '';
   dataInizioContrattoDate: Date | null = null;
   durataContratto = '';
-  note = '';
   complete = '';
+
+  // EMMECI
+  ragSociale = '';
+
+  cittaDiPartenza = '';
+  selettorePrefissoViaDiPartenza = '';
+  viaDiPartenza = '';
+  pianoDiPartenza = '';
+  occupazioneSuoloPubblicoDiPartenza = '';
+  capDiPartenza = '';
+
+  cittaDiArrivo = '';
+  selettorePrefissoViaDiArrivo = '';
+  viaDiArrivo = '';
+  pianoDiArrivo = '';
+  occupazioneSuoloPubblicoDiArrivo = '';
+  capDiArrivo = '';
+
+  altreDestinazioni = '';
+  stanzeEOggetti = '';
+
+  lampadari = false;
+  imballaggio = false;
+  smaltimentoMaterialiDiRisulta = false;
+  riposizionamentoContenutiDegliArredi = false;
+  smontaggioEImballaggioDegliArredi = false;
+  caricoSuNostroMezzoIdoneo = false;
+  trasporto = false;
+  scaricoEConsegnaAlPiano = false;
+  montaggioDegliArredi = false;
+  ausilioDiElevatoreEsternoOvePossibile = false;
+  assicurazioneControIRischiDiTrasporto = false;
+  fornituraMaterialiDaImballo = false;
+  imballaggioDeiContenuti = false;
+  custodiaInDeposito = false;
+  ospCarico = false;
+  ospScarico = false;
+
+  prezzoTrasloco = 0;
+  prezzoFornituraMaterialiDaImballo = 0;
+  prezzoImballaggioDeiContenuti = 0;
+  prezzoPassaggioInDeposito = 0;
+  prezzoOccupazioneSuoloPubblico = 0;
+  prezzoMensileCustodiaMobili = 0;
 
   constructor() {}
 
   resetQuoteModel() {
     this.numeroPreventivo = '';
-    this.tipoPreventivo = '';
     this.codiceOperatore = '';
     this.data = '';
     this.nominativo = '';
     this.cfpi = '';
+    this.email = '';
+    this.telefono = '';
+    this.pagamento = '';
+    this.note = '';
+
+    this.tipoPreventivo = '';
     this.cittaDiFatturazione = '';
     this.selettorePrefissoViaDiFatturazione = '';
     this.viaDiFatturazione = '';
@@ -52,19 +102,58 @@ export class QuoteModelService {
     this.selettorePrefissoVia = '';
     this.via = '';
     this.cap = '';
-    this.email = '';
-    this.telefono = '';
     this.referente = '';
     this.descrizioneImmobile = '';
     this.servizi = ['', '', '', '', '', '', '', '', '', '', '', '', '', ''];
     this.interventi = ['', '', '', '', '', '', '', '', '', '', '', '', '', ''];
     this.imponibile = '0.00';
     this.iva = 'N';
-    this.pagamento = '';
-    this.tempistica = '';
     this.dataInizioContratto = '';
     this.dataInizioContrattoDate = null;
     this.durataContratto = '';
-    this.note = '';
+    this.complete = '';
+
+    this.ragSociale = '';
+
+    this.cittaDiPartenza = '';
+    this.selettorePrefissoViaDiPartenza = '';
+    this.viaDiPartenza = '';
+    this.pianoDiPartenza = '';
+    this.occupazioneSuoloPubblicoDiPartenza = '';
+    this.capDiPartenza = '';
+
+    this.cittaDiArrivo = '';
+    this.selettorePrefissoViaDiArrivo = '';
+    this.viaDiArrivo = '';
+    this.pianoDiArrivo = '';
+    this.occupazioneSuoloPubblicoDiArrivo = '';
+    this.capDiArrivo = '';
+
+    this.altreDestinazioni = '';
+    this.stanzeEOggetti = '';
+
+    this.lampadari = false;
+    this.imballaggio = false;
+    this.smaltimentoMaterialiDiRisulta = false;
+    this.riposizionamentoContenutiDegliArredi = false;
+    this.smontaggioEImballaggioDegliArredi = false;
+    this.caricoSuNostroMezzoIdoneo = false;
+    this.trasporto = false;
+    this.scaricoEConsegnaAlPiano = false;
+    this.montaggioDegliArredi = false;
+    this.ausilioDiElevatoreEsternoOvePossibile = false;
+    this.assicurazioneControIRischiDiTrasporto = false;
+    this.fornituraMaterialiDaImballo = false;
+    this.imballaggioDeiContenuti = false;
+    this.custodiaInDeposito = false;
+    this.ospCarico = false;
+    this.ospScarico = false;
+
+    this.prezzoTrasloco = 0;
+    this.prezzoFornituraMaterialiDaImballo = 0;
+    this.prezzoImballaggioDeiContenuti = 0;
+    this.prezzoPassaggioInDeposito = 0;
+    this.prezzoOccupazioneSuoloPubblico = 0;
+    this.prezzoMensileCustodiaMobili = 0;
   }
 }

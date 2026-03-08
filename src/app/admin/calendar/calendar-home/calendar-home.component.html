@@ -10,13 +10,20 @@
     min-height: 100vh;
     padding: 14px 12px 20px;
     background:
-      radial-gradient(800px 500px at 15% 10%, rgba(0, 170, 255, 0.15), transparent 60%),
-      radial-gradient(700px 500px at 85% 15%, rgba(255, 120, 0, 0.15), transparent 60%),
+      radial-gradient(
+        800px 500px at 15% 10%,
+        rgba(0, 170, 255, 0.15),
+        transparent 60%
+      ),
+      radial-gradient(
+        700px 500px at 85% 15%,
+        rgba(255, 120, 0, 0.15),
+        transparent 60%
+      ),
       linear-gradient(180deg, #0b0f14, #0f1720);
-    color: rgba(255,255,255,0.92);
+    color: rgba(255, 255, 255, 0.92);
   }
 
-  /* BACK BUTTON */
   .btn-back {
     display: inline-flex;
     align-items: center;
@@ -24,9 +31,13 @@
     padding: 10px 16px;
     border-radius: 999px;
     border: 1px solid var(--glass-border);
-    background: linear-gradient(135deg, rgba(255,140,0,0.25), rgba(0,170,255,0.25));
+    background: linear-gradient(
+      135deg,
+      rgba(255, 140, 0, 0.25),
+      rgba(0, 170, 255, 0.25)
+    );
     backdrop-filter: blur(10px);
-    box-shadow: 0 8px 25px rgba(0,0,0,0.4);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
     color: #000;
     font-weight: 700;
     transition: all 0.2s ease;
@@ -34,10 +45,9 @@
 
   .btn-back:hover {
     transform: translateY(-2px);
-    box-shadow: 0 12px 35px rgba(0,0,0,0.5);
+    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.5);
   }
 
-  /* FILTER CONTAINER */
   .filter-container {
     display: flex;
     flex-wrap: wrap;
@@ -45,10 +55,10 @@
     gap: 12px;
     padding: 14px;
     border-radius: var(--radius-lg);
-    background: rgba(255,255,255,0.06);
+    background: rgba(255, 255, 255, 0.06);
     backdrop-filter: blur(14px);
     border: 1px solid var(--glass-border);
-    box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
   }
 
   .filter-container .form-label {
@@ -58,8 +68,8 @@
 
   .filter-container .form-select {
     border-radius: var(--radius-md);
-    background: rgba(255,255,255,0.1);
-    border: 1px solid rgba(255,255,255,0.25);
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.25);
     color: white;
     padding: 10px 12px;
   }
@@ -74,28 +84,21 @@
     }
   }
 
-  /* SCHEDULER WRAPPER */
   .fullscreen-scheduler {
     margin-top: 15px;
     border-radius: var(--radius-lg);
     overflow: hidden;
-    background: rgba(255,255,255,0.05);
+    background: rgba(255, 255, 255, 0.05);
     backdrop-filter: blur(18px);
     border: 1px solid var(--glass-border);
-    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
   }
 
-  /* DevExtreme cleanup */
   .dx-scheduler-work-space,
   .dx-scheduler-header-panel {
     background: transparent !important;
   }
 
-  /* -------------------------
-     CATEGORY COLORS (DIVERSI)
-  --------------------------*/
-
-  /* SOPRALLUOGO - ROSSO */
   .category-sopralluogo {
     background: linear-gradient(135deg, #ff4d4d, #cc0000);
     color: white;
@@ -103,7 +106,6 @@
     padding: 6px 10px;
   }
 
-  /* ORDINARIO - VERDE */
   .category-ordinario {
     background: linear-gradient(135deg, #2ecc71, #1e8449);
     color: white;
@@ -111,7 +113,6 @@
     padding: 6px 10px;
   }
 
-  /* STRAORDINARIO - GIALLO */
   .category-straordinario {
     background: linear-gradient(135deg, #f1c40f, #d4ac0d);
     color: black;
@@ -119,7 +120,6 @@
     padding: 6px 10px;
   }
 
-  /* LAVORI SVOLTI - BLU */
   .category-lavoriSvolti {
     background: linear-gradient(135deg, #3498db, #1f618d);
     color: white;
@@ -127,9 +127,15 @@
     padding: 6px 10px;
   }
 
-  /* ALTRO - VIOLA */
   .category-altro {
     background: linear-gradient(135deg, #9b59b6, #6c3483);
+    color: white;
+    border-radius: 14px;
+    padding: 6px 10px;
+  }
+
+  .category-default {
+    background: linear-gradient(135deg, #6c757d, #495057);
     color: white;
     border-radius: 14px;
     padding: 6px 10px;
@@ -138,12 +144,11 @@
   .tooltip-content {
     padding: 12px;
     border-radius: 14px;
-    background: rgba(0,0,0,0.85);
+    background: rgba(0, 0, 0, 0.85);
     color: white;
     backdrop-filter: blur(10px);
-    box-shadow: 0 15px 40px rgba(0,0,0,0.6);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.6);
   }
-
 </style>
 
 <div class="container-fluid fullscreen-container">
@@ -153,16 +158,24 @@
     </button>
   </div>
 
-  <div [ngClass]="{ 'day-view-active': currentView === 'day', 'day-view-week': currentView === 'week' }">
+  <div
+    [ngClass]="{
+      'day-view-active': currentView === 'day',
+      'day-view-week': currentView === 'week',
+    }"
+  >
     <div class="filter-container mb-3">
       <label for="eventFilter" class="form-label">Filtra eventi:</label>
-      <select id="eventFilter" class="form-select w-auto d-inline-block ms-2" (change)="onFilterChange($event)">
+
+      <select
+        id="eventFilter"
+        class="form-select w-auto d-inline-block ms-2"
+        (change)="onFilterChange($event)"
+      >
         <option value="all">Tutti</option>
-        <option value="sopralluogo">Sopralluoghi</option>
-        <option value="ordinario">Lavori Ordinari</option>
-        <option value="straordinario">Lavori Straordinari</option>
-        <option value="lavoriSvolti">Lavori Svolti</option>
-        <option value="altro">Altro</option>
+        <option *ngFor="let cat of categories" [value]="cat.id">
+          {{ cat.text }}
+        </option>
       </select>
     </div>
 
@@ -199,8 +212,9 @@
       <dxi-view type="month"></dxi-view>
 
       <div *dxTemplate="let model of 'appointment-template'">
-        <div [ngClass]="'category-' + model.appointmentData.categories">
-          <strong>{{ model.appointmentData.title }}</strong><br />
+        <div [ngClass]="getCategoryClass(model.appointmentData.categories)">
+          <strong>{{ model.appointmentData.title }}</strong
+          ><br />
           <small>{{ model.appointmentData.description }}</small>
         </div>
       </div>
