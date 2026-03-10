@@ -3,25 +3,14 @@
     --brand-black: #0b0f14;
     --radius-lg: 22px;
     --radius-md: 16px;
-    --glass-border: rgba(255, 255, 255, 0.18);
+    --glass-border: rgba(0, 0, 0, 0.08);
   }
 
   .fullscreen-container {
     min-height: 100vh;
     padding: 14px 12px 20px;
-    background:
-      radial-gradient(
-        800px 500px at 15% 10%,
-        rgba(0, 170, 255, 0.15),
-        transparent 60%
-      ),
-      radial-gradient(
-        700px 500px at 85% 15%,
-        rgba(255, 120, 0, 0.15),
-        transparent 60%
-      ),
-      linear-gradient(180deg, #0b0f14, #0f1720);
-    color: rgba(255, 255, 255, 0.92);
+    background: #ffffff;
+    color: #111111;
   }
 
   .btn-back {
@@ -30,22 +19,17 @@
     gap: 8px;
     padding: 10px 16px;
     border-radius: 999px;
-    border: 1px solid var(--glass-border);
-    background: linear-gradient(
-      135deg,
-      rgba(255, 140, 0, 0.25),
-      rgba(0, 170, 255, 0.25)
-    );
-    backdrop-filter: blur(10px);
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
-    color: #000;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    background: linear-gradient(135deg, #f5f7fa, #e9eef5);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+    color: #111111;
     font-weight: 700;
     transition: all 0.2s ease;
   }
 
   .btn-back:hover {
     transform: translateY(-2px);
-    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.12);
   }
 
   .filter-container {
@@ -55,27 +39,27 @@
     gap: 12px;
     padding: 14px;
     border-radius: var(--radius-lg);
-    background: rgba(255, 255, 255, 0.06);
-    backdrop-filter: blur(14px);
-    border: 1px solid var(--glass-border);
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+    background: #ffffff;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
   }
 
   .filter-container .form-label {
     font-weight: 800;
     margin: 0;
+    color: #111111;
   }
 
   .filter-container .form-select {
     border-radius: var(--radius-md);
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.25);
-    color: white;
+    background: #ffffff;
+    border: 1px solid rgba(0, 0, 0, 0.14);
+    color: #111111;
     padding: 10px 12px;
   }
 
   .filter-container .form-select option {
-    color: black;
+    color: #111111;
   }
 
   @media (max-width: 576px) {
@@ -88,66 +72,263 @@
     margin-top: 15px;
     border-radius: var(--radius-lg);
     overflow: hidden;
-    background: rgba(255, 255, 255, 0.05);
-    backdrop-filter: blur(18px);
-    border: 1px solid var(--glass-border);
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+    background: #ffffff;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08);
   }
 
   .dx-scheduler-work-space,
-  .dx-scheduler-header-panel {
+  .dx-scheduler-header-panel,
+  .dx-scheduler-date-table,
+  .dx-scheduler-time-panel,
+  .dx-scheduler-header,
+  .dx-scheduler {
+    background: #ffffff !important;
+    color: #111111 !important;
+  }
+
+  .dx-scheduler-cell-sizes-horizontal,
+  .dx-scheduler-cell-sizes-vertical,
+  .dx-scheduler-date-table-cell,
+  .dx-scheduler-time-panel-cell,
+  .dx-scheduler-header-panel-cell {
+    background: #ffffff !important;
+    color: #111111 !important;
+    border-color: rgba(0, 0, 0, 0.08) !important;
+  }
+
+  .dx-scheduler-header-panel-cell,
+  .dx-scheduler-time-panel-cell,
+  .dx-scheduler-date-table-cell {
+    font-weight: 500;
+  }
+
+  .dx-scheduler-appointment {
     background: transparent !important;
+    border: 0 !important;
+    box-shadow: none !important;
+  }
+
+  .dx-scheduler-appointment-content {
+    padding: 0 !important;
+    background: transparent !important;
+    color: inherit !important;
+  }
+
+  .dx-scheduler-appointment-recurrence-icon,
+  .dx-scheduler-appointment-reduced-icon {
+    color: rgba(0, 0, 0, 0.55) !important;
+  }
+
+  .dx-scheduler-more-appointments {
+    background: #f4f6f8 !important;
+    color: #111111 !important;
+    border-radius: 10px;
+    border: 1px solid rgba(0, 0, 0, 0.08) !important;
+    font-weight: 700;
+  }
+
+  .appointment-card.category-sopralluogo,
+  .appointment-card.category-ordinario,
+  .appointment-card.category-straordinario,
+  .appointment-card.category-lavoriSvolti,
+  .appointment-card.category-altro,
+  .appointment-card.category-default {
+    width: 100%;
+    min-height: 100%;
+    height: 100%;
+    border-radius: 10px;
+    padding: 6px 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    overflow: hidden;
+    box-sizing: border-box;
+    border: 0 !important;
+    box-shadow: none !important;
+    line-height: 1.15;
+  }
+
+  .appointment-card.category-sopralluogo strong,
+  .appointment-card.category-ordinario strong,
+  .appointment-card.category-straordinario strong,
+  .appointment-card.category-lavoriSvolti strong,
+  .appointment-card.category-altro strong,
+  .appointment-card.category-default strong {
+    display: block;
+    width: 100%;
+    font-size: 12px;
+    font-weight: 800;
+    line-height: 1.1;
+    margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-align: center;
+    color: inherit !important;
+  }
+
+  .appointment-card.category-sopralluogo small,
+  .appointment-card.category-ordinario small,
+  .appointment-card.category-straordinario small,
+  .appointment-card.category-lavoriSvolti small,
+  .appointment-card.category-altro small,
+  .appointment-card.category-default small {
+    display: block;
+    width: 100%;
+    margin-top: 2px;
+    font-size: 10px;
+    font-weight: 600;
+    line-height: 1.1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-align: center;
+    opacity: 0.95;
+    color: inherit !important;
   }
 
   .category-sopralluogo {
-    background: linear-gradient(135deg, #ff4d4d, #cc0000);
-    color: white;
-    border-radius: 14px;
-    padding: 6px 10px;
+    background: #e86a6a;
+    color: #ffffff;
   }
 
   .category-ordinario {
-    background: linear-gradient(135deg, #2ecc71, #1e8449);
-    color: white;
-    border-radius: 14px;
-    padding: 6px 10px;
+    background: #5fa878;
+    color: #ffffff;
   }
 
   .category-straordinario {
-    background: linear-gradient(135deg, #f1c40f, #d4ac0d);
-    color: black;
-    border-radius: 14px;
-    padding: 6px 10px;
+    background: #d6b85a;
+    color: #1a1a1a;
   }
 
   .category-lavoriSvolti {
-    background: linear-gradient(135deg, #3498db, #1f618d);
-    color: white;
-    border-radius: 14px;
-    padding: 6px 10px;
+    background: #6f8fcf;
+    color: #ffffff;
   }
 
   .category-altro {
-    background: linear-gradient(135deg, #9b59b6, #6c3483);
-    color: white;
-    border-radius: 14px;
-    padding: 6px 10px;
+    background: #9a7bc2;
+    color: #ffffff;
   }
 
   .category-default {
-    background: linear-gradient(135deg, #6c757d, #495057);
-    color: white;
-    border-radius: 14px;
-    padding: 6px 10px;
+    background: #8a949e;
+    color: #ffffff;
   }
 
   .tooltip-content {
     padding: 12px;
     border-radius: 14px;
-    background: rgba(0, 0, 0, 0.85);
-    color: white;
-    backdrop-filter: blur(10px);
-    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.6);
+    background: #111111;
+    color: #ffffff;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.18);
+  }
+
+  .tooltip-content div + div {
+    margin-top: 4px;
+  }
+
+  .dx-scheduler-date-table-cell {
+    vertical-align: top !important;
+  }
+
+  .dx-scheduler-appointment-collector {
+    background: #f3f4f6 !important;
+    color: #111111 !important;
+    border: 1px solid rgba(0, 0, 0, 0.08) !important;
+    border-radius: 10px !important;
+    font-weight: 700;
+  }
+
+  .dx-scheduler-view-switcher .dx-button,
+  .dx-scheduler-navigator .dx-button,
+  .dx-scheduler-date-navigator {
+    color: #111111 !important;
+  }
+
+  .dx-toolbar,
+  .dx-toolbar-items-container {
+    background: #ffffff !important;
+    color: #111111 !important;
+    border-color: rgba(0, 0, 0, 0.08) !important;
+  }
+
+  .dx-button-mode-contained {
+    background: #f7f8fa !important;
+    border-color: rgba(0, 0, 0, 0.08) !important;
+    color: #111111 !important;
+  }
+
+  /* =========================
+     FIX DEFINITIVO VISTA MESE
+     ========================= */
+
+  .dx-scheduler-work-space-month .dx-scheduler-appointment,
+  .dx-scheduler-month-view .dx-scheduler-appointment {
+    margin-top: 2px !important;
+    min-height: 20px !important;
+  }
+
+  .dx-scheduler-work-space-month .dx-scheduler-appointment-content,
+  .dx-scheduler-month-view .dx-scheduler-appointment-content {
+    padding: 0 !important;
+    height: 20px !important;
+    min-height: 20px !important;
+    overflow: hidden !important;
+  }
+
+  .dx-scheduler-work-space-month .appointment-card,
+  .dx-scheduler-month-view .appointment-card {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    height: 20px !important;
+    min-height: 20px !important;
+    padding: 0 8px !important;
+    border-radius: 8px !important;
+    text-align: left !important;
+    overflow: hidden !important;
+    line-height: 20px !important;
+  }
+
+  .dx-scheduler-work-space-month .appointment-card.month-compact,
+  .dx-scheduler-month-view .appointment-card.month-compact {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+  }
+
+  .dx-scheduler-work-space-month .appointment-card .month-title,
+  .dx-scheduler-month-view .appointment-card .month-title {
+    display: block !important;
+    width: 100% !important;
+    font-size: 12px !important;
+    font-weight: 700 !important;
+    line-height: 20px !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    text-align: left !important;
+    color: inherit !important;
+  }
+
+  .dx-scheduler-work-space-month .appointment-card strong,
+  .dx-scheduler-work-space-month .appointment-card small,
+  .dx-scheduler-month-view .appointment-card strong,
+  .dx-scheduler-month-view .appointment-card small {
+    display: none !important;
+  }
+
+  /* Vista giorno e settimana */
+  .dx-scheduler-date-table:not(.dx-scheduler-date-table-month)
+    .appointment-card {
+    justify-content: center;
+    align-items: center;
+    text-align: center;
   }
 </style>
 
@@ -212,10 +393,19 @@
       <dxi-view type="month"></dxi-view>
 
       <div *dxTemplate="let model of 'appointment-template'">
-        <div [ngClass]="getCategoryClass(model.appointmentData.categories)">
-          <strong>{{ model.appointmentData.title }}</strong
-          ><br />
-          <small>{{ model.appointmentData.description }}</small>
+        <div
+          class="appointment-card"
+          [class.month-compact]="currentView === 'month'"
+          [ngClass]="getCategoryClass(model.appointmentData.categories)"
+        >
+          <ng-container *ngIf="currentView === 'month'; else fullAppointment">
+            <span class="month-title">{{ model.appointmentData.title }}</span>
+          </ng-container>
+
+          <ng-template #fullAppointment>
+            <strong>{{ model.appointmentData.title }}</strong>
+            <small>{{ model.appointmentData.description }}</small>
+          </ng-template>
         </div>
       </div>
 
