@@ -79,12 +79,8 @@
         Seleziona una cartella a sinistra per vedere e gestire i documenti.
       </div>
 
-      <mat-list *ngIf="selectedFolder" class="file-list">
-        <mat-list *ngIf="selectedFolder" class="file-list">
-  <mat-list-item *ngFor="let file of files" class="file-item">
-    <div *ngIf="selectedFolder" class="file-list">
+      <div *ngIf="selectedFolder" class="file-list">
   <div class="file-row" *ngFor="let file of files">
-    <!-- click su riga = seleziona file -->
     <button
       type="button"
       class="file-main"
@@ -93,7 +89,7 @@
       <span class="file-name">{{ file.filename }}</span>
 
       <span class="doc-status" *ngIf="file.viewed">
-        ✅ Visualizzato {{ file.viewedAt | date: "dd/MM/yyyy HH:mm" }}
+        ✅ Visualizzato {{ file.viewedAt | date:'dd/MM/yyyy HH:mm' }}
       </span>
 
       <span class="doc-status pending" *ngIf="!file.viewed">
@@ -101,7 +97,6 @@
       </span>
     </button>
 
-    <!-- azioni SEMPRE a destra -->
     <div class="file-actions">
       <button
         mat-icon-button
@@ -125,9 +120,6 @@
     </div>
   </div>
 </div>
-  </mat-list-item>
-</mat-list>
-      </mat-list>
 
       <div *ngIf="pdfBase64" class="pdf-viewer">
         <ngx-extended-pdf-viewer
