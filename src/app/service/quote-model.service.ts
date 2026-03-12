@@ -31,6 +31,7 @@ export class QuoteModelService {
   interventi = ['', '', '', '', '', '', '', '', '', '', '', '', '', ''];
   imponibile = '0.00';
   iva = 'N';
+  tempistica: string = '';
   dataInizioContratto = '';
   dataInizioContrattoDate: Date | null = null;
   durataContratto = '';
@@ -91,6 +92,7 @@ export class QuoteModelService {
     this.email = '';
     this.telefono = '';
     this.pagamento = '';
+    this.tempistica = '';
     this.note = '';
 
     this.tipoPreventivo = '';

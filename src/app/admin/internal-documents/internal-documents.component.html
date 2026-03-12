@@ -17,24 +17,28 @@
 
       <mat-list class="folder-list">
         <mat-list-item *ngFor="let folder of folders" class="folder-item">
-          <button
-            mat-button
-            (click)="selectFolder(folder)"
-            class="folder-btn"
-            [class.selected]="folder === selectedFolder"
-          >
-            {{ folder }}
-          </button>
+          <div class="folder-row">
+            <button
+              mat-button
+              (click)="selectFolder(folder)"
+              class="folder-btn"
+              [class.selected]="folder === selectedFolder"
+              type="button"
+            >
+              {{ folder }}
+            </button>
 
-          <button
-            mat-icon-button
-            color="warn"
-            (click)="deleteFolder(folder)"
-            matTooltip="Elimina"
-            class="icon-btn icon-danger"
-          >
-            <mat-icon>delete</mat-icon>
-          </button>
+            <button
+              mat-icon-button
+              color="warn"
+              (click)="deleteFolder(folder)"
+              matTooltip="Elimina"
+              class="icon-btn icon-danger folder-delete-btn"
+              type="button"
+            >
+              <mat-icon>delete</mat-icon>
+            </button>
+          </div>
         </mat-list-item>
       </mat-list>
 
@@ -80,46 +84,48 @@
       </div>
 
       <div *ngIf="selectedFolder" class="file-list">
-  <div class="file-row" *ngFor="let file of files">
-    <button
-      type="button"
-      class="file-main"
-      (click)="selectFile(file.filename)"
-    >
-      <span class="file-name">{{ file.filename }}</span>
+        <div class="file-row" *ngFor="let file of files">
+          <button
+            type="button"
+            class="file-main"
+            (click)="selectFile(file.filename)"
+          >
+            <span class="file-name">{{ file.filename }}</span>
 
-      <span class="doc-status" *ngIf="file.viewed">
-        ✅ Visualizzato {{ file.viewedAt | date:'dd/MM/yyyy HH:mm' }}
-      </span>
+            <span class="doc-status" *ngIf="file.viewed">
+              ✅ Visualizzato {{ file.viewedAt | date: "dd/MM/yyyy HH:mm" }}
+            </span>
 
-      <span class="doc-status pending" *ngIf="!file.viewed">
-        ⏳ Non visualizzato
-      </span>
-    </button>
+            <span class="doc-status pending" *ngIf="!file.viewed">
+              ⏳ Non visualizzato
+            </span>
+          </button>
 
-    <div class="file-actions">
-      <button
-        mat-icon-button
-        class="icon-btn icon-primary"
-        title="Scarica"
-        type="button"
-        (click)="downloadCurrentFile(file.filename); $event.stopPropagation()"
-      >
-        <mat-icon>download</mat-icon>
-      </button>
+          <div class="file-actions">
+            <button
+              mat-icon-button
+              class="icon-btn icon-primary"
+              title="Scarica"
+              type="button"
+              (click)="
+                downloadCurrentFile(file.filename); $event.stopPropagation()
+              "
+            >
+              <mat-icon>download</mat-icon>
+            </button>
 
-      <button
-        mat-icon-button
-        class="icon-btn icon-danger"
-        title="Elimina"
-        type="button"
-        (click)="deleteFile(file.filename); $event.stopPropagation()"
-      >
-        <mat-icon>delete</mat-icon>
-      </button>
-    </div>
-  </div>
-</div>
+            <button
+              mat-icon-button
+              class="icon-btn icon-danger"
+              title="Elimina"
+              type="button"
+              (click)="deleteFile(file.filename); $event.stopPropagation()"
+            >
+              <mat-icon>delete</mat-icon>
+            </button>
+          </div>
+        </div>
+      </div>
 
       <div *ngIf="pdfBase64" class="pdf-viewer">
         <ngx-extended-pdf-viewer

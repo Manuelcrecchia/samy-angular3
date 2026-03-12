@@ -30,30 +30,30 @@
         </div>
 
         <div class="mv-card__body">
-          <mat-list class="mv-list">
-            <mat-list-item class="mv-list-item" *ngFor="let folder of folders">
-              <!-- stesso click + selected -->
-              <button
-                mat-button
-                class="mv-folder-btn"
-                (click)="selectFolder(folder)"
-                [class.selected]="folder === selectedFolder"
-                type="button"
-              >
-                <span class="mv-folder-dot"></span>
-                <span class="mv-folder-name">{{ folder }}</span>
-              </button>
+          <mat-list class="folder-list">
+            <mat-list-item *ngFor="let folder of folders" class="folder-item">
+              <div class="folder-row">
+                <button
+                  mat-button
+                  (click)="selectFolder(folder)"
+                  class="folder-btn"
+                  [class.selected]="folder === selectedFolder"
+                  type="button"
+                >
+                  {{ folder }}
+                </button>
 
-              <!-- stesso click -->
-              <button
-                mat-icon-button
-                class="mv-icon-btn mv-icon-btn--danger"
-                (click)="deleteFolder(folder)"
-                matTooltip="Elimina"
-                type="button"
-              >
-                <mat-icon>delete</mat-icon>
-              </button>
+                <button
+                  mat-icon-button
+                  color="warn"
+                  (click)="deleteFolder(folder)"
+                  matTooltip="Elimina"
+                  class="icon-btn icon-danger folder-delete-btn"
+                  type="button"
+                >
+                  <mat-icon>delete</mat-icon>
+                </button>
+              </div>
             </mat-list-item>
           </mat-list>
         </div>

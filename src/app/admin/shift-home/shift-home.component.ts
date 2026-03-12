@@ -17,6 +17,7 @@ interface ShiftRow {
   published: boolean;
   vehicleName?: string | null;
   vehiclePlate?: string | null;
+  sortOrder?: number | null;
 }
 
 @Component({
@@ -84,6 +85,69 @@ export class ShiftHomeComponent implements OnInit {
     );
   }
 
+  private parseSortMap(value: any): Record<number, number> {
+    if (!value) return {};
+
+    if (typeof value === 'string') {
+      try {
+        const parsed = JSON.parse(value);
+        return parsed && typeof parsed === 'object' ? parsed : {};
+      } catch {
+        return {};
+      }
+    }
+
+    if (typeof value === 'object') {
+      return value;
+    }
+
+    return {};
+  }
+
+  private parseStartMillis(value: string | null): number | null {
+    if (!value) return null;
+
+    const d = new Date(value);
+    if (isNaN(d.getTime())) return null;
+
+    return d.getTime();
+  }
+
+  private formatTime(value: string | null): string {
+    if (!value) return '--:--';
+
+    const d = new Date(value);
+    if (isNaN(d.getTime())) return '--:--';
+
+    return d.toLocaleTimeString('it-IT', {
+      hour: '2-digit',
+      minute: '2-digit',
+    });
+  }
+
+  private calculateEndTime(start: string | null, duration: number): string {
+    if (!start) return '--:--';
+
+    const d = new Date(start);
+    if (isNaN(d.getTime())) return '--:--';
+
+    const end = new Date(d.getTime() + (Number(duration) || 0) * 60000);
+
+    return end.toLocaleTimeString('it-IT', {
+      hour: '2-digit',
+      minute: '2-digit',
+    });
+  }
+
+  private formatLongDate(date: Date): string {
+    return date.toLocaleDateString('it-IT', {
+      weekday: 'long',
+      day: '2-digit',
+      month: 'long',
+      year: 'numeric',
+    });
+  }
+
   formatDuration(minutes: number): string {
     if (!minutes) return '0 minuti';
 
@@ -135,13 +199,16 @@ export class ShiftHomeComponent implements OnInit {
 
     for (const shift of shifts) {
       const employees = Array.isArray(shift.employees) ? shift.employees : [];
+      const sortMap = this.parseSortMap(shift?.sortOrderByEmployee);
 
       const allNames: string[] = employees.map((e: any) =>
         `${e?.nome ?? ''} ${e?.cognome ?? ''}`.trim(),
       );
 
       for (const emp of employees) {
+        const empId = Number(emp?.id) || 0;
         const key: string = `${emp?.nome ?? ''} ${emp?.cognome ?? ''}`.trim();
+
         if (!result[key]) result[key] = [];
 
         const colleghi: string[] = allNames.filter(
@@ -151,7 +218,7 @@ export class ShiftHomeComponent implements OnInit {
         const joinPublished: boolean = emp?.ShiftEmployees?.published === true;
 
         result[key].push({
-          empId: Number(emp?.id) || 0,
+          empId,
           title: shift?.appointment?.title || shift?.title || '-',
           description: shift?.description || '',
           start:
@@ -171,8 +238,36 @@ export class ShiftHomeComponent implements OnInit {
           published: joinPublished,
           vehicleName: shift?.vehicle?.name ?? null,
           vehiclePlate: shift?.vehicle?.plate ?? null,
+          sortOrder:
+            sortMap[empId] != null ? Number(sortMap[empId]) || 0 : null,
         });
       }
+    }
+
+    for (const empName of Object.keys(result)) {
+      result[empName].sort((a, b) => {
+        const orderA = a.sortOrder;
+        const orderB = b.sortOrder;
+
+        if (orderA != null && orderB != null && orderA !== orderB) {
+          return orderA - orderB;
+        }
+
+        if (orderA != null && orderB == null) return -1;
+        if (orderA == null && orderB != null) return 1;
+
+        const startA = this.parseStartMillis(a.start);
+        const startB = this.parseStartMillis(b.start);
+
+        if (startA != null && startB != null && startA !== startB) {
+          return startA - startB;
+        }
+
+        if (startA != null && startB == null) return -1;
+        if (startA == null && startB != null) return 1;
+
+        return 0;
+      });
     }
 
     return result;
@@ -347,53 +442,86 @@ export class ShiftHomeComponent implements OnInit {
     this.tooltipTarget = null;
   }
 
-  sendViaWhatsApp(empName: string): void {
-    const dateStr = this.formatDate(this.selectedDate);
+  private buildWhatsAppMessage(empName: string, turns: ShiftRow[]): string {
+    const lines: string[] = [];
 
+    lines.push(
+      `Ciao ${empName}, ecco i tuoi turni del ${this.formatLongDate(this.selectedDate)} 📅`,
+    );
+    lines.push('');
+
+    if (!turns.length) {
+      lines.push('Nessun turno per questa data.');
+      return lines.join('\n');
+    }
+
+    turns.forEach((turno, index) => {
+      const startHour = this.formatTime(turno.start);
+      const endHour = this.calculateEndTime(turno.start, turno.duration);
+      const colleghiText =
+        turno.colleghi && turno.colleghi.length > 0
+          ? turno.colleghi.join(', ')
+          : 'Da solo';
+
+      lines.push(`${index + 1}. ${this.cleanShiftTitle(turno.title)}`);
+      lines.push(`Categoria: ${'-'}`);
+      lines.push(`Orario: ${startHour} - ${endHour}`);
+      lines.push(`Durata: ${this.formatDuration(turno.duration)}`);
+      lines.push(`Con chi: ${colleghiText}`);
+
+      if (turno.vehicleName) {
+        lines.push(
+          `Mezzo: ${turno.vehicleName}${turno.vehiclePlate ? ` (${turno.vehiclePlate})` : ''}`,
+        );
+      }
+
+      lines.push(`Chiave richiesta: ${turno.keyRequired ? 'Sì' : 'No'}`);
+      lines.push(`Descrizione: ${turno.description || 'Nessuna descrizione'}`);
+      lines.push('');
+    });
+
+    return lines.join('\n').trim();
+  }
+
+  sendViaWhatsApp(empName: string): void {
     const phoneRaw = this.groupedByEmployee[empName]?.[0]?.cellulare ?? null;
+    const employeeTurns = this.groupedByEmployee[empName] || [];
 
     if (!phoneRaw) {
       alert('Nessun numero di telefono trovato per questo dipendente');
       return;
     }
 
-    this.http
-      .get<{
-        url: string;
-      }>(
-        `${this.globalService.url}shifts/pdf-link?date=${dateStr}&empName=${encodeURIComponent(empName)}`,
-      )
-      .subscribe({
-        next: (res) => {
-          const pdfLink = res?.url;
+    if (!employeeTurns.length) {
+      alert('Nessun turno trovato per questo dipendente');
+      return;
+    }
 
-          if (!pdfLink) {
-            alert('Link PDF non disponibile');
-            return;
-          }
+    const phoneDigits = String(phoneRaw).replace(/\D/g, '');
 
-          const phoneDigits = String(phoneRaw).replace(/\D/g, '');
+    if (!phoneDigits) {
+      alert('Numero di telefono non valido');
+      return;
+    }
 
-          if (!phoneDigits) {
-            alert('Numero di telefono non valido');
-            return;
-          }
+    const phoneWithPrefix = phoneDigits.startsWith('39')
+      ? phoneDigits
+      : `39${phoneDigits}`;
 
-          const phoneWithPrefix = phoneDigits.startsWith('39')
-            ? phoneDigits
-            : `39${phoneDigits}`;
+    const message = this.buildWhatsAppMessage(empName, employeeTurns);
+    const encoded = encodeURIComponent(message);
 
-          const message =
-            `Ciao ${empName}, ecco i tuoi turni 📄\n\n` +
-            `Scarica qui il PDF:\n${pdfLink}`;
+    window.location.href = `https://wa.me/${phoneWithPrefix}?text=${encoded}`;
+  }
 
-          const encoded = encodeURIComponent(message);
+  private cleanShiftTitle(title: string | null | undefined): string {
+    const value = String(title || '').trim();
+    if (!value) return 'Sede sconosciuta';
 
-          window.location.href = `https://wa.me/${phoneWithPrefix}?text=${encoded}`;
-        },
-        error: () => {
-          alert('Errore nel recupero del link PDF');
-        },
-      });
+    // Rimuove prefissi tipo:
+    // "80 - Pluralis SRLS"
+    // "123-Cliente"
+    // "45 – Nome cliente"
+    return value.replace(/^\s*\d+\s*[-–]\s*/, '').trim() || 'Sede sconosciuta';
   }
 }

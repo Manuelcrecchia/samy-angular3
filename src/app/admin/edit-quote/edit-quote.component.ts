@@ -170,6 +170,7 @@ export class EditQuoteComponent {
       imponibile: Number(this.quoteModelService.imponibile || 0).toFixed(2),
       iva: this.quoteModelService.iva,
       pagamento: this.quoteModelService.pagamento,
+      tempistica: this.quoteModelService.tempistica,
       dataInizioContratto: this.quoteModelService.dataInizioContrattoDate
         ? this.datePipe.transform(
             this.quoteModelService.dataInizioContrattoDate,
@@ -273,9 +274,32 @@ export class EditQuoteComponent {
         headers: this.globalService.headers,
         responseType: 'text',
       })
-      .subscribe(() => {
-        this.quoteModelService.resetQuoteModel();
-        this.router.navigateByUrl('/quotesHome', { replaceUrl: true });
+      .subscribe({
+        next: () => {
+          this.quoteModelService.resetQuoteModel();
+          this.router.navigateByUrl('/quotesHome', { replaceUrl: true });
+        },
+        error: (err) => {
+          console.error('Errore editQuote:', err);
+
+          let msg = 'ERRORE DURANTE IL SALVATAGGIO DELLE MODIFICHE';
+
+          if (err?.error) {
+            if (typeof err.error === 'string') {
+              try {
+                const parsed = JSON.parse(err.error);
+                msg = parsed?.error || msg;
+              } catch {
+                msg = err.error;
+              }
+            } else if (typeof err.error === 'object') {
+              msg = err.error?.error || msg;
+            }
+          }
+
+          this.popup.text = msg.toUpperCase();
+          this.popup.openPopup();
+        },
       });
   }
 

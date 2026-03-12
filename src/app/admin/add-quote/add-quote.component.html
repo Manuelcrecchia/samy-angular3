@@ -302,6 +302,17 @@
 
         <div class="col-md-4">
           <mat-form-field appearance="fill" class="w-100">
+            <mat-label>Tempistica</mat-label>
+            <input
+              matInput
+              name="tempistica"
+              [(ngModel)]="quoteModelService.tempistica"
+            />
+          </mat-form-field>
+        </div>
+
+        <div class="col-md-4">
+          <mat-form-field appearance="fill" class="w-100">
             <mat-label>Data inizio contratto</mat-label>
             <input
               matInput
