@@ -21,9 +21,11 @@ export class SocketService {
   // ascolta aggiornamenti da altri utenti
   onShiftUpdate(): Observable<any> {
     return new Observable((subscriber) => {
-      this.socket.on('shiftUpdated', (data) => {
-        subscriber.next(data);
-      });
+      const listener = (data: any) => subscriber.next(data);
+      this.socket.on('shiftUpdated', listener);
+      return () => {
+        this.socket.off('shiftUpdated', listener);
+      };
     });
   }
 }

@@ -31,6 +31,7 @@ export class RiepilogoPresenzeEditabileComponent implements OnInit {
   dipendenti: any[] = [];
   giorni: string[] = [];
   loading = false;
+  dipendentiSelezionati: Set<number> = new Set();
 
   private noteChanges: { [id: number]: Subject<string> } = {};
 
@@ -94,6 +95,7 @@ export class RiepilogoPresenzeEditabileComponent implements OnInit {
 
       // 4️⃣ ASSEGNO AL TEMPLATE
       this.dipendenti = dipTmp;
+      this.dipendentiSelezionati = new Set(dipTmp.map((d: any) => d.id));
 
       // 5️⃣ INIZIALIZZO CATEGORIE + ORE BASE (da riepilogo ufficiale)
       this.dipendenti.forEach((d) => {
@@ -216,6 +218,14 @@ export class RiepilogoPresenzeEditabileComponent implements OnInit {
     }
   }
 
+  toggleDipendente(id: number) {
+    if (this.dipendentiSelezionati.has(id)) {
+      this.dipendentiSelezionati.delete(id);
+    } else {
+      this.dipendentiSelezionati.add(id);
+    }
+  }
+
   cambiaMeseAnno() {
     this.generaGiorni();
     this.caricaPresenze();
@@ -276,10 +286,15 @@ export class RiepilogoPresenzeEditabileComponent implements OnInit {
   async generaPdf() {
     this.loading = true;
     try {
-      const body = {
+      const excludeIds = this.dipendenti
+        .filter((d) => !this.dipendentiSelezionati.has(d.id))
+        .map((d) => d.id);
+
+      const body: any = {
         mese: this.meseSelezionato,
         anno: this.annoSelezionato,
       };
+      if (excludeIds.length > 0) body.excludeIds = excludeIds;
 
       // 1) genera PDF lato server
       await lastValueFrom(

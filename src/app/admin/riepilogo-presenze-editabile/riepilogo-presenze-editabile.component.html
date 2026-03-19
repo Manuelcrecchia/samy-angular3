@@ -249,7 +249,17 @@ html, body{
 
       <tbody>
         <tr *ngFor="let d of dipendenti">
-          <td class="sticky-col emp-name">{{ d.nome }}</td>
+          <td class="sticky-col emp-name">
+            <div class="d-flex align-items-center gap-2">
+              <input
+                type="checkbox"
+                [checked]="dipendentiSelezionati.has(d.id)"
+                (change)="toggleDipendente(d.id)"
+                title="Includi nel PDF"
+              />
+              {{ d.nome }}
+            </div>
+          </td>
 
           <td *ngFor="let g of giorni; let i = index" class="text-center">
             <div class="cell-wrap">

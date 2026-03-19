@@ -163,6 +163,15 @@
                 >
                   <mat-icon>close</mat-icon>
                 </button>
+
+                <button
+                  *ngIf="showCompletedQuotes"
+                  mat-raised-button
+                  color="primary"
+                  (click)="restore(quote.numeroPreventivo)"
+                >
+                  <mat-icon>restore</mat-icon>
+                </button>
               </div>
             </div>
           </div>

@@ -55,7 +55,7 @@ export class TimbratureDettaglioComponent implements OnInit {
       .get<any>(
         `${this.global.url}admin/stamping/${this.employeeId}/${this.date}`,
         {
-          headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+          headers: this.global.headers,
         }
       )
       .subscribe({
@@ -81,7 +81,7 @@ export class TimbratureDettaglioComponent implements OnInit {
           customerId: this.currentWork.customerId || '',
           shiftId: this.currentWork.shiftId || '',
         },
-        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+        headers: this.global.headers,
       })
       .subscribe((res: any) => {
         this.notes = res.notes || [];
@@ -207,7 +207,7 @@ export class TimbratureDettaglioComponent implements OnInit {
 
       this.http
         .post(`${this.global.url}admin/stamping/add`, body, {
-          headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+          headers: this.global.headers,
         })
         .subscribe({
           next: () => {
@@ -237,9 +237,7 @@ export class TimbratureDettaglioComponent implements OnInit {
           `${this.global.url}admin/stamping/edit/${this.currentStamp?.id}`,
           body,
           {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem('token')}`,
-            },
+            headers: this.global.headers,
           }
         )
         .subscribe({
@@ -261,9 +259,7 @@ export class TimbratureDettaglioComponent implements OnInit {
         .delete(
           `${this.global.url}admin/stamping/delete/${this.currentStamp?.id}`,
           {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem('token')}`,
-            },
+            headers: this.global.headers,
             body: { note },
           }
         )
@@ -304,9 +300,7 @@ export class TimbratureDettaglioComponent implements OnInit {
 
       this.http
         .post(`${this.global.url}admin/stamping/resolveError`, body, {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem('token')}`,
-          },
+          headers: this.global.headers,
         })
         .subscribe({
           next: () => {

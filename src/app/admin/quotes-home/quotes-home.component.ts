@@ -438,6 +438,24 @@ export class QuotesHomeComponent {
       });
   }
 
+  restore(numeroPreventivo: string) {
+    const body = { numeroPreventivo };
+
+    this.http
+      .post(this.globalService.url + 'quotes/restore', body, {
+        headers: this.globalService.headers,
+        responseType: 'text',
+      })
+      .subscribe({
+        next: () => {
+          this.ngOnInit();
+        },
+        error: (err) => {
+          console.error('Errore restore quote:', err);
+        },
+      });
+  }
+
   invio(numeroPreventivo: string) {
     const body = { numeroPreventivo };
 

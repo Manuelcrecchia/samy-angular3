@@ -1,4 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 import { ActivatedRoute, Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { MatDialog } from '@angular/material/dialog';
@@ -14,7 +16,8 @@ import { TenantService } from '../../service/tenant.service';
   templateUrl: './create-shift.component.html',
   styleUrls: ['./create-shift.component.css'],
 })
-export class CreateShiftComponent implements OnInit {
+export class CreateShiftComponent implements OnInit, OnDestroy {
+  private destroy$ = new Subject<void>();
   selectedDate: Date = new Date();
   appointments: any[] = [];
   assignedShifts: { [appointmentId: string]: number[] } = {};
@@ -45,7 +48,7 @@ export class CreateShiftComponent implements OnInit {
     this.loadAppointments();
     this.loadVehiclesCache();
 
-    this.socketService.onShiftUpdate().subscribe((update: any) => {
+    this.socketService.onShiftUpdate().pipe(takeUntil(this.destroy$)).subscribe((update: any) => {
       if (update.date && update.date !== this.formatDate(this.selectedDate)) {
         return;
       }
@@ -138,6 +141,13 @@ export class CreateShiftComponent implements OnInit {
       .subscribe((res) => (this.employeeList = res));
 
     this.showPreviousWeekShifts();
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+    Object.values(this.autosaveTimers).forEach((t) => { if (t) clearTimeout(t); });
+    this.autosaveTimers = {};
   }
 
   private shouldIncludeAppointment(a: any): boolean {
