@@ -61,7 +61,8 @@ export class CalendarHomeComponent {
         headers: this.globalService.headers,
         responseType: 'text',
       })
-      .subscribe((response) => {
+      .subscribe({
+        next: (response) => {
         this.events = JSON.parse(response);
         this.filteredEvents = this.events;
 
@@ -95,7 +96,8 @@ export class CalendarHomeComponent {
             headers: this.globalService.headers,
             responseType: 'text',
           })
-          .subscribe((quotesResponse) => {
+          .subscribe({
+            next: (quotesResponse) => {
             const data = JSON.parse(quotesResponse);
 
             this.nPreventiviArray = data
@@ -110,7 +112,17 @@ export class CalendarHomeComponent {
             );
 
             this.categoriaArray = data.map((item: any) => item.tipoPreventivo);
+            },
+            error: (err) => {
+              console.error('Errore caricamento:', err);
+              alert('Errore durante il caricamento dei dati');
+            },
           });
+        },
+        error: (err) => {
+          console.error('Errore caricamento:', err);
+          alert('Errore durante il caricamento dei dati');
+        },
       });
 
     this.http
@@ -118,8 +130,14 @@ export class CalendarHomeComponent {
         headers: this.globalService.headers,
         responseType: 'text',
       })
-      .subscribe((response) => {
-        this.clientiArray = JSON.parse(response);
+      .subscribe({
+        next: (response) => {
+          this.clientiArray = JSON.parse(response);
+        },
+        error: (err) => {
+          console.error('Errore caricamento:', err);
+          alert('Errore durante il caricamento dei dati');
+        },
       });
   }
 
@@ -219,6 +237,12 @@ export class CalendarHomeComponent {
   }
 
   onAppointmentFormOpening(e: any) {
+    if (!this.canManageEvents) {
+      e.cancel = true;
+      alert('Non autorizzato: non hai il permesso per modificare gli eventi del calendario.');
+      return;
+    }
+
     const form = e.form;
     const popup = e.popup;
 
@@ -543,25 +567,37 @@ export class CalendarHomeComponent {
         headers: this.globalService.headers,
         responseType: 'text',
       })
-      .subscribe(() => {
-        this.ngOnInit();
+      .subscribe({
+        next: () => {
+          this.ngOnInit();
 
-        if (body.categories == 'sopralluogo') {
-          this.http
-            .post(
-              this.globalService.url +
-                'appointments/sendInspectionConfirmation',
-              body,
-              { headers: this.globalService.headers, responseType: 'text' },
-            )
-            .subscribe((response) => {
-              if (response == 'NO') {
-                this.popup.text =
-                  "Non è stato possibile inviare la mail di conferma dell'appuntamento perchè non è presente nessuna mail associata al preventivo";
-                this.popup.openPopup();
-              }
-            });
-        }
+          if (body.categories == 'sopralluogo') {
+            this.http
+              .post(
+                this.globalService.url +
+                  'appointments/sendInspectionConfirmation',
+                body,
+                { headers: this.globalService.headers, responseType: 'text' },
+              )
+              .subscribe({
+                next: (response) => {
+                  if (response == 'NO') {
+                    this.popup.text =
+                      "Non è stato possibile inviare la mail di conferma dell'appuntamento perchè non è presente nessuna mail associata al preventivo";
+                    this.popup.openPopup();
+                  }
+                },
+                error: (err) => {
+                  console.error('Errore:', err);
+                  alert(this.parseServerError(err));
+                },
+              });
+          }
+        },
+        error: (err) => {
+          console.error('Errore:', err);
+          alert(this.parseServerError(err));
+        },
       });
   }
 
@@ -597,28 +633,40 @@ export class CalendarHomeComponent {
         headers: this.globalService.headers,
         responseType: 'text',
       })
-      .subscribe(() => {
-        this.ngOnInit();
+      .subscribe({
+        next: () => {
+          this.ngOnInit();
 
-        if (body.categories == 'sopralluogo') {
-          this.http
-            .post(
-              this.globalService.url +
-                'appointments/sendInspectionConfirmation',
-              body,
-              {
-                headers: this.globalService.headers,
-                responseType: 'text',
-              },
-            )
-            .subscribe((response) => {
-              if (response == 'NO') {
-                this.popup.text =
-                  "Non è stato possibile inviare la mail di conferma dell'appuntamento perchè non è presente nessuna mail associata al preventivo";
-                this.popup.openPopup();
-              }
-            });
-        }
+          if (body.categories == 'sopralluogo') {
+            this.http
+              .post(
+                this.globalService.url +
+                  'appointments/sendInspectionConfirmation',
+                body,
+                {
+                  headers: this.globalService.headers,
+                  responseType: 'text',
+                },
+              )
+              .subscribe({
+                next: (response) => {
+                  if (response == 'NO') {
+                    this.popup.text =
+                      "Non è stato possibile inviare la mail di conferma dell'appuntamento perchè non è presente nessuna mail associata al preventivo";
+                    this.popup.openPopup();
+                  }
+                },
+                error: (err) => {
+                  console.error('Errore:', err);
+                  alert(this.parseServerError(err));
+                },
+              });
+          }
+        },
+        error: (err) => {
+          console.error('Errore:', err);
+          alert(this.parseServerError(err));
+        },
       });
   }
 
@@ -654,8 +702,14 @@ export class CalendarHomeComponent {
           responseType: 'text',
         },
       )
-      .subscribe(() => {
-        this.ngOnInit();
+      .subscribe({
+        next: () => {
+          this.ngOnInit();
+        },
+        error: (err) => {
+          console.error('Errore:', err);
+          alert(this.parseServerError(err));
+        },
       });
   }
 
@@ -669,8 +723,14 @@ export class CalendarHomeComponent {
         headers: this.globalService.headers,
         responseType: 'text',
       })
-      .subscribe(() => {
-        this.ngOnInit();
+      .subscribe({
+        next: () => {
+          this.ngOnInit();
+        },
+        error: (err) => {
+          console.error('Errore:', err);
+          alert(this.parseServerError(err));
+        },
       });
   }
 
@@ -688,5 +748,19 @@ export class CalendarHomeComponent {
 
   goBack() {
     this.router.navigateByUrl('homeAdmin');
+  }
+
+  get canManageEvents(): boolean {
+    return this.globalService.hasPermission('CALENDAR_EVENT_MANAGE');
+  }
+
+  private parseServerError(err: any): string {
+    if (err.status === 403) return 'Non autorizzato: permesso mancante per questa operazione.';
+    try {
+      const body = typeof err.error === 'string' ? JSON.parse(err.error) : err.error;
+      if (body?.error) return body.error;
+    } catch {}
+    if (err.status === 0) return 'Impossibile connettersi al server';
+    return 'Errore imprevisto. Riprova.';
   }
 }

@@ -146,13 +146,29 @@ export class AddCustomerComponent {
         headers: this.globalService.headers,
         responseType: 'text',
       })
-      .subscribe(() => {
-        this.customerModelService.reset();
-        this.router.navigateByUrl('/listCustomer', { replaceUrl: true });
+      .subscribe({
+        next: () => {
+          this.customerModelService.reset();
+          this.router.navigateByUrl('/listCustomer', { replaceUrl: true });
+        },
+        error: (err) => {
+          console.error("Errore durante l'aggiunta del cliente:", err);
+          const msg = this.parseServerError(err);
+          alert(msg);
+        },
       });
   }
 
   back() {
     this.router.navigateByUrl('/listCustomer');
+  }
+
+  private parseServerError(err: any): string {
+    try {
+      const body = typeof err.error === 'string' ? JSON.parse(err.error) : err.error;
+      if (body?.error) return body.error;
+    } catch {}
+    if (err.status === 0) return 'Impossibile connettersi al server';
+    return 'Errore durante il salvataggio. Riprova.';
   }
 }

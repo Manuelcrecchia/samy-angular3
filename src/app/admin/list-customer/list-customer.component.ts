@@ -41,7 +41,10 @@ export class ListCustomerComponent {
             console.error('Errore nel parse JSON dei clienti:', err);
           }
         },
-        error: (err) => console.error('Errore nel recupero clienti:', err),
+        error: (err) => {
+          console.error('Errore nel recupero clienti:', err);
+          alert('Errore durante il caricamento dei clienti');
+        },
       });
   }
 
@@ -77,7 +80,8 @@ export class ListCustomerComponent {
         headers: this.globalService.headers,
         responseType: 'text',
       })
-      .subscribe((response) => {
+      .subscribe({
+        next: (response) => {
         if (response === 'Unauthorized') {
           this.router.navigateByUrl('/');
         } else {
@@ -122,6 +126,11 @@ export class ListCustomerComponent {
 
           this.router.navigateByUrl('/editCustomer');
         }
+        },
+        error: (err) => {
+          console.error('Errore nel recupero cliente:', err);
+          alert('Errore durante il caricamento del cliente');
+        },
       });
   }
 

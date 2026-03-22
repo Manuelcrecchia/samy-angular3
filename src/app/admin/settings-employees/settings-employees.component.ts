@@ -5,11 +5,12 @@ import { Router } from '@angular/router';
 import { saveAs } from 'file-saver';
 
 interface Employee {
-  id: number; // ✅ serve per /edit
+  id: number;
   nome: string;
   cognome: string;
   email: string;
   cellulare: string;
+  active: boolean;
 }
 
 @Component({
@@ -18,13 +19,15 @@ interface Employee {
   styleUrls: ['./settings-employees.component.css'],
 })
 export class SettingsEmployeesComponent implements OnInit {
-  employeesAdd: Omit<Employee, 'id'> = {
+  employeesAdd: Omit<Employee, 'id' | 'active'> = {
     nome: '',
     cognome: '',
     email: '',
     cellulare: '',
   };
   employeess: Employee[] = [];
+  showArchived = false;
+  isLoading = false;
 
   editingIndex: number | null = null;
   employeeEdit: any = {};
@@ -41,20 +44,25 @@ export class SettingsEmployeesComponent implements OnInit {
   }
 
   fetchEmployees() {
+    const params = this.showArchived ? '?includeArchived=true' : '';
     this.http
-      .get(this.globalService.url + 'employees/getAll', {
+      .get(this.globalService.url + 'employees/getAll' + params, {
         headers: this.globalService.headers,
         responseType: 'text',
       })
       .subscribe({
         next: (response) => {
-          const data = JSON.parse(response);
-          this.employeess = data;
+          this.employeess = JSON.parse(response);
         },
         error: (error) => {
           console.error('Errore durante il recupero dei dipendenti:', error);
         },
       });
+  }
+
+  toggleShowArchived() {
+    this.showArchived = !this.showArchived;
+    this.fetchEmployees();
   }
 
   startEdit(i: number) {
@@ -78,7 +86,6 @@ export class SettingsEmployeesComponent implements OnInit {
       cognome: this.employeeEdit.cognome,
       email: this.employeeEdit.email,
       cellulare: this.employeeEdit.cellulare,
-      // password opzionale se vuoi: password: this.employeeEdit.password
     };
 
     this.http
@@ -106,6 +113,7 @@ export class SettingsEmployeesComponent implements OnInit {
       cellulare: this.employeesAdd.cellulare,
     };
 
+    this.isLoading = true;
     this.http
       .post(this.globalService.url + 'employees/add', body, {
         headers: this.globalService.headers,
@@ -113,16 +121,51 @@ export class SettingsEmployeesComponent implements OnInit {
       })
       .subscribe({
         next: () => {
-          this.employeesAdd = {
-            nome: '',
-            cognome: '',
-            email: '',
-            cellulare: '',
-          };
+          this.isLoading = false;
+          this.employeesAdd = { nome: '', cognome: '', email: '', cellulare: '' };
           this.fetchEmployees();
         },
         error: (error) => {
+          this.isLoading = false;
           console.error("Errore durante l'aggiunta del dipendente:", error);
+          if (error.status === 409) {
+            try {
+              const body = JSON.parse(error.error);
+              alert(body.error);
+            } catch {
+              alert('Un dipendente con questa email esiste già');
+            }
+          } else {
+            alert("Errore durante l'aggiunta del dipendente");
+          }
+        },
+      });
+  }
+
+  unarchiveEmployee(emp: Employee): void {
+    if (!confirm(`Vuoi riattivare il dipendente "${emp.nome} ${emp.cognome}"?`)) return;
+
+    this.isLoading = true;
+    this.http
+      .post(this.globalService.url + 'employees/unarchive', { employeeId: emp.id }, {
+        headers: this.globalService.headers,
+        responseType: 'text',
+      })
+      .subscribe({
+        next: () => {
+          this.isLoading = false;
+          alert(`Dipendente ${emp.nome} ${emp.cognome} riattivato con successo.`);
+          this.fetchEmployees();
+        },
+        error: (err) => {
+          this.isLoading = false;
+          console.error('Errore disarchiviazione dipendente:', err);
+          try {
+            const body = JSON.parse(err.error);
+            alert(body.error);
+          } catch {
+            alert('Errore durante la riattivazione del dipendente');
+          }
         },
       });
   }
@@ -136,23 +179,16 @@ export class SettingsEmployeesComponent implements OnInit {
     )
       return;
 
-    const body = {
-      employeeId: emp.id,
-    };
-
     this.http
-      // Compatibilità: l'endpoint non elimina più, esporta + disattiva.
-      .post(this.globalService.url + 'employees/exportAndDeleteUser', body, {
+      .post(this.globalService.url + 'employees/exportAndDeleteUser', { employeeId: emp.id }, {
         headers: this.globalService.headers,
         responseType: 'blob',
       })
       .subscribe({
         next: (blob) => {
-          const nomeFile = `dipendente_${emp.nome}_${emp.cognome}.zip`;
-          saveAs(blob, nomeFile);
-
+          saveAs(blob, `dipendente_${emp.nome}_${emp.cognome}.zip`);
           alert('Dipendente esportato e archiviato con successo.');
-          this.ngOnInit(); // aggiorna la lista
+          this.fetchEmployees();
         },
         error: (err) => {
           console.error('Errore:', err);

@@ -1,19 +1,16 @@
-<!-- ===== MV TECH UI | Gestione Amministratori (solo grafica) ===== -->
+<!-- ===== MV TECH UI | Gestione Amministratori ===== -->
 
 <mat-toolbar class="mv-toolbar" color="primary">
   <div class="mv-toolbar__left">
     <span class="mv-title">Gestione Amministratori</span>
   </div>
-
   <span class="spacer"></span>
-
   <button class="mv-back-btn" type="button" (click)="back()">
     <span class="mv-back-btn__icon">←</span>
     <span class="mv-back-btn__label">Torna Indietro</span>
   </button>
 </mat-toolbar>
 
-<!-- background -->
 <div class="mv-bg">
   <div class="mv-glow mv-glow--a"></div>
   <div class="mv-glow mv-glow--b"></div>
@@ -21,9 +18,11 @@
 
   <div class="mv-page container-fluid">
     <div class="mv-shell mv-shell--single">
-      <!-- LISTA + FORM -->
       <main class="mv-main">
-        <!-- LISTA ADMIN -->
+
+        <!-- ═══════════════════════════════════════════
+             SEZIONE: ELENCO AMMINISTRATORI
+        ═══════════════════════════════════════════ -->
         <section class="mv-card">
           <div class="mv-card__head mv-main-head">
             <div>
@@ -33,251 +32,118 @@
           </div>
 
           <div class="mv-card__body">
-            <div class="mv-admin-grid">
-              <mat-card
-                *ngFor="let admin of admins; let i = index"
-                class="mv-admin-card"
-              >
-                <mat-card-content>
-                  <!-- VIEW MODE -->
-                  <div class="mv-admin-details" *ngIf="editingIndex !== i">
-                    <div class="mv-kv">
-                      <div class="mv-k">Nome</div>
-                      <div class="mv-v">{{ admin.nome }}</div>
-                    </div>
 
-                    <div class="mv-kv">
-                      <div class="mv-k">Cognome</div>
-                      <div class="mv-v">{{ admin.cognome }}</div>
-                    </div>
-
-                    <div class="mv-kv">
-                      <div class="mv-k">Email</div>
-                      <div class="mv-v mv-v--mono">{{ admin.email }}</div>
-                    </div>
-
-                    <div class="mv-kv">
-                      <div class="mv-k">Codice Operatore</div>
-                      <div class="mv-v mv-v--pill">{{ admin.codiceOperatore }}</div>
-                    </div>
-
-                    <div class="mv-kv mv-kv--full">
-                      <div class="mv-k">Permessi</div>
-                      <div class="mv-v">
-                        <div class="mv-perms-preview">
-                          <span
-                            class="mv-chip"
-                            *ngFor="let p of admin.permissions || []"
-                            >{{ p }}</span
-                          >
-                          <span
-                            class="mv-muted"
-                            *ngIf="!admin.permissions || admin.permissions.length === 0"
-                            >Nessun permesso</span
-                          >
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <!-- EDIT MODE -->
-                  <div *ngIf="editingIndex === i" class="mv-admin-edit">
-                    <div class="mv-form-grid">
-                      <mat-form-field appearance="outline" class="mv-field">
-                        <mat-label>Nome</mat-label>
-                        <input
-                          matInput
-                          [(ngModel)]="adminEdit.nome"
-                          name="edit_nome_{{ i }}"
-                        />
-                      </mat-form-field>
-
-                      <mat-form-field appearance="outline" class="mv-field">
-                        <mat-label>Cognome</mat-label>
-                        <input
-                          matInput
-                          [(ngModel)]="adminEdit.cognome"
-                          name="edit_cognome_{{ i }}"
-                        />
-                      </mat-form-field>
-
-                      <mat-form-field appearance="outline" class="mv-field">
-                        <mat-label>Email</mat-label>
-                        <input
-                          matInput
-                          type="email"
-                          [(ngModel)]="adminEdit.email"
-                          name="edit_email_{{ i }}"
-                        />
-                      </mat-form-field>
-
-                      <mat-form-field appearance="outline" class="mv-field">
-                        <mat-label>Codice Operatore</mat-label>
-                        <input
-                          matInput
-                          [(ngModel)]="adminEdit.codiceOperatore"
-                          name="edit_codice_{{ i }}"
-                        />
-                      </mat-form-field>
-                    </div>
-
-                    <div class="mv-perms-head">
-                      <div class="mv-h4">Permessi</div>
-                      <div class="mv-sub mv-sub--tight">
-                        Seleziona i permessi per questo admin
-                      </div>
-                    </div>
-
-                    <!-- ✅ PERMESSI DIVISI (collapsible) -->
-                    <div class="mv-perm-wrap">
-                      <!-- DIPENDENTI -->
-                      <details class="mv-accordion" open>
-                        <summary class="mv-accordion__summary">
-                          <span class="mv-accordion__title">Gestione permessi dipendenti</span>
-                          <span class="mv-accordion__chev"></span>
-                        </summary>
-
-                        <div class="mv-accordion__body">
-                          <ng-container *ngFor="let g of permissionGroups">
-                            <ng-container *ngIf="g.title === 'Dipendenti'">
-                              <div class="mv-permissions-table">
-                                <label class="mv-perm-row" *ngFor="let p of g.items">
-                                  <span class="mv-perm-row__check">
-                                    <input
-                                      type="checkbox"
-                                      [checked]="(adminEdit.permissions || []).includes(p.key)"
-                                      (change)="togglePermission(adminEdit, p.key)"
-                                    />
-                                  </span>
-                                  <span class="mv-perm-row__label">{{ p.label }}</span>
-                                  <span class="mv-perm-row__key">{{ p.key }}</span>
-                                </label>
-                              </div>
-                            </ng-container>
-                          </ng-container>
-                        </div>
-                      </details>
-
-                      <!-- AMMINISTRATORI -->
-                      <details class="mv-accordion">
-                        <summary class="mv-accordion__summary">
-                          <span class="mv-accordion__title">Gestione permessi amministratori</span>
-                          <span class="mv-accordion__chev"></span>
-                        </summary>
-
-                        <div class="mv-accordion__body">
-                          <ng-container *ngFor="let g of permissionGroups">
-                            <ng-container *ngIf="g.title === 'Amministratori'">
-                              <div class="mv-permissions-table">
-                                <label class="mv-perm-row" *ngFor="let p of g.items">
-                                  <span class="mv-perm-row__check">
-                                    <input
-                                      type="checkbox"
-                                      [checked]="(adminEdit.permissions || []).includes(p.key)"
-                                      (change)="togglePermission(adminEdit, p.key)"
-                                    />
-                                  </span>
-                                  <span class="mv-perm-row__label">{{ p.label }}</span>
-                                  <span class="mv-perm-row__key">{{ p.key }}</span>
-                                </label>
-                              </div>
-                            </ng-container>
-                          </ng-container>
-                        </div>
-                      </details>
-
-                      <!-- ALTRI PERMESSI (opzionale) -->
-                      <details class="mv-accordion mv-accordion--muted">
-                        <summary class="mv-accordion__summary">
-                          <span class="mv-accordion__title">Altri permessi</span>
-                          <span class="mv-accordion__chev"></span>
-                        </summary>
-
-                        <div class="mv-accordion__body">
-                          <ng-container *ngFor="let g of permissionGroups">
-                            <ng-container
-                              *ngIf="g.title !== 'Dipendenti' && g.title !== 'Amministratori'"
-                            >
-                              <div class="mv-perm-subtitle">{{ g.title }}</div>
-
-                              <div class="mv-permissions-table">
-                                <label class="mv-perm-row" *ngFor="let p of g.items">
-                                  <span class="mv-perm-row__check">
-                                    <input
-                                      type="checkbox"
-                                      [checked]="(adminEdit.permissions || []).includes(p.key)"
-                                      (change)="togglePermission(adminEdit, p.key)"
-                                    />
-                                  </span>
-                                  <span class="mv-perm-row__label">{{ p.label }}</span>
-                                  <span class="mv-perm-row__key">{{ p.key }}</span>
-                                </label>
-                              </div>
-                            </ng-container>
-                          </ng-container>
-                        </div>
-                      </details>
-                    </div>
-                  </div>
-
-                  <!-- AZIONI -->
-                  <div class="mv-actions-row">
-                    <button
-                      mat-raised-button
-                      class="mv-cta mv-cta--primary"
-                      color="primary"
-                      type="button"
-                      *ngIf="editingIndex !== i"
-                      (click)="startEditAdmin(i)"
-                    >
-                      ✏️ Modifica
-                    </button>
-
-                    <button
-                      mat-raised-button
-                      class="mv-cta mv-cta--soft"
-                      color="accent"
-                      type="button"
-                      *ngIf="editingIndex === i"
-                      (click)="saveEditAdmin()"
-                    >
-                      ✅ Salva
-                    </button>
-
-                    <button
-                      mat-raised-button
-                      class="mv-cta mv-cta--soft"
-                      type="button"
-                      *ngIf="editingIndex === i"
-                      (click)="cancelEditAdmin()"
-                    >
-                      ↩️ Annulla
-                    </button>
-
-                    <button
-                      mat-raised-button
-                      class="mv-cta mv-cta--danger"
-                      color="warn"
-                      type="button"
-                      (click)="deleteAdmin(i)"
-                    >
-                      🗑️ Elimina
-                    </button>
-                  </div>
-                </mat-card-content>
-              </mat-card>
-            </div>
-
-            <!-- EMPTY LIST -->
+            <!-- EMPTY STATE -->
             <div class="mv-empty" *ngIf="!admins || admins.length === 0">
               <div class="mv-empty__icon">👤</div>
               <div class="mv-empty__title">Nessun amministratore</div>
               <div class="mv-empty__text">Aggiungi un admin per iniziare.</div>
             </div>
+
+            <div class="mv-admin-grid" *ngIf="admins && admins.length > 0">
+              <mat-card
+                *ngFor="let admin of admins; let i = index"
+                class="mv-admin-card"
+                [class.mv-admin-card--editing]="editingIndex === i"
+              >
+                <mat-card-content>
+
+                  <!-- ── VIEW MODE ── -->
+                  <div class="mv-admin-details" *ngIf="editingIndex !== i">
+                    <div class="mv-admin-info-grid">
+                      <div class="mv-kv">
+                        <div class="mv-k">Nome</div>
+                        <div class="mv-v">{{ admin.nome }}</div>
+                      </div>
+                      <div class="mv-kv">
+                        <div class="mv-k">Cognome</div>
+                        <div class="mv-v">{{ admin.cognome }}</div>
+                      </div>
+                      <div class="mv-kv mv-kv--wide">
+                        <div class="mv-k">Email</div>
+                        <div class="mv-v mv-v--mono">{{ admin.email }}</div>
+                      </div>
+                      <div class="mv-kv">
+                        <div class="mv-k">Codice Operatore</div>
+                        <div class="mv-v"><span class="mv-pill">{{ admin.codiceOperatore }}</span></div>
+                      </div>
+                    </div>
+
+                    <!-- Permessi in italiano -->
+                    <div class="mv-perms-section">
+                      <div class="mv-perms-label">Permessi assegnati</div>
+                      <div class="mv-perms-preview" *ngIf="admin.permissions && admin.permissions.length > 0">
+                        <span
+                          class="mv-chip"
+                          *ngFor="let p of admin.permissions"
+                        >{{ getPermissionLabel(p) }}</span>
+                      </div>
+                      <span class="mv-muted" *ngIf="!admin.permissions || admin.permissions.length === 0">
+                        Nessun permesso assegnato
+                      </span>
+                    </div>
+                  </div>
+
+                  <!-- ── EDIT MODE ── -->
+                  <div *ngIf="editingIndex === i" class="mv-admin-edit">
+                    <div class="mv-section-label">Dati anagrafici</div>
+                    <div class="mv-form-grid">
+                      <mat-form-field appearance="outline" class="mv-field">
+                        <mat-label>Nome</mat-label>
+                        <input matInput [(ngModel)]="adminEdit.nome" name="edit_nome_{{ i }}" />
+                      </mat-form-field>
+                      <mat-form-field appearance="outline" class="mv-field">
+                        <mat-label>Cognome</mat-label>
+                        <input matInput [(ngModel)]="adminEdit.cognome" name="edit_cognome_{{ i }}" />
+                      </mat-form-field>
+                      <mat-form-field appearance="outline" class="mv-field">
+                        <mat-label>Email</mat-label>
+                        <input matInput type="email" [(ngModel)]="adminEdit.email" name="edit_email_{{ i }}" />
+                      </mat-form-field>
+                      <mat-form-field appearance="outline" class="mv-field">
+                        <mat-label>Codice Operatore</mat-label>
+                        <input matInput [(ngModel)]="adminEdit.codiceOperatore" name="edit_codice_{{ i }}" />
+                      </mat-form-field>
+                      <mat-form-field appearance="outline" class="mv-field mv-field--full">
+                        <mat-label>Nuova password (lascia vuoto per non cambiarla)</mat-label>
+                        <input matInput type="password" [(ngModel)]="adminEdit.password" name="edit_pwd_{{ i }}" />
+                      </mat-form-field>
+                    </div>
+
+                    <div class="mv-section-label mv-section-label--perms">Permessi</div>
+                    <ng-container *ngTemplateOutlet="permissionsTemplate; context: { target: adminEdit }"></ng-container>
+                  </div>
+
+                  <!-- ── AZIONI ── -->
+                  <div class="mv-actions-row">
+                    <ng-container *ngIf="editingIndex !== i">
+                      <button mat-raised-button class="mv-cta mv-cta--primary" color="primary" type="button" (click)="startEditAdmin(i)">
+                        ✏️ Modifica
+                      </button>
+                      <button mat-raised-button class="mv-cta mv-cta--danger" color="warn" type="button" (click)="deleteAdmin(i)">
+                        🗑️ Elimina
+                      </button>
+                    </ng-container>
+                    <ng-container *ngIf="editingIndex === i">
+                      <button mat-raised-button class="mv-cta mv-cta--soft" color="accent" type="button" (click)="saveEditAdmin()">
+                        ✅ Salva
+                      </button>
+                      <button mat-raised-button class="mv-cta mv-cta--ghost" type="button" (click)="cancelEditAdmin()">
+                        ↩️ Annulla
+                      </button>
+                    </ng-container>
+                  </div>
+
+                </mat-card-content>
+              </mat-card>
+            </div>
+
           </div>
         </section>
 
-        <!-- FORM AGGIUNTA -->
+        <!-- ═══════════════════════════════════════════
+             SEZIONE: AGGIUNGI NUOVO ADMIN
+        ═══════════════════════════════════════════ -->
         <section class="mv-card">
           <div class="mv-card__head">
             <h3 class="mv-h3">Aggiungi Nuovo Admin</h3>
@@ -286,154 +152,80 @@
 
           <div class="mv-card__body">
             <form class="mv-add-form">
+              <div class="mv-section-label">Dati anagrafici</div>
               <div class="mv-form-grid">
                 <mat-form-field appearance="outline" class="mv-field">
                   <mat-label>Nome</mat-label>
                   <input matInput [(ngModel)]="adminAdd.nome" name="add_nome" />
                 </mat-form-field>
-
                 <mat-form-field appearance="outline" class="mv-field">
                   <mat-label>Cognome</mat-label>
-                  <input
-                    matInput
-                    [(ngModel)]="adminAdd.cognome"
-                    name="add_cognome"
-                  />
+                  <input matInput [(ngModel)]="adminAdd.cognome" name="add_cognome" />
                 </mat-form-field>
-
                 <mat-form-field appearance="outline" class="mv-field">
                   <mat-label>Email</mat-label>
-                  <input
-                    matInput
-                    type="email"
-                    [(ngModel)]="adminAdd.email"
-                    name="add_email"
-                  />
+                  <input matInput type="email" [(ngModel)]="adminAdd.email" name="add_email" />
                 </mat-form-field>
-
                 <mat-form-field appearance="outline" class="mv-field">
                   <mat-label>Codice Operatore</mat-label>
-                  <input
-                    matInput
-                    [(ngModel)]="adminAdd.codiceOperatore"
-                    name="add_codiceOperatore"
-                  />
+                  <input matInput [(ngModel)]="adminAdd.codiceOperatore" name="add_codiceOperatore" />
                 </mat-form-field>
               </div>
 
-              <div class="mv-perms-head">
-                <div class="mv-h4">Permessi</div>
-                <div class="mv-sub mv-sub--tight">
-                  Seleziona i permessi per il nuovo admin
-                </div>
-              </div>
-
-              <!-- ✅ PERMESSI DIVISI (collapsible) -->
-              <div class="mv-perm-wrap">
-                <!-- DIPENDENTI -->
-                <details class="mv-accordion" open>
-                  <summary class="mv-accordion__summary">
-                    <span class="mv-accordion__title">Gestione permessi dipendenti</span>
-                    <span class="mv-accordion__chev"></span>
-                  </summary>
-
-                  <div class="mv-accordion__body">
-                    <ng-container *ngFor="let g of permissionGroups">
-                      <ng-container *ngIf="g.title === 'Dipendenti'">
-                        <div class="mv-permissions-table">
-                          <label class="mv-perm-row" *ngFor="let p of g.items">
-                            <span class="mv-perm-row__check">
-                              <input
-                                type="checkbox"
-                                [checked]="(adminAdd.permissions || []).includes(p.key)"
-                                (change)="togglePermission(adminAdd, p.key)"
-                              />
-                            </span>
-                            <span class="mv-perm-row__label">{{ p.label }}</span>
-                            <span class="mv-perm-row__key">{{ p.key }}</span>
-                          </label>
-                        </div>
-                      </ng-container>
-                    </ng-container>
-                  </div>
-                </details>
-
-                <!-- AMMINISTRATORI -->
-                <details class="mv-accordion">
-                  <summary class="mv-accordion__summary">
-                    <span class="mv-accordion__title">Gestione permessi amministratori</span>
-                    <span class="mv-accordion__chev"></span>
-                  </summary>
-
-                  <div class="mv-accordion__body">
-                    <ng-container *ngFor="let g of permissionGroups">
-                      <ng-container *ngIf="g.title === 'Amministratori'">
-                        <div class="mv-permissions-table">
-                          <label class="mv-perm-row" *ngFor="let p of g.items">
-                            <span class="mv-perm-row__check">
-                              <input
-                                type="checkbox"
-                                [checked]="(adminAdd.permissions || []).includes(p.key)"
-                                (change)="togglePermission(adminAdd, p.key)"
-                              />
-                            </span>
-                            <span class="mv-perm-row__label">{{ p.label }}</span>
-                            <span class="mv-perm-row__key">{{ p.key }}</span>
-                          </label>
-                        </div>
-                      </ng-container>
-                    </ng-container>
-                  </div>
-                </details>
-
-                <!-- ALTRI PERMESSI (opzionale) -->
-                <details class="mv-accordion mv-accordion--muted">
-                  <summary class="mv-accordion__summary">
-                    <span class="mv-accordion__title">Altri permessi</span>
-                    <span class="mv-accordion__chev"></span>
-                  </summary>
-
-                  <div class="mv-accordion__body">
-                    <ng-container *ngFor="let g of permissionGroups">
-                      <ng-container
-                        *ngIf="g.title !== 'Dipendenti' && g.title !== 'Amministratori'"
-                      >
-                        <div class="mv-perm-subtitle">{{ g.title }}</div>
-
-                        <div class="mv-permissions-table">
-                          <label class="mv-perm-row" *ngFor="let p of g.items">
-                            <span class="mv-perm-row__check">
-                              <input
-                                type="checkbox"
-                                [checked]="(adminAdd.permissions || []).includes(p.key)"
-                                (change)="togglePermission(adminAdd, p.key)"
-                              />
-                            </span>
-                            <span class="mv-perm-row__label">{{ p.label }}</span>
-                            <span class="mv-perm-row__key">{{ p.key }}</span>
-                          </label>
-                        </div>
-                      </ng-container>
-                    </ng-container>
-                  </div>
-                </details>
-              </div>
+              <div class="mv-section-label mv-section-label--perms">Permessi</div>
+              <ng-container *ngTemplateOutlet="permissionsTemplate; context: { target: adminAdd }"></ng-container>
 
               <div class="mv-actions-row mv-actions-row--end">
-                <button
-                  type="button"
-                  mat-raised-button
-                  class="mv-cta mv-cta--primary"
-                  color="primary"
-                  (click)="addAdmin()"
-                >
-                  ➕ Aggiungi
+                <button type="button" mat-raised-button class="mv-cta mv-cta--primary" color="primary" (click)="addAdmin()">
+                  ➕ Aggiungi Admin
                 </button>
               </div>
             </form>
           </div>
         </section>
+
       </main>
     </div>
   </div>
 </div>
+
+<!-- ═══════════════════════════════════════════
+     TEMPLATE RIUTILIZZABILE: griglia permessi
+     (usato sia in Add che in Edit)
+═══════════════════════════════════════════ -->
+<ng-template #permissionsTemplate let-target="target">
+  <div class="mv-perm-wrap">
+    <details
+      class="mv-accordion"
+      *ngFor="let g of permissionGroups; let first = first"
+      [attr.open]="first ? '' : null"
+    >
+      <summary class="mv-accordion__summary">
+        <div class="mv-accordion__header">
+          <span class="mv-accordion__title">{{ g.title }}</span>
+          <span class="mv-accordion__count">{{ countGroupActive(g, target.permissions) }} / {{ g.items.length }}</span>
+        </div>
+        <span class="mv-accordion__chev"></span>
+      </summary>
+
+      <div class="mv-accordion__body">
+        <div class="mv-permissions-table">
+          <label
+            class="mv-perm-row"
+            *ngFor="let p of g.items"
+            [class.mv-perm-row--active]="(target.permissions || []).includes(p.key)"
+          >
+            <span class="mv-perm-row__check">
+              <input
+                type="checkbox"
+                [checked]="(target.permissions || []).includes(p.key)"
+                (change)="togglePermission(target, p.key)"
+              />
+            </span>
+            <span class="mv-perm-row__label">{{ p.label }}</span>
+          </label>
+        </div>
+      </div>
+    </details>
+  </div>
+</ng-template>

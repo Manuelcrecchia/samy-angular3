@@ -386,7 +386,11 @@
       (onAppointmentClick)="onAppointmentClick($event)"
       (onContentReady)="onSchedulerContentReady()"
     >
-      <dxo-editing [allowAdding]="true"></dxo-editing>
+      <dxo-editing
+        [allowAdding]="canManageEvents"
+        [allowUpdating]="canManageEvents"
+        [allowDeleting]="canManageEvents"
+      ></dxo-editing>
 
       <dxi-view type="day"></dxi-view>
       <dxi-view type="week"></dxi-view>

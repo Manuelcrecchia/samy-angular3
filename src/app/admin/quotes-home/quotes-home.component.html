@@ -24,6 +24,7 @@
           &larr; Torna Indietro
         </button>
         <button
+          *ngIf="globalService.hasPermission('QUOTES_MANAGE')"
           (click)="navigateToAddQuote()"
           mat-icon-button
           class="btn btn-pink me-2"
@@ -112,7 +113,7 @@
             >
               <div class="quote-actions-inner">
                 <button
-                  *ngIf="!showCompletedQuotes"
+                  *ngIf="!showCompletedQuotes && globalService.hasPermission('QUOTES_MANAGE')"
                   mat-raised-button
                   color="accent"
                   (click)="navigateToEditQuote(quote.numeroPreventivo)"
@@ -121,6 +122,7 @@
                 </button>
 
                 <button
+                  *ngIf="globalService.hasPermission('QUOTES_MANAGE')"
                   mat-raised-button
                   color="warn"
                   (click)="delete(quote.numeroPreventivo)"

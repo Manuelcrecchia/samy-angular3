@@ -148,12 +148,23 @@ export class EditCustomerComponent {
         },
         error: (err) => {
           console.error("Errore durante l'aggiornamento:", err);
+          const msg = this.parseServerError(err);
+          alert(msg);
         },
       });
   }
 
   back(): void {
     this.router.navigateByUrl('/listCustomer');
+  }
+
+  private parseServerError(err: any): string {
+    try {
+      const body = typeof err.error === 'string' ? JSON.parse(err.error) : err.error;
+      if (body?.error) return body.error;
+    } catch {}
+    if (err.status === 0) return 'Impossibile connettersi al server';
+    return 'Errore durante il salvataggio. Riprova.';
   }
 
   @HostListener('window:popstate', ['$event'])

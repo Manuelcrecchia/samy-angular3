@@ -44,7 +44,7 @@ export class QuotesHomeComponent {
     private http: HttpClient,
     private snackBar: MatSnackBar,
     private pdfService: NgxExtendedPdfViewerService,
-    private globalService: GlobalService,
+    public globalService: GlobalService,
     private router: Router,
     private quoteModel: QuoteModelService,
     private popup: PopupServiceService,
@@ -75,6 +75,7 @@ export class QuotesHomeComponent {
         },
         error: (err) => {
           console.error('Errore addInspection:', err);
+          alert(this.parseServerError(err));
         },
       });
   }
@@ -118,6 +119,7 @@ export class QuotesHomeComponent {
         },
         error: (err) => {
           console.error('Errore caricamento preventivi:', err);
+          alert('Errore durante il caricamento dei preventivi');
         },
       });
   }
@@ -303,6 +305,7 @@ export class QuotesHomeComponent {
         },
         error: (err) => {
           console.error('Errore navigateToEditQuote:', err);
+          alert(this.parseServerError(err));
         },
       });
   }
@@ -338,6 +341,7 @@ export class QuotesHomeComponent {
         },
         error: (err) => {
           console.error('Errore delete quote:', err);
+          alert(this.parseServerError(err));
         },
       });
   }
@@ -411,11 +415,13 @@ export class QuotesHomeComponent {
               },
               error: (err) => {
                 console.error('Errore setComplete:', err);
+                alert(this.parseServerError(err));
               },
             });
         },
         error: (err) => {
           console.error('Errore conferm quote:', err);
+          alert(this.parseServerError(err));
         },
       });
   }
@@ -434,6 +440,7 @@ export class QuotesHomeComponent {
         },
         error: (err) => {
           console.error('Errore refuse quote:', err);
+          alert(this.parseServerError(err));
         },
       });
   }
@@ -452,6 +459,7 @@ export class QuotesHomeComponent {
         },
         error: (err) => {
           console.error('Errore restore quote:', err);
+          alert(this.parseServerError(err));
         },
       });
   }
@@ -476,12 +484,22 @@ export class QuotesHomeComponent {
         },
         error: (err) => {
           console.error('Errore invio PDF:', err);
+          alert(this.parseServerError(err));
         },
       });
   }
 
   back() {
     this.router.navigateByUrl('/homeAdmin');
+  }
+
+  private parseServerError(err: any): string {
+    try {
+      const body = typeof err.error === 'string' ? JSON.parse(err.error) : err.error;
+      if (body?.error) return body.error;
+    } catch {}
+    if (err.status === 0) return 'Impossibile connettersi al server';
+    return 'Errore imprevisto. Riprova.';
   }
 
   @HostListener('window:popstate', ['$event'])

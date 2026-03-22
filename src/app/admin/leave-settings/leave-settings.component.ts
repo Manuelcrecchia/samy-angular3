@@ -18,6 +18,10 @@ export class LeaveSettingsComponent implements OnInit {
       next: (res: any) => {
         this.limit = res.leaveLimitDays ?? 0;
       },
+      error: (err) => {
+        console.error('Errore caricamento impostazioni ferie:', err);
+        alert('Errore durante il caricamento delle impostazioni');
+      },
     });
   }
 

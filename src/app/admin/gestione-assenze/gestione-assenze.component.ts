@@ -69,11 +69,7 @@ export class GestioneAssenzeComponent implements OnInit {
         },
         error: (err) => {
           console.error('Errore creazione assenza:', err);
-          if (err.status === 409) {
-            alert("⚠️ Esiste già un'assenza per questo periodo!");
-          } else {
-            alert("❌ Errore durante la creazione dell'assenza");
-          }
+          alert('❌ ' + this.parseServerError(err));
         },
       });
   }
@@ -83,7 +79,10 @@ export class GestioneAssenzeComponent implements OnInit {
       .post(this.global.url + 'admin/attendanceCategory/update/' + a.id, a)
       .subscribe({
         next: () => this.loadAssenze(),
-        error: (err) => console.error('Errore aggiornamento:', err),
+        error: (err) => {
+          console.error('Errore aggiornamento:', err);
+          alert('❌ ' + this.parseServerError(err));
+        },
       });
   }
 
@@ -93,8 +92,20 @@ export class GestioneAssenzeComponent implements OnInit {
         .post(this.global.url + 'admin/attendanceCategory/delete/' + id, {})
         .subscribe({
           next: () => this.loadAssenze(),
-          error: (err) => console.error('Errore eliminazione:', err),
+          error: (err) => {
+            console.error('Errore eliminazione:', err);
+            alert('❌ ' + this.parseServerError(err));
+          },
         });
     }
+  }
+
+  private parseServerError(err: any): string {
+    try {
+      const body = typeof err.error === 'string' ? JSON.parse(err.error) : err.error;
+      if (body?.error) return body.error;
+    } catch {}
+    if (err.status === 0) return 'Impossibile connettersi al server';
+    return 'Errore imprevisto. Riprova.';
   }
 }

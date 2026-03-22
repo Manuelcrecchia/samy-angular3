@@ -7,7 +7,7 @@ import { TenantService } from './tenant.service';
   providedIn: 'root',
 })
 export class GlobalService {
-  version = '2.0';
+  version = '2.1';
 
   constructor(
     private authService: AuthServiceService,

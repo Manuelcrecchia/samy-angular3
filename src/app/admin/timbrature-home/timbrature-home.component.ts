@@ -42,6 +42,7 @@ export class TimbratureHomeComponent implements OnInit {
         error: (err) => {
           console.error('Errore caricamento dipendenti:', err);
           this.loading = false;
+          alert('Errore durante il caricamento delle timbrature');
         },
       });
   }

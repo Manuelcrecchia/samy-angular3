@@ -70,6 +70,8 @@
       EMPLOYEE_DELETE: ['EMPLOYEE_VIEW'],
       EMPLOYEE_DOCS_MANAGE: ['EMPLOYEE_VIEW'],
       EMPLOYEE_PERMITS_MANAGE: ['EMPLOYEE_VIEW'],
+
+      NOTIFICATIONS_MANAGE: ['NOTIFICATIONS_VIEW'],
     };
 
     constructor(
@@ -212,6 +214,10 @@
           title: 'Calendario',
           items: pick(['CALENDAR_VIEW', 'CALENDAR_EVENT_MANAGE']),
         },
+        {
+          title: 'Notifiche',
+          items: pick(['NOTIFICATIONS_VIEW', 'NOTIFICATIONS_MANAGE']),
+        },
       ].filter((g) => g.items.length > 0);
     }
 
@@ -267,7 +273,7 @@
           },
           error: (err) => {
             console.error('Errore creazione admin:', err);
-            alert('Errore durante la creazione admin');
+            alert(this.parseServerError(err));
           },
         });
     }
@@ -286,7 +292,7 @@
           },
           error: (err) => {
             console.error('Errore cancellazione admin:', err);
-            alert('Errore durante la cancellazione admin');
+            alert(this.parseServerError(err));
           },
         });
     }
@@ -335,12 +341,30 @@
           },
           error: (err) => {
             console.error('Errore modifica admin:', err);
-            alert('Errore durante la modifica admin');
+            alert(this.parseServerError(err));
           },
         });
     }
 
+    getPermissionLabel(key: string): string {
+      const opt = this.permissionOptions.find((o) => o.key === key);
+      return opt ? opt.label : key;
+    }
+
+    countGroupActive(group: { items: PermissionOption[] }, permissions: string[]): number {
+      return group.items.filter((p) => (permissions || []).includes(p.key)).length;
+    }
+
     back() {
       this.router.navigateByUrl('/homeAdmin');
+    }
+
+    private parseServerError(err: any): string {
+      try {
+        const body = typeof err.error === 'string' ? JSON.parse(err.error) : err.error;
+        if (body?.error) return body.error;
+      } catch {}
+      if (err.status === 0) return 'Impossibile connettersi al server';
+      return 'Errore imprevisto. Riprova.';
     }
   }

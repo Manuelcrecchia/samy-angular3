@@ -213,6 +213,7 @@ export class RiepilogoPresenzeEditabileComponent implements OnInit {
       });
     } catch (err) {
       console.error('❌ Errore caricamento presenze editabili:', err);
+      alert('Errore durante il caricamento delle presenze');
     } finally {
       this.loading = false;
     }
@@ -245,7 +246,13 @@ export class RiepilogoPresenzeEditabileComponent implements OnInit {
         categoria,
         ore,
       })
-      .subscribe();
+      .subscribe({
+        next: () => {},
+        error: (err) => {
+          console.error('Errore salvataggio cella:', err);
+          alert(this.parseServerError(err));
+        },
+      });
   }
 
   // 🔵 AUTOSAVE NOTE con debounce
@@ -280,6 +287,7 @@ export class RiepilogoPresenzeEditabileComponent implements OnInit {
       console.log('✔ Nota salvata');
     } catch (err) {
       console.error('❌ Errore salvataggio nota editabile:', err);
+      alert(this.parseServerError(err));
     }
   }
 
@@ -330,5 +338,14 @@ export class RiepilogoPresenzeEditabileComponent implements OnInit {
 
   back() {
     this.router.navigate(['/homeAdmin']);
+  }
+
+  private parseServerError(err: any): string {
+    try {
+      const body = typeof err.error === 'string' ? JSON.parse(err.error) : err.error;
+      if (body?.error) return body.error;
+    } catch {}
+    if (err.status === 0) return 'Impossibile connettersi al server';
+    return 'Errore imprevisto. Riprova.';
   }
 }

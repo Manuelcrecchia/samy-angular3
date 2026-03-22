@@ -16,7 +16,7 @@ export class HomeAdminComponent implements OnInit {
   constructor(
     private el: ElementRef,
     private router: Router,
-    private global: GlobalService,
+    public global: GlobalService,
     private popup: PopupServiceService,
     public quoteModelService: QuoteModelService,
     private location: Location,

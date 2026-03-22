@@ -15,7 +15,7 @@
   </h2>
 
   <!-- Aggiungi Cliente -->
-  <div class="text-end mb-4">
+  <div class="text-end mb-4" *ngIf="globalService.hasPermission('CUSTOMERS_MANAGE')">
     <button class="btn btn-brand-orange btn-round" (click)="navigateToAddCustomer()">
       ➕ Aggiungi Cliente
     </button>
@@ -90,12 +90,14 @@
               🏷 Tag
             </button>
 
-            <button class="btn btn-brand-orange btn-sm btn-round"
+            <button *ngIf="globalService.hasPermission('CUSTOMERS_MANAGE')"
+              class="btn btn-brand-orange btn-sm btn-round"
               (click)="navigateToEditCustomer(customer.numeroCliente)">
               ✏ Modifica
             </button>
 
-            <button class="btn btn-outline-danger btn-sm btn-round"
+            <button *ngIf="globalService.hasPermission('CUSTOMERS_MANAGE')"
+              class="btn btn-outline-danger btn-sm btn-round"
               (click)="exportAndDeleteCustomer(customer)">
               🗑 Elimina
             </button>

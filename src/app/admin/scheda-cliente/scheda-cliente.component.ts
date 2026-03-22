@@ -32,8 +32,14 @@ export class SchedaClienteComponent implements OnInit {
             headers: this.globalService.headers,
           }
         )
-        .subscribe((res: any) => {
-          this.cliente = res[0];
+        .subscribe({
+          next: (res: any) => {
+            this.cliente = res[0];
+          },
+          error: (err) => {
+            console.error('Errore caricamento cliente:', err);
+            alert('Errore durante il caricamento del cliente');
+          },
         });
     }
   }

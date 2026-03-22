@@ -8,7 +8,7 @@
     </button>
 
     <!-- AZIONI SELEZIONE + INVIO -->
-    <div class="d-flex align-items-center gap-2 flex-wrap">
+    <div class="d-flex align-items-center gap-2 flex-wrap" *ngIf="globalService.hasPermission('NOTIFICATIONS_MANAGE')">
       <button
         class="btn btn-glass btn-round"
         (click)="toggleSelectAll()"
@@ -74,6 +74,7 @@
 
           <td class="actions-cell">
             <button
+              *ngIf="globalService.hasPermission('EMPLOYEE_PERMITS_MANAGE')"
               class="btn btn-outline-brand btn-sm btn-round"
               (click)="goToAssenze(emp.id)"
             >
@@ -81,6 +82,7 @@
             </button>
 
             <button
+              *ngIf="globalService.hasPermission('EMPLOYEE_DOCS_MANAGE')"
               class="btn btn-brand-secondary btn-sm btn-round"
               (click)="goToDocument(emp.id)"
             >
@@ -88,6 +90,7 @@
             </button>
 
             <button
+              *ngIf="globalService.hasPermission('NOTIFICATIONS_VIEW')"
               class="btn btn-glass-dark btn-sm btn-round"
               (click)="openEmpNotifications(emp, empNotifModal)"
             >

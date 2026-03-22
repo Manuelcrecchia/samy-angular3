@@ -64,6 +64,10 @@ export class DocumentManagerComponent implements OnInit {
             console.error('Errore parsing email:', err);
           }
         },
+        error: (err) => {
+          console.error('Errore caricamento email:', err);
+          alert('Errore durante il caricamento dei dati');
+        },
       });
   }
 
@@ -98,6 +102,10 @@ export class DocumentManagerComponent implements OnInit {
             this.folders = JSON.parse(res);
           } catch {}
         },
+        error: (err) => {
+          console.error('Errore caricamento cartelle:', err);
+          alert('Errore durante il caricamento dei dati');
+        },
       });
   }
 
@@ -111,9 +119,15 @@ export class DocumentManagerComponent implements OnInit {
         headers: this.globalService.headers,
         responseType: 'text',
       })
-      .subscribe(() => {
-        this.newFolderName = '';
-        this.loadFolders();
+      .subscribe({
+        next: () => {
+          this.newFolderName = '';
+          this.loadFolders();
+        },
+        error: (err) => {
+          console.error('Errore creazione cartella:', err);
+          alert(this.parseServerError(err));
+        },
       });
   }
 
@@ -127,13 +141,19 @@ export class DocumentManagerComponent implements OnInit {
         headers: this.globalService.headers,
         responseType: 'text',
       })
-      .subscribe(() => {
-        if (folder === this.selectedFolder) {
-          this.selectedFolder = '';
-          this.files = [];
-          this.pdfBase64 = '';
-        }
-        this.loadFolders();
+      .subscribe({
+        next: () => {
+          if (folder === this.selectedFolder) {
+            this.selectedFolder = '';
+            this.files = [];
+            this.pdfBase64 = '';
+          }
+          this.loadFolders();
+        },
+        error: (err) => {
+          console.error('Errore eliminazione cartella:', err);
+          alert(this.parseServerError(err));
+        },
       });
   }
 
@@ -156,6 +176,10 @@ export class DocumentManagerComponent implements OnInit {
           try {
             this.files = JSON.parse(res);
           } catch {}
+        },
+        error: (err) => {
+          console.error('Errore caricamento file:', err);
+          alert('Errore durante il caricamento dei dati');
         },
       });
   }
@@ -181,6 +205,10 @@ export class DocumentManagerComponent implements OnInit {
           alert('Documento caricato!');
           this.loadFiles();
         },
+        error: (err) => {
+          console.error('Errore upload documento:', err);
+          alert(this.parseServerError(err));
+        },
       });
   }
 
@@ -194,7 +222,13 @@ export class DocumentManagerComponent implements OnInit {
         headers: this.globalService.headers,
         responseType: 'text',
       })
-      .subscribe((base64) => (this.pdfBase64 = base64));
+      .subscribe({
+        next: (base64) => (this.pdfBase64 = base64),
+        error: (err) => {
+          console.error('Errore caricamento PDF:', err);
+          alert('Errore durante il caricamento dei dati');
+        },
+      });
   }
 
   downloadCurrentFile(filename: string): void {
@@ -205,13 +239,19 @@ export class DocumentManagerComponent implements OnInit {
         headers: this.globalService.headers,
         responseType: 'blob',
       })
-      .subscribe((blob) => {
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = filename;
-        a.click();
-        window.URL.revokeObjectURL(url);
+      .subscribe({
+        next: (blob) => {
+          const url = window.URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = filename;
+          a.click();
+          window.URL.revokeObjectURL(url);
+        },
+        error: (err) => {
+          console.error('Errore download file:', err);
+          alert('Errore durante il download del file');
+        },
       });
   }
 
@@ -226,8 +266,8 @@ export class DocumentManagerComponent implements OnInit {
         headers: this.globalService.headers,
         responseType: 'blob',
       })
-      .subscribe(
-        (blob) => {
+      .subscribe({
+        next: (blob) => {
           const pdfUrl = URL.createObjectURL(blob);
 
           // Apri in nuova scheda
@@ -252,8 +292,11 @@ export class DocumentManagerComponent implements OnInit {
             }, 300);
           };
         },
-        (err) => console.error('Errore stampa:', err),
-      );
+        error: (err) => {
+          console.error('Errore stampa:', err);
+          alert('Errore durante la stampa del file');
+        },
+      });
   }
 
   deleteFile(filename: string): void {
@@ -266,13 +309,28 @@ export class DocumentManagerComponent implements OnInit {
         headers: this.globalService.headers,
         responseType: 'text',
       })
-      .subscribe(() => {
-        this.files = this.files.filter((f) => f.filename !== filename);
-        if (this.currentFilename === filename) this.pdfBase64 = '';
+      .subscribe({
+        next: () => {
+          this.files = this.files.filter((f) => f.filename !== filename);
+          if (this.currentFilename === filename) this.pdfBase64 = '';
+        },
+        error: (err) => {
+          console.error('Errore eliminazione file:', err);
+          alert(this.parseServerError(err));
+        },
       });
   }
 
   back(): void {
     this.router.navigateByUrl('/homeAdmin');
+  }
+
+  private parseServerError(err: any): string {
+    try {
+      const body = typeof err.error === 'string' ? JSON.parse(err.error) : err.error;
+      if (body?.error) return body.error;
+    } catch {}
+    if (err.status === 0) return 'Impossibile connettersi al server';
+    return 'Errore imprevisto. Riprova.';
   }
 }

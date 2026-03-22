@@ -62,6 +62,7 @@ export class GestioneEmployeesComponent implements OnInit {
         },
         error: (error) => {
           console.error('Errore nel recupero dei dipendenti:', error);
+          alert('Errore durante il caricamento dei dipendenti');
         },
       });
   }

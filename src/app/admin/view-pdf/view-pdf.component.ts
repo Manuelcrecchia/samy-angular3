@@ -44,17 +44,23 @@ export class ViewPdfComponent implements OnInit {
           headers: this.globalService.headers,
           responseType: 'text',
         })
-        .subscribe((resp) => {
-          if (resp === 'Unauthorized') {
-            this.router.navigateByUrl('/');
-            return;
-          }
-          const quote = JSON.parse(resp)[0];
-          const nominativo = String(quote?.nominativo ?? '').trim();
-          const base = this.sanitizeFilename(
-            `${numeroPreventivo} ${nominativo}`
-          );
-          this.downloadName = `${base}.pdf`;
+        .subscribe({
+          next: (resp) => {
+            if (resp === 'Unauthorized') {
+              this.router.navigateByUrl('/');
+              return;
+            }
+            const quote = JSON.parse(resp)[0];
+            const nominativo = String(quote?.nominativo ?? '').trim();
+            const base = this.sanitizeFilename(
+              `${numeroPreventivo} ${nominativo}`
+            );
+            this.downloadName = `${base}.pdf`;
+          },
+          error: (err) => {
+            console.error('Errore caricamento preventivo:', err);
+            alert(this.parseServerError(err));
+          },
         });
 
       // PDF base64
@@ -63,12 +69,18 @@ export class ViewPdfComponent implements OnInit {
           headers: this.globalService.headers,
           responseType: 'text',
         })
-        .subscribe((response) => {
-          if (response !== 'Unauthorized') {
-            this.pdfPrev = response;
-          } else {
-            this.router.navigateByUrl('/');
-          }
+        .subscribe({
+          next: (response) => {
+            if (response !== 'Unauthorized') {
+              this.pdfPrev = response;
+            } else {
+              this.router.navigateByUrl('/');
+            }
+          },
+          error: (err) => {
+            console.error('Errore caricamento PDF:', err);
+            alert(this.parseServerError(err));
+          },
         });
     });
   }
@@ -85,8 +97,8 @@ export class ViewPdfComponent implements OnInit {
         headers: this.globalService.headers,
         responseType: 'blob',
       })
-      .subscribe(
-        (blob) => {
+      .subscribe({
+        next: (blob) => {
           const url = window.URL.createObjectURL(blob);
           const a = document.createElement('a');
           a.href = url;
@@ -94,8 +106,11 @@ export class ViewPdfComponent implements OnInit {
           a.click();
           window.URL.revokeObjectURL(url);
         },
-        (err) => console.error('Errore download:', err)
-      );
+        error: (err) => {
+          console.error('Errore download:', err);
+          alert('Errore durante il download del PDF');
+        },
+      });
   }
   printPdf() {
     const body = { numeroPreventivo: this.numeroPreventivo };
@@ -105,8 +120,8 @@ export class ViewPdfComponent implements OnInit {
         headers: this.globalService.headers,
         responseType: 'blob',
       })
-      .subscribe(
-        (blob) => {
+      .subscribe({
+        next: (blob) => {
           const pdfUrl = URL.createObjectURL(blob);
 
           // Apri in nuova scheda
@@ -132,7 +147,19 @@ export class ViewPdfComponent implements OnInit {
             }, 300);
           };
         },
-        (err) => console.error('Errore stampa:', err)
-      );
+        error: (err) => {
+          console.error('Errore stampa:', err);
+          alert('Errore durante la stampa del PDF');
+        },
+      });
+  }
+
+  private parseServerError(err: any): string {
+    try {
+      const body = typeof err.error === 'string' ? JSON.parse(err.error) : err.error;
+      if (body?.error) return body.error;
+    } catch {}
+    if (err.status === 0) return 'Impossibile connettersi al server';
+    return 'Errore imprevisto. Riprova.';
   }
 }

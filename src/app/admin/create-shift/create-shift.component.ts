@@ -138,7 +138,13 @@ export class CreateShiftComponent implements OnInit, OnDestroy {
 
     this.http
       .get<any[]>(this.globalService.url + 'employees/getAll')
-      .subscribe((res) => (this.employeeList = res));
+      .subscribe({
+        next: (res) => (this.employeeList = res),
+        error: (err) => {
+          console.error('Errore caricamento dipendenti:', err);
+          alert('Errore durante il caricamento dei dipendenti');
+        },
+      });
 
     this.showPreviousWeekShifts();
   }
@@ -209,6 +215,7 @@ export class CreateShiftComponent implements OnInit, OnDestroy {
         },
         error: (err) => {
           console.error('Autosave fallito:', err);
+          alert(this.parseServerError(err));
         },
       });
   }
@@ -377,13 +384,19 @@ export class CreateShiftComponent implements OnInit, OnDestroy {
 
     this.http
       .post(this.globalService.url + 'shifts/saveMultiple', { shifts: payload })
-      .subscribe(() => {
-        this.socketService.emitUpdate({
-          type: 'reload',
-          date: this.formatDate(this.selectedDate),
-        });
-        alert('Turni salvati');
-        this.router.navigate(['/admin/shifts']);
+      .subscribe({
+        next: () => {
+          this.socketService.emitUpdate({
+            type: 'reload',
+            date: this.formatDate(this.selectedDate),
+          });
+          alert('Turni salvati');
+          this.router.navigate(['/admin/shifts']);
+        },
+        error: (err) => {
+          console.error('Errore salvataggio turni:', err);
+          alert(this.parseServerError(err));
+        },
       });
   }
 
@@ -898,9 +911,24 @@ export class CreateShiftComponent implements OnInit, OnDestroy {
 
     this.http
       .post(this.globalService.url + 'shifts/delete', payload)
-      .subscribe(() => {
-        this.appointments = this.appointments.filter((a) => a.id !== app.id);
+      .subscribe({
+        next: () => {
+          this.appointments = this.appointments.filter((a) => a.id !== app.id);
+        },
+        error: (err) => {
+          console.error('Errore eliminazione turno:', err);
+          alert(this.parseServerError(err));
+        },
       });
+  }
+
+  private parseServerError(err: any): string {
+    try {
+      const body = typeof err.error === 'string' ? JSON.parse(err.error) : err.error;
+      if (body?.error) return body.error;
+    } catch {}
+    if (err.status === 0) return 'Impossibile connettersi al server';
+    return 'Errore imprevisto. Riprova.';
   }
 
   getBusyDetails(currentApp: any): any[] {

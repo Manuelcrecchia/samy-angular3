@@ -136,7 +136,7 @@ const routes: Routes = [
     path: 'settingsemployees',
     component: SettingsEmployeesComponent,
     canActivate: [AuthGuard, AuthLevelGuard],
-    data: { permission: 'EMPLOYEE_EDIT' },
+    data: { permissionsAny: ['EMPLOYEE_VIEW', 'EMPLOYEE_CREATE', 'EMPLOYEE_EDIT', 'EMPLOYEE_DELETE'] },
   },
 
   // permessi/assenze dipendenti
@@ -193,7 +193,7 @@ const routes: Routes = [
     path: 'riepilogo-presenze-editabile',
     component: RiepilogoPresenzeEditabileComponent,
     canActivate: [AuthGuard, AuthLevelGuard],
-    data: { permission: 'ATTENDANCE_MANAGE' },
+    data: { permissionsAny: ['ATTENDANCE_VIEW', 'ATTENDANCE_MANAGE'] },
   },
 
   // turni

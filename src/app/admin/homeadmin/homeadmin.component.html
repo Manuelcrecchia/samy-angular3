@@ -312,11 +312,11 @@
       </button>
 
       <div *ngIf="isMenuOpen" class="menu">
-        <a (click)="navigateToUserSettings()">Aggiungi utenti</a>
-        <a (click)="navigateToSettingsEmployees()">Aggiungi dipendenti</a>
+        <a *ngIf="global.hasPermission('ADMIN_CREATE')" (click)="navigateToUserSettings()">Aggiungi utenti</a>
+        <a *ngIf="global.hasPermission('EMPLOYEE_CREATE')" (click)="navigateToSettingsEmployees()">Aggiungi dipendenti</a>
         <a (click)="navigateToCambiapassword()">Cambia password</a>
-        <a (click)="navigateToLeaveSettings()">Impostazioni Permessi</a>
-        <a (click)="navigateToVehiclesSettings()">Gestione mezzi</a>
+        <a *ngIf="global.hasPermission('EMPLOYEE_PERMITS_MANAGE')" (click)="navigateToLeaveSettings()">Impostazioni Permessi</a>
+        <a *ngIf="global.hasPermission('SETTINGS_ADMIN')" (click)="navigateToVehiclesSettings()">Gestione mezzi</a>
       </div>
 
       <div class="logo-container text-center">
@@ -330,7 +330,7 @@
       <div class="container pb-5">
         <div class="row justify-content-center g-4">
           <!-- Gestione Dipendenti -->
-          <div class="col-12 col-sm-6 col-lg-4">
+          <div class="col-12 col-sm-6 col-lg-4" *ngIf="global.hasPermission('EMPLOYEE_VIEW')">
             <button class="dash-btn" (click)="navigateToGestioneemployees()">
               <span class="icon"><i class="fas fa-user"></i></span>
               <span class="label">Gestione Dipendenti</span>
@@ -338,7 +338,7 @@
           </div>
 
           <!-- Gestione Clienti -->
-          <div class="col-12 col-sm-6 col-lg-4">
+          <div class="col-12 col-sm-6 col-lg-4" *ngIf="global.hasPermission('CUSTOMERS_VIEW')">
             <button class="dash-btn" (click)="navigateToListCustomer()">
               <span class="icon"><i class="fas fa-users"></i></span>
               <span class="label">Gestione Clienti</span>
@@ -346,7 +346,7 @@
           </div>
 
           <!-- Documenti interni -->
-          <div class="col-12 col-sm-6 col-lg-4">
+          <div class="col-12 col-sm-6 col-lg-4" *ngIf="global.hasPermission('INTERNAL_DOCS_ACCESS')">
             <button class="dash-btn" (click)="navigateToInternalDocuments()">
               <span class="icon"><i class="fas fa-file"></i></span>
               <span class="label">Documenti interni</span>
@@ -354,7 +354,7 @@
           </div>
 
           <!-- Gestione Preventivi -->
-          <div class="col-12 col-sm-6 col-lg-4">
+          <div class="col-12 col-sm-6 col-lg-4" *ngIf="global.hasPermission('QUOTES_VIEW')">
             <button class="dash-btn" (click)="navigateToQuotesHome()">
               <span class="icon"><i class="fas fa-file-alt"></i></span>
               <span class="label">Gestione Preventivi</span>
@@ -362,7 +362,7 @@
           </div>
 
           <!-- Calendario -->
-          <div class="col-12 col-sm-6 col-lg-4">
+          <div class="col-12 col-sm-6 col-lg-4" *ngIf="global.hasPermission('CALENDAR_VIEW')">
             <button class="dash-btn" (click)="navigateToCalendarHome()">
               <span class="icon"><i class="fas fa-calendar"></i></span>
               <span class="label">Calendario</span>
@@ -370,7 +370,7 @@
           </div>
 
           <!-- Turni -->
-          <div class="col-12 col-sm-6 col-lg-4">
+          <div class="col-12 col-sm-6 col-lg-4" *ngIf="global.hasPermission('SHIFTS_VIEW')">
             <button class="dash-btn" (click)="goToShifts()">
               <span class="icon"><i class="fas fa-tasks"></i></span>
               <span class="label">Turni</span>
@@ -378,7 +378,7 @@
           </div>
 
           <!-- Riepilogo Ore Modificabili -->
-          <div class="col-12 col-sm-6 col-lg-4">
+          <div class="col-12 col-sm-6 col-lg-4" *ngIf="global.hasPermission('ATTENDANCE_VIEW')">
             <button class="dash-btn" (click)="goToEditableHours()">
               <span class="icon"><i class="fas fa-clock"></i></span>
               <span class="label">Riepilogo presenze personalizzabile</span>
@@ -386,7 +386,7 @@
           </div>
 
           <!-- Gestione Permessi -->
-          <div class="col-12 col-sm-6 col-lg-4">
+          <div class="col-12 col-sm-6 col-lg-4" *ngIf="global.hasPermission('EMPLOYEE_PERMITS_MANAGE')">
             <button class="dash-btn" (click)="navigateToGestionePermessi()">
               <span class="icon"><i class="fas fa-clipboard-check"></i></span>
               <span class="label">
@@ -399,7 +399,7 @@
           </div>
 
           <!-- Gestione Timbrature -->
-          <div class="col-12 col-sm-6 col-lg-4">
+          <div class="col-12 col-sm-6 col-lg-4" *ngIf="global.hasPermission('STAMPING_VIEW')">
             <button class="dash-btn" (click)="navigateToTimbrature()">
               <span class="icon"><i class="fas fa-fingerprint"></i></span>
               <span class="label">Gestione Timbrature</span>
