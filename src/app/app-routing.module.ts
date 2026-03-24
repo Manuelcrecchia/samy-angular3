@@ -11,6 +11,8 @@ import { VehiclesSettingsComponent } from './admin/vehicles-settings/vehicles-se
 import { QuotesHomeComponent } from './admin/quotes-home/quotes-home.component';
 import { AddQuoteComponent } from './admin/add-quote/add-quote.component';
 import { EditQuoteComponent } from './admin/edit-quote/edit-quote.component';
+import { QuoteNotesComponent } from './admin/quote-notes/quote-notes.component';
+import { CustomerNotesComponent } from './admin/customer-notes/customer-notes.component';
 
 import { AddCustomerComponent } from './admin/add-customer/add-customer.component';
 import { ListCustomerComponent } from './admin/list-customer/list-customer.component';
@@ -91,6 +93,18 @@ const routes: Routes = [
     component: EditQuoteComponent,
     canActivate: [AuthGuard, AuthLevelGuard],
     data: { permission: 'QUOTES_MANAGE' },
+  },
+  {
+    path: 'quoteNotes',
+    component: QuoteNotesComponent,
+    canActivate: [AuthGuard, AuthLevelGuard],
+    data: { permission: 'QUOTES_NOTES_VIEW' },
+  },
+  {
+    path: 'customerNotes',
+    component: CustomerNotesComponent,
+    canActivate: [AuthGuard, AuthLevelGuard],
+    data: { permission: 'CUSTOMERS_NOTES_VIEW' },
   },
 
   // clienti

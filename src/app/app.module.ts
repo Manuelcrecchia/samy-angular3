@@ -88,6 +88,8 @@ import { LeaveSettingsComponent } from './admin/leave-settings/leave-settings.co
 import { GestioneTagClienteComponent } from './gestione-tag-cliente/gestione-tag-cliente.component';
 import { RiepilogoPresenzeEditabileComponent } from './admin/riepilogo-presenze-editabile/riepilogo-presenze-editabile.component';
 import { InternalDocumentsComponent } from './admin/internal-documents/internal-documents.component';
+import { QuoteNotesComponent } from './admin/quote-notes/quote-notes.component';
+import { CustomerNotesComponent } from './admin/customer-notes/customer-notes.component';
 
 loadMessages(itMessages);
 locale('it');
@@ -131,6 +133,8 @@ loadMessages(itMessages);
     GestioneTagClienteComponent,
     RiepilogoPresenzeEditabileComponent,
     InternalDocumentsComponent,
+    QuoteNotesComponent,
+    CustomerNotesComponent,
   ],
   imports: [
     BrowserModule,

@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="it">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Note Preventivo</title>
+  </head>
+  <body class="bg-light">
+
+    <!-- TOOLBAR -->
+    <mat-toolbar
+      class="d-flex align-items-center justify-content-between px-3 py-2"
+      color="primary"
+    >
+      <!-- Sinistra: back + titolo -->
+      <div class="d-flex align-items-center gap-2 toolbar-left">
+        <button class="btn-back" type="button" (click)="back()">
+          &larr; Torna Indietro
+        </button>
+        <div class="toolbar-title">
+          <span class="prev-num">Prev. {{ numeroPreventivo }}</span>
+          <span class="prev-nom ms-2">{{ nominativo }}</span>
+        </div>
+      </div>
+
+      <!-- Destra: pulsanti azione -->
+      <div class="d-flex align-items-center gap-2">
+
+        <!-- Solo allegati -->
+        <button
+          type="button"
+          class="btn-toolbar"
+          [class.btn-toolbar--active]="soloAllegati"
+          (click)="toggleSoloAllegati()"
+          title="{{ soloAllegati ? 'Mostra tutta la chat' : 'Mostra solo allegati' }}"
+        >
+          <mat-icon>{{ soloAllegati ? 'chat' : 'attachment' }}</mat-icon>
+        </button>
+
+        <!-- Cerca -->
+        <button
+          type="button"
+          class="btn-toolbar"
+          [class.btn-toolbar--active]="showSearch || searchText"
+          (click)="toggleSearch()"
+          title="Cerca nel testo"
+        >
+          <mat-icon>search</mat-icon>
+        </button>
+
+        <!-- Filtra per data -->
+        <button
+          type="button"
+          class="btn-toolbar"
+          [class.btn-toolbar--active]="showDateFilter || dateFrom || dateTo || filterOperatore"
+          (click)="toggleDateFilter()"
+          title="Filtra per data"
+        >
+          <mat-icon>date_range</mat-icon>
+        </button>
+
+        <!-- Reset filtri (visibile solo se c'è almeno 1 filtro attivo) -->
+        <button
+          *ngIf="activeFilterCount > 0"
+          type="button"
+          class="btn-toolbar btn-toolbar--reset"
+          (click)="clearAllFilters()"
+          title="Rimuovi tutti i filtri"
+        >
+          <mat-icon>filter_alt_off</mat-icon>
+          <span class="filter-badge">{{ activeFilterCount }}</span>
+        </button>
+
+      </div>
+    </mat-toolbar>
+
+    <!-- PANNELLO CERCA -->
+    <div class="filter-panel" *ngIf="showSearch">
+      <div class="filter-panel-inner">
+        <mat-icon class="filter-panel-icon">search</mat-icon>
+        <input
+          class="filter-input"
+          type="text"
+          placeholder="Cerca nel testo delle note..."
+          [(ngModel)]="searchText"
+          autofocus
+        />
+        <button
+          *ngIf="searchText"
+          type="button"
+          class="filter-clear-btn"
+          (click)="searchText = ''"
+        >
+          <mat-icon>close</mat-icon>
+        </button>
+      </div>
+    </div>
+
+    <!-- PANNELLO FILTRO DATE + OPERATORE -->
+    <div class="filter-panel" *ngIf="showDateFilter">
+      <div class="filter-panel-inner filter-dates">
+        <mat-icon class="filter-panel-icon">date_range</mat-icon>
+
+        <div class="date-field">
+          <label>Dal</label>
+          <input type="date" class="filter-date-input" [(ngModel)]="dateFrom" />
+        </div>
+        <div class="date-field">
+          <label>Al</label>
+          <input type="date" class="filter-date-input" [(ngModel)]="dateTo" />
+        </div>
+
+        <div class="date-field">
+          <label>Operatore</label>
+          <select class="filter-date-input" [(ngModel)]="filterOperatore">
+            <option value="">Tutti</option>
+            <option *ngFor="let op of operatoriDisponibili" [value]="op">{{ op }}</option>
+          </select>
+        </div>
+
+        <button
+          *ngIf="dateFrom || dateTo || filterOperatore"
+          type="button"
+          class="filter-clear-btn"
+          (click)="dateFrom = ''; dateTo = ''; filterOperatore = ''"
+        >
+          <mat-icon>close</mat-icon>
+        </button>
+      </div>
+    </div>
+
+    <!-- NOTE LIST -->
+    <div class="notes-scroll-area">
+      <div class="notes-inner">
+
+        <!-- Spinner caricamento -->
+        <div *ngIf="loading" class="text-center py-4">
+          <mat-icon class="spin-icon">autorenew</mat-icon>
+        </div>
+
+        <!-- Nessuna nota in archivio -->
+        <div *ngIf="!loading && note.length === 0" class="empty-state">
+          <mat-icon>notes</mat-icon>
+          <p>Nessuna nota presente per questo preventivo.</p>
+        </div>
+
+        <!-- Nessun risultato dai filtri -->
+        <div
+          *ngIf="!loading && note.length > 0 && noteFiltrate.length === 0"
+          class="empty-state"
+        >
+          <mat-icon>manage_search</mat-icon>
+          <p>Nessuna nota corrisponde ai filtri attivi.</p>
+          <button type="button" class="btn-clear-filters" (click)="clearAllFilters()">
+            Rimuovi filtri
+          </button>
+        </div>
+
+        <!-- Elenco note filtrate -->
+        <div *ngFor="let n of noteFiltrate" class="nota-card">
+          <div class="nota-header">
+            <div class="nota-avatar">
+              <mat-icon>person</mat-icon>
+            </div>
+            <div class="nota-meta">
+              <span class="nota-operatore">{{ n.operatore }}</span>
+              <span class="nota-datetime">{{ n.data }} alle {{ n.ora }}</span>
+            </div>
+          </div>
+
+          <div class="nota-testo" *ngIf="n.testo && !soloAllegati">{{ n.testo }}</div>
+
+          <div class="nota-allegati" *ngIf="n.allegati && n.allegati.length > 0">
+            <ng-container *ngFor="let a of n.allegati">
+
+              <!-- IMMAGINE inline -->
+              <div *ngIf="isImage(a)" class="allegato-img-wrapper">
+                <img
+                  [src]="getDataUrl(a)"
+                  [alt]="a.nome"
+                  class="allegato-img"
+                  (click)="downloadAllegato(a)"
+                  title="Clicca per scaricare"
+                />
+                <span class="allegato-img-nome">{{ a.nome }}</span>
+              </div>
+
+              <!-- PDF viewer inline -->
+              <div *ngIf="isPdf(a)" class="allegato-pdf-wrapper">
+                <embed
+                  [src]="getPdfResourceUrl(a)"
+                  type="application/pdf"
+                  class="allegato-pdf-embed"
+                />
+                <div class="allegato-pdf-footer">
+                  <mat-icon class="pdf-icon">picture_as_pdf</mat-icon>
+                  <span>{{ a.nome }}</span>
+                  <button type="button" class="btn-pdf-download" (click)="downloadAllegato(a)" title="Scarica">
+                    <mat-icon>download</mat-icon>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Altro file -->
+              <button
+                *ngIf="!isImage(a) && !isPdf(a)"
+                type="button"
+                class="allegato-chip"
+                (click)="downloadAllegato(a)"
+              >
+                <mat-icon>insert_drive_file</mat-icon>
+                {{ a.nome }}
+                <mat-icon class="chip-download">download</mat-icon>
+              </button>
+
+            </ng-container>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- INPUT AREA FISSA IN BASSO (solo con permesso di scrittura) -->
+    <div class="input-area" *ngIf="globalService.hasPermission('QUOTES_NOTES_MANAGE')">
+      <div class="input-inner">
+
+        <textarea
+          class="nota-textarea"
+          rows="3"
+          placeholder="Scrivi una nota..."
+          [(ngModel)]="nuovaNota"
+        ></textarea>
+
+        <div class="allegati-preview" *ngIf="nuoviAllegati.length > 0">
+          <div *ngFor="let a of nuoviAllegati; let i = index" class="allegato-preview-chip">
+            <img *ngIf="isImage(a)" [src]="getDataUrl(a)" [alt]="a.nome" class="preview-thumb" />
+            <mat-icon *ngIf="isPdf(a)">picture_as_pdf</mat-icon>
+            <mat-icon *ngIf="!isImage(a) && !isPdf(a)">attach_file</mat-icon>
+            <span>{{ a.nome }}</span>
+            <button type="button" class="remove-allegato" (click)="removeAllegato(i)">
+              <mat-icon>close</mat-icon>
+            </button>
+          </div>
+        </div>
+
+        <div class="input-actions">
+          <label class="btn-allegato" title="Aggiungi allegato">
+            <mat-icon>attach_file</mat-icon>
+            <input type="file" multiple hidden (change)="onFileSelected($event)" />
+          </label>
+
+          <button
+            type="button"
+            class="btn-invia"
+            [disabled]="sending || (!nuovaNota.trim() && nuoviAllegati.length === 0)"
+            (click)="addNota()"
+          >
+            <mat-icon>{{ sending ? 'autorenew' : 'send' }}</mat-icon>
+            <span>{{ sending ? 'Invio...' : 'Aggiungi nota' }}</span>
+          </button>
+        </div>
+
+      </div>
+    </div>
+
+  </body>
+</html>

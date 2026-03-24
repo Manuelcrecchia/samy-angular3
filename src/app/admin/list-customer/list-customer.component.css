@@ -1,113 +1,268 @@
-:root{
-  --brand-black:#0f172a;
-  --brand-orange:#ff7a00;
-  --brand-sky:#8ec5ff;
-  --brand-blue:#0d6efd;
+:root {
+  --brand-black: #0f172a;
+  --brand-orange: #ff7a00;
+  --brand-orange-2: #ff9a3c;
+  --brand-blue: #0d6efd;
+  --brand-sky: #8ec5ff;
 }
 
-/* Background cielo */
-.brand-bg{
-  position:fixed;
-  inset:0;
-  z-index:-1;
+/* Sfondo */
+body.bg-light {
   background:
-    radial-gradient(1000px 500px at 50% 0%, rgba(255,255,255,.7), transparent 60%),
-    linear-gradient(180deg,var(--brand-sky),#cfe7ff 40%,#eef6ff);
+    radial-gradient(1200px 520px at 50% 0%, rgba(255,255,255,.55), rgba(255,255,255,0) 60%),
+    linear-gradient(180deg, var(--brand-sky) 0%, #cfe7ff 35%, #eef6ff 100%) !important;
+  background-attachment: fixed !important;
 }
 
-/* Title */
-.page-title{
-  font-weight:900;
-  color:var(--brand-black);
-  letter-spacing:.4px;
+/* Toolbar */
+mat-toolbar[color="primary"] {
+  background: linear-gradient(135deg, var(--brand-orange), var(--brand-blue)) !important;
+  border-bottom: 1px solid rgba(255,255,255,.35);
+  box-shadow: 0 14px 34px rgba(2,6,23,.14);
+  border-radius: 0 0 18px 18px;
 }
 
-/* Wrapper */
-.table-wrapper{
-  background:rgba(255,255,255,.92);
-  border-radius:20px;
-  padding:14px;
-  box-shadow:0 20px 60px rgba(0,0,0,.15);
+mat-toolbar .fs-4 {
+  font-weight: 950;
+  letter-spacing: .3px;
+  color: #000 !important;
+  text-shadow: 0 1px 0 rgba(255,255,255,.25);
 }
 
-/* Table header */
-table thead{
-  background:linear-gradient(135deg,var(--brand-orange),var(--brand-blue));
+/* Back */
+.btn-back {
+  border: 0;
+  border-radius: 14px;
+  padding: 10px 14px;
+  font-weight: 900;
+  color: #000 !important;
+  background: rgba(255,255,255,.70);
+  box-shadow: 0 12px 28px rgba(2,6,23,.10);
+  transition: .2s ease;
+}
+.btn-back:hover {
+  transform: translateY(-1px);
+  background: rgba(255,255,255,.90);
 }
 
-table thead th{
-  color:#000; /* nero come richiesto */
-  font-weight:900;
-  border:none !important;
+/* Add */
+.btn-pink {
+  background: linear-gradient(135deg, var(--brand-orange), var(--brand-orange-2)) !important;
+  color: #000 !important;
+  border: 0 !important;
+  border-radius: 14px !important;
+  box-shadow: 0 14px 34px rgba(255,122,0,.30);
+}
+.btn-pink:hover { filter: brightness(1.05); transform: translateY(-1px); }
+mat-toolbar button[mat-icon-button] mat-icon { color: #000 !important; }
+
+/* Form fields toolbar */
+.example-form-field { min-width: 180px; }
+mat-toolbar .mat-mdc-form-field {
+  background: rgba(255,255,255,.55);
+  border-radius: 14px;
+  overflow: hidden;
+  border: 1px solid rgba(255,255,255,.55);
 }
 
-/* Action layout */
-.actions-cell{
-  display:flex;
-  flex-wrap:wrap;
-  gap:6px;
-  justify-content:center;
+/* ===== CARD CLIENTE ===== */
+.customer-card {
+  background:
+    linear-gradient(135deg, rgba(13,110,253,.10), rgba(255,122,0,.08)),
+    rgba(255,255,255,.55);
+  border: 1px solid rgba(255,255,255,.70);
+  border-radius: 22px;
+  box-shadow: 0 20px 60px rgba(2,6,23,.14);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  overflow: hidden;
 }
 
-/* Rounded */
-.btn-round{
-  border-radius:14px !important;
-  font-weight:800;
-  color:#000 !important; /* SEMPRE NERO */
+/* Header */
+.customer-header-btn {
+  width: 100%;
+  border: 0;
+  background: linear-gradient(135deg, rgba(13,110,253,.22), rgba(255,122,0,.14));
+  padding: 14px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  font-weight: 950;
+  color: #000;
+  text-align: left;
+  cursor: pointer;
 }
 
-/* Orange button */
-.btn-brand-orange{
-  background:var(--brand-orange);
-  border:none;
+.customer-info {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  overflow: hidden;
+  flex-wrap: wrap;
 }
 
-.btn-brand-orange:hover{
-  background:#ff9333;
-  transform:translateY(-2px);
+.customer-num {
+  font-weight: 950;
+  font-size: .95rem;
+  white-space: nowrap;
 }
 
-/* Sky button */
-.btn-brand-sky{
-  background:var(--brand-sky);
-  border:none;
+.customer-sep {
+  color: rgba(15,23,42,.35);
 }
 
-.btn-brand-sky:hover{
-  background:#a9d7ff;
-  transform:translateY(-2px);
+.customer-nom {
+  font-weight: 700;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 260px;
 }
 
-/* Back button */
-.btn-back-brand{
-  background:linear-gradient(135deg,var(--brand-sky),var(--brand-orange));
-  border:none;
-  color:#000 !important;
+/* Badge tipo */
+.badge-tipo {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-size: .72rem;
+  font-weight: 800;
+  white-space: nowrap;
+}
+.badge-ord {
+  background: rgba(13,110,253,.15);
+  color: #0a58ca;
+}
+.badge-straord {
+  background: rgba(255,122,0,.18);
+  color: #c45a00;
 }
 
-.btn-back-brand:hover{
-  filter:brightness(1.05);
+.badge-chiave {
+  font-size: .85rem;
 }
 
-/* Badge */
-.badge-key{
-  padding:6px 10px;
-  border-radius:12px;
-  font-weight:800;
-  color:#000;
+.chev {
+  font-size: 18px;
+  color: #000;
+  flex-shrink: 0;
 }
 
-.badge-yes{
-  background:rgba(13,110,253,.2);
+/* Pulsante note nell'header */
+.btn-notes {
+  border-radius: 12px;
+  font-weight: 950;
+  color: #000 !important;
+  background: linear-gradient(135deg, rgba(255,122,0,.45), rgba(142,197,255,.55));
+  border: 1px solid rgba(0,0,0,.08);
+  padding: 6px 8px;
+  line-height: 1;
+}
+.btn-notes mat-icon { color: #000 !important; }
+
+/* Riga meta (email + telefono) */
+.customer-meta-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  padding: 6px 14px 8px;
+  border-top: 1px solid rgba(0,0,0,.04);
+  background: rgba(255,255,255,.18);
 }
 
-.badge-no{
-  background:rgba(255,122,0,.2);
+.meta-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: .82rem;
+  color: rgba(15,23,42,.60);
+  font-weight: 600;
+}
+
+.meta-item mat-icon {
+  font-size: 15px;
+  width: 15px;
+  height: 15px;
+  color: rgba(15,23,42,.40) !important;
+}
+
+/* Azioni tendina */
+.customer-actions {
+  background: rgba(255,255,255,.22);
+  border-top: 1px solid rgba(0,0,0,.06);
+}
+.customer-actions-inner {
+  padding: 12px 14px 14px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+/* Material buttons */
+button[mat-raised-button] {
+  border-radius: 14px !important;
+  font-weight: 950 !important;
+  color: #000 !important;
+  box-shadow: 0 10px 22px rgba(2,6,23,.10) !important;
+}
+button[mat-raised-button] mat-icon { color: #000 !important; }
+
+button[mat-raised-button][color="primary"] {
+  background: linear-gradient(135deg, var(--brand-orange), var(--brand-orange-2)) !important;
+  border: 0 !important;
+}
+button[mat-raised-button][color="accent"] {
+  background: linear-gradient(135deg, rgba(142,197,255,.85), rgba(13,110,253,.25)) !important;
+  border: 1px solid rgba(13,110,253,.18) !important;
+}
+button[mat-raised-button][color="warn"] {
+  background: linear-gradient(135deg, rgba(255,122,0,.55), rgba(255,255,255,.35)) !important;
+  border: 1px solid rgba(255,122,0,.25) !important;
+}
+
+/* Toolbar position fix */
+mat-toolbar {
+  position: relative !important;
+  z-index: 5 !important;
+}
+mat-toolbar + .container {
+  margin-top: 18px !important;
 }
 
 /* Responsive */
-@media(max-width:768px){
-  .actions-cell{
-    flex-direction:column;
+@media (max-width: 992px) {
+  .example-form-field { min-width: 160px; }
+}
+@media (max-width: 768px) {
+  .example-form-field { min-width: 100%; width: 100%; }
+  mat-toolbar .d-flex.flex-wrap.gap-2 { width: 100%; }
+  .customer-actions-inner button[mat-raised-button] { width: calc(50% - 6px); }
+  .customer-nom { max-width: 140px; }
+
+  mat-toolbar[color="primary"] {
+    height: auto !important;
+    min-height: unset !important;
+    padding-top: 12px !important;
+    padding-bottom: 18px !important;
+    align-items: stretch !important;
   }
+  mat-toolbar .d-flex.align-items-center {
+    width: 100% !important;
+    justify-content: space-between !important;
+    flex-wrap: wrap !important;
+    gap: 10px !important;
+    margin-bottom: 12px !important;
+  }
+  mat-toolbar .d-flex.flex-wrap.gap-2 {
+    width: 100% !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 12px !important;
+  }
+  mat-toolbar .mat-mdc-form-field { width: 100% !important; }
+  mat-toolbar + .container { margin-top: 22px !important; }
+}
+@media (max-width: 420px) {
+  .customer-actions-inner button[mat-raised-button] { width: 100%; }
 }

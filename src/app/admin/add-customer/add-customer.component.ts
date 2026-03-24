@@ -141,15 +141,33 @@ export class AddCustomerComponent {
       ? this.buildEmmeciBody()
       : this.buildSamiBody();
 
+    const numeroPreventivo = this.customerModelService.numeroPreventivo;
+
     this.http
-      .post(this.globalService.url + 'customers/add', body, {
-        headers: this.globalService.headers,
-        responseType: 'text',
-      })
+      .post<{ message: string; numeroCliente: string }>(
+        this.globalService.url + 'customers/add',
+        body,
+        { headers: this.globalService.headers },
+      )
       .subscribe({
-        next: () => {
+        next: (res) => {
+          const numeroCliente = res?.numeroCliente;
           this.customerModelService.reset();
-          this.router.navigateByUrl('/listCustomer', { replaceUrl: true });
+
+          if (numeroPreventivo && numeroCliente) {
+            this.http
+              .post(
+                this.globalService.url + 'customers/notes/copyFromQuote',
+                { numeroPreventivo, numeroCliente },
+                { headers: this.globalService.headers },
+              )
+              .subscribe({
+                next: () => this.router.navigateByUrl('/listCustomer', { replaceUrl: true }),
+                error: () => this.router.navigateByUrl('/listCustomer', { replaceUrl: true }),
+              });
+          } else {
+            this.router.navigateByUrl('/listCustomer', { replaceUrl: true });
+          }
         },
         error: (err) => {
           console.error("Errore durante l'aggiunta del cliente:", err);

@@ -193,6 +193,12 @@ export class ListCustomerComponent {
   navigateToAddCustomer() {
     this.router.navigateByUrl('/addCustomer');
   }
+
+  navigateToNotes(numeroCliente: string, nominativo: string) {
+    this.router.navigate(['/customerNotes'], {
+      queryParams: { numeroCliente, nominativo },
+    });
+  }
   viewDocuments(numeroCliente: string) {
     // Naviga o apri modale, a seconda di come gestisci i documenti
     this.router.navigate(['/documenti/client', numeroCliente]);

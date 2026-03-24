@@ -102,6 +102,17 @@
                   <mat-icon>picture_as_pdf</mat-icon>
                 </button>
 
+                <!-- NOTE: bottone separato, non apre/chiude la tendina -->
+                <button
+                  *ngIf="globalService.hasPermission('QUOTES_NOTES_VIEW')"
+                  type="button"
+                  class="btn btn-sm btn-notes"
+                  (click)="navigateToNotes(quote.numeroPreventivo, quote.nominativo); $event.stopPropagation()"
+                  title="Note"
+                >
+                  <mat-icon>notes</mat-icon>
+                </button>
+
                 <span class="chev">▾</span>
               </span>
             </button>

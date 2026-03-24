@@ -7,6 +7,7 @@ export class CustomerModelService {
   // comuni
   numeroCliente = '';
   nominativo = '';
+  numeroPreventivo = ''; // popolato dal flusso preventivo → cliente
   cfpi = '';
   email = '';
   telefono = '';
@@ -82,6 +83,7 @@ export class CustomerModelService {
   reset() {
     this.numeroCliente = '';
     this.nominativo = '';
+    this.numeroPreventivo = '';
     this.cfpi = '';
     this.email = '';
     this.telefono = '';

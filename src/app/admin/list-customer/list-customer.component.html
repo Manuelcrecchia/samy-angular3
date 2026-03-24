@@ -1,121 +1,174 @@
-<div class="brand-bg"></div>
+<!DOCTYPE html>
+<html lang="it">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gestione Clienti</title>
+  </head>
+  <body class="bg-light">
 
-<div class="container py-4 page-wrap">
+    <!-- TOOLBAR -->
+    <mat-toolbar
+      class="d-flex flex-wrap justify-content-between align-items-center px-3 py-2 mb-3"
+      color="primary"
+    >
+      <div class="d-flex align-items-center mb-2 mb-md-0">
+        <span class="fs-4 me-3 text-white">Clienti</span>
+        <button class="btn-back me-3" type="button" (click)="back()">
+          &larr; Torna Indietro
+        </button>
+        <button
+          *ngIf="globalService.hasPermission('CUSTOMERS_MANAGE')"
+          (click)="navigateToAddCustomer()"
+          mat-icon-button
+          class="btn btn-pink me-2"
+        >
+          <mat-icon>add</mat-icon>
+        </button>
+      </div>
 
-  <!-- Torna Indietro -->
-  <div class="mb-3">
-    <button class="btn btn-back-brand btn-round" (click)="back()">
-      ⬅ Torna Indietro
-    </button>
-  </div>
+      <div class="d-flex flex-wrap gap-2">
+        <mat-form-field class="example-form-field" appearance="fill">
+          <mat-label>Numero cliente</mat-label>
+          <input
+            #inputNumeroCliente
+            matInput
+            (input)="searchNumeroCliente(inputNumeroCliente.value)"
+          />
+        </mat-form-field>
 
-  <!-- Titolo -->
-  <h2 class="text-center page-title mb-4">
-    Gestione Clienti
-  </h2>
+        <mat-form-field class="example-form-field" appearance="fill">
+          <mat-label>Nominativo</mat-label>
+          <input
+            #inputNominativo
+            matInput
+            (input)="searchNominativo(inputNominativo.value)"
+          />
+        </mat-form-field>
 
-  <!-- Aggiungi Cliente -->
-  <div class="text-end mb-4" *ngIf="globalService.hasPermission('CUSTOMERS_MANAGE')">
-    <button class="btn btn-brand-orange btn-round" (click)="navigateToAddCustomer()">
-      ➕ Aggiungi Cliente
-    </button>
-  </div>
+        <mat-form-field class="example-form-field" appearance="fill">
+          <mat-label>Filtro</mat-label>
+          <mat-select (selectionChange)="applyFiltro($event.value)">
+            <mat-option value="">Tutti</mat-option>
+            <mat-option value="chiave_si">Chiave: Sì</mat-option>
+            <mat-option value="chiave_no">Chiave: No</mat-option>
+            <mat-option value="ordinario">Ordinario</mat-option>
+            <mat-option value="straordinario">Straordinario</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+    </mat-toolbar>
 
-  <!-- Filtri -->
-  <div class="row g-3 mb-4">
-    <div class="col-md-4">
-      <mat-form-field class="w-100" appearance="fill">
-        <mat-label>Numero cliente</mat-label>
-        <input #inputNumeroCliente matInput
-          (input)="searchNumeroCliente(inputNumeroCliente.value)" />
-      </mat-form-field>
+    <!-- LISTA CLIENTI -->
+    <div class="container">
+      <div class="row g-3">
+        <div class="col-12" *ngFor="let customer of customersFrEnd">
+
+          <div class="customer-card">
+
+            <!-- HEADER: apre/chiude tendina -->
+            <button
+              type="button"
+              class="customer-header-btn"
+              data-bs-toggle="collapse"
+              [attr.data-bs-target]="'#cActions' + customer.numeroCliente"
+              aria-expanded="false"
+              [attr.aria-controls]="'cActions' + customer.numeroCliente"
+            >
+              <span class="customer-info">
+                <span class="customer-num">{{ customer.numeroCliente }}</span>
+                <span class="customer-sep">—</span>
+                <span class="customer-nom">{{ customer.nominativo }}</span>
+                <span class="badge-tipo ms-2"
+                  [ngClass]="customer.tipoCliente === 'S' ? 'badge-straord' : 'badge-ord'">
+                  {{ customer.tipoCliente === 'S' ? 'Straord.' : 'Ord.' }}
+                </span>
+                <span *ngIf="customer.key" class="badge-chiave ms-1">🔑</span>
+              </span>
+
+              <span class="d-flex align-items-center gap-2">
+                <!-- Pulsante note -->
+                <button
+                  *ngIf="globalService.hasPermission('CUSTOMERS_NOTES_VIEW')"
+                  type="button"
+                  class="btn btn-sm btn-notes"
+                  (click)="navigateToNotes(customer.numeroCliente, customer.nominativo); $event.stopPropagation()"
+                  title="Note"
+                >
+                  <mat-icon>notes</mat-icon>
+                </button>
+                <span class="chev">▾</span>
+              </span>
+            </button>
+
+            <!-- INFO RAPIDE (email + telefono) -->
+            <div class="customer-meta-row">
+              <span *ngIf="customer.email" class="meta-item">
+                <mat-icon>email</mat-icon>{{ customer.email }}
+              </span>
+              <span *ngIf="customer.telefono" class="meta-item">
+                <mat-icon>phone</mat-icon>{{ customer.telefono }}
+              </span>
+            </div>
+
+            <!-- AZIONI -->
+            <div
+              class="collapse customer-actions"
+              [attr.id]="'cActions' + customer.numeroCliente"
+            >
+              <div class="customer-actions-inner">
+
+                <button
+                  mat-raised-button
+                  color="accent"
+                  [routerLink]="['/gestioneTagCliente', customer.numeroCliente]"
+                >
+                  <mat-icon>label</mat-icon>
+                </button>
+
+                <button
+                  *ngIf="globalService.hasPermission('CUSTOMERS_MANAGE')"
+                  mat-raised-button
+                  color="accent"
+                  (click)="navigateToEditCustomer(customer.numeroCliente)"
+                >
+                  <mat-icon>edit</mat-icon>
+                </button>
+
+                <button
+                  *ngIf="globalService.hasPermission('CUSTOMERS_MANAGE')"
+                  mat-raised-button
+                  color="warn"
+                  (click)="exportAndDeleteCustomer(customer)"
+                >
+                  <mat-icon>delete</mat-icon>
+                </button>
+
+                <button
+                  mat-raised-button
+                  color="primary"
+                  (click)="viewDocuments(customer.numeroCliente)"
+                >
+                  <mat-icon>folder</mat-icon>
+                </button>
+
+                <button
+                  mat-raised-button
+                  color="accent"
+                  [routerLink]="['/schedaCliente', customer.numeroCliente]"
+                >
+                  <mat-icon>person</mat-icon>
+                </button>
+
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+      </div>
     </div>
 
-    <div class="col-md-4">
-      <mat-form-field class="w-100" appearance="fill">
-        <mat-label>Nominativo</mat-label>
-        <input #inputNominativo matInput
-          (input)="searchNominativo(inputNominativo.value)" />
-      </mat-form-field>
-    </div>
-
-    <div class="col-md-4">
-      <mat-form-field appearance="fill" class="w-100">
-        <mat-label>Filtro clienti</mat-label>
-        <mat-select (selectionChange)="applyFiltro($event.value)">
-          <mat-option value="">Tutti</mat-option>
-          <mat-option value="chiave_si">Chiave: Sì</mat-option>
-          <mat-option value="chiave_no">Chiave: No</mat-option>
-          <mat-option value="ordinario">Ordinario</mat-option>
-          <mat-option value="straordinario">Straordinario</mat-option>
-        </mat-select>
-      </mat-form-field>
-    </div>
-  </div>
-
-  <!-- Tabella -->
-  <div class="table-wrapper table-responsive">
-    <table class="table align-middle text-center mb-0">
-      <thead>
-        <tr>
-          <th>Numero</th>
-          <th>Tipo</th>
-          <th>Nominativo</th>
-          <th class="d-none d-md-table-cell">Email</th>
-          <th class="d-none d-lg-table-cell">Telefono</th>
-          <th>Chiavi</th>
-          <th>Azioni</th>
-        </tr>
-      </thead>
-
-      <tbody>
-        <tr *ngFor="let customer of customersFrEnd">
-          <td>{{ customer.numeroCliente }}</td>
-          <td>{{ customer.tipoCliente === "O" ? "Ordinario" : "Straordinario" }}</td>
-          <td>{{ customer.nominativo }}</td>
-          <td class="d-none d-md-table-cell">{{ customer.email }}</td>
-          <td class="d-none d-lg-table-cell">{{ customer.telefono }}</td>
-
-          <td>
-            <span class="badge badge-key"
-              [ngClass]="customer.key ? 'badge-yes' : 'badge-no'">
-              {{ customer.key ? "Sì" : "No" }}
-            </span>
-          </td>
-
-          <td class="actions-cell">
-
-            <button class="btn btn-brand-sky btn-sm btn-round"
-              [routerLink]="['/gestioneTagCliente', customer.numeroCliente]">
-              🏷 Tag
-            </button>
-
-            <button *ngIf="globalService.hasPermission('CUSTOMERS_MANAGE')"
-              class="btn btn-brand-orange btn-sm btn-round"
-              (click)="navigateToEditCustomer(customer.numeroCliente)">
-              ✏ Modifica
-            </button>
-
-            <button *ngIf="globalService.hasPermission('CUSTOMERS_MANAGE')"
-              class="btn btn-outline-danger btn-sm btn-round"
-              (click)="exportAndDeleteCustomer(customer)">
-              🗑 Elimina
-            </button>
-
-            <button class="btn btn-brand-sky btn-sm btn-round"
-              (click)="viewDocuments(customer.numeroCliente)">
-              📄 Documenti
-            </button>
-
-            <button class="btn btn-brand-sky btn-sm btn-round"
-              [routerLink]="['/schedaCliente', customer.numeroCliente]">
-              🧾 Scheda
-            </button>
-
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-
-</div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  </body>
+</html>

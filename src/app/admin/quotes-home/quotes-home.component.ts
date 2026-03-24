@@ -84,6 +84,12 @@ export class QuotesHomeComponent {
     this.router.navigateByUrl('/addQuote');
   }
 
+  navigateToNotes(numeroPreventivo: string, nominativo: string) {
+    this.router.navigate(['/quoteNotes'], {
+      queryParams: { numeroPreventivo, nominativo },
+    });
+  }
+
   ngOnInit() {
     this.loadQuotes();
   }
@@ -399,6 +405,8 @@ export class QuotesHomeComponent {
           this.customerModelService.pagamento = quote.pagamento || '';
           this.customerModelService.tempistica = quote.tempistica || '';
           this.customerModelService.note = quote.note || '';
+
+          this.customerModelService.numeroPreventivo = numeroPreventivo;
 
           this.http
             .post(
