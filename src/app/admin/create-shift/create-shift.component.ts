@@ -746,6 +746,7 @@ export class CreateShiftComponent implements OnInit, OnDestroy {
         assigned: this.assignedShifts[app.id] || [],
         busyDetails: this.getBusyDetails(app),
         requiredEmployees: app.requiredEmployees,
+        selectedDate: this.formatDate(this.selectedDate),
       },
     });
 

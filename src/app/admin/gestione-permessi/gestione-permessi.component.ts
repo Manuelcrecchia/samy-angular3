@@ -18,6 +18,8 @@ export class GestionePermessiComponent implements OnInit {
   modalData: any = {
     categoria: 'Ferie',
     oreGiornaliere: null,
+    oraInizioModificata: '',
+    oraFineModificata: '',
   };
 
   constructor(
@@ -46,7 +48,12 @@ export class GestionePermessiComponent implements OnInit {
 
   openModal(req: any): void {
     this.selectedRequest = req;
-    this.modalData = { categoria: 'Ferie', oreGiornaliere: null };
+    this.modalData = {
+      categoria: 'Ferie',
+      oreGiornaliere: null,
+      oraInizioModificata: req.tipoPermesso === 'parziale' ? (req.oraInizio || '') : '',
+      oraFineModificata: req.tipoPermesso === 'parziale' ? (req.oraFine || '') : '',
+    };
     const modal = new bootstrap.Modal(this.modalElement.nativeElement);
     modal.show();
   }
@@ -54,7 +61,7 @@ export class GestionePermessiComponent implements OnInit {
   confirmAccept(): void {
     if (!this.selectedRequest) return;
 
-    const body = {
+    const body: any = {
       id: this.selectedRequest.id,
       employeeId: this.selectedRequest.employeeId,
       categoria: this.modalData.categoria,
@@ -63,16 +70,30 @@ export class GestionePermessiComponent implements OnInit {
       oreGiornaliere: this.modalData.oreGiornaliere,
     };
 
+    if (this.selectedRequest.tipoPermesso === 'parziale') {
+      body.oraInizioModificata = this.modalData.oraInizioModificata || null;
+      body.oraFineModificata = this.modalData.oraFineModificata || null;
+    }
+
     this.http
       .post(this.globalService.url + 'permission/accept', body)
       .subscribe({
-        next: () => {
+        next: (res: any) => {
+          const wasModified =
+            this.selectedRequest?.tipoPermesso === 'parziale' &&
+            this.modalData.oraInizioModificata &&
+            this.modalData.oraFineModificata &&
+            (this.modalData.oraInizioModificata !== this.selectedRequest?.oraInizio ||
+              this.modalData.oraFineModificata !== this.selectedRequest?.oraFine);
+
           this.showToast(
-            `✅ Permesso accettato come ${this.modalData.categoria}${
-              this.modalData.oreGiornaliere
-                ? ' (' + this.modalData.oreGiornaliere + ' ore)'
-                : ''
-            }`
+            wasModified
+              ? `⚠️ Ore modificate inviate al dipendente per conferma`
+              : `✅ Permesso accettato come ${this.modalData.categoria}${
+                  this.modalData.oreGiornaliere
+                    ? ' (' + this.modalData.oreGiornaliere + ' ore)'
+                    : ''
+                }`
           );
           const modal = bootstrap.Modal.getInstance(
             this.modalElement.nativeElement

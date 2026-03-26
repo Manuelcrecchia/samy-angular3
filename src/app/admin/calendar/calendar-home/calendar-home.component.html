@@ -1,334 +1,473 @@
 <style>
+  /* =====================================================
+     VARIABILI
+  ===================================================== */
   :root {
-    --brand-black: #0b0f14;
-    --radius-lg: 22px;
-    --radius-md: 16px;
-    --glass-border: rgba(0, 0, 0, 0.08);
+    --cal-bg:        #f4f6f9;
+    --cal-surface:   #ffffff;
+    --cal-border:    rgba(0, 0, 0, 0.07);
+    --cal-text:      #1a1d23;
+    --cal-muted:     #6b7280;
+    --cal-radius:    16px;
+    --cal-radius-sm: 8px;
+    --cal-shadow:    0 4px 24px rgba(0, 0, 0, 0.07);
+    --cal-shadow-lg: 0 12px 40px rgba(0, 0, 0, 0.10);
+
+    /* Palette categorie — colore pieno per day/week, pill tenue per mese */
+    --c-sopralluogo:    #e03e3e;
+    --c-ordinario:      #16a34a;
+    --c-straordinario:  #d97706;
+    --c-lavori:         #2563eb;
+    --c-altro:          #7c3aed;
+    --c-default:        #64748b;
   }
 
+  /* =====================================================
+     LAYOUT PAGINA
+  ===================================================== */
   .fullscreen-container {
     min-height: 100vh;
-    padding: 14px 12px 20px;
-    background: #ffffff;
-    color: #111111;
+    padding: 16px 16px 24px;
+    background: var(--cal-bg);
+    color: var(--cal-text);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   }
 
+  /* =====================================================
+     BOTTONE INDIETRO
+  ===================================================== */
   .btn-back {
     display: inline-flex;
     align-items: center;
-    gap: 8px;
-    padding: 10px 16px;
+    gap: 7px;
+    padding: 9px 18px;
     border-radius: 999px;
-    border: 1px solid rgba(0, 0, 0, 0.08);
-    background: linear-gradient(135deg, #f5f7fa, #e9eef5);
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
-    color: #111111;
+    border: 1px solid var(--cal-border);
+    background: var(--cal-surface);
+    box-shadow: var(--cal-shadow);
+    color: var(--cal-text);
     font-weight: 700;
-    transition: all 0.2s ease;
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: box-shadow 0.15s, transform 0.15s;
+    text-decoration: none;
   }
-
   .btn-back:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.12);
+    transform: translateY(-1px);
+    box-shadow: var(--cal-shadow-lg);
   }
 
+  /* =====================================================
+     BARRA FILTRI
+  ===================================================== */
   .filter-container {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: 12px;
-    padding: 14px;
-    border-radius: var(--radius-lg);
-    background: #ffffff;
-    border: 1px solid rgba(0, 0, 0, 0.08);
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
+    gap: 10px;
+    padding: 12px 16px;
+    border-radius: var(--cal-radius);
+    background: var(--cal-surface);
+    border: 1px solid var(--cal-border);
+    box-shadow: var(--cal-shadow);
   }
-
   .filter-container .form-label {
-    font-weight: 800;
+    font-weight: 700;
+    font-size: 0.875rem;
     margin: 0;
-    color: #111111;
+    color: var(--cal-muted);
+    white-space: nowrap;
   }
-
   .filter-container .form-select {
-    border-radius: var(--radius-md);
-    background: #ffffff;
-    border: 1px solid rgba(0, 0, 0, 0.14);
-    color: #111111;
-    padding: 10px 12px;
+    border-radius: 999px;
+    background: var(--cal-bg);
+    border: 1px solid var(--cal-border);
+    color: var(--cal-text);
+    padding: 7px 14px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    box-shadow: none;
+    cursor: pointer;
+    transition: border-color 0.15s;
   }
-
-  .filter-container .form-select option {
-    color: #111111;
+  .filter-container .form-select:focus {
+    outline: none;
+    border-color: var(--c-lavori);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
   }
-
   @media (max-width: 576px) {
-    .filter-container .form-select {
-      width: 100% !important;
-    }
+    .filter-container .form-select { width: 100% !important; }
   }
 
+  /* =====================================================
+     CONTENITORE SCHEDULER
+  ===================================================== */
   .fullscreen-scheduler {
-    margin-top: 15px;
-    border-radius: var(--radius-lg);
+    margin-top: 14px;
+    border-radius: var(--cal-radius);
     overflow: hidden;
-    background: #ffffff;
-    border: 1px solid rgba(0, 0, 0, 0.08);
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08);
+    background: var(--cal-surface);
+    border: 1px solid var(--cal-border);
+    box-shadow: var(--cal-shadow-lg);
   }
 
+  /* =====================================================
+     BASE SCHEDULER DEVEXTREME
+  ===================================================== */
+  .dx-scheduler,
   .dx-scheduler-work-space,
   .dx-scheduler-header-panel,
   .dx-scheduler-date-table,
   .dx-scheduler-time-panel,
-  .dx-scheduler-header,
-  .dx-scheduler {
-    background: #ffffff !important;
-    color: #111111 !important;
+  .dx-scheduler-header {
+    background: var(--cal-surface) !important;
+    color: var(--cal-text) !important;
   }
 
-  .dx-scheduler-cell-sizes-horizontal,
-  .dx-scheduler-cell-sizes-vertical,
-  .dx-scheduler-date-table-cell,
-  .dx-scheduler-time-panel-cell,
-  .dx-scheduler-header-panel-cell {
-    background: #ffffff !important;
-    color: #111111 !important;
-    border-color: rgba(0, 0, 0, 0.08) !important;
-  }
-
-  .dx-scheduler-header-panel-cell,
-  .dx-scheduler-time-panel-cell,
-  .dx-scheduler-date-table-cell {
-    font-weight: 500;
-  }
-
-  .dx-scheduler-appointment {
-    background: transparent !important;
-    border: 0 !important;
-    box-shadow: none !important;
-  }
-
-  .dx-scheduler-appointment-content {
-    padding: 0 !important;
-    background: transparent !important;
-    color: inherit !important;
-  }
-
-  .dx-scheduler-appointment-recurrence-icon,
-  .dx-scheduler-appointment-reduced-icon {
-    color: rgba(0, 0, 0, 0.55) !important;
-  }
-
-  .dx-scheduler-more-appointments {
-    background: #f4f6f8 !important;
-    color: #111111 !important;
-    border-radius: 10px;
-    border: 1px solid rgba(0, 0, 0, 0.08) !important;
-    font-weight: 700;
-  }
-
-  .appointment-card.category-sopralluogo,
-  .appointment-card.category-ordinario,
-  .appointment-card.category-straordinario,
-  .appointment-card.category-lavoriSvolti,
-  .appointment-card.category-altro,
-  .appointment-card.category-default {
-    width: 100%;
-    min-height: 100%;
-    height: 100%;
-    border-radius: 10px;
-    padding: 6px 10px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    overflow: hidden;
-    box-sizing: border-box;
-    border: 0 !important;
-    box-shadow: none !important;
-    line-height: 1.15;
-  }
-
-  .appointment-card.category-sopralluogo strong,
-  .appointment-card.category-ordinario strong,
-  .appointment-card.category-straordinario strong,
-  .appointment-card.category-lavoriSvolti strong,
-  .appointment-card.category-altro strong,
-  .appointment-card.category-default strong {
-    display: block;
-    width: 100%;
-    font-size: 12px;
-    font-weight: 800;
-    line-height: 1.1;
-    margin: 0;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    text-align: center;
-    color: inherit !important;
-  }
-
-  .appointment-card.category-sopralluogo small,
-  .appointment-card.category-ordinario small,
-  .appointment-card.category-straordinario small,
-  .appointment-card.category-lavoriSvolti small,
-  .appointment-card.category-altro small,
-  .appointment-card.category-default small {
-    display: block;
-    width: 100%;
-    margin-top: 2px;
-    font-size: 10px;
-    font-weight: 600;
-    line-height: 1.1;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    text-align: center;
-    opacity: 0.95;
-    color: inherit !important;
-  }
-
-  .category-sopralluogo {
-    background: #e86a6a;
-    color: #ffffff;
-  }
-
-  .category-ordinario {
-    background: #5fa878;
-    color: #ffffff;
-  }
-
-  .category-straordinario {
-    background: #d6b85a;
-    color: #1a1a1a;
-  }
-
-  .category-lavoriSvolti {
-    background: #6f8fcf;
-    color: #ffffff;
-  }
-
-  .category-altro {
-    background: #9a7bc2;
-    color: #ffffff;
-  }
-
-  .category-default {
-    background: #8a949e;
-    color: #ffffff;
-  }
-
-  .tooltip-content {
-    padding: 12px;
-    border-radius: 14px;
-    background: #111111;
-    color: #ffffff;
-    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.18);
-  }
-
-  .tooltip-content div + div {
-    margin-top: 4px;
-  }
-
-  .dx-scheduler-date-table-cell {
-    vertical-align: top !important;
-  }
-
-  .dx-scheduler-appointment-collector {
-    background: #f3f4f6 !important;
-    color: #111111 !important;
-    border: 1px solid rgba(0, 0, 0, 0.08) !important;
-    border-radius: 10px !important;
-    font-weight: 700;
-  }
-
-  .dx-scheduler-view-switcher .dx-button,
-  .dx-scheduler-navigator .dx-button,
-  .dx-scheduler-date-navigator {
-    color: #111111 !important;
-  }
-
+  /* TOOLBAR — navigazione date e switcher viste */
   .dx-toolbar,
   .dx-toolbar-items-container {
-    background: #ffffff !important;
-    color: #111111 !important;
-    border-color: rgba(0, 0, 0, 0.08) !important;
+    background: #f8f9fb !important;
+    color: var(--cal-text) !important;
+    border-bottom: 1px solid var(--cal-border) !important;
   }
-
-  .dx-button-mode-contained {
-    background: #f7f8fa !important;
-    border-color: rgba(0, 0, 0, 0.08) !important;
-    color: #111111 !important;
+  .dx-toolbar .dx-button,
+  .dx-scheduler-navigator .dx-button {
+    background: transparent !important;
+    border: none !important;
+    color: var(--cal-text) !important;
+    border-radius: var(--cal-radius-sm) !important;
+    font-weight: 600;
+    transition: background 0.15s;
   }
-
-  /* =========================
-     FIX DEFINITIVO VISTA MESE
-     ========================= */
-
-  .dx-scheduler-work-space-month .dx-scheduler-appointment,
-  .dx-scheduler-month-view .dx-scheduler-appointment {
-    margin-top: 2px !important;
-    min-height: 20px !important;
+  .dx-toolbar .dx-button:hover {
+    background: rgba(0,0,0,0.05) !important;
   }
-
-  .dx-scheduler-work-space-month .dx-scheduler-appointment-content,
-  .dx-scheduler-month-view .dx-scheduler-appointment-content {
-    padding: 0 !important;
-    height: 20px !important;
-    min-height: 20px !important;
-    overflow: hidden !important;
-  }
-
-  .dx-scheduler-work-space-month .appointment-card,
-  .dx-scheduler-month-view .appointment-card {
-    display: flex !important;
-    align-items: center !important;
-    justify-content: flex-start !important;
-    height: 20px !important;
-    min-height: 20px !important;
-    padding: 0 8px !important;
-    border-radius: 8px !important;
-    text-align: left !important;
-    overflow: hidden !important;
-    line-height: 20px !important;
-  }
-
-  .dx-scheduler-work-space-month .appointment-card.month-compact,
-  .dx-scheduler-month-view .appointment-card.month-compact {
-    display: flex !important;
-    align-items: center !important;
-    justify-content: flex-start !important;
-  }
-
-  .dx-scheduler-work-space-month .appointment-card .month-title,
-  .dx-scheduler-month-view .appointment-card .month-title {
-    display: block !important;
-    width: 100% !important;
-    font-size: 12px !important;
+  .dx-scheduler-navigator-caption {
     font-weight: 700 !important;
-    line-height: 20px !important;
-    white-space: nowrap !important;
-    overflow: hidden !important;
-    text-overflow: ellipsis !important;
-    text-align: left !important;
-    color: inherit !important;
+    font-size: 0.9rem !important;
+    color: var(--cal-text) !important;
+  }
+  /* Switcher viste (Giorno / Settimana / Mese) */
+  .dx-button-mode-contained {
+    background: var(--cal-surface) !important;
+    border: 1px solid var(--cal-border) !important;
+    color: var(--cal-muted) !important;
+    border-radius: var(--cal-radius-sm) !important;
+    font-weight: 600;
+    font-size: 0.8rem !important;
+  }
+  .dx-button-mode-contained.dx-state-active,
+  .dx-button-mode-contained.dx-state-focused,
+  .dx-tabs-item.dx-item-selected .dx-button-mode-contained {
+    background: var(--c-lavori) !important;
+    color: #fff !important;
+    border-color: var(--c-lavori) !important;
   }
 
-  .dx-scheduler-work-space-month .appointment-card strong,
-  .dx-scheduler-work-space-month .appointment-card small,
-  .dx-scheduler-month-view .appointment-card strong,
-  .dx-scheduler-month-view .appointment-card small {
+  /* HEADER PANEL — intestazioni colonne (nomi giorni) */
+  .dx-scheduler-header-panel-cell {
+    background: #f8f9fb !important;
+    color: var(--cal-muted) !important;
+    font-weight: 700 !important;
+    font-size: 0.8rem !important;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    border-color: var(--cal-border) !important;
+  }
+  .dx-scheduler-header-panel-cell.dx-scheduler-header-panel-current-time-cell {
+    color: var(--c-lavori) !important;
+  }
+
+  /* PANNELLO ORE (sinistra) */
+  .dx-scheduler-time-panel-cell {
+    background: #f8f9fb !important;
+    color: var(--cal-muted) !important;
+    font-size: 0.75rem !important;
+    font-weight: 600 !important;
+    border-color: var(--cal-border) !important;
+  }
+
+  /* CELLE GRIGLIA */
+  .dx-scheduler-date-table-cell {
+    background: var(--cal-surface) !important;
+    border-color: var(--cal-border) !important;
+    vertical-align: top !important;
+    transition: background 0.1s;
+  }
+  .dx-scheduler-date-table-cell:hover {
+    background: #f0f4ff !important;
+  }
+  .dx-scheduler-date-table-current-time-cell {
+    background: #f0f4ff !important;
+  }
+
+  /* =====================================================
+     APPOINTMENT — CONTENITORE BASE (DevExtreme)
+  ===================================================== */
+  .dx-scheduler-appointment {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    border-radius: 6px !important;
+  }
+  .dx-scheduler-appointment-content {
+    padding: 0 !important;
+    overflow: hidden !important;
+  }
+  .dx-scheduler-appointment-recurrence-icon,
+  .dx-scheduler-appointment-reduced-icon {
     display: none !important;
   }
 
-  /* Vista giorno e settimana */
-  .dx-scheduler-date-table:not(.dx-scheduler-date-table-month)
-    .appointment-card {
+  /* =====================================================
+     APPOINTMENT CARD — BASE (giorno / settimana)
+  ===================================================== */
+  .appointment-card {
+    width: 100%;
+    height: 100%;
+    min-height: 26px;
+    border-radius: 6px;
+    display: flex;
+    flex-direction: column;
     justify-content: center;
-    align-items: center;
-    text-align: center;
+    padding: 4px 8px 4px 10px;
+    box-sizing: border-box;
+    overflow: hidden;
+    border-left: 3px solid rgba(0, 0, 0, 0.25);
+  }
+
+  /* Titolo — visibile in tutte le viste */
+  .appointment-card .ap-title {
+    display: block;
+    font-size: 12px;
+    font-weight: 800;
+    line-height: 1.25;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: inherit;
+  }
+
+  /* Descrizione — visibile solo in giorno/settimana */
+  .appointment-card .ap-desc {
+    display: block;
+    font-size: 10.5px;
+    font-weight: 500;
+    line-height: 1.2;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: inherit;
+    opacity: 0.78;
+    margin-top: 1px;
+  }
+  .appointment-card .ap-desc:empty {
+    display: none;
+  }
+
+  /* =====================================================
+     APPOINTMENT CARD — VISTA MESE
+     DevExtreme fissa ~22px per gli eventi; adattiamo
+  ===================================================== */
+  .dx-scheduler-work-space-month .dx-scheduler-appointment {
+    margin: 1px 1px !important;
+  }
+  .dx-scheduler-work-space-month .appointment-card {
+    border-left: none !important;
+    border-radius: 4px !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    padding: 0 7px !important;
+    min-height: 20px !important;
+    height: 100% !important;
+  }
+  /* Titolo: unica riga compatta */
+  .dx-scheduler-work-space-month .appointment-card .ap-title {
+    font-size: 11px !important;
+    font-weight: 700 !important;
+    line-height: 1 !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+  }
+  /* Descrizione: nascosta nel mese */
+  .dx-scheduler-work-space-month .appointment-card .ap-desc {
+    display: none !important;
+  }
+
+  /* Celle mese più alte per contenere eventi + pulsante "ancora" */
+  .dx-scheduler-work-space-month .dx-scheduler-date-table-cell {
+    height: 110px !important;
+    vertical-align: top !important;
+  }
+  /* Numero del giorno nel mese */
+  .dx-scheduler-work-space-month .dx-scheduler-date-table-cell .dx-scheduler-date-table-other-month,
+  .dx-scheduler-date-table-month-cell .dx-scheduler-date-table-cell-text {
+    font-size: 11px !important;
+    font-weight: 700 !important;
+    color: var(--cal-muted) !important;
+    padding: 3px 5px !important;
+  }
+
+  /* =====================================================
+     "X ANCORA" — pulsante overflow mese
+     DevExtreme lo rende come .dx-button dentro il collector
+  ===================================================== */
+  .dx-scheduler-appointment-collector {
+    margin: 1px 1px !important;
+    height: 20px !important;
+    line-height: 20px !important;
+  }
+  /* il .dx-button dentro il collector è responsabile del colore scuro */
+  .dx-scheduler-appointment-collector .dx-button,
+  .dx-scheduler-appointment-collector .dx-button.dx-button-default,
+  .dx-scheduler-appointment-collector .dx-button.dx-button-normal {
+    background: #e9ecf0 !important;
+    border: none !important;
+    border-radius: 4px !important;
+    box-shadow: none !important;
+    min-width: 0 !important;
+    height: 20px !important;
+    line-height: 20px !important;
+  }
+  .dx-scheduler-appointment-collector .dx-button .dx-button-content {
+    padding: 0 6px !important;
+    height: 20px !important;
+    display: flex !important;
+    align-items: center !important;
+  }
+  .dx-scheduler-appointment-collector .dx-button .dx-button-text {
+    font-size: 11px !important;
+    font-weight: 700 !important;
+    color: #374151 !important;
+    line-height: 1 !important;
+  }
+  .dx-scheduler-appointment-collector .dx-button:hover,
+  .dx-scheduler-appointment-collector .dx-button.dx-state-hover {
+    background: #d1d5db !important;
+  }
+  /* fallback per versioni DevExtreme che usano classe diversa */
+  .dx-scheduler-more-appointments {
+    background: #e9ecf0 !important;
+    color: #374151 !important;
+    border: none !important;
+    border-radius: 4px !important;
+    font-weight: 700 !important;
+    font-size: 11px !important;
+    box-shadow: none !important;
+    height: 20px !important;
+    line-height: 20px !important;
+    padding: 0 6px !important;
+    margin: 1px 1px !important;
+  }
+
+  /* =====================================================
+     TOOLTIP
+  ===================================================== */
+  .tooltip-content {
+    padding: 12px 14px;
+    border-radius: 12px;
+    background: #1a1d23;
+    color: #f9fafb;
+    font-size: 0.85rem;
+    box-shadow: 0 12px 35px rgba(0,0,0,0.2);
+    line-height: 1.5;
+    min-width: 180px;
+  }
+  .tooltip-content .tt-title {
+    font-weight: 800;
+    font-size: 0.9rem;
+    margin-bottom: 4px;
+  }
+  .tooltip-content .tt-desc {
+    opacity: 0.75;
+    font-size: 0.8rem;
+  }
+
+  /* =====================================================
+     COLORI CATEGORIE — Giorno / Settimana
+     Sfondo tenue + bordo sinistro colorato
+  ===================================================== */
+  .category-sopralluogo {
+    background: rgba(224, 62, 62, 0.13) !important;
+    color: #7f1d1d !important;
+    border-left-color: var(--c-sopralluogo) !important;
+  }
+  .category-ordinario {
+    background: rgba(22, 163, 74, 0.11) !important;
+    color: #14532d !important;
+    border-left-color: var(--c-ordinario) !important;
+  }
+  .category-straordinario {
+    background: rgba(217, 119, 6, 0.12) !important;
+    color: #78350f !important;
+    border-left-color: var(--c-straordinario) !important;
+  }
+  .category-lavoriSvolti {
+    background: rgba(37, 99, 235, 0.10) !important;
+    color: #1e3a8a !important;
+    border-left-color: var(--c-lavori) !important;
+  }
+  .category-altro {
+    background: rgba(124, 58, 237, 0.11) !important;
+    color: #3b0764 !important;
+    border-left-color: var(--c-altro) !important;
+  }
+  .category-default {
+    background: rgba(100, 116, 139, 0.10) !important;
+    color: #1e293b !important;
+    border-left-color: var(--c-default) !important;
+  }
+
+  /* =====================================================
+     COLORI CATEGORIE — Vista Mese
+     Pill solida, massimo contrasto
+  ===================================================== */
+  .dx-scheduler-work-space-month .appointment-card.category-sopralluogo {
+    background: var(--c-sopralluogo) !important;
+    color: #ffffff !important;
+  }
+  .dx-scheduler-work-space-month .appointment-card.category-ordinario {
+    background: var(--c-ordinario) !important;
+    color: #ffffff !important;
+  }
+  .dx-scheduler-work-space-month .appointment-card.category-straordinario {
+    background: var(--c-straordinario) !important;
+    color: #ffffff !important;
+  }
+  .dx-scheduler-work-space-month .appointment-card.category-lavoriSvolti {
+    background: var(--c-lavori) !important;
+    color: #ffffff !important;
+  }
+  .dx-scheduler-work-space-month .appointment-card.category-altro {
+    background: var(--c-altro) !important;
+    color: #ffffff !important;
+  }
+  .dx-scheduler-work-space-month .appointment-card.category-default {
+    background: var(--c-default) !important;
+    color: #ffffff !important;
+  }
+
+  /* =====================================================
+     POPUP / FORM MODIFICA EVENTO
+  ===================================================== */
+  .dx-popup-content,
+  .dx-scheduler-appointment-popup .dx-popup-content {
+    padding: 20px !important;
+  }
+  .dx-form-group-with-caption > .dx-form-group-caption {
+    font-weight: 800 !important;
+    color: var(--cal-text) !important;
+  }
+
+  /* =====================================================
+     RESPONSIVE
+  ===================================================== */
+  @media (max-width: 576px) {
+    .fullscreen-container { padding: 10px 8px 16px; }
+    .fullscreen-scheduler { border-radius: 10px; }
   }
 </style>
 
@@ -368,14 +507,15 @@
       id="scheduler"
       [dataSource]="filteredEvents"
       [views]="['day', 'week', 'month']"
-      currentView="day"
-      [startDayHour]="0"
-      [endDayHour]="23"
+      currentView="week"
+      [startDayHour]="6"
+      [endDayHour]="22"
       [showAllDayPanel]="false"
       [currentDate]="currentDate"
       [crossScrollingEnabled]="true"
-      [cellDuration]="30"
-      [height]="1000"
+      [cellDuration]="60"
+      [height]="'calc(100vh - 170px)'"
+      [maxAppointmentsPerCell]="2"
       appointmentTemplate="appointment-template"
       appointmentTooltipTemplate="tooltip-template"
       (onAppointmentFormOpening)="onAppointmentFormOpening($event)"
@@ -399,24 +539,19 @@
       <div *dxTemplate="let model of 'appointment-template'">
         <div
           class="appointment-card"
-          [class.month-compact]="currentView === 'month'"
           [ngClass]="getCategoryClass(model.appointmentData.categories)"
         >
-          <ng-container *ngIf="currentView === 'month'; else fullAppointment">
-            <span class="month-title">{{ model.appointmentData.title }}</span>
-          </ng-container>
-
-          <ng-template #fullAppointment>
-            <strong>{{ model.appointmentData.title }}</strong>
-            <small>{{ model.appointmentData.description }}</small>
-          </ng-template>
+          <span class="ap-title">{{ model.appointmentData.title }}</span>
+          <span class="ap-desc">{{ model.appointmentData.description }}</span>
         </div>
       </div>
 
       <div *dxTemplate="let model of 'tooltip-template'">
         <div class="tooltip-content">
-          <div>{{ model.appointmentData.title }}</div>
-          <div>{{ model.appointmentData.description }}</div>
+          <div class="tt-title">{{ model.appointmentData.title }}</div>
+          <div class="tt-desc" *ngIf="model.appointmentData.description">
+            {{ model.appointmentData.description }}
+          </div>
         </div>
       </div>
     </dx-scheduler>

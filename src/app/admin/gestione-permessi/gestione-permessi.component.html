@@ -221,6 +221,11 @@
             {{ req.fromDate | date: "mediumDate" }}<br />
             <span class="label">Al:</span> {{ req.toDate | date: "mediumDate" }}
           </ng-container>
+
+          <ng-container *ngIf="req.tipoPermesso === 'parziale' && req.oraInizio && req.oraFine">
+            <br /><span class="label">Ore richieste:</span>
+            <strong>{{ req.oraInizio }} – {{ req.oraFine }}</strong>
+          </ng-container>
         </div>
 
         <div class="btn-group mt-2 mt-sm-0 permessi-actions">
@@ -292,6 +297,37 @@
             placeholder="es. 8"
           />
         </div>
+
+        <!-- Sezione modifica ore per permessi parziali -->
+        <ng-container *ngIf="selectedRequest?.tipoPermesso === 'parziale'">
+          <hr style="border-color: rgba(255,255,255,0.15)" />
+          <p class="mb-2 text-warning fw-semibold">
+            Il dipendente ha richiesto dalle <strong>{{ selectedRequest?.oraInizio }}</strong>
+            alle <strong>{{ selectedRequest?.oraFine }}</strong>.
+          </p>
+          <p class="mb-2 small">Puoi accettare le ore così come richieste oppure modificarle.</p>
+          <div class="row g-2">
+            <div class="col-6">
+              <label class="form-label">Ora inizio accordata</label>
+              <input
+                type="time"
+                class="form-control"
+                [(ngModel)]="modalData.oraInizioModificata"
+              />
+            </div>
+            <div class="col-6">
+              <label class="form-label">Ora fine accordata</label>
+              <input
+                type="time"
+                class="form-control"
+                [(ngModel)]="modalData.oraFineModificata"
+              />
+            </div>
+          </div>
+          <p class="small mt-2 text-muted">
+            Se lasci vuoto, verranno usate le ore richieste dal dipendente.
+          </p>
+        </ng-container>
       </div>
 
       <div class="modal-footer">

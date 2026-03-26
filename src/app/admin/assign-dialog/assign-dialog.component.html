@@ -15,10 +15,19 @@
       <mat-list-option
         *ngFor="let e of employees"
         [value]="e.id"
-        [ngClass]="{ 'busy': isBusy(e.id) }"
+        [disabled]="isOnLeave(e.id)"
+        [ngClass]="{ 'busy': isBusy(e.id), 'on-leave': isOnLeave(e.id) }"
       >
         {{ e.nome }} {{ e.cognome }}
-        <span *ngIf="isBusy(e.id)"> (occupato)</span>
+        <span *ngIf="isOnLeave(e.id)" style="color: #e67e22; font-size: 0.82em; margin-left: 6px;">
+          {{ getLeaveLabel(e.id) }}
+        </span>
+        <span *ngIf="!isOnLeave(e.id) && getLeaveLabel(e.id)" style="color: #3498db; font-size: 0.82em; margin-left: 6px;">
+          {{ getLeaveLabel(e.id) }}
+        </span>
+        <span *ngIf="isBusy(e.id) && !isOnLeave(e.id)" style="color: #e74c3c; font-size: 0.82em; margin-left: 6px;">
+          (occupato)
+        </span>
       </mat-list-option>
     </mat-selection-list>
   </mat-dialog-content>

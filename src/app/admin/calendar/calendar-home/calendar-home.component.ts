@@ -24,7 +24,7 @@ export class CalendarHomeComponent {
   events: AppointmentModelService[] = [];
   filteredEvents: AppointmentModelService[] = [];
   currentDate: Date = new Date();
-  currentView: string = 'day';
+  currentView: string = 'week';
   saveRecurrenceRule: string = '';
   recurrenceRuleisVisible: boolean = false;
   selectedDate: Date = new Date();
