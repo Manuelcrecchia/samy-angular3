@@ -88,10 +88,10 @@ html, body{
   max-height: calc(100vh - 280px);
 }
 
-/* Tabella: base chiara (TESTI NERI), così non “spariscono” i numeri in alto */
+/* Tabella: base chiara (TESTI NERI), così non "spariscono" i numeri in alto */
 .presenze-table{
   margin: 0;
-  min-width: 980px;
+  min-width: 1200px;
   background: rgba(255,255,255,0.92);
   color: #000;
 }
@@ -109,7 +109,7 @@ html, body{
 .presenze-table td,
 .presenze-table th{
   border-color: rgba(0,0,0,0.08) !important;
-  vertical-align: middle;
+  vertical-align: top;
 }
 .presenze-table tbody td{
   background: rgba(255,255,255,0.94) !important;
@@ -142,20 +142,73 @@ html, body{
   color: #000 !important;
 }
 
-/* Layout cella (select + input) */
-.cell-wrap{
-  display: grid;
+/* Layout cella con voci multiple */
+.cell-wrap-multi{
+  display: flex;
+  flex-direction: column;
   gap: 6px;
-  min-width: 90px;
+  min-width: 140px;
+  padding: 6px;
 }
-.cell-wrap .form-select.form-select-sm{
-  padding-top: 4px;
-  padding-bottom: 4px;
-  font-weight: 900;
+
+/* Singola voce nella cella */
+.cell-voce{
+  display: flex;
+  gap: 4px;
+  align-items: center;
+  background: rgba(255,255,255,0.7);
+  border-radius: 8px;
+  padding: 4px;
 }
-.cell-wrap .form-control{
-  height: 30px;
-  font-weight: 900;
+
+.cell-voce .form-select{
+  flex: 1;
+  min-width: 50px;
+  padding: 2px 4px;
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.cell-voce .form-control{
+  width: 45px;
+  padding: 2px 4px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-align: center;
+}
+
+.cell-voce .btn-remove{
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  font-size: 12px;
+  line-height: 1;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255,77,77,0.8);
+  color: #fff;
+  cursor: pointer;
+}
+
+.cell-voce .btn-remove:hover{
+  background: rgba(255,77,77,1);
+}
+
+/* Bottone aggiungi */
+.btn-add-voce{
+  width: 100%;
+  padding: 4px 8px;
+  font-size: 0.8rem;
+  border-radius: 8px;
+  border: 1px dashed rgba(0,0,0,0.2);
+  background: rgba(47,183,255,0.15);
+  color: #000;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.btn-add-voce:hover{
+  background: rgba(47,183,255,0.3);
 }
 
 /* Note col */
@@ -262,29 +315,45 @@ html, body{
           </td>
 
           <td *ngFor="let g of giorni; let i = index" class="text-center">
-            <div class="cell-wrap">
-              <!-- SELECT CATEGORIA -->
-              <select
-                class="form-select form-select-sm mb-1"
-                [(ngModel)]="d.categorie[i]"
-                (change)="onCellaChange(d, i)"
-              >
-                <option value="O">O</option>
-                <option value="F">F</option>
-                <option value="M">M</option>
-                <option value="P">P</option>
-                <option value="AI">AI</option>
-                <option value="INF">INF</option>
-              </select>
+            <div class="cell-wrap-multi">
+              <!-- VOCI MULTIPLE PER GIORNO -->
+              <div *ngFor="let voce of d.vociGiorno[i]; let v = index" class="cell-voce">
+                <select
+                  class="form-select form-select-sm"
+                  [(ngModel)]="voce.categoria"
+                  (change)="onCellaChange(d, i)"
+                >
+                  <option value="O">O</option>
+                  <option value="F">F</option>
+                  <option value="M">M</option>
+                  <option value="P">P</option>
+                  <option value="AI">AI</option>
+                  <option value="INF">INF</option>
+                </select>
+                <input
+                  type="text"
+                  class="form-control"
+                  [(ngModel)]="voce.ore"
+                  (ngModelChange)="onCellaChange(d, i)"
+                  placeholder="h"
+                />
+                <button
+                  class="btn-remove"
+                  (click)="rimuoviVoce(d, i, v)"
+                  title="Rimuovi voce"
+                >
+                  🗑️
+                </button>
+              </div>
 
-              <!-- INPUT ORE -->
-              <input
-                type="text"
-                class="form-control text-center p-0"
-                [(ngModel)]="d.ore[i]"
-                (ngModelChange)="onCellaChange(d, i)"
-                placeholder="Ore"
-              />
+              <!-- BOTTONE AGGIUNGI -->
+              <button
+                class="btn-add-voce"
+                (click)="aggiungiVoce(d, i)"
+                title="Aggiungi voce"
+              >
+                + Aggiungi
+              </button>
             </div>
           </td>
 
