@@ -1,0 +1,46 @@
+.shift-mini-cal-wrapper { position: relative; }
+
+.shift-date-btn {
+  background: none;
+  border: none;
+  font-size: 18px;
+  font-weight: 700;
+  color: #111;
+  cursor: pointer;
+  padding: 6px 12px;
+  border-radius: 8px;
+  transition: background .15s;
+}
+.shift-date-btn:hover { background: #f0f2f5; }
+
+.shift-mini-cal {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+  width: 260px;
+  background: #fff;
+  border: 1px solid #e0e3e8;
+  border-radius: 14px;
+  box-shadow: 0 8px 32px rgba(0,0,0,.14);
+  padding: 12px;
+  z-index: 300;
+}
+.smc-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+.smc-header span { font-weight: 700; font-size: 14px; color: #111 !important; }
+.smc-header button { background: none; border: none; font-size: 20px; cursor: pointer; padding: 2px 8px; border-radius: 6px; color: #111 !important; }
+.smc-header button:hover { background: #f0f2f5; }
+.smc-grid { display: grid; grid-template-columns: repeat(7,1fr); gap: 2px; }
+.smc-dow { text-align: center; font-size: 11px; font-weight: 700; color: #888; padding: 4px 0; }
+.smc-day { text-align: center; font-size: 12px; padding: 5px 2px; border-radius: 50%; cursor: pointer; transition: background .12s; color: #333; }
+
+.btn.btn-success {
+  background: linear-gradient(135deg, #f5f7fa, #e9eef5) !important;
+  color: #111 !important;
+  font-weight: 700 !important;
+  border: 1px solid #e0e3e8 !important;
+  box-shadow: 0 4px 14px rgba(0,0,0,.08) !important;
+}
+.smc-day:hover { background: #e8f0fe; }
+.smc-day.smc-today { background: #1a73e8; color: #fff; font-weight: 700; }
+.smc-day.smc-other { color: #bbb; }

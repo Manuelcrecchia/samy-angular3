@@ -73,13 +73,38 @@ button {
   color: white;
 }
 
-.btn-back {
-  background-color: #ff4081;
-  color: white;
-  font-weight: bold;
-  padding: 0.5rem 1rem;
-  border: none;
-  border-radius: 50px;
+/* ── BOTTONE TORNA INDIETRO — stile unificato ── */
+.btn-back,
+.btn-back-glass,
+.btn-back-brand,
+.btn-nav-glass,
+.btn-create-glass,
+.mv-back-btn {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  padding: 9px 20px !important;
+  border-radius: 999px !important;
+  border: 1px solid #e0e3e8 !important;
+  background: linear-gradient(135deg, #f5f7fa, #e9eef5) !important;
+  color: #111 !important;
+  font-size: 14px !important;
+  font-weight: 700 !important;
+  cursor: pointer !important;
+  box-shadow: 0 4px 14px rgba(0,0,0,.08) !important;
+  transition: all .2s ease !important;
+  text-decoration: none !important;
+}
+
+.btn-back:hover,
+.btn-back-glass:hover,
+.btn-back-brand:hover,
+.btn-nav-glass:hover,
+.mv-back-btn:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 8px 22px rgba(0,0,0,.13) !important;
+  background: linear-gradient(135deg, #edf0f5, #dde4ef) !important;
+  color: #111 !important;
 }
 
 .menu-toggle {

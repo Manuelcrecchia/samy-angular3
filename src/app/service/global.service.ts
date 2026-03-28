@@ -17,18 +17,17 @@ export class GlobalService {
   get url(): string {
     const host = window.location.hostname.toLowerCase();
 
-    if (host.includes('localhost') || host.includes('127.0.0.1')) {
-      console.log('DEVI AVVIARE ANGULAR CON IL COMANDO --host');
-      return '';
+    if (host.includes('localhost') || host.includes('127.0.0.1') || host.includes('emmeci.local') || host.includes('sami.local')) {
+      return 'http://localhost:5001/';
     }
 
     if (this.tenantService.isEmmeci) {
-      return 'https://nodeemmeci.mvtechcore.it/';
-      //return 'http://nodeemmeci.mvtechcore.it:5001/';
+      //return 'https://nodeemmeci.mvtechcore.it/';
+      return 'http://nodeemmeci.mvtechcore.it:5001/';
     }
 
-    return 'https://nodesami.mvtechcore.it/';
-    //return 'http://nodesami.mvtechcore.it:5001/';
+    //return 'https://nodesami.mvtechcore.it/';
+    return 'http://nodesami.mvtechcore.it:5001/';
   }
 
   checkVersion(): Promise<boolean> {

@@ -1,766 +1,613 @@
-import { Component, ViewChild } from '@angular/core';
-import { AppointmentModelService } from '../../../service/appointment-model.service';
-import { DxSchedulerComponent } from 'devextreme-angular';
-import {
-  AppointmentAddingEvent,
-  AppointmentDeletedEvent,
-  AppointmentUpdatingEvent,
-} from 'devextreme/ui/scheduler';
+import { Component, OnInit, HostListener } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { GlobalService } from '../../../service/global.service';
 import { Router } from '@angular/router';
 import { AutomaticAddInspectionToCalendarService } from '../../../service/automatic-add-inspection-to-calendar.service';
 import { PopupServiceService } from '../../../componenti/popup/popup-service.service';
-import { MatDialog } from '@angular/material/dialog';
-import { formatDate } from '@angular/common';
 import { TenantService } from '../../../service/tenant.service';
+
+interface RawEvent {
+  id: number;
+  title: string;
+  startDate: string;
+  endDate: string;
+  recurrenceRule: string;
+  recurrenceException: any;
+  description: string;
+  categories: string;
+  dayLong: boolean;
+  status: string;
+}
+
+interface CalEvent {
+  id: number;
+  title: string;
+  start: Date;
+  end: Date;
+  description: string;
+  categories: string;
+  recurrenceRule: string;
+  recurrenceException: string[];
+  dayLong: boolean;
+  isRecurring?: boolean;
+  originalId?: number;
+}
+
+interface DayCell {
+  date: Date;
+  isCurrentMonth: boolean;
+  isToday: boolean;
+  events: CalEvent[];
+}
 
 @Component({
   selector: 'app-calendar-home',
   templateUrl: './calendar-home.component.html',
   styleUrl: './calendar-home.component.css',
 })
-export class CalendarHomeComponent {
-  events: AppointmentModelService[] = [];
-  filteredEvents: AppointmentModelService[] = [];
-  currentDate: Date = new Date();
-  currentView: string = 'week';
-  saveRecurrenceRule: string = '';
-  recurrenceRuleisVisible: boolean = false;
-  selectedDate: Date = new Date();
-  selectedCategoria: string = '';
+export class CalendarHomeComponent implements OnInit {
+  rawEvents: RawEvent[] = [];
+  activeFilter = 'all';
+  currentView: 'month' | 'week' | 'day' = 'month';
+  currentDate = new Date();
 
-  @ViewChild(DxSchedulerComponent, { static: false })
-  scheduler!: DxSchedulerComponent;
+  showMiniCal = false;
+  miniCalDate = new Date();
 
-  categories: { id: string; text: string }[] = [];
+  showPopup = false;
+  isNewEvent = true;
+  editingEventId: number | null = null;
+  isRecurringInstance = false;
+  hasRecurrenceRule = false;
+
+  popupTitle = '';
+  popupDescription = '';
+  popupStartDate = '';
+  popupEndDate = '';
+  popupCategory = '';
+
+  recurrenceEnabled = false;
+  recurrenceFreq: 'DAILY' | 'WEEKLY' | 'MONTHLY' = 'DAILY';
+  recurrenceInterval = 1;
+  recurrenceDays: string[] = [];
+  recurrenceEndType: 'never' | 'until' | 'count' = 'never';
+  recurrenceUntil = '';
+  recurrenceCount = 1;
+
+  showDeleteConfirm = false;
+
+  autocompleteOpen = false;
+  filteredAutocomplete: string[] = [];
 
   nPreventiviArray: string[] = [];
   descrizioneArray: string[] = [];
-  categoriaArray: string[] = [];
   clientiArray: any[] = [];
+
+  monthGrid: DayCell[][] = [];
+  weekCells: DayCell[] = [];
+
+  readonly DAYS_SHORT = ['Lun', 'Mar', 'Mer', 'Gio', 'Ven', 'Sab', 'Dom'];
+  readonly MONTHS_IT = [
+    'Gennaio','Febbraio','Marzo','Aprile','Maggio','Giugno',
+    'Luglio','Agosto','Settembre','Ottobre','Novembre','Dicembre',
+  ];
+  readonly TIME_SLOTS: string[] = Array.from({ length: 48 }, (_, i) => {
+    const h = Math.floor(i / 2).toString().padStart(2, '0');
+    const m = i % 2 === 0 ? '00' : '30';
+    return `${h}:${m}`;
+  });
+  readonly WEEK_DAYS_REC = [
+    ['MO','Lun'],['TU','Mar'],['WE','Mer'],['TH','Gio'],
+    ['FR','Ven'],['SA','Sab'],['SU','Dom'],
+  ];
+
+  categories: { id: string; text: string }[] = [];
 
   constructor(
     private http: HttpClient,
     private globalService: GlobalService,
     private router: Router,
-    private automaticAddInspectionToCalendarservice: AutomaticAddInspectionToCalendarService,
-    private popup: PopupServiceService,
-    private dialog: MatDialog,
+    private autoInspectionService: AutomaticAddInspectionToCalendarService,
+    private popupService: PopupServiceService,
     public tenantService: TenantService,
   ) {}
 
   ngOnInit() {
     this.categories = this.getCategoriesForTenant();
-
-    this.saveRecurrenceRule = '';
-    this.recurrenceRuleisVisible = false;
-
-    this.http
-      .get(this.globalService.url + 'appointments/getAll', {
-        headers: this.globalService.headers,
-        responseType: 'text',
-      })
-      .subscribe({
-        next: (response) => {
-        this.events = JSON.parse(response);
-        this.filteredEvents = this.events;
-
-        if (this.automaticAddInspectionToCalendarservice.pass) {
-          this.automaticAddInspectionToCalendarservice.pass = false;
-
-          const startDate = new Date();
-          const endDate = new Date();
-          endDate.setMinutes(endDate.getMinutes() + 30);
-
-          let descrizione =
-            'Contatto ' +
-            this.automaticAddInspectionToCalendarservice.nominativo +
-            '   Telefono: ' +
-            this.automaticAddInspectionToCalendarservice.telefono;
-
-          this.scheduler.instance.showAppointmentPopup(
-            {
-              startDate: startDate,
-              endDate: endDate,
-              title: `${this.automaticAddInspectionToCalendarservice.numeroPreventivo} - ${this.automaticAddInspectionToCalendarservice.nominativo}`,
-              description: descrizione,
-              categories: this.getDefaultSopralluogoCategory(),
-            },
-            true,
-          );
-        }
-
-        this.http
-          .get(this.globalService.url + 'quotes/getAll', {
-            headers: this.globalService.headers,
-            responseType: 'text',
-          })
-          .subscribe({
-            next: (quotesResponse) => {
-            const data = JSON.parse(quotesResponse);
-
-            this.nPreventiviArray = data
-              .filter((item: any) => !item.complete)
-              .map(
-                (item: any) => `${item.numeroPreventivo} - ${item.nominativo}`,
-              );
-
-            this.descrizioneArray = data.map(
-              (item: any) =>
-                `Contatto: ${item.nominativo} Telefono: ${item.telefono}`,
-            );
-
-            this.categoriaArray = data.map((item: any) => item.tipoPreventivo);
-            },
-            error: (err) => {
-              console.error('Errore caricamento:', err);
-              alert('Errore durante il caricamento dei dati');
-            },
-          });
-        },
-        error: (err) => {
-          console.error('Errore caricamento:', err);
-          alert('Errore durante il caricamento dei dati');
-        },
-      });
-
-    this.http
-      .get(this.globalService.url + 'customers/getAll', {
-        headers: this.globalService.headers,
-        responseType: 'text',
-      })
-      .subscribe({
-        next: (response) => {
-          this.clientiArray = JSON.parse(response);
-        },
-        error: (err) => {
-          console.error('Errore caricamento:', err);
-          alert('Errore durante il caricamento dei dati');
-        },
-      });
+    this.loadAll();
   }
 
-  private getCategoriesForTenant(): { id: string; text: string }[] {
-    if (this.tenantService.isEmmeci) {
-      return [
-        { id: 'ordinario', text: 'Ordinario' },
-        { id: 'sopralluogo', text: 'Sopralluogo' },
-        { id: 'altro', text: 'Altro' },
-      ];
-    }
-
-    return [
-      { id: 'ordinario', text: 'Ordinario' },
-      { id: 'straordinario', text: 'Straordinario' },
-      { id: 'sopralluogo', text: 'Sopralluogo' },
-      { id: 'lavoriSvolti', text: 'Lavori svolti' },
-      { id: 'altro', text: 'Altro' },
-    ];
-  }
-
-  private getDefaultSopralluogoCategory(): string {
-    const found = this.categories.find((c) => c.id === 'sopralluogo');
-    return found ? found.id : this.categories[0]?.id || 'altro';
-  }
-
-  private tenantSupportsStraordinario(): boolean {
-    return this.categories.some((c) => c.id === 'straordinario');
-  }
-
-  private normalize(s: string): string {
-    return (s || '')
-      .normalize('NFD')
-      .replace(/\p{Diacritic}/gu, '')
-      .toLowerCase()
-      .trim();
-  }
-
-  convertDateToICSFormat(date: Date) {
-    const parsedDate = new Date(date);
-
-    const year = parsedDate.getUTCFullYear();
-    const month = String(parsedDate.getUTCMonth() + 1).padStart(2, '0');
-    const day = String(parsedDate.getUTCDate()).padStart(2, '0');
-    const hours = String(parsedDate.getUTCHours()).padStart(2, '0');
-    const minutes = String(parsedDate.getUTCMinutes()).padStart(2, '0');
-    const seconds = String(parsedDate.getUTCSeconds()).padStart(2, '0');
-
-    return `${year}${month}${day}T${hours}${minutes}${seconds}Z`;
-  }
-
-  getCategoryClass(category: string): string {
-    const supported = [
-      'sopralluogo',
-      'ordinario',
-      'straordinario',
-      'lavoriSvolti',
-      'altro',
-    ];
-
-    return supported.includes(category)
-      ? `category-${category}`
-      : 'category-default';
-  }
-
-  private updateNavigatorCaption() {
-    if (!this.scheduler) return;
-
-    const rawDate = this.scheduler.instance.option('currentDate');
-    if (!rawDate) return;
-
-    const date = new Date(rawDate as string | number | Date);
-    const formatted = formatDate(date, 'EEEE d MMMM yyyy', 'it-IT');
-
-    const toolbar = this.scheduler.instance
-      .element()
-      .querySelector('.dx-scheduler-navigator-caption');
-
-    if (toolbar) {
-      toolbar.textContent = formatted!;
-    }
-  }
-
-  onSchedulerContentReady() {
-    this.updateNavigatorCaption();
-  }
-
-  onCurrentViewChange(event: any) {
-    if (event.name === 'currentView' || event.name === 'currentDate') {
-      this.currentView = event.value;
-      this.updateNavigatorCaption();
-    }
-  }
-
-  ngAfterViewInit() {
-    this.updateNavigatorCaption();
-  }
-
-  onAppointmentFormOpening(e: any) {
-    if (!this.canManageEvents) {
-      e.cancel = true;
-      alert('Non autorizzato: non hai il permesso per modificare gli eventi del calendario.');
-      return;
-    }
-
-    const form = e.form;
-    const popup = e.popup;
-
-    const toolbarItems = popup.option('toolbarItems');
-    toolbarItems.forEach((item: any) => {
-      if (item.shortcut === 'cancel') {
-        this.currentDate = new Date();
-        this.currentView = 'day';
-        this.recurrenceRuleisVisible = false;
-        this.saveRecurrenceRule = '';
-        form.itemOption('recurrenceRule', 'visible', false);
+  loadAll() {
+    this.http.get(this.globalService.url + 'appointments/getAll', {
+      headers: this.globalService.headers, responseType: 'text',
+    }).subscribe((res) => {
+      this.rawEvents = JSON.parse(res);
+      this.buildGrid();
+      if (this.autoInspectionService.pass) {
+        this.autoInspectionService.pass = false;
+        this.openNewPopup(
+          new Date(), 'sopralluogo',
+          `${this.autoInspectionService.numeroPreventivo} - ${this.autoInspectionService.nominativo}`,
+          `Contatto ${this.autoInspectionService.nominativo}   Telefono: ${this.autoInspectionService.telefono}`,
+        );
       }
     });
-    popup.option('toolbarItems', toolbarItems);
 
-    const startDate = form.getEditor('startDate').option('value');
-    this.selectedDate = new Date(startDate);
+    this.http.get(this.globalService.url + 'quotes/getAll', {
+      headers: this.globalService.headers, responseType: 'text',
+    }).subscribe((res) => {
+      const data = JSON.parse(res);
+      this.nPreventiviArray = data.filter((q: any) => !q.complete)
+        .map((q: any) => `${q.numeroPreventivo} - ${q.nominativo}`);
+      this.descrizioneArray = data.map((q: any) =>
+        `Contatto: ${q.nominativo} Telefono: ${q.telefono}`);
+    });
 
-    const endDate = new Date(startDate);
-    endDate.setMinutes(endDate.getMinutes() + 30);
-    form.getEditor('endDate').option('value', endDate);
+    this.http.get(this.globalService.url + 'customers/getAll', {
+      headers: this.globalService.headers, responseType: 'text',
+    }).subscribe((res) => {
+      this.clientiArray = JSON.parse(res);
+    });
+  }
 
-    const categories = this.categories;
+  // ── RRULE EXPANDER ─────────────────────────────────────────────────────
 
-    const searchFieldConfig = {
-      dataField: 'title',
-      editorType: 'dxAutocomplete',
-      editorOptions: {
-        dataSource: [
-          ...this.nPreventiviArray,
-          ...this.clientiArray.map(
-            (c) => `${c.numeroCliente} - ${c.nominativo}`,
-          ),
-        ],
-        minSearchLength: 0,
-        showDropDownButton: true,
-        valueExpr: undefined,
-        placeholder: 'Cerca preventivo o cliente...',
-        onOpened: (e: any) => e.component.option('opened', true),
-        onFocusIn: (e: any) => e.component.open(),
-        onValueChanged: (args: any) => {
-          const selectedValue: string = args.value;
-          const formCategoria = form.getEditor('categories');
+  expandEvents(rangeStart: Date, rangeEnd: Date): CalEvent[] {
+    const result: CalEvent[] = [];
+    for (const raw of this.rawEvents) {
+      if (raw.status === 'ARCHIVED') continue;
+      const ev = this.toCalEvent(raw);
+      if (!ev.recurrenceRule || ev.recurrenceRule.trim() === '') {
+        if (ev.start <= rangeEnd && ev.end >= rangeStart) result.push(ev);
+      } else {
+        result.push(...this.expandRule(ev, rangeStart, rangeEnd));
+      }
+    }
+    return this.activeFilter === 'all'
+      ? result
+      : result.filter((e) => e.categories === this.activeFilter);
+  }
 
-          const idxPrev = this.nPreventiviArray.findIndex(
-            (item) => this.normalize(item) === this.normalize(selectedValue),
-          );
-
-          if (idxPrev !== -1) {
-            const descrizione = `Sopralluogo – ${this.descrizioneArray[idxPrev]}`;
-            formCategoria.option('value', 'sopralluogo');
-            form.getEditor('description').option('value', descrizione);
-            return;
-          }
-
-          const cliente = this.clientiArray.find(
-            (c) =>
-              this.normalize(`${c.numeroCliente} - ${c.nominativo}`) ===
-              this.normalize(selectedValue),
-          );
-
-          if (cliente) {
-            let categoria = 'ordinario';
-
-            if (
-              this.tenantService.isSami &&
-              this.tenantSupportsStraordinario()
-            ) {
-              categoria =
-                cliente.tipoCliente === 'O' ? 'ordinario' : 'straordinario';
-            }
-
-            formCategoria.option('value', categoria);
-            return;
-          }
-
-          formCategoria.option('value', null);
-          form.getEditor('description').option('value', '');
-        },
-      },
-      label: { text: 'Numero preventivo / cliente' },
+  toCalEvent(raw: RawEvent): CalEvent {
+    return {
+      id: raw.id,
+      title: raw.title,
+      start: new Date(raw.startDate),
+      end: new Date(raw.endDate),
+      description: raw.description,
+      categories: raw.categories,
+      recurrenceRule: raw.recurrenceRule || '',
+      recurrenceException: this.parseExceptions(raw.recurrenceException),
+      dayLong: raw.dayLong,
     };
+  }
 
-    const switchConfig = {
-      dataField: 'enableRecurrence',
-      editorType: 'dxSwitch',
-      label: { text: 'Abilita Ricorrenza' },
-      editorOptions: {
-        onValueChanged: (args: any) => {
-          const show = args.value;
-          this.recurrenceRuleisVisible = show;
-          form.itemOption('recurrenceRule', 'visible', show);
+  parseExceptions(val: any): string[] {
+    if (!val) return [];
+    try {
+      const parsed = typeof val === 'string' ? JSON.parse(val) : val;
+      return Array.isArray(parsed) ? parsed : [];
+    } catch { return []; }
+  }
 
-          if (!show) {
-            this.saveRecurrenceRule = '';
-            form.getEditor('recurrenceRule').option('value', null);
-          }
-        },
-      },
-    };
+  expandRule(ev: CalEvent, rangeStart: Date, rangeEnd: Date): CalEvent[] {
+    const parts = this.parseRRule(ev.recurrenceRule);
+    const freq = parts['FREQ'] || 'DAILY';
+    const interval = parseInt(parts['INTERVAL'] || '1');
+    const count = parts['COUNT'] ? parseInt(parts['COUNT']) : null;
+    const until = parts['UNTIL'] ? this.parseICSDate(parts['UNTIL']) : null;
+    const byDay = parts['BYDAY'] ? parts['BYDAY'].split(',') : null;
+    const byMonthDay = parts['BYMONTHDAY'] ? parseInt(parts['BYMONTHDAY']) : null;
+    const duration = ev.end.getTime() - ev.start.getTime();
+    const evStartDay = new Date(ev.start); evStartDay.setHours(0,0,0,0);
+    const results: CalEvent[] = [];
+    let current = new Date(evStartDay);
+    let occurrenceCount = 0;
 
-    const recurrenceRuleConfig = {
-      dataField: 'recurrenceRule',
-      editorType: 'dxRecurrenceEditor',
-      value: this.recurrenceRuleisVisible,
-      label: { text: 'Ricorrenza' },
-      visible: false,
-      editorOptions: {
-        recurrenceRule: {
-          daily: true,
-          weekly: true,
-          monthly: true,
-          end: false,
-        },
+    while (current <= rangeEnd && occurrenceCount < 730) {
+      if (until && current > until) break;
+      if (count !== null && occurrenceCount >= count) break;
+      const diffDays = Math.round((current.getTime() - evStartDay.getTime()) / 86400000);
+      let matches = false;
 
-        onValueChanged: (args: any) => {
-          if (
-            args.value != null &&
-            args.value.startsWith('FREQ=WEEKLY;') &&
-            (args.previousValue == null ||
-              !args.previousValue.startsWith('FREQ=WEEKLY;'))
-          ) {
-            const dayOfWeek = this.selectedDate.getDay();
-            const recurrenceEditor = args.component;
-            this.saveRecurrenceRule = args.value;
-            recurrenceEditor.option(
-              'value',
-              `FREQ=WEEKLY;BYDAY=${
-                ['SU', 'MO', 'TU', 'WE', 'TH', 'FR', 'SA'][dayOfWeek]
-              }`,
-            );
-          } else if (
-            args.value != null &&
-            args.value.startsWith('FREQ=MONTHLY;') &&
-            (args.previousValue == null ||
-              !args.previousValue.startsWith('FREQ=MONTHLY;'))
-          ) {
-            const dayOfMonth = this.selectedDate.getDate();
-            const recurrenceEditor = args.component;
-            this.saveRecurrenceRule = args.value;
-            recurrenceEditor.option(
-              'value',
-              `FREQ=MONTHLY;BYMONTHDAY=${dayOfMonth}`,
-            );
-          } else {
-            this.saveRecurrenceRule = args.value;
-          }
-        },
-        onInitialized: () => {
-          this.saveRecurrenceRule = 'FREQ=DAILY';
-        },
-      },
-    };
+      if (freq === 'DAILY') {
+        matches = diffDays >= 0 && diffDays % interval === 0;
+      } else if (freq === 'WEEKLY') {
+        const weekDiff = Math.floor(diffDays / 7);
+        if (diffDays >= 0 && weekDiff % interval === 0) {
+          const dayName = ['SU','MO','TU','WE','TH','FR','SA'][current.getDay()];
+          matches = byDay ? byDay.includes(dayName) : current.getDay() === ev.start.getDay();
+        }
+      } else if (freq === 'MONTHLY') {
+        const monthDiff = (current.getFullYear() - ev.start.getFullYear()) * 12
+          + current.getMonth() - ev.start.getMonth();
+        if (monthDiff >= 0 && monthDiff % interval === 0) {
+          matches = byMonthDay
+            ? current.getDate() === byMonthDay
+            : current.getDate() === ev.start.getDate();
+        }
+      }
 
-    form.option('items', [
-      searchFieldConfig,
-      {
-        dataField: 'description',
-        editorType: 'dxTextArea',
-        label: { text: 'Dettagli' },
-      },
-      {
-        dataField: 'startDate',
-        editorType: 'dxDateBox',
-        label: { text: 'Data di inizio' },
-        editorOptions: {
-          type: 'datetime',
-          displayFormat: 'yyyy-MM-dd HH:mm',
-          onValueChanged: (args: any) => {
-            const startDate = new Date(args.value);
-            const endDateEditor = form.getEditor('endDate');
-            const endDate = new Date(startDate.getTime() + 30 * 60000);
-            endDateEditor.option('value', endDate);
-          },
-        },
-      },
-      {
-        dataField: 'endDate',
-        editorType: 'dxDateBox',
-        label: { text: 'Data di fine' },
-        editorOptions: {
-          type: 'datetime',
-          displayFormat: 'yyyy-MM-dd HH:mm',
-        },
-      },
-      {
-        dataField: 'categories',
-        editorType: 'dxSelectBox',
-        label: { text: 'Categorie' },
-        editorOptions: {
-          items: categories,
-          displayExpr: 'text',
-          valueExpr: 'id',
-          onValueChanged: (evt: any) => {
-            this.selectedCategoria = evt.value;
-            form
-              .getEditor('title')
-              .option('dataSource', this.getAutocompleteSource(evt.value));
-          },
-        },
-      },
-      switchConfig,
-      recurrenceRuleConfig,
-      {
-        itemType: 'button',
-        horizontalAlignment: 'right',
-        buttonOptions: {
-          text: 'Cancella',
-          type: 'danger',
-          onClick: () => {
-            this.scheduler.instance.deleteAppointment(e.appointmentData);
-          },
-        },
-      },
-    ]);
+      if (matches) {
+        const occStart = new Date(current);
+        occStart.setHours(ev.start.getHours(), ev.start.getMinutes(), 0, 0);
+        const icsKey = this.toICSDate(occStart);
+        const occEnd = new Date(occStart.getTime() + duration);
+        if (!ev.recurrenceException.includes(icsKey) && occStart <= rangeEnd && occEnd >= rangeStart) {
+          results.push({ ...ev, start: occStart, end: occEnd, isRecurring: true, originalId: ev.id });
+        }
+        occurrenceCount++;
+      }
+      current.setDate(current.getDate() + 1);
+    }
+    return results;
+  }
+
+  parseRRule(rule: string): Record<string, string> {
+    const parts: Record<string, string> = {};
+    (rule || '').split(';').forEach((p) => {
+      const [k, v] = p.split('=');
+      if (k && v) parts[k.trim()] = v.trim();
+    });
+    return parts;
+  }
+
+  parseICSDate(s: string): Date {
+    return new Date(parseInt(s.substring(0,4)), parseInt(s.substring(4,6))-1, parseInt(s.substring(6,8)));
+  }
+
+  toICSDate(d: Date): string {
+    const pad = (n: number) => n.toString().padStart(2,'0');
+    return `${d.getUTCFullYear()}${pad(d.getUTCMonth()+1)}${pad(d.getUTCDate())}T${pad(d.getUTCHours())}${pad(d.getUTCMinutes())}${pad(d.getUTCSeconds())}Z`;
+  }
+
+  // ── GRID BUILDERS ──────────────────────────────────────────────────────
+
+  buildGrid() {
+    if (this.currentView === 'month') this.buildMonthGrid();
+    else if (this.currentView === 'week') this.buildWeekGrid();
+    else this.buildDayGrid();
+  }
+
+  buildMonthGrid() {
+    const year = this.currentDate.getFullYear();
+    const month = this.currentDate.getMonth();
+    const firstDay = new Date(year, month, 1);
+    const lastDay = new Date(year, month+1, 0);
+    const start = new Date(firstDay);
+    const dow = (start.getDay()+6) % 7;
+    start.setDate(start.getDate() - dow);
+    const end = new Date(lastDay);
+    const endDow = (end.getDay()+6) % 7;
+    end.setDate(end.getDate() + (6-endDow));
+    const rangeStart = new Date(start); rangeStart.setHours(0,0,0,0);
+    const rangeEnd = new Date(end); rangeEnd.setHours(23,59,59,999);
+    const expanded = this.expandEvents(rangeStart, rangeEnd);
+    this.monthGrid = [];
+    const cur = new Date(start);
+    while (cur <= end) {
+      const week: DayCell[] = [];
+      for (let i = 0; i < 7; i++) {
+        const day = new Date(cur);
+        const dayStart = new Date(day); dayStart.setHours(0,0,0,0);
+        const dayEnd = new Date(day); dayEnd.setHours(23,59,59,999);
+        week.push({
+          date: day,
+          isCurrentMonth: day.getMonth() === month,
+          isToday: this.isSameDay(day, new Date()),
+          events: expanded.filter(e => e.start <= dayEnd && e.end >= dayStart)
+            .sort((a,b) => a.start.getTime() - b.start.getTime()),
+        });
+        cur.setDate(cur.getDate()+1);
+      }
+      this.monthGrid.push(week);
+    }
+  }
+
+  buildWeekGrid() {
+    const dow = (this.currentDate.getDay()+6) % 7;
+    const monday = new Date(this.currentDate); monday.setDate(monday.getDate()-dow); monday.setHours(0,0,0,0);
+    const sunday = new Date(monday); sunday.setDate(sunday.getDate()+6); sunday.setHours(23,59,59,999);
+    const expanded = this.expandEvents(monday, sunday);
+    this.weekCells = [];
+    for (let i = 0; i < 7; i++) {
+      const day = new Date(monday); day.setDate(day.getDate()+i);
+      const dayStart = new Date(day); dayStart.setHours(0,0,0,0);
+      const dayEnd = new Date(day); dayEnd.setHours(23,59,59,999);
+      this.weekCells.push({
+        date: day, isCurrentMonth: true, isToday: this.isSameDay(day, new Date()),
+        events: expanded.filter(e => e.start <= dayEnd && e.end >= dayStart)
+          .sort((a,b) => a.start.getTime() - b.start.getTime()),
+      });
+    }
+  }
+
+  buildDayGrid() {
+    const dayStart = new Date(this.currentDate); dayStart.setHours(0,0,0,0);
+    const dayEnd = new Date(this.currentDate); dayEnd.setHours(23,59,59,999);
+    this.weekCells = [{
+      date: new Date(this.currentDate), isCurrentMonth: true,
+      isToday: this.isSameDay(this.currentDate, new Date()),
+      events: this.expandEvents(dayStart, dayEnd).sort((a,b) => a.start.getTime()-b.start.getTime()),
+    }];
+  }
+
+  isSameDay(a: Date, b: Date): boolean {
+    return a.getFullYear()===b.getFullYear() && a.getMonth()===b.getMonth() && a.getDate()===b.getDate();
+  }
+
+  // ── NAVIGATION ─────────────────────────────────────────────────────────
+
+  get viewTitle(): string {
+    if (this.currentView === 'month')
+      return `${this.MONTHS_IT[this.currentDate.getMonth()]} ${this.currentDate.getFullYear()}`;
+    if (this.currentView === 'week') {
+      const dow = (this.currentDate.getDay()+6) % 7;
+      const mon = new Date(this.currentDate); mon.setDate(mon.getDate()-dow);
+      const sun = new Date(mon); sun.setDate(sun.getDate()+6);
+      return `${mon.getDate()} ${this.MONTHS_IT[mon.getMonth()]} – ${sun.getDate()} ${this.MONTHS_IT[sun.getMonth()]} ${sun.getFullYear()}`;
+    }
+    const d = this.currentDate;
+    return `${this.DAYS_SHORT[(d.getDay()+6)%7]} ${d.getDate()} ${this.MONTHS_IT[d.getMonth()]} ${d.getFullYear()}`;
+  }
+
+  prev() {
+    const d = new Date(this.currentDate);
+    if (this.currentView==='month') d.setMonth(d.getMonth()-1);
+    else if (this.currentView==='week') d.setDate(d.getDate()-7);
+    else d.setDate(d.getDate()-1);
+    this.currentDate = d; this.buildGrid();
+  }
+
+  next() {
+    const d = new Date(this.currentDate);
+    if (this.currentView==='month') d.setMonth(d.getMonth()+1);
+    else if (this.currentView==='week') d.setDate(d.getDate()+7);
+    else d.setDate(d.getDate()+1);
+    this.currentDate = d; this.buildGrid();
+  }
+
+  goToday() { this.currentDate = new Date(); this.buildGrid(); }
+  setView(v: 'month'|'week'|'day') { this.currentView = v; this.buildGrid(); }
+
+  // ── MINI CALENDAR ──────────────────────────────────────────────────────
+
+  get miniCalGrid(): Date[][] {
+    const year = this.miniCalDate.getFullYear();
+    const month = this.miniCalDate.getMonth();
+    const firstDay = new Date(year, month, 1);
+    const dow = (firstDay.getDay()+6) % 7;
+    const cur = new Date(firstDay); cur.setDate(cur.getDate()-dow);
+    const grid: Date[][] = [];
+    for (let w = 0; w < 6; w++) {
+      const week: Date[] = [];
+      for (let d = 0; d < 7; d++) { week.push(new Date(cur)); cur.setDate(cur.getDate()+1); }
+      grid.push(week);
+      if (cur.getMonth()!==month && w>=3) break;
+    }
+    return grid;
+  }
+
+  get miniCalTitle(): string { return `${this.MONTHS_IT[this.miniCalDate.getMonth()]} ${this.miniCalDate.getFullYear()}`; }
+  miniPrev() { const d = new Date(this.miniCalDate); d.setMonth(d.getMonth()-1); this.miniCalDate = d; }
+  miniNext() { const d = new Date(this.miniCalDate); d.setMonth(d.getMonth()+1); this.miniCalDate = d; }
+  miniSelectDay(date: Date) { this.currentDate=new Date(date); this.currentView='day'; this.showMiniCal=false; this.buildGrid(); }
+  toggleMiniCal() { this.showMiniCal=!this.showMiniCal; this.miniCalDate=new Date(this.currentDate); }
+
+  // ── FILTER ─────────────────────────────────────────────────────────────
+
+  onFilterChange(event: Event) {
+    this.activeFilter = (event.target as HTMLSelectElement).value;
+    this.buildGrid();
+  }
+
+  // ── POPUP ──────────────────────────────────────────────────────────────
+
+  openNewPopup(date: Date, category = '', title = '', description = '') {
+    const start = new Date(date); start.setSeconds(0,0);
+    const end = new Date(start.getTime()+30*60000);
+    this.isNewEvent=true; this.editingEventId=null; this.isRecurringInstance=false; this.hasRecurrenceRule=false;
+    this.popupTitle=title; this.popupDescription=description;
+    this.popupStartDate=this.toInputDatetime(start); this.popupEndDate=this.toInputDatetime(end);
+    this.popupCategory=category||this.categories[0]?.id||'';
+    this.recurrenceEnabled=false; this.recurrenceFreq='DAILY'; this.recurrenceInterval=1;
+    this.recurrenceDays=[]; this.recurrenceEndType='never'; this.recurrenceUntil=''; this.recurrenceCount=1;
+    this.autocompleteOpen=false; this.showDeleteConfirm=false; this.showPopup=true;
+  }
+
+  openEditPopup(ev: CalEvent) {
+    this.isNewEvent=false; this.editingEventId=ev.originalId??ev.id;
+    this.isRecurringInstance=!!ev.isRecurring; this.hasRecurrenceRule=!!(ev.recurrenceRule&&ev.recurrenceRule.trim()!=='');
+    this.popupTitle=ev.title; this.popupDescription=ev.description||'';
+    this.popupStartDate=this.toInputDatetime(ev.start); this.popupEndDate=this.toInputDatetime(ev.end);
+    this.popupCategory=ev.categories; this.recurrenceEnabled=this.hasRecurrenceRule; this.showDeleteConfirm=false;
+    if (this.recurrenceEnabled) {
+      const parts = this.parseRRule(ev.recurrenceRule);
+      this.recurrenceFreq=(parts['FREQ'] as any)||'DAILY';
+      this.recurrenceInterval=parseInt(parts['INTERVAL']||'1');
+      this.recurrenceDays=parts['BYDAY']?parts['BYDAY'].split(','):[];
+      if (parts['UNTIL']) { this.recurrenceEndType='until'; const u=parts['UNTIL']; this.recurrenceUntil=`${u.substring(0,4)}-${u.substring(4,6)}-${u.substring(6,8)}`; }
+      else if (parts['COUNT']) { this.recurrenceEndType='count'; this.recurrenceCount=parseInt(parts['COUNT']); }
+      else this.recurrenceEndType='never';
+    }
+    this.autocompleteOpen=false; this.showPopup=true;
+  }
+
+  closePopup() { this.showPopup=false; this.showDeleteConfirm=false; }
+
+  onDblClickCell(date: Date, slot?: string) {
+    const d = new Date(date);
+    if (slot) { const [h,m]=slot.split(':'); d.setHours(parseInt(h),parseInt(m),0,0); }
+    else d.setHours(9,0,0,0);
+    this.openNewPopup(d);
+  }
+
+  onEventClick(ev: CalEvent, event: MouseEvent) {
+    event.stopPropagation();
+    const codice = ev.title?.split(' - ')[0];
+    if (ev.categories==='sopralluogo') { this.router.navigate(['/editQuote',codice]); return; }
+    if (ev.categories==='ordinario'||ev.categories==='straordinario') this.router.navigate(['/editCustomer',codice]);
+  }
+
+  onEventDblClick(ev: CalEvent, event: MouseEvent) { event.stopPropagation(); this.openEditPopup(ev); }
+
+  // ── AUTOCOMPLETE ───────────────────────────────────────────────────────
+
+  onTitleInput(event: Event) {
+    const val = (event.target as HTMLInputElement).value;
+    this.popupTitle = val;
+    const allOptions = [
+      ...this.nPreventiviArray,
+      ...this.clientiArray.map(c => `${c.numeroCliente} - ${c.nominativo}`),
+    ];
+    const norm = this.normalize(val);
+    this.filteredAutocomplete = norm ? allOptions.filter(s => this.normalize(s).includes(norm)) : allOptions;
+    this.autocompleteOpen = this.filteredAutocomplete.length > 0;
+  }
+
+  onTitleFocus() {
+    const allOptions = [
+      ...this.nPreventiviArray,
+      ...this.clientiArray.map(c => `${c.numeroCliente} - ${c.nominativo}`),
+    ];
+    this.filteredAutocomplete = allOptions;
+    this.autocompleteOpen = allOptions.length > 0;
+  }
+
+  selectAutocomplete(val: string) {
+    this.popupTitle = val; this.autocompleteOpen = false;
+    const idxPrev = this.nPreventiviArray.findIndex(p=>this.normalize(p)===this.normalize(val));
+    if (idxPrev!==-1) { this.popupDescription=`Sopralluogo – ${this.descrizioneArray[idxPrev]}`; this.popupCategory='sopralluogo'; return; }
+    const cliente = this.clientiArray.find(c=>this.normalize(`${c.numeroCliente} - ${c.nominativo}`)===this.normalize(val));
+    if (cliente) {
+      if (this.tenantService.isSami&&this.categories.some(c=>c.id==='straordinario'))
+        this.popupCategory = cliente.tipoCliente==='O'?'ordinario':'straordinario';
+      else this.popupCategory='ordinario';
+    }
   }
 
   getAutocompleteSource(categoria: string): string[] {
-    if (categoria === 'sopralluogo') {
-      return this.nPreventiviArray;
+    if (categoria==='sopralluogo') return this.nPreventiviArray;
+    if (categoria==='ordinario') {
+      if (this.tenantService.isEmmeci) return this.clientiArray.map(c=>`${c.numeroCliente} - ${c.nominativo}`);
+      return this.clientiArray.filter(c=>c.tipoCliente==='O').map(c=>`${c.numeroCliente} - ${c.nominativo}`);
     }
-
-    if (categoria === 'ordinario') {
-      if (this.tenantService.isEmmeci) {
-        return this.clientiArray.map(
-          (c) => `${c.numeroCliente} - ${c.nominativo}`,
-        );
-      }
-
-      return this.clientiArray
-        .filter((c) => c.tipoCliente === 'O')
-        .map((c) => `${c.numeroCliente} - ${c.nominativo}`);
-    }
-
-    if (categoria === 'straordinario' && this.tenantService.isSami) {
-      return this.clientiArray
-        .filter((c) => c.tipoCliente === 'S')
-        .map((c) => `${c.numeroCliente} - ${c.nominativo}`);
-    }
-
+    if (categoria==='straordinario'&&this.tenantService.isSami)
+      return this.clientiArray.filter(c=>c.tipoCliente==='S').map(c=>`${c.numeroCliente} - ${c.nominativo}`);
     return [];
   }
 
-  onAppointmentClick(e: any) {
-    const data = e.appointmentData;
-    const codice = data.title?.split(' - ')[0];
-    const categoria = data.categories;
+  onCategoryChange() { this.filteredAutocomplete=this.getAutocompleteSource(this.popupCategory); this.autocompleteOpen=false; }
 
-    if (categoria === 'sopralluogo') {
-      this.router.navigate(['/editQuote', codice]);
-      return;
-    }
-
-    if (this.tenantService.isSami) {
-      if (categoria === 'ordinario' || categoria === 'straordinario') {
-        this.router.navigate(['/editCustomer', codice]);
-      }
-      return;
-    }
-
-    if (this.tenantService.isEmmeci) {
-      if (categoria === 'ordinario') {
-        this.router.navigate(['/editCustomer', codice]);
-      }
-    }
+  onStartDateChange() {
+    if (!this.popupStartDate) return;
+    this.popupEndDate = this.toInputDatetime(new Date(new Date(this.popupStartDate).getTime()+30*60000));
   }
 
-  onAppointmentAdding(e: AppointmentAddingEvent) {
-    let body = {
-      title: e.appointmentData['title'],
-      startDate: e.appointmentData['startDate'],
-      endDate: e.appointmentData['endDate'],
-      recurrenceRule: this.saveRecurrenceRule,
-      dayLong: e.appointmentData['dayLong'],
-      description: e.appointmentData['description'],
-      categories: e.appointmentData['categories'],
-      recurrenceException: e.appointmentData['recurrenceException'],
+  // ── RECURRENCE ─────────────────────────────────────────────────────────
+
+  buildRRule(): string {
+    if (!this.recurrenceEnabled) return '';
+    let rule = `FREQ=${this.recurrenceFreq}`;
+    if (this.recurrenceInterval>1) rule+=`;INTERVAL=${this.recurrenceInterval}`;
+    if (this.recurrenceFreq==='WEEKLY'&&this.recurrenceDays.length>0) rule+=`;BYDAY=${this.recurrenceDays.join(',')}`;
+    if (this.recurrenceFreq==='MONTHLY') { const d=new Date(this.popupStartDate); rule+=`;BYMONTHDAY=${d.getDate()}`; }
+    if (this.recurrenceEndType==='until'&&this.recurrenceUntil) rule+=`;UNTIL=${this.recurrenceUntil.replace(/-/g,'')}`;
+    else if (this.recurrenceEndType==='count') rule+=`;COUNT=${this.recurrenceCount}`;
+    return rule;
+  }
+
+  toggleDay(day: string) { const idx=this.recurrenceDays.indexOf(day); if(idx>=0)this.recurrenceDays.splice(idx,1); else this.recurrenceDays.push(day); }
+  isDaySelected(day: string): boolean { return this.recurrenceDays.includes(day); }
+
+  // ── SAVE ───────────────────────────────────────────────────────────────
+
+  saveEvent() {
+    if (!this.popupTitle||!this.popupStartDate||!this.popupEndDate||!this.popupCategory) {
+      this.popupService.text='Compilare tutti i campi obbligatori'; this.popupService.openPopup(); return;
+    }
+    const codice = this.popupTitle.split(' - ')[0];
+    if (!this.validateCodice(codice,this.popupCategory)) {
+      this.popupService.text='Codice non valido o non esistente per la categoria selezionata'; this.popupService.openPopup(); return;
+    }
+    const body: any = {
+      title: this.popupTitle,
+      startDate: new Date(this.popupStartDate).toISOString(),
+      endDate: new Date(this.popupEndDate).toISOString(),
+      recurrenceRule: this.buildRRule(),
+      dayLong: false, description: this.popupDescription,
+      categories: this.popupCategory, recurrenceException: null,
     };
-
-    const codice = body.title?.split(' - ')[0];
-    const categoria = body.categories;
-
-    if (!body.title || !body.startDate || !body.endDate || !body.categories) {
-      this.popup.text = 'Compilare tutti i campi obbligatori';
-      this.popup.openPopup();
-      this.ngOnInit();
-      return;
-    }
-
-    const codiceValido =
-      (categoria === 'sopralluogo' &&
-        this.nPreventiviArray.some((p) =>
-          this.normalize(p).startsWith(this.normalize(codice + ' -')),
-        )) ||
-      (categoria === 'ordinario' &&
-        this.clientiArray.some(
-          (c) =>
-            this.normalize(c.numeroCliente.toString()) ===
-            this.normalize(codice),
-        )) ||
-      (this.tenantService.isSami &&
-        categoria === 'straordinario' &&
-        this.clientiArray.some(
-          (c) =>
-            this.normalize(c.numeroCliente.toString()) ===
-            this.normalize(codice),
-        )) ||
-      categoria === 'altro' ||
-      categoria === 'lavoriSvolti';
-
-    if (!codiceValido) {
-      this.popup.text =
-        'Codice non valido o non esistente per la categoria selezionata';
-      this.popup.openPopup();
-      e.cancel = true;
-      this.scheduler.instance.hideAppointmentPopup();
-      return;
-    }
-
-    this.http
-      .post(this.globalService.url + 'appointments/add', body, {
-        headers: this.globalService.headers,
-        responseType: 'text',
-      })
-      .subscribe({
-        next: () => {
-          this.ngOnInit();
-
-          if (body.categories == 'sopralluogo') {
-            this.http
-              .post(
-                this.globalService.url +
-                  'appointments/sendInspectionConfirmation',
-                body,
-                { headers: this.globalService.headers, responseType: 'text' },
-              )
-              .subscribe({
-                next: (response) => {
-                  if (response == 'NO') {
-                    this.popup.text =
-                      "Non è stato possibile inviare la mail di conferma dell'appuntamento perchè non è presente nessuna mail associata al preventivo";
-                    this.popup.openPopup();
-                  }
-                },
-                error: (err) => {
-                  console.error('Errore:', err);
-                  alert(this.parseServerError(err));
-                },
-              });
-          }
-        },
-        error: (err) => {
-          console.error('Errore:', err);
-          alert(this.parseServerError(err));
-        },
-      });
+    if (!this.isNewEvent) body.id = this.editingEventId;
+    this.http.post(this.globalService.url+(this.isNewEvent?'appointments/add':'appointments/edit'), body, {
+      headers: this.globalService.headers, responseType: 'text',
+    }).subscribe(()=>{ this.closePopup(); this.loadAll(); if(body.categories==='sopralluogo')this.sendInspectionConfirmation(body); });
   }
 
-  onAppointmentUpdating(e: AppointmentUpdatingEvent) {
-    let body = {
-      id: e.oldData['id'],
-      title: e.newData['title'] ?? e.oldData['title'],
-      startDate: e.newData['startDate'] ?? e.oldData['startDate'],
-      endDate: e.newData['endDate'] ?? e.oldData['endDate'],
-      recurrenceRule:
-        e.newData['recurrenceRule'] ?? e.oldData['recurrenceRule'],
-      dayLong: e.newData['dayLong'] ?? e.oldData['dayLong'],
-      description: e.newData['description'] ?? e.oldData['description'],
-      categories: e.newData['categories'] ?? e.oldData['categories'],
-      recurrenceException:
-        e.newData['recurrenceException'] ?? e.oldData['recurrenceException'],
-    };
-
-    if (
-      body.title == undefined ||
-      body.startDate == undefined ||
-      body.endDate == undefined ||
-      body.categories == undefined
-    ) {
-      this.popup.text = 'Compilare tutti i campi obbligatori';
-      this.popup.openPopup();
-      this.ngOnInit();
-      return;
-    }
-
-    this.http
-      .post(this.globalService.url + 'appointments/edit', body, {
-        headers: this.globalService.headers,
-        responseType: 'text',
-      })
-      .subscribe({
-        next: () => {
-          this.ngOnInit();
-
-          if (body.categories == 'sopralluogo') {
-            this.http
-              .post(
-                this.globalService.url +
-                  'appointments/sendInspectionConfirmation',
-                body,
-                {
-                  headers: this.globalService.headers,
-                  responseType: 'text',
-                },
-              )
-              .subscribe({
-                next: (response) => {
-                  if (response == 'NO') {
-                    this.popup.text =
-                      "Non è stato possibile inviare la mail di conferma dell'appuntamento perchè non è presente nessuna mail associata al preventivo";
-                    this.popup.openPopup();
-                  }
-                },
-                error: (err) => {
-                  console.error('Errore:', err);
-                  alert(this.parseServerError(err));
-                },
-              });
-          }
-        },
-        error: (err) => {
-          console.error('Errore:', err);
-          alert(this.parseServerError(err));
-        },
-      });
+  validateCodice(codice: string, categoria: string): boolean {
+    if (categoria==='altro'||categoria==='lavoriSvolti') return true;
+    if (categoria==='sopralluogo') return this.nPreventiviArray.some(p=>this.normalize(p).startsWith(this.normalize(codice+' -')));
+    if (categoria==='ordinario'||categoria==='straordinario') return this.clientiArray.some(c=>this.normalize(c.numeroCliente.toString())===this.normalize(codice));
+    return true;
   }
 
-  onAppointmentDeletedQuestion(e: AppointmentDeletedEvent) {
-    const appointmentData = e.appointmentData;
-
-    if (
-      appointmentData.recurrenceRule &&
-      appointmentData.recurrenceRule.trim() !== ''
-    ) {
-      this.appointmentsDeleted(e);
-    } else {
-      if (appointmentData.recurrenceRule == '') {
-        this.appointmentsDeleted(e);
-      } else {
-        this.appointmentDeleted(e);
-      }
-    }
+  sendInspectionConfirmation(body: any) {
+    this.http.post(this.globalService.url+'appointments/sendInspectionConfirmation', body, {
+      headers: this.globalService.headers, responseType: 'text',
+    }).subscribe(res=>{ if(res==='NO'){this.popupService.text="Non è stato possibile inviare la mail di conferma perché non è presente nessuna mail associata al preventivo"; this.popupService.openPopup();} });
   }
 
-  appointmentDeleted(e: AppointmentDeletedEvent) {
-    let body = {
-      id: e.appointmentData['id'],
-      occurrenceDate: this.convertDateToICSFormat(this.selectedDate),
-    };
+  // ── DELETE ─────────────────────────────────────────────────────────────
 
-    this.http
-      .post(
-        this.globalService.url + 'appointments/deleteSingleOccurrence',
-        body,
-        {
-          headers: this.globalService.headers,
-          responseType: 'text',
-        },
-      )
-      .subscribe({
-        next: () => {
-          this.ngOnInit();
-        },
-        error: (err) => {
-          console.error('Errore:', err);
-          alert(this.parseServerError(err));
-        },
-      });
+  requestDelete() {
+    if (this.isRecurringInstance||this.hasRecurrenceRule) this.showDeleteConfirm=true;
+    else this.deleteAll();
   }
 
-  appointmentsDeleted(e: AppointmentDeletedEvent) {
-    let body = {
-      id: e.appointmentData['id'],
-    };
-
-    this.http
-      .post(this.globalService.url + 'appointments/delete', body, {
-        headers: this.globalService.headers,
-        responseType: 'text',
-      })
-      .subscribe({
-        next: () => {
-          this.ngOnInit();
-        },
-        error: (err) => {
-          console.error('Errore:', err);
-          alert(this.parseServerError(err));
-        },
-      });
+  deleteAll() {
+    this.http.post(this.globalService.url+'appointments/delete',{id:this.editingEventId},{
+      headers:this.globalService.headers,responseType:'text',
+    }).subscribe(()=>{this.closePopup();this.loadAll();});
   }
 
-  onFilterChange(event: any) {
-    const filterType = event.target.value;
-
-    if (filterType === 'all') {
-      this.filteredEvents = this.events;
-    } else {
-      this.filteredEvents = this.events.filter((ev) => {
-        return ev.categories === filterType;
-      });
-    }
+  deleteSingle() {
+    const occDate = this.toICSDate(new Date(this.popupStartDate));
+    this.http.post(this.globalService.url+'appointments/deleteSingleOccurrence',{id:this.editingEventId,occurrenceDate:occDate},{
+      headers:this.globalService.headers,responseType:'text',
+    }).subscribe(()=>{this.closePopup();this.loadAll();});
   }
 
-  goBack() {
-    this.router.navigateByUrl('homeAdmin');
+  // ── UTILS ──────────────────────────────────────────────────────────────
+
+  getCategoryClass(cat: string): string {
+    return ['sopralluogo','ordinario','straordinario','lavoriSvolti','altro'].includes(cat)?`cat-${cat}`:'cat-default';
   }
 
-  get canManageEvents(): boolean {
-    return this.globalService.hasPermission('CALENDAR_EVENT_MANAGE');
+  formatTime(date: Date): string { return `${date.getHours().toString().padStart(2,'0')}:${date.getMinutes().toString().padStart(2,'0')}`; }
+
+  toInputDatetime(d: Date): string {
+    const pad=(n:number)=>n.toString().padStart(2,'0');
+    return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
   }
 
-  private parseServerError(err: any): string {
-    if (err.status === 403) return 'Non autorizzato: permesso mancante per questa operazione.';
-    try {
-      const body = typeof err.error === 'string' ? JSON.parse(err.error) : err.error;
-      if (body?.error) return body.error;
-    } catch {}
-    if (err.status === 0) return 'Impossibile connettersi al server';
-    return 'Errore imprevisto. Riprova.';
+  normalize(s: string): string { return (s||'').normalize('NFD').replace(/\p{Diacritic}/gu,'').toLowerCase().trim(); }
+
+  getCategoriesForTenant(): {id:string;text:string}[] {
+    if (this.tenantService.isEmmeci) return [{id:'ordinario',text:'Ordinario'},{id:'sopralluogo',text:'Sopralluogo'},{id:'altro',text:'Altro'}];
+    return [{id:'ordinario',text:'Ordinario'},{id:'straordinario',text:'Straordinario'},{id:'sopralluogo',text:'Sopralluogo'},{id:'lavoriSvolti',text:'Lavori svolti'},{id:'altro',text:'Altro'}];
+  }
+
+  getEventTopPx(ev: CalEvent): number { return ((ev.start.getHours()*60+ev.start.getMinutes())/30)*26; }
+  getEventHeightPx(ev: CalEvent): number { return Math.max(((ev.end.getTime()-ev.start.getTime())/60000/30)*26,26); }
+  getSlotTopPx(slot: string): number { const [h,m]=slot.split(':').map(Number); return ((h*60+m)/30)*26; }
+  currentTimeTopPx(): number { const now=new Date(); return ((now.getHours()*60+now.getMinutes())/30)*26; }
+
+  goBack() { this.router.navigateByUrl('homeAdmin'); }
+
+  @HostListener('document:click',['$event'])
+  onDocumentClick(event: MouseEvent) {
+    const t = event.target as HTMLElement;
+    if (!t.closest('.autocomplete-wrapper')) this.autocompleteOpen=false;
+    if (!t.closest('.mini-cal-wrapper')&&!t.closest('.cal-title-btn')) this.showMiniCal=false;
   }
 }

@@ -73,6 +73,9 @@
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
+          "options": {
+            "allowedHosts": ["emmeci.local", "sami.local"]
+          },
           "configurations": {
             "production": {
               "buildTarget": "Y:build:production"

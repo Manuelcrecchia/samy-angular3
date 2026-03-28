@@ -14,23 +14,34 @@
     class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2"
   >
     <div class="d-flex align-items-center gap-2">
-      <button
-        class="btn btn-secondary rounded-pill btn-nav-glass"
-        (click)="prevDay()"
-      >
-        ←
-      </button>
+      <button class="btn btn-secondary rounded-pill btn-nav-glass" (click)="prevDay()">←</button>
 
-      <h4 class="m-0 text-dark">
-        {{ selectedDate | date: "fullDate" }}
-      </h4>
+      <div class="shift-mini-cal-wrapper">
+        <button class="shift-date-btn" (click)="toggleMiniCal()">
+          {{ selectedDate | date: "fullDate" }} ▾
+        </button>
+        <div class="shift-mini-cal" *ngIf="showMiniCal" (click)="$event.stopPropagation()">
+          <div class="smc-header">
+            <button (click)="miniPrev()">‹</button>
+            <span>{{ miniCalTitle }}</span>
+            <button (click)="miniNext()">›</button>
+          </div>
+          <div class="smc-grid">
+            <div class="smc-dow" *ngFor="let d of DAYS_SHORT">{{ d }}</div>
+            <ng-container *ngFor="let week of miniCalGrid">
+              <div class="smc-day"
+                *ngFor="let day of week"
+                [class.smc-today]="isSameDay(day, selectedDate)"
+                [class.smc-other]="day.getMonth() !== miniCalDate.getMonth()"
+                (click)="miniSelectDay(day)">
+                {{ day.getDate() }}
+              </div>
+            </ng-container>
+          </div>
+        </div>
+      </div>
 
-      <button
-        class="btn btn-secondary rounded-pill btn-nav-glass"
-        (click)="nextDay()"
-      >
-        →
-      </button>
+      <button class="btn btn-secondary rounded-pill btn-nav-glass" (click)="nextDay()">→</button>
     </div>
 
     <button

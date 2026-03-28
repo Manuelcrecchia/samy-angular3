@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, HostListener } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { GlobalService } from '../../service/global.service';
@@ -27,6 +27,56 @@ interface ShiftRow {
 })
 export class ShiftHomeComponent implements OnInit {
   selectedDate: Date = new Date();
+
+  // Mini calendar
+  showMiniCal = false;
+  miniCalDate = new Date();
+
+  readonly DAYS_SHORT = ['Lun','Mar','Mer','Gio','Ven','Sab','Dom'];
+  readonly MONTHS_IT = ['Gennaio','Febbraio','Marzo','Aprile','Maggio','Giugno',
+    'Luglio','Agosto','Settembre','Ottobre','Novembre','Dicembre'];
+
+  get miniCalTitle(): string {
+    return `${this.MONTHS_IT[this.miniCalDate.getMonth()]} ${this.miniCalDate.getFullYear()}`;
+  }
+
+  get miniCalGrid(): Date[][] {
+    const year = this.miniCalDate.getFullYear();
+    const month = this.miniCalDate.getMonth();
+    const firstDay = new Date(year, month, 1);
+    const dow = (firstDay.getDay() + 6) % 7;
+    const cur = new Date(firstDay); cur.setDate(cur.getDate() - dow);
+    const grid: Date[][] = [];
+    for (let w = 0; w < 6; w++) {
+      const week: Date[] = [];
+      for (let d = 0; d < 7; d++) { week.push(new Date(cur)); cur.setDate(cur.getDate() + 1); }
+      grid.push(week);
+      if (cur.getMonth() !== month && w >= 3) break;
+    }
+    return grid;
+  }
+
+  isSameDay(a: Date, b: Date): boolean {
+    return a.getFullYear()===b.getFullYear() && a.getMonth()===b.getMonth() && a.getDate()===b.getDate();
+  }
+
+  toggleMiniCal() { this.showMiniCal = !this.showMiniCal; this.miniCalDate = new Date(this.selectedDate); }
+  miniPrev() { const d = new Date(this.miniCalDate); d.setMonth(d.getMonth()-1); this.miniCalDate = d; }
+  miniNext() { const d = new Date(this.miniCalDate); d.setMonth(d.getMonth()+1); this.miniCalDate = d; }
+
+  miniSelectDay(date: Date) {
+    this.selectedDate = new Date(date);
+    this.showMiniCal = false;
+    this.loadShifts();
+  }
+
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: MouseEvent) {
+    const t = event.target as HTMLElement;
+    if (!t.closest('.shift-mini-cal-wrapper') && !t.closest('.shift-date-btn')) {
+      this.showMiniCal = false;
+    }
+  }
 
   shifts: any[] = [];
   groupedByEmployee: { [key: string]: ShiftRow[] } = {};

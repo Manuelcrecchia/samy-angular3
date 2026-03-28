@@ -1,559 +1,324 @@
-<style>
-  /* =====================================================
-     VARIABILI
-  ===================================================== */
-  :root {
-    --cal-bg:        #f4f6f9;
-    --cal-surface:   #ffffff;
-    --cal-border:    rgba(0, 0, 0, 0.07);
-    --cal-text:      #1a1d23;
-    --cal-muted:     #6b7280;
-    --cal-radius:    16px;
-    --cal-radius-sm: 8px;
-    --cal-shadow:    0 4px 24px rgba(0, 0, 0, 0.07);
-    --cal-shadow-lg: 0 12px 40px rgba(0, 0, 0, 0.10);
+<div class="cal-wrap">
 
-    /* Palette categorie — colore pieno per day/week, pill tenue per mese */
-    --c-sopralluogo:    #e03e3e;
-    --c-ordinario:      #16a34a;
-    --c-straordinario:  #d97706;
-    --c-lavori:         #2563eb;
-    --c-altro:          #7c3aed;
-    --c-default:        #64748b;
-  }
-
-  /* =====================================================
-     LAYOUT PAGINA
-  ===================================================== */
-  .fullscreen-container {
-    min-height: 100vh;
-    padding: 16px 16px 24px;
-    background: var(--cal-bg);
-    color: var(--cal-text);
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  }
-
-  /* =====================================================
-     BOTTONE INDIETRO
-  ===================================================== */
-  .btn-back {
-    display: inline-flex;
-    align-items: center;
-    gap: 7px;
-    padding: 9px 18px;
-    border-radius: 999px;
-    border: 1px solid var(--cal-border);
-    background: var(--cal-surface);
-    box-shadow: var(--cal-shadow);
-    color: var(--cal-text);
-    font-weight: 700;
-    font-size: 0.875rem;
-    cursor: pointer;
-    transition: box-shadow 0.15s, transform 0.15s;
-    text-decoration: none;
-  }
-  .btn-back:hover {
-    transform: translateY(-1px);
-    box-shadow: var(--cal-shadow-lg);
-  }
-
-  /* =====================================================
-     BARRA FILTRI
-  ===================================================== */
-  .filter-container {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 10px;
-    padding: 12px 16px;
-    border-radius: var(--cal-radius);
-    background: var(--cal-surface);
-    border: 1px solid var(--cal-border);
-    box-shadow: var(--cal-shadow);
-  }
-  .filter-container .form-label {
-    font-weight: 700;
-    font-size: 0.875rem;
-    margin: 0;
-    color: var(--cal-muted);
-    white-space: nowrap;
-  }
-  .filter-container .form-select {
-    border-radius: 999px;
-    background: var(--cal-bg);
-    border: 1px solid var(--cal-border);
-    color: var(--cal-text);
-    padding: 7px 14px;
-    font-size: 0.875rem;
-    font-weight: 600;
-    box-shadow: none;
-    cursor: pointer;
-    transition: border-color 0.15s;
-  }
-  .filter-container .form-select:focus {
-    outline: none;
-    border-color: var(--c-lavori);
-    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
-  }
-  @media (max-width: 576px) {
-    .filter-container .form-select { width: 100% !important; }
-  }
-
-  /* =====================================================
-     CONTENITORE SCHEDULER
-  ===================================================== */
-  .fullscreen-scheduler {
-    margin-top: 14px;
-    border-radius: var(--cal-radius);
-    overflow: hidden;
-    background: var(--cal-surface);
-    border: 1px solid var(--cal-border);
-    box-shadow: var(--cal-shadow-lg);
-  }
-
-  /* =====================================================
-     BASE SCHEDULER DEVEXTREME
-  ===================================================== */
-  .dx-scheduler,
-  .dx-scheduler-work-space,
-  .dx-scheduler-header-panel,
-  .dx-scheduler-date-table,
-  .dx-scheduler-time-panel,
-  .dx-scheduler-header {
-    background: var(--cal-surface) !important;
-    color: var(--cal-text) !important;
-  }
-
-  /* TOOLBAR — navigazione date e switcher viste */
-  .dx-toolbar,
-  .dx-toolbar-items-container {
-    background: #f8f9fb !important;
-    color: var(--cal-text) !important;
-    border-bottom: 1px solid var(--cal-border) !important;
-  }
-  .dx-toolbar .dx-button,
-  .dx-scheduler-navigator .dx-button {
-    background: transparent !important;
-    border: none !important;
-    color: var(--cal-text) !important;
-    border-radius: var(--cal-radius-sm) !important;
-    font-weight: 600;
-    transition: background 0.15s;
-  }
-  .dx-toolbar .dx-button:hover {
-    background: rgba(0,0,0,0.05) !important;
-  }
-  .dx-scheduler-navigator-caption {
-    font-weight: 700 !important;
-    font-size: 0.9rem !important;
-    color: var(--cal-text) !important;
-  }
-  /* Switcher viste (Giorno / Settimana / Mese) */
-  .dx-button-mode-contained {
-    background: var(--cal-surface) !important;
-    border: 1px solid var(--cal-border) !important;
-    color: var(--cal-muted) !important;
-    border-radius: var(--cal-radius-sm) !important;
-    font-weight: 600;
-    font-size: 0.8rem !important;
-  }
-  .dx-button-mode-contained.dx-state-active,
-  .dx-button-mode-contained.dx-state-focused,
-  .dx-tabs-item.dx-item-selected .dx-button-mode-contained {
-    background: var(--c-lavori) !important;
-    color: #fff !important;
-    border-color: var(--c-lavori) !important;
-  }
-
-  /* HEADER PANEL — intestazioni colonne (nomi giorni) */
-  .dx-scheduler-header-panel-cell {
-    background: #f8f9fb !important;
-    color: var(--cal-muted) !important;
-    font-weight: 700 !important;
-    font-size: 0.8rem !important;
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
-    border-color: var(--cal-border) !important;
-  }
-  .dx-scheduler-header-panel-cell.dx-scheduler-header-panel-current-time-cell {
-    color: var(--c-lavori) !important;
-  }
-
-  /* PANNELLO ORE (sinistra) */
-  .dx-scheduler-time-panel-cell {
-    background: #f8f9fb !important;
-    color: var(--cal-muted) !important;
-    font-size: 0.75rem !important;
-    font-weight: 600 !important;
-    border-color: var(--cal-border) !important;
-  }
-
-  /* CELLE GRIGLIA */
-  .dx-scheduler-date-table-cell {
-    background: var(--cal-surface) !important;
-    border-color: var(--cal-border) !important;
-    vertical-align: top !important;
-    transition: background 0.1s;
-  }
-  .dx-scheduler-date-table-cell:hover {
-    background: #f0f4ff !important;
-  }
-  .dx-scheduler-date-table-current-time-cell {
-    background: #f0f4ff !important;
-  }
-
-  /* =====================================================
-     APPOINTMENT — CONTENITORE BASE (DevExtreme)
-  ===================================================== */
-  .dx-scheduler-appointment {
-    background: transparent !important;
-    border: none !important;
-    box-shadow: none !important;
-    border-radius: 6px !important;
-  }
-  .dx-scheduler-appointment-content {
-    padding: 0 !important;
-    overflow: hidden !important;
-  }
-  .dx-scheduler-appointment-recurrence-icon,
-  .dx-scheduler-appointment-reduced-icon {
-    display: none !important;
-  }
-
-  /* =====================================================
-     APPOINTMENT CARD — BASE (giorno / settimana)
-  ===================================================== */
-  .appointment-card {
-    width: 100%;
-    height: 100%;
-    min-height: 26px;
-    border-radius: 6px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    padding: 4px 8px 4px 10px;
-    box-sizing: border-box;
-    overflow: hidden;
-    border-left: 3px solid rgba(0, 0, 0, 0.25);
-  }
-
-  /* Titolo — visibile in tutte le viste */
-  .appointment-card .ap-title {
-    display: block;
-    font-size: 12px;
-    font-weight: 800;
-    line-height: 1.25;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    color: inherit;
-  }
-
-  /* Descrizione — visibile solo in giorno/settimana */
-  .appointment-card .ap-desc {
-    display: block;
-    font-size: 10.5px;
-    font-weight: 500;
-    line-height: 1.2;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    color: inherit;
-    opacity: 0.78;
-    margin-top: 1px;
-  }
-  .appointment-card .ap-desc:empty {
-    display: none;
-  }
-
-  /* =====================================================
-     APPOINTMENT CARD — VISTA MESE
-     DevExtreme fissa ~22px per gli eventi; adattiamo
-  ===================================================== */
-  .dx-scheduler-work-space-month .dx-scheduler-appointment {
-    margin: 1px 1px !important;
-  }
-  .dx-scheduler-work-space-month .appointment-card {
-    border-left: none !important;
-    border-radius: 4px !important;
-    flex-direction: row !important;
-    align-items: center !important;
-    justify-content: flex-start !important;
-    padding: 0 7px !important;
-    min-height: 20px !important;
-    height: 100% !important;
-  }
-  /* Titolo: unica riga compatta */
-  .dx-scheduler-work-space-month .appointment-card .ap-title {
-    font-size: 11px !important;
-    font-weight: 700 !important;
-    line-height: 1 !important;
-    white-space: nowrap !important;
-    overflow: hidden !important;
-    text-overflow: ellipsis !important;
-  }
-  /* Descrizione: nascosta nel mese */
-  .dx-scheduler-work-space-month .appointment-card .ap-desc {
-    display: none !important;
-  }
-
-  /* Celle mese più alte per contenere eventi + pulsante "ancora" */
-  .dx-scheduler-work-space-month .dx-scheduler-date-table-cell {
-    height: 110px !important;
-    vertical-align: top !important;
-  }
-  /* Numero del giorno nel mese */
-  .dx-scheduler-work-space-month .dx-scheduler-date-table-cell .dx-scheduler-date-table-other-month,
-  .dx-scheduler-date-table-month-cell .dx-scheduler-date-table-cell-text {
-    font-size: 11px !important;
-    font-weight: 700 !important;
-    color: var(--cal-muted) !important;
-    padding: 3px 5px !important;
-  }
-
-  /* =====================================================
-     "X ANCORA" — pulsante overflow mese
-     DevExtreme lo rende come .dx-button dentro il collector
-  ===================================================== */
-  .dx-scheduler-appointment-collector {
-    margin: 1px 1px !important;
-    height: 20px !important;
-    line-height: 20px !important;
-  }
-  /* il .dx-button dentro il collector è responsabile del colore scuro */
-  .dx-scheduler-appointment-collector .dx-button,
-  .dx-scheduler-appointment-collector .dx-button.dx-button-default,
-  .dx-scheduler-appointment-collector .dx-button.dx-button-normal {
-    background: #e9ecf0 !important;
-    border: none !important;
-    border-radius: 4px !important;
-    box-shadow: none !important;
-    min-width: 0 !important;
-    height: 20px !important;
-    line-height: 20px !important;
-  }
-  .dx-scheduler-appointment-collector .dx-button .dx-button-content {
-    padding: 0 6px !important;
-    height: 20px !important;
-    display: flex !important;
-    align-items: center !important;
-  }
-  .dx-scheduler-appointment-collector .dx-button .dx-button-text {
-    font-size: 11px !important;
-    font-weight: 700 !important;
-    color: #374151 !important;
-    line-height: 1 !important;
-  }
-  .dx-scheduler-appointment-collector .dx-button:hover,
-  .dx-scheduler-appointment-collector .dx-button.dx-state-hover {
-    background: #d1d5db !important;
-  }
-  /* fallback per versioni DevExtreme che usano classe diversa */
-  .dx-scheduler-more-appointments {
-    background: #e9ecf0 !important;
-    color: #374151 !important;
-    border: none !important;
-    border-radius: 4px !important;
-    font-weight: 700 !important;
-    font-size: 11px !important;
-    box-shadow: none !important;
-    height: 20px !important;
-    line-height: 20px !important;
-    padding: 0 6px !important;
-    margin: 1px 1px !important;
-  }
-
-  /* =====================================================
-     TOOLTIP
-  ===================================================== */
-  .tooltip-content {
-    padding: 12px 14px;
-    border-radius: 12px;
-    background: #1a1d23;
-    color: #f9fafb;
-    font-size: 0.85rem;
-    box-shadow: 0 12px 35px rgba(0,0,0,0.2);
-    line-height: 1.5;
-    min-width: 180px;
-  }
-  .tooltip-content .tt-title {
-    font-weight: 800;
-    font-size: 0.9rem;
-    margin-bottom: 4px;
-  }
-  .tooltip-content .tt-desc {
-    opacity: 0.75;
-    font-size: 0.8rem;
-  }
-
-  /* =====================================================
-     COLORI CATEGORIE — Giorno / Settimana
-     Sfondo tenue + bordo sinistro colorato
-  ===================================================== */
-  .category-sopralluogo {
-    background: rgba(224, 62, 62, 0.13) !important;
-    color: #7f1d1d !important;
-    border-left-color: var(--c-sopralluogo) !important;
-  }
-  .category-ordinario {
-    background: rgba(22, 163, 74, 0.11) !important;
-    color: #14532d !important;
-    border-left-color: var(--c-ordinario) !important;
-  }
-  .category-straordinario {
-    background: rgba(217, 119, 6, 0.12) !important;
-    color: #78350f !important;
-    border-left-color: var(--c-straordinario) !important;
-  }
-  .category-lavoriSvolti {
-    background: rgba(37, 99, 235, 0.10) !important;
-    color: #1e3a8a !important;
-    border-left-color: var(--c-lavori) !important;
-  }
-  .category-altro {
-    background: rgba(124, 58, 237, 0.11) !important;
-    color: #3b0764 !important;
-    border-left-color: var(--c-altro) !important;
-  }
-  .category-default {
-    background: rgba(100, 116, 139, 0.10) !important;
-    color: #1e293b !important;
-    border-left-color: var(--c-default) !important;
-  }
-
-  /* =====================================================
-     COLORI CATEGORIE — Vista Mese
-     Pill solida, massimo contrasto
-  ===================================================== */
-  .dx-scheduler-work-space-month .appointment-card.category-sopralluogo {
-    background: var(--c-sopralluogo) !important;
-    color: #ffffff !important;
-  }
-  .dx-scheduler-work-space-month .appointment-card.category-ordinario {
-    background: var(--c-ordinario) !important;
-    color: #ffffff !important;
-  }
-  .dx-scheduler-work-space-month .appointment-card.category-straordinario {
-    background: var(--c-straordinario) !important;
-    color: #ffffff !important;
-  }
-  .dx-scheduler-work-space-month .appointment-card.category-lavoriSvolti {
-    background: var(--c-lavori) !important;
-    color: #ffffff !important;
-  }
-  .dx-scheduler-work-space-month .appointment-card.category-altro {
-    background: var(--c-altro) !important;
-    color: #ffffff !important;
-  }
-  .dx-scheduler-work-space-month .appointment-card.category-default {
-    background: var(--c-default) !important;
-    color: #ffffff !important;
-  }
-
-  /* =====================================================
-     POPUP / FORM MODIFICA EVENTO
-  ===================================================== */
-  .dx-popup-content,
-  .dx-scheduler-appointment-popup .dx-popup-content {
-    padding: 20px !important;
-  }
-  .dx-form-group-with-caption > .dx-form-group-caption {
-    font-weight: 800 !important;
-    color: var(--cal-text) !important;
-  }
-
-  /* =====================================================
-     RESPONSIVE
-  ===================================================== */
-  @media (max-width: 576px) {
-    .fullscreen-container { padding: 10px 8px 16px; }
-    .fullscreen-scheduler { border-radius: 10px; }
-  }
-</style>
-
-<div class="container-fluid fullscreen-container">
-  <div class="d-flex justify-content-start align-items-center mb-2">
-    <button class="btn-back" type="button" (click)="goBack()">
+  <!-- ═══ HEADER ═══ -->
+  <div class="cal-header">
+    <button class="btn-back" (click)="goBack()">
       <i class="fa fa-arrow-left"></i> Indietro
     </button>
-  </div>
 
-  <div
-    [ngClass]="{
-      'day-view-active': currentView === 'day',
-      'day-view-week': currentView === 'week',
-    }"
-  >
-    <div class="filter-container mb-3">
-      <label for="eventFilter" class="form-label">Filtra eventi:</label>
+    <div class="cal-nav-group">
+      <button class="nav-arrow" (click)="prev()">&#8249;</button>
 
-      <select
-        id="eventFilter"
-        class="form-select w-auto d-inline-block ms-2"
-        (change)="onFilterChange($event)"
-      >
-        <option value="all">Tutti</option>
-        <option *ngFor="let cat of categories" [value]="cat.id">
-          {{ cat.text }}
-        </option>
-      </select>
-    </div>
+      <div class="mini-cal-wrapper">
+        <button class="cal-title-btn" (click)="toggleMiniCal()">
+          {{ viewTitle }} <span class="caret">▾</span>
+        </button>
 
-    <dx-scheduler
-      #scheduler
-      class="fullscreen-scheduler"
-      locale="it"
-      timeZone="Europe/Rome"
-      id="scheduler"
-      [dataSource]="filteredEvents"
-      [views]="['day', 'week', 'month']"
-      currentView="week"
-      [startDayHour]="6"
-      [endDayHour]="22"
-      [showAllDayPanel]="false"
-      [currentDate]="currentDate"
-      [crossScrollingEnabled]="true"
-      [cellDuration]="60"
-      [height]="'calc(100vh - 170px)'"
-      [maxAppointmentsPerCell]="2"
-      appointmentTemplate="appointment-template"
-      appointmentTooltipTemplate="tooltip-template"
-      (onAppointmentFormOpening)="onAppointmentFormOpening($event)"
-      (onAppointmentAdding)="onAppointmentAdding($event)"
-      (onAppointmentUpdating)="onAppointmentUpdating($event)"
-      (onAppointmentDeleted)="onAppointmentDeletedQuestion($event)"
-      (onOptionChanged)="onCurrentViewChange($event)"
-      (onAppointmentClick)="onAppointmentClick($event)"
-      (onContentReady)="onSchedulerContentReady()"
-    >
-      <dxo-editing
-        [allowAdding]="canManageEvents"
-        [allowUpdating]="canManageEvents"
-        [allowDeleting]="canManageEvents"
-      ></dxo-editing>
-
-      <dxi-view type="day"></dxi-view>
-      <dxi-view type="week"></dxi-view>
-      <dxi-view type="month"></dxi-view>
-
-      <div *dxTemplate="let model of 'appointment-template'">
-        <div
-          class="appointment-card"
-          [ngClass]="getCategoryClass(model.appointmentData.categories)"
-        >
-          <span class="ap-title">{{ model.appointmentData.title }}</span>
-          <span class="ap-desc">{{ model.appointmentData.description }}</span>
-        </div>
-      </div>
-
-      <div *dxTemplate="let model of 'tooltip-template'">
-        <div class="tooltip-content">
-          <div class="tt-title">{{ model.appointmentData.title }}</div>
-          <div class="tt-desc" *ngIf="model.appointmentData.description">
-            {{ model.appointmentData.description }}
+        <div class="mini-cal" *ngIf="showMiniCal" (click)="$event.stopPropagation()">
+          <div class="mini-cal-header">
+            <button (click)="miniPrev()">&#8249;</button>
+            <span>{{ miniCalTitle }}</span>
+            <button (click)="miniNext()">&#8250;</button>
+          </div>
+          <div class="mini-cal-grid">
+            <div class="mini-dow" *ngFor="let d of DAYS_SHORT">{{ d }}</div>
+            <ng-container *ngFor="let week of miniCalGrid">
+              <div class="mini-day"
+                *ngFor="let day of week"
+                [class.mini-today]="isSameDay(day, currentDate)"
+                [class.mini-other]="day.getMonth() !== miniCalDate.getMonth()"
+                (click)="miniSelectDay(day)">
+                {{ day.getDate() }}
+              </div>
+            </ng-container>
           </div>
         </div>
       </div>
-    </dx-scheduler>
+
+      <button class="nav-arrow" (click)="next()">&#8250;</button>
+      <button class="btn-today" (click)="goToday()">Oggi</button>
+    </div>
+
+    <div class="view-switcher">
+      <button [class.active]="currentView==='month'" (click)="setView('month')">Mese</button>
+      <button [class.active]="currentView==='week'" (click)="setView('week')">Settimana</button>
+      <button [class.active]="currentView==='day'" (click)="setView('day')">Giorno</button>
+    </div>
+  </div>
+
+  <!-- ═══ FILTER ═══ -->
+  <div class="filter-bar">
+    <label>Filtra eventi:</label>
+    <select (change)="onFilterChange($event)">
+      <option value="all">Tutti</option>
+      <option *ngFor="let cat of categories" [value]="cat.id">{{ cat.text }}</option>
+    </select>
+    <div class="cat-legend">
+      <span *ngFor="let cat of categories" class="legend-dot" [ngClass]="getCategoryClass(cat.id)">{{ cat.text }}</span>
+    </div>
+  </div>
+
+  <!-- ═══ MONTH VIEW ═══ -->
+  <div class="cal-month" *ngIf="currentView==='month'">
+    <div class="month-dow-row">
+      <div *ngFor="let d of DAYS_SHORT">{{ d }}</div>
+    </div>
+    <div class="month-body">
+      <div class="month-week" *ngFor="let week of monthGrid">
+        <div class="month-cell"
+          *ngFor="let cell of week"
+          [class.other-month]="!cell.isCurrentMonth"
+          [class.today-cell]="cell.isToday"
+          (dblclick)="onDblClickCell(cell.date)">
+          <div class="cell-date-row">
+            <span class="cell-date-num" [class.today-circle]="cell.isToday">{{ cell.date.getDate() }}</span>
+          </div>
+          <div class="cell-events">
+            <div
+              *ngFor="let ev of cell.events.slice(0,3)"
+              class="ev-pill"
+              [ngClass]="getCategoryClass(ev.categories)"
+              (click)="onEventClick(ev,$event)"
+              (dblclick)="onEventDblClick(ev,$event)">
+              <span class="ev-pill-time">{{ formatTime(ev.start) }}</span>
+              <span class="ev-pill-title">{{ ev.title }}</span>
+            </div>
+            <div class="ev-more" *ngIf="cell.events.length > 3">
+              +{{ cell.events.length - 3 }} altri
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ WEEK VIEW ═══ -->
+  <div class="cal-time-view" *ngIf="currentView==='week'">
+    <div class="tv-header">
+      <div class="tv-time-gutter"></div>
+      <div class="tv-day-head"
+        *ngFor="let cell of weekCells"
+        [class.today-col]="cell.isToday">
+        <div class="tv-dow">{{ DAYS_SHORT[(cell.date.getDay()+6)%7] }}</div>
+        <div class="tv-day-num" [class.today-circle]="cell.isToday">{{ cell.date.getDate() }}</div>
+      </div>
+    </div>
+    <div class="tv-body">
+      <div class="tv-time-col">
+        <div class="tv-time-label" *ngFor="let slot of TIME_SLOTS">
+          <span *ngIf="slot.endsWith(':00')">{{ slot }}</span>
+        </div>
+      </div>
+      <div class="tv-day-col"
+        *ngFor="let cell of weekCells"
+        [class.today-col]="cell.isToday">
+        <!-- grid lines -->
+        <div class="tv-slot-line"
+          *ngFor="let slot of TIME_SLOTS"
+          [class.half-line]="slot.endsWith(':30')"
+          [style.top.px]="getSlotTopPx(slot)"
+          (dblclick)="onDblClickCell(cell.date, slot)">
+        </div>
+        <!-- current time indicator -->
+        <div class="current-time-line" *ngIf="cell.isToday" [style.top.px]="currentTimeTopPx()"></div>
+        <!-- events -->
+        <div
+          *ngFor="let ev of cell.events"
+          class="ev-block"
+          [ngClass]="getCategoryClass(ev.categories)"
+          [style.top.px]="getEventTopPx(ev)"
+          [style.height.px]="getEventHeightPx(ev)"
+          (click)="onEventClick(ev,$event)"
+          (dblclick)="onEventDblClick(ev,$event)">
+          <span class="evb-title">{{ ev.title }}</span>
+          <span class="evb-time">{{ formatTime(ev.start) }} – {{ formatTime(ev.end) }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ DAY VIEW ═══ -->
+  <div class="cal-time-view single-day" *ngIf="currentView==='day' && weekCells.length">
+    <div class="tv-header">
+      <div class="tv-time-gutter"></div>
+      <div class="tv-day-head" [class.today-col]="weekCells[0].isToday">
+        <div class="tv-dow">{{ DAYS_SHORT[(weekCells[0].date.getDay()+6)%7] }}</div>
+        <div class="tv-day-num" [class.today-circle]="weekCells[0].isToday">{{ weekCells[0].date.getDate() }}</div>
+      </div>
+    </div>
+    <div class="tv-body">
+      <div class="tv-time-col">
+        <div class="tv-time-label" *ngFor="let slot of TIME_SLOTS">
+          <span *ngIf="slot.endsWith(':00')">{{ slot }}</span>
+        </div>
+      </div>
+      <div class="tv-day-col" [class.today-col]="weekCells[0].isToday">
+        <div class="tv-slot-line"
+          *ngFor="let slot of TIME_SLOTS"
+          [class.half-line]="slot.endsWith(':30')"
+          [style.top.px]="getSlotTopPx(slot)"
+          (dblclick)="onDblClickCell(weekCells[0].date, slot)">
+        </div>
+        <div class="current-time-line" *ngIf="weekCells[0].isToday" [style.top.px]="currentTimeTopPx()"></div>
+        <div
+          *ngFor="let ev of weekCells[0].events"
+          class="ev-block"
+          [ngClass]="getCategoryClass(ev.categories)"
+          [style.top.px]="getEventTopPx(ev)"
+          [style.height.px]="getEventHeightPx(ev)"
+          (click)="onEventClick(ev,$event)"
+          (dblclick)="onEventDblClick(ev,$event)">
+          <span class="evb-title">{{ ev.title }}</span>
+          <span class="evb-time">{{ formatTime(ev.start) }} – {{ formatTime(ev.end) }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ═══ POPUP ═══ -->
+<div class="popup-overlay" *ngIf="showPopup" (click)="closePopup()">
+  <div class="popup-box" (click)="$event.stopPropagation()">
+
+    <div class="popup-header">
+      <h3>{{ isNewEvent ? 'Nuovo evento' : 'Modifica evento' }}</h3>
+      <button class="popup-close" (click)="closePopup()">✕</button>
+    </div>
+
+    <div class="popup-body">
+
+      <!-- Title / Autocomplete -->
+      <div class="form-group autocomplete-wrapper">
+        <label>Numero preventivo / cliente *</label>
+        <input
+          type="text"
+          [value]="popupTitle"
+          (input)="onTitleInput($event)"
+          (focus)="onTitleFocus()"
+          placeholder="Cerca preventivo o cliente..."
+          class="form-input"
+          autocomplete="off">
+        <div class="autocomplete-dropdown" *ngIf="autocompleteOpen">
+          <div class="ac-item"
+            *ngFor="let opt of filteredAutocomplete.slice(0,20)"
+            (mousedown)="selectAutocomplete(opt)">
+            {{ opt }}
+          </div>
+        </div>
+      </div>
+
+      <!-- Description -->
+      <div class="form-group">
+        <label>Dettagli</label>
+        <textarea [(ngModel)]="popupDescription" class="form-input" rows="3" placeholder="Note aggiuntive..."></textarea>
+      </div>
+
+      <!-- Start date -->
+      <div class="form-group">
+        <label>Data di inizio *</label>
+        <input type="datetime-local" [(ngModel)]="popupStartDate" (change)="onStartDateChange()" class="form-input">
+      </div>
+
+      <!-- End date -->
+      <div class="form-group">
+        <label>Data di fine *</label>
+        <input type="datetime-local" [(ngModel)]="popupEndDate" class="form-input">
+      </div>
+
+      <!-- Category -->
+      <div class="form-group">
+        <label>Categoria *</label>
+        <select [(ngModel)]="popupCategory" (change)="onCategoryChange()" class="form-input">
+          <option value="">Seleziona...</option>
+          <option *ngFor="let cat of categories" [value]="cat.id">{{ cat.text }}</option>
+        </select>
+      </div>
+
+      <!-- Recurrence toggle -->
+      <div class="form-group form-inline">
+        <label>Abilita Ricorrenza</label>
+        <label class="toggle-switch">
+          <input type="checkbox" [(ngModel)]="recurrenceEnabled">
+          <span class="toggle-slider"></span>
+        </label>
+      </div>
+
+      <!-- Recurrence options -->
+      <div class="recurrence-box" *ngIf="recurrenceEnabled">
+        <div class="form-group">
+          <label>Ripeti</label>
+          <select [(ngModel)]="recurrenceFreq" class="form-input">
+            <option value="DAILY">Giornaliero</option>
+            <option value="WEEKLY">Settimanale</option>
+            <option value="MONTHLY">Mensile</option>
+          </select>
+        </div>
+
+        <div class="form-group form-inline">
+          <label>Ogni</label>
+          <input type="number" [(ngModel)]="recurrenceInterval" min="1" class="form-input small-num">
+          <span class="unit-label">
+            {{ recurrenceFreq==='DAILY' ? 'giorno/i' : recurrenceFreq==='WEEKLY' ? 'settimana/e' : 'mese/i' }}
+          </span>
+        </div>
+
+        <div class="form-group" *ngIf="recurrenceFreq==='WEEKLY'">
+          <label>Nei giorni</label>
+          <div class="days-picker">
+            <button
+              *ngFor="let d of WEEK_DAYS_REC"
+              type="button"
+              [class.day-active]="isDaySelected(d[0])"
+              (click)="toggleDay(d[0])">
+              {{ d[1] }}
+            </button>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Termina ripetizione</label>
+          <div class="radio-stack">
+            <label class="radio-row">
+              <input type="radio" [(ngModel)]="recurrenceEndType" value="never">
+              <span>Mai</span>
+            </label>
+            <label class="radio-row">
+              <input type="radio" [(ngModel)]="recurrenceEndType" value="until">
+              <span>Di</span>
+              <input type="date" [(ngModel)]="recurrenceUntil" [disabled]="recurrenceEndType!=='until'" class="form-input inline-date">
+            </label>
+            <label class="radio-row">
+              <input type="radio" [(ngModel)]="recurrenceEndType" value="count">
+              <span>Dopo</span>
+              <input type="number" [(ngModel)]="recurrenceCount" min="1" [disabled]="recurrenceEndType!=='count'" class="form-input small-num">
+              <span>occorrenza/e</span>
+            </label>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /popup-body -->
+
+    <!-- Delete confirm -->
+    <div class="delete-confirm" *ngIf="showDeleteConfirm">
+      <p>Eliminare solo <strong>questa occorrenza</strong> o <strong>tutta la serie</strong>?</p>
+      <div class="delete-btns">
+        <button class="btn-danger-outline" (click)="deleteSingle()">Solo questa</button>
+        <button class="btn-danger" (click)="deleteAll()">Tutta la serie</button>
+        <button class="btn-secondary" (click)="showDeleteConfirm=false">Annulla</button>
+      </div>
+    </div>
+
+    <div class="popup-footer" *ngIf="!showDeleteConfirm">
+      <button class="btn-danger" *ngIf="!isNewEvent" (click)="requestDelete()">Elimina</button>
+      <div class="footer-right">
+        <button class="btn-secondary" (click)="closePopup()">Annulla</button>
+        <button class="btn-primary" (click)="saveEvent()">
+          {{ isNewEvent ? 'Aggiungi' : 'Salva' }}
+        </button>
+      </div>
+    </div>
+
   </div>
 </div>

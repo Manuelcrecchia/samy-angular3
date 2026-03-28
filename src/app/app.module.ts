@@ -46,19 +46,14 @@ import { NgxExtendedPdfViewerModule } from 'ngx-extended-pdf-viewer';
 import { AddCustomerComponent } from './admin/add-customer/add-customer.component';
 import { ListCustomerComponent } from './admin/list-customer/list-customer.component';
 import { PopupComponentComponent } from './componenti/popup/popup-component/popup-component.component';
-import { DxSchedulerModule } from 'devextreme-angular';
 import { PassworddimenticataComponent } from './componenti/login/passworddimenticata/passworddimenticata.component';
 import { CambiapasswordComponent } from './componenti/admin/cambiapassword/cambiapassword.component';
 import { CalendarHomeComponent } from './admin/calendar/calendar-home/calendar-home.component';
-import { DxButtonModule } from 'devextreme-angular';
-import { DxAutocompleteModule } from 'devextreme-angular';
-import { locale, loadMessages } from 'devextreme/localization';
 import { DatePipe } from '@angular/common';
-import { CommonModule } from '@angular/common'; // IMPORTA QUESTO
+import { CommonModule } from '@angular/common';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 
-import * as itMessages from 'devextreme/localization/messages/it.json';
 
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
@@ -91,10 +86,7 @@ import { InternalDocumentsComponent } from './admin/internal-documents/internal-
 import { QuoteNotesComponent } from './admin/quote-notes/quote-notes.component';
 import { CustomerNotesComponent } from './admin/customer-notes/customer-notes.component';
 
-loadMessages(itMessages);
-locale('it');
 registerLocaleData(localeIt);
-loadMessages(itMessages);
 
 @NgModule({
   declarations: [
@@ -164,9 +156,6 @@ loadMessages(itMessages);
     MatAutocompleteModule,
     MatExpansionModule,
     NgxExtendedPdfViewerModule,
-    DxButtonModule,
-    DxSchedulerModule,
-    DxAutocompleteModule,
     MatNativeDateModule,
     MatDatepickerModule,
     MatDialogModule,
