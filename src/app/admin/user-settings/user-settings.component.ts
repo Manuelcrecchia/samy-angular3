@@ -52,28 +52,35 @@ export class UserSettingsComponent implements OnInit {
   }> = [];
 
   private permissionDeps: Record<string, string[]> = {
-    // child -> parents (se selezioni child, seleziona anche parents)
-    QUOTES_MANAGE: ['QUOTES_VIEW'],
-    CUSTOMERS_MANAGE: ['CUSTOMERS_VIEW'],
-    SHIFTS_MANAGE: ['SHIFTS_VIEW'],
-    ATTENDANCE_MANAGE: ['ATTENDANCE_VIEW'],
-    STAMPING_MANAGE: ['STAMPING_VIEW'],
+    // Note: richiedono prima la VIEW della sezione padre
+    QUOTES_NOTES_VIEW:     ['QUOTES_VIEW'],
+    CUSTOMERS_NOTES_VIEW:  ['CUSTOMERS_VIEW'],
+
+    // Gestione preventivi/clienti
+    QUOTES_MANAGE:         ['QUOTES_VIEW'],
+    QUOTES_NOTES_MANAGE:   ['QUOTES_NOTES_VIEW'],   // → transitivo: QUOTES_VIEW
+    CUSTOMERS_MANAGE:      ['CUSTOMERS_VIEW'],
+    CUSTOMERS_NOTES_MANAGE:['CUSTOMERS_NOTES_VIEW'], // → transitivo: CUSTOMERS_VIEW
+
+    // Operatività
+    SHIFTS_MANAGE:         ['SHIFTS_VIEW'],
+    ATTENDANCE_MANAGE:     ['ATTENDANCE_VIEW'],
+    STAMPING_MANAGE:       ['STAMPING_VIEW'],
     CALENDAR_EVENT_MANAGE: ['CALENDAR_VIEW'],
+    NOTIFICATIONS_MANAGE:  ['NOTIFICATIONS_VIEW'],
 
-    // admin: se vuoi, puoi legare CREATE/EDIT/DELETE a VIEW
-    ADMIN_CREATE: ['ADMIN_VIEW'],
-    ADMIN_EDIT: ['ADMIN_VIEW'],
-    ADMIN_DELETE: ['ADMIN_VIEW'],
+    // Amministratori
+    ADMIN_CREATE:          ['ADMIN_VIEW'],
+    ADMIN_EDIT:            ['ADMIN_VIEW'],
+    ADMIN_DELETE:          ['ADMIN_VIEW'],
+    SETTINGS_ADMIN:        ['ADMIN_VIEW'],
 
-    EMPLOYEE_CREATE: ['EMPLOYEE_VIEW'],
-    EMPLOYEE_EDIT: ['EMPLOYEE_VIEW'],
-    EMPLOYEE_DELETE: ['EMPLOYEE_VIEW'],
-    EMPLOYEE_DOCS_MANAGE: ['EMPLOYEE_VIEW'],
-    EMPLOYEE_PERMITS_MANAGE: ['EMPLOYEE_VIEW'],
-    CUSTOMERS_NOTES_MANAGE: ['CUSTOMERS_NOTES_VIEW'],
-    QUOTES_NOTES_MANAGE: ['QUOTES_NOTES_VIEW'],
-
-    NOTIFICATIONS_MANAGE: ['NOTIFICATIONS_VIEW'],
+    // Dipendenti
+    EMPLOYEE_CREATE:        ['EMPLOYEE_VIEW'],
+    EMPLOYEE_EDIT:          ['EMPLOYEE_VIEW'],
+    EMPLOYEE_DELETE:        ['EMPLOYEE_VIEW'],
+    EMPLOYEE_DOCS_MANAGE:   ['EMPLOYEE_VIEW'],
+    EMPLOYEE_PERMITS_MANAGE:['EMPLOYEE_VIEW'],
   };
 
   constructor(
@@ -128,8 +135,10 @@ export class UserSettingsComponent implements OnInit {
   togglePermission(target: { permissions: string[] }, key: string) {
     if (!target.permissions) target.permissions = [];
     const idx = target.permissions.indexOf(key);
+    const willBeChecked = idx < 0;
     if (idx >= 0) target.permissions.splice(idx, 1);
     else target.permissions.push(key);
+    this.ensurePermissionDeps(target, key, willBeChecked);
   }
 
   fetchAdmins() {
@@ -247,19 +256,24 @@ export class UserSettingsComponent implements OnInit {
     if (!target.permissions) target.permissions = [];
 
     if (checked) {
-      // child selezionato -> aggiungi parent
-      const parents = this.permissionDeps[key] || [];
-      for (const p of parents) {
-        if (!target.permissions.includes(p)) target.permissions.push(p);
+      // child selezionato -> aggiungi tutti i parent (ricorsivo per catene transitive)
+      for (const p of this.permissionDeps[key] || []) {
+        if (!target.permissions.includes(p)) {
+          target.permissions.push(p);
+          this.ensurePermissionDeps(target, p, true);
+        }
       }
     } else {
-      // parent tolto -> togli anche i children che dipendono da lui
+      // parent tolto -> togli ricorsivamente tutti i child che dipendono da lui
       const children = Object.keys(this.permissionDeps).filter((child) =>
         (this.permissionDeps[child] || []).includes(key),
       );
       for (const c of children) {
         const idx = target.permissions.indexOf(c);
-        if (idx >= 0) target.permissions.splice(idx, 1);
+        if (idx >= 0) {
+          target.permissions.splice(idx, 1);
+          this.ensurePermissionDeps(target, c, false);
+        }
       }
     }
   }

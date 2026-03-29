@@ -306,15 +306,22 @@
   box-shadow: 0 2px 12px rgba(0,0,0,.05);
 }
 
+.tv-scroll-wrap {
+  overflow: auto;
+  max-height: calc(100vh - 240px);
+  display: flex;
+  flex-direction: column;
+}
+
 .tv-header {
   display: flex;
   border-bottom: 2px solid #e5e7eb;
   background: #f8f9fb;
   position: sticky;
-  top: 62px;
+  top: 0;
   z-index: 10;
 }
-.tv-time-gutter { width: 56px; flex-shrink: 0; }
+.tv-time-gutter { width: 56px; flex-shrink: 0; position: sticky; left: 0; z-index: 11; background: #f8f9fb; }
 .tv-day-head {
   flex: 1;
   text-align: center;
@@ -336,12 +343,14 @@
 
 .tv-body {
   display: flex;
-  overflow-y: auto;
-  max-height: calc(100vh - 200px);
 }
 
 .tv-time-col {
   width: 56px;
+  position: sticky;
+  left: 0;
+  z-index: 5;
+  background: #fff;
   flex-shrink: 0;
   position: relative;
   height: 1248px; /* 48 slots × 26px */
@@ -395,7 +404,6 @@
 
 .ev-block {
   position: absolute;
-  left: 2px; right: 2px;
   border-radius: 6px;
   padding: 3px 6px;
   overflow: hidden;
@@ -408,8 +416,8 @@
   justify-content: flex-start;
 }
 .ev-block:hover { filter: brightness(.92); z-index: 4; }
-.evb-title { font-size: 11px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.evb-time  { font-size: 10px; opacity: .85; }
+.evb-title { font-size: 11px; font-weight: 700; overflow: hidden; word-break: break-word; flex-shrink: 0; }
+.evb-time  { font-size: 10px; opacity: .85; flex-shrink: 0; }
 
 .single-day .tv-day-col { flex: 1; max-width: 100%; }
 

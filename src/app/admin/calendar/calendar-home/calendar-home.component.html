@@ -94,44 +94,48 @@
 
   <!-- ═══ WEEK VIEW ═══ -->
   <div class="cal-time-view" *ngIf="currentView==='week'">
-    <div class="tv-header">
-      <div class="tv-time-gutter"></div>
-      <div class="tv-day-head"
-        *ngFor="let cell of weekCells"
-        [class.today-col]="cell.isToday">
-        <div class="tv-dow">{{ DAYS_SHORT[(cell.date.getDay()+6)%7] }}</div>
-        <div class="tv-day-num" [class.today-circle]="cell.isToday">{{ cell.date.getDate() }}</div>
-      </div>
-    </div>
-    <div class="tv-body">
-      <div class="tv-time-col">
-        <div class="tv-time-label" *ngFor="let slot of TIME_SLOTS">
-          <span *ngIf="slot.endsWith(':00')">{{ slot }}</span>
+    <div class="tv-scroll-wrap">
+      <div class="tv-header">
+        <div class="tv-time-gutter"></div>
+        <div class="tv-day-head"
+          *ngFor="let cell of weekCells"
+          [class.today-col]="cell.isToday"
+          [style.min-width.px]="getDayColMinWidth(cell)">
+          <div class="tv-dow">{{ DAYS_SHORT[(cell.date.getDay()+6)%7] }}</div>
+          <div class="tv-day-num" [class.today-circle]="cell.isToday">{{ cell.date.getDate() }}</div>
         </div>
       </div>
-      <div class="tv-day-col"
-        *ngFor="let cell of weekCells"
-        [class.today-col]="cell.isToday">
-        <!-- grid lines -->
-        <div class="tv-slot-line"
-          *ngFor="let slot of TIME_SLOTS"
-          [class.half-line]="slot.endsWith(':30')"
-          [style.top.px]="getSlotTopPx(slot)"
-          (dblclick)="onDblClickCell(cell.date, slot)">
+      <div class="tv-body">
+        <div class="tv-time-col">
+          <div class="tv-time-label" *ngFor="let slot of TIME_SLOTS">
+            <span *ngIf="slot.endsWith(':00')">{{ slot }}</span>
+          </div>
         </div>
-        <!-- current time indicator -->
-        <div class="current-time-line" *ngIf="cell.isToday" [style.top.px]="currentTimeTopPx()"></div>
-        <!-- events -->
-        <div
-          *ngFor="let ev of cell.events"
-          class="ev-block"
-          [ngClass]="getCategoryClass(ev.categories)"
-          [style.top.px]="getEventTopPx(ev)"
-          [style.height.px]="getEventHeightPx(ev)"
-          (click)="onEventClick(ev,$event)"
-          (dblclick)="onEventDblClick(ev,$event)">
-          <span class="evb-title">{{ ev.title }}</span>
-          <span class="evb-time">{{ formatTime(ev.start) }} – {{ formatTime(ev.end) }}</span>
+        <div class="tv-day-col"
+          *ngFor="let cell of weekCells"
+          [class.today-col]="cell.isToday"
+          [style.min-width.px]="getDayColMinWidth(cell)">
+          <!-- grid lines -->
+          <div class="tv-slot-line"
+            *ngFor="let slot of TIME_SLOTS"
+            [class.half-line]="slot.endsWith(':30')"
+            [style.top.px]="getSlotTopPx(slot)"
+            (dblclick)="onDblClickCell(cell.date, slot)">
+          </div>
+          <!-- current time indicator -->
+          <div class="current-time-line" *ngIf="cell.isToday" [style.top.px]="currentTimeTopPx()"></div>
+          <!-- events -->
+          <div
+            *ngFor="let ev of cell.events"
+            class="ev-block"
+            [ngClass]="getCategoryClass(ev.categories)"
+            [ngStyle]="getEventPositionStyle(ev, cell.eventLayout)"
+            [title]="ev.title"
+            (click)="onEventClick(ev,$event)"
+            (dblclick)="onEventDblClick(ev,$event)">
+            <span class="evb-title">{{ ev.title }}</span>
+            <span class="evb-time">{{ formatTime(ev.start) }} – {{ formatTime(ev.end) }}</span>
+          </div>
         </div>
       </div>
     </div>
@@ -139,37 +143,43 @@
 
   <!-- ═══ DAY VIEW ═══ -->
   <div class="cal-time-view single-day" *ngIf="currentView==='day' && weekCells.length">
-    <div class="tv-header">
-      <div class="tv-time-gutter"></div>
-      <div class="tv-day-head" [class.today-col]="weekCells[0].isToday">
-        <div class="tv-dow">{{ DAYS_SHORT[(weekCells[0].date.getDay()+6)%7] }}</div>
-        <div class="tv-day-num" [class.today-circle]="weekCells[0].isToday">{{ weekCells[0].date.getDate() }}</div>
-      </div>
-    </div>
-    <div class="tv-body">
-      <div class="tv-time-col">
-        <div class="tv-time-label" *ngFor="let slot of TIME_SLOTS">
-          <span *ngIf="slot.endsWith(':00')">{{ slot }}</span>
+    <div class="tv-scroll-wrap">
+      <div class="tv-header">
+        <div class="tv-time-gutter"></div>
+        <div class="tv-day-head"
+          [class.today-col]="weekCells[0].isToday"
+          [style.min-width.px]="getDayColMinWidth(weekCells[0])">
+          <div class="tv-dow">{{ DAYS_SHORT[(weekCells[0].date.getDay()+6)%7] }}</div>
+          <div class="tv-day-num" [class.today-circle]="weekCells[0].isToday">{{ weekCells[0].date.getDate() }}</div>
         </div>
       </div>
-      <div class="tv-day-col" [class.today-col]="weekCells[0].isToday">
-        <div class="tv-slot-line"
-          *ngFor="let slot of TIME_SLOTS"
-          [class.half-line]="slot.endsWith(':30')"
-          [style.top.px]="getSlotTopPx(slot)"
-          (dblclick)="onDblClickCell(weekCells[0].date, slot)">
+      <div class="tv-body">
+        <div class="tv-time-col">
+          <div class="tv-time-label" *ngFor="let slot of TIME_SLOTS">
+            <span *ngIf="slot.endsWith(':00')">{{ slot }}</span>
+          </div>
         </div>
-        <div class="current-time-line" *ngIf="weekCells[0].isToday" [style.top.px]="currentTimeTopPx()"></div>
-        <div
-          *ngFor="let ev of weekCells[0].events"
-          class="ev-block"
-          [ngClass]="getCategoryClass(ev.categories)"
-          [style.top.px]="getEventTopPx(ev)"
-          [style.height.px]="getEventHeightPx(ev)"
-          (click)="onEventClick(ev,$event)"
-          (dblclick)="onEventDblClick(ev,$event)">
-          <span class="evb-title">{{ ev.title }}</span>
-          <span class="evb-time">{{ formatTime(ev.start) }} – {{ formatTime(ev.end) }}</span>
+        <div class="tv-day-col"
+          [class.today-col]="weekCells[0].isToday"
+          [style.min-width.px]="getDayColMinWidth(weekCells[0])">
+          <div class="tv-slot-line"
+            *ngFor="let slot of TIME_SLOTS"
+            [class.half-line]="slot.endsWith(':30')"
+            [style.top.px]="getSlotTopPx(slot)"
+            (dblclick)="onDblClickCell(weekCells[0].date, slot)">
+          </div>
+          <div class="current-time-line" *ngIf="weekCells[0].isToday" [style.top.px]="currentTimeTopPx()"></div>
+          <div
+            *ngFor="let ev of weekCells[0].events"
+            class="ev-block"
+            [ngClass]="getCategoryClass(ev.categories)"
+            [ngStyle]="getEventPositionStyle(ev, weekCells[0].eventLayout)"
+            [title]="ev.title"
+            (click)="onEventClick(ev,$event)"
+            (dblclick)="onEventDblClick(ev,$event)">
+            <span class="evb-title">{{ ev.title }}</span>
+            <span class="evb-time">{{ formatTime(ev.start) }} – {{ formatTime(ev.end) }}</span>
+          </div>
         </div>
       </div>
     </div>

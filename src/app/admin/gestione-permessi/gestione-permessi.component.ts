@@ -11,15 +11,29 @@ declare var bootstrap: any;
 })
 export class GestionePermessiComponent implements OnInit {
   @ViewChild('permessoModal') modalElement!: ElementRef;
+  @ViewChild('creaModal') creaModalElement!: ElementRef;
 
   leaveRequests: any[] = [];
+  employees: any[] = [];
   loading = false;
   selectedRequest: any = null;
+  creaLoading = false;
+
   modalData: any = {
     categoria: 'Ferie',
     oreGiornaliere: null,
     oraInizioModificata: '',
     oraFineModificata: '',
+  };
+
+  creaData: any = {
+    employeeId: '',
+    categoria: 'Ferie',
+    tipoPermesso: 'giornaliero',
+    fromDate: '',
+    toDate: '',
+    oraInizio: '',
+    oraFine: '',
   };
 
   constructor(
@@ -30,6 +44,76 @@ export class GestionePermessiComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadRequests();
+    this.loadEmployees();
+  }
+
+  loadEmployees(): void {
+    this.http.get<any[]>(this.globalService.url + 'employees/getAll').subscribe({
+      next: (res) => { this.employees = res.filter((e) => e.active !== false); },
+      error: () => {},
+    });
+  }
+
+  openCreaModal(): void {
+    this.creaData = {
+      employeeId: '',
+      categoria: 'Ferie',
+      tipoPermesso: 'giornaliero',
+      fromDate: '',
+      toDate: '',
+      oraInizio: '',
+      oraFine: '',
+      oreGiornaliere: null,
+    };
+    const modal = new bootstrap.Modal(this.creaModalElement.nativeElement);
+    modal.show();
+  }
+
+  onCreaFromDateChange(): void {
+    if (this.creaData.tipoPermesso !== 'settimanale') {
+      this.creaData.toDate = this.creaData.fromDate;
+    }
+  }
+
+  onCreaTipoChange(): void {
+    if (this.creaData.tipoPermesso !== 'settimanale') {
+      this.creaData.toDate = this.creaData.fromDate;
+    }
+    if (this.creaData.tipoPermesso === 'parziale') {
+      this.creaData.oraInizio = '';
+      this.creaData.oraFine = '';
+      this.creaData.oreGiornaliere = null;
+    } else {
+      this.creaData.oraInizio = '';
+      this.creaData.oraFine = '';
+    }
+  }
+
+  submitCreaPermesso(): void {
+    if (!this.creaData.employeeId || !this.creaData.fromDate) {
+      this.showToast('❌ Compilare tutti i campi obbligatori', true);
+      return;
+    }
+    if (this.creaData.tipoPermesso === 'parziale' && (!this.creaData.oraInizio || !this.creaData.oraFine)) {
+      this.showToast('❌ Inserire orario di inizio e fine per permesso parziale', true);
+      return;
+    }
+    if (this.creaData.tipoPermesso === 'settimanale' && !this.creaData.toDate) {
+      this.showToast('❌ Inserire data di fine per permesso settimanale', true);
+      return;
+    }
+    this.creaLoading = true;
+    this.http.post(this.globalService.url + 'permission/admin-create', this.creaData).subscribe({
+      next: () => {
+        this.creaLoading = false;
+        bootstrap.Modal.getInstance(this.creaModalElement.nativeElement)?.hide();
+        this.showToast('✅ Richiesta inviata al dipendente per conferma');
+      },
+      error: (err) => {
+        this.creaLoading = false;
+        this.showToast('❌ ' + (err.error?.error || 'Errore durante la creazione'), true);
+      },
+    });
   }
 
   loadRequests(): void {

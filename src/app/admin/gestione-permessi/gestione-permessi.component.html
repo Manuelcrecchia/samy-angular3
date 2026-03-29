@@ -180,9 +180,12 @@
 </style>
 
 <div class="container mt-4 permessi-page">
-  <div class="d-flex justify-content-start align-items-center mb-3">
+  <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
     <button class="btn btn-outline-secondary btn-back-glass" (click)="goBack()">
       &larr; Torna Indietro
+    </button>
+    <button class="btn btn-primary" (click)="openCreaModal()">
+      + Aggiungi permesso
     </button>
   </div>
 
@@ -344,6 +347,124 @@
           (click)="confirmAccept()"
         >
           Conferma
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 🔹 MODALE CREA PERMESSO (ADMIN) -->
+<div
+  #creaModal
+  class="modal fade"
+  tabindex="-1"
+  aria-labelledby="creaModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="creaModalLabel">Aggiungi permesso a dipendente</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <div class="modal-body">
+
+        <!-- Dipendente -->
+        <div class="mb-3">
+          <label class="form-label">Dipendente *</label>
+          <select class="form-select" [(ngModel)]="creaData.employeeId">
+            <option value="">Seleziona dipendente...</option>
+            <option *ngFor="let emp of employees" [value]="emp.id">
+              {{ emp.nome }} {{ emp.cognome }}
+            </option>
+          </select>
+        </div>
+
+        <!-- Categoria -->
+        <div class="mb-3">
+          <label class="form-label">Categoria *</label>
+          <select class="form-select" [(ngModel)]="creaData.categoria">
+            <option value="Ferie">Ferie</option>
+            <option value="Permessi/ROL">Permessi/ROL</option>
+            <option value="Malattia">Malattia</option>
+            <option value="Infortunio">Infortunio</option>
+            <option value="Assenza Ingiustificata">Assenza Ingiustificata</option>
+          </select>
+        </div>
+
+        <!-- Tipo permesso -->
+        <div class="mb-3">
+          <label class="form-label">Tipo *</label>
+          <select class="form-select" [(ngModel)]="creaData.tipoPermesso" (change)="onCreaTipoChange()">
+            <option value="giornaliero">Giornaliero</option>
+            <option value="settimanale">Settimanale (più giorni)</option>
+            <option value="parziale">Parziale (ore specifiche)</option>
+          </select>
+        </div>
+
+        <!-- Date -->
+        <div class="row g-2 mb-3">
+          <div [class]="creaData.tipoPermesso === 'settimanale' ? 'col-6' : 'col-12'">
+            <label class="form-label">
+              {{ creaData.tipoPermesso === 'settimanale' ? 'Data inizio *' : 'Data *' }}
+            </label>
+            <input
+              type="date"
+              class="form-control"
+              [(ngModel)]="creaData.fromDate"
+              (change)="onCreaFromDateChange()"
+            />
+          </div>
+          <div class="col-6" *ngIf="creaData.tipoPermesso === 'settimanale'">
+            <label class="form-label">Data fine *</label>
+            <input type="date" class="form-control" [(ngModel)]="creaData.toDate" />
+          </div>
+        </div>
+
+        <!-- Ore giornaliere (solo giornaliero/settimanale; per il parziale si calcolano dagli orari) -->
+        <div class="mb-3" *ngIf="creaData.tipoPermesso !== 'parziale'">
+          <label class="form-label">Ore giornaliere <span class="text-muted small">(facoltativo)</span></label>
+          <input
+            type="number"
+            class="form-control"
+            min="0" max="24" step="0.5"
+            [(ngModel)]="creaData.oreGiornaliere"
+            placeholder="es. 8"
+          />
+        </div>
+
+        <!-- Orari (solo parziale) -->
+        <ng-container *ngIf="creaData.tipoPermesso === 'parziale'">
+          <div class="row g-2 mb-2">
+            <div class="col-6">
+              <label class="form-label">Ora inizio *</label>
+              <input type="time" class="form-control" [(ngModel)]="creaData.oraInizio" />
+            </div>
+            <div class="col-6">
+              <label class="form-label">Ora fine *</label>
+              <input type="time" class="form-control" [(ngModel)]="creaData.oraFine" />
+            </div>
+          </div>
+        </ng-container>
+
+        <p class="small text-muted mt-2 mb-0">
+          Il dipendente riceverà una notifica e dovrà confermare il permesso.
+        </p>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary btn-cancel-glass" data-bs-dismiss="modal">
+          Annulla
+        </button>
+        <button
+          type="button"
+          class="btn btn-primary btn-confirm-glass"
+          (click)="submitCreaPermesso()"
+          [disabled]="creaLoading"
+        >
+          <span *ngIf="creaLoading" class="spinner-border spinner-border-sm me-1"></span>
+          Invia al dipendente
         </button>
       </div>
     </div>

@@ -1,6 +1,6 @@
 import { Component, OnInit, HostListener } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { GlobalService } from '../../service/global.service';
 import { TenantService } from '../../service/tenant.service';
 
@@ -93,11 +93,14 @@ export class ShiftHomeComponent implements OnInit {
   constructor(
     private http: HttpClient,
     private router: Router,
+    private route: ActivatedRoute,
     private globalService: GlobalService,
     public tenantService: TenantService,
   ) {}
 
   ngOnInit(): void {
+    const dateParam = this.route.snapshot.queryParamMap.get('date');
+    if (dateParam) this.selectedDate = new Date(dateParam);
     this.loadShifts();
   }
 

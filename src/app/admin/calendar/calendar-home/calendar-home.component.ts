@@ -38,6 +38,7 @@ interface DayCell {
   isCurrentMonth: boolean;
   isToday: boolean;
   events: CalEvent[];
+  eventLayout?: Map<number, {col: number, totalCols: number}>;
 }
 
 @Component({
@@ -314,10 +315,12 @@ export class CalendarHomeComponent implements OnInit {
       const day = new Date(monday); day.setDate(day.getDate()+i);
       const dayStart = new Date(day); dayStart.setHours(0,0,0,0);
       const dayEnd = new Date(day); dayEnd.setHours(23,59,59,999);
+      const dayEvs = expanded.filter(e => e.start <= dayEnd && e.end >= dayStart)
+        .sort((a,b) => a.start.getTime() - b.start.getTime());
       this.weekCells.push({
         date: day, isCurrentMonth: true, isToday: this.isSameDay(day, new Date()),
-        events: expanded.filter(e => e.start <= dayEnd && e.end >= dayStart)
-          .sort((a,b) => a.start.getTime() - b.start.getTime()),
+        events: dayEvs,
+        eventLayout: this.computeOverlapLayout(dayEvs),
       });
     }
   }
@@ -325,10 +328,12 @@ export class CalendarHomeComponent implements OnInit {
   buildDayGrid() {
     const dayStart = new Date(this.currentDate); dayStart.setHours(0,0,0,0);
     const dayEnd = new Date(this.currentDate); dayEnd.setHours(23,59,59,999);
+    const dayEvs = this.expandEvents(dayStart, dayEnd).sort((a,b) => a.start.getTime()-b.start.getTime());
     this.weekCells = [{
       date: new Date(this.currentDate), isCurrentMonth: true,
       isToday: this.isSameDay(this.currentDate, new Date()),
-      events: this.expandEvents(dayStart, dayEnd).sort((a,b) => a.start.getTime()-b.start.getTime()),
+      events: dayEvs,
+      eventLayout: this.computeOverlapLayout(dayEvs),
     }];
   }
 
@@ -601,6 +606,63 @@ export class CalendarHomeComponent implements OnInit {
   getEventHeightPx(ev: CalEvent): number { return Math.max(((ev.end.getTime()-ev.start.getTime())/60000/30)*26,26); }
   getSlotTopPx(slot: string): number { const [h,m]=slot.split(':').map(Number); return ((h*60+m)/30)*26; }
   currentTimeTopPx(): number { const now=new Date(); return ((now.getHours()*60+now.getMinutes())/30)*26; }
+
+  private computeOverlapLayout(events: CalEvent[], maxCols = Infinity): Map<number, {col: number, totalCols: number}> {
+    const result = new Map<number, {col: number, totalCols: number}>();
+    if (!events.length) return result;
+    const sorted = [...events].sort((a, b) => a.start.getTime() - b.start.getTime());
+    const groups: CalEvent[][] = [];
+    let group: CalEvent[] = [];
+    let groupEnd = 0;
+    for (const ev of sorted) {
+      if (ev.start.getTime() >= groupEnd) {
+        if (group.length) groups.push(group);
+        group = [ev];
+        groupEnd = ev.end.getTime();
+      } else {
+        group.push(ev);
+        groupEnd = Math.max(groupEnd, ev.end.getTime());
+      }
+    }
+    if (group.length) groups.push(group);
+    for (const grp of groups) {
+      const colEnds: number[] = [];
+      for (const ev of grp) {
+        let c = colEnds.findIndex(end => ev.start.getTime() >= end);
+        if (c === -1) { c = colEnds.length; colEnds.push(ev.end.getTime()); }
+        else colEnds[c] = ev.end.getTime();
+        result.set(ev.id, { col: c, totalCols: 0 });
+      }
+      const rawTotal = colEnds.length;
+      const total = Math.min(rawTotal, maxCols);
+      for (const ev of grp) {
+        const raw = result.get(ev.id)!;
+        result.set(ev.id, { col: Math.min(raw.col, total - 1), totalCols: total });
+      }
+    }
+    return result;
+  }
+
+  getDayColMinWidth(cell: DayCell): number {
+    if (!cell.eventLayout || cell.eventLayout.size === 0) return 0;
+    let maxConcurrent = 1;
+    for (const entry of cell.eventLayout.values()) {
+      maxConcurrent = Math.max(maxConcurrent, entry.totalCols);
+    }
+    return maxConcurrent > 1 ? maxConcurrent * 110 : 0;
+  }
+
+  getEventPositionStyle(ev: CalEvent, layout?: Map<number, {col: number, totalCols: number}>): {[key: string]: string} {
+    const entry = layout?.get(ev.id) ?? { col: 0, totalCols: 1 };
+    const leftPct = (entry.col / entry.totalCols) * 100;
+    const rightPct = ((entry.totalCols - entry.col - 1) / entry.totalCols) * 100;
+    return {
+      top: `${this.getEventTopPx(ev)}px`,
+      height: `${this.getEventHeightPx(ev)}px`,
+      left: `calc(${leftPct}% + 2px)`,
+      right: `calc(${rightPct}% + 2px)`,
+    };
+  }
 
   goBack() { this.router.navigateByUrl('homeAdmin'); }
 
