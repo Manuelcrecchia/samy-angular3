@@ -1,5 +1,7 @@
 /* ── Mini Calendar ── */
-.shift-mini-cal-wrapper { position: relative; }
+.shift-mini-cal-wrapper {
+  position: relative;
+}
 
 .shift-date-btn {
   background: none;
@@ -10,9 +12,11 @@
   cursor: pointer;
   padding: 6px 12px;
   border-radius: 8px;
-  transition: background .15s;
+  transition: background 0.15s;
 }
-.shift-date-btn:hover { background: #f0f2f5; }
+.shift-date-btn:hover {
+  background: #f0f2f5;
+}
 
 .shift-mini-cal {
   position: absolute;
@@ -23,20 +27,65 @@
   background: #fff;
   border: 1px solid #e0e3e8;
   border-radius: 14px;
-  box-shadow: 0 8px 32px rgba(0,0,0,.14);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.14);
   padding: 12px;
   z-index: 300;
 }
-.smc-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
-.smc-header span { font-weight: 700; font-size: 14px; color: #111 !important; }
-.smc-header button { background: none; border: none; font-size: 20px; cursor: pointer; padding: 2px 8px; border-radius: 6px; color: #111 !important; }
-.smc-header button:hover { background: #f0f2f5; }
-.smc-grid { display: grid; grid-template-columns: repeat(7,1fr); gap: 2px; }
-.smc-dow { text-align: center; font-size: 11px; font-weight: 700; color: #888; padding: 4px 0; }
-.smc-day { text-align: center; font-size: 12px; padding: 5px 2px; border-radius: 50%; cursor: pointer; transition: background .12s; color: #333; }
-.smc-day:hover { background: #e8f0fe; }
-.smc-day.smc-today { background: #1a73e8; color: #fff; font-weight: 700; }
-.smc-day.smc-other { color: #bbb; }
+.smc-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+.smc-header span {
+  font-weight: 700;
+  font-size: 14px;
+  color: #111 !important;
+}
+.smc-header button {
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  padding: 2px 8px;
+  border-radius: 6px;
+  color: #111 !important;
+}
+.smc-header button:hover {
+  background: #f0f2f5;
+}
+.smc-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 2px;
+}
+.smc-dow {
+  text-align: center;
+  font-size: 11px;
+  font-weight: 700;
+  color: #888;
+  padding: 4px 0;
+}
+.smc-day {
+  text-align: center;
+  font-size: 12px;
+  padding: 5px 2px;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: background 0.12s;
+  color: #333;
+}
+.smc-day:hover {
+  background: #e8f0fe;
+}
+.smc-day.smc-today {
+  background: #1a73e8;
+  color: #fff;
+  font-weight: 700;
+}
+.smc-day.smc-other {
+  color: #bbb;
+}
 
 .list-group-item.border-success {
   border-left: 5px solid #28a745 !important;
@@ -169,57 +218,44 @@ body::before {
   width: 24px;
   height: 24px;
   min-width: 24px;
-  border-radius: 8px;
-  border: 2px solid rgba(255, 255, 255, 0.8);
-  background: rgba(255, 255, 255, 0.16);
-  box-shadow:
-    0 8px 18px rgba(0, 0, 0, 0.22),
-    inset 0 1px 0 rgba(255, 255, 255, 0.15);
+  border-radius: 6px;
+  border: 2px solid #000;
+  background: #fff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   transition:
-    background 0.18s ease,
     border-color 0.18s ease,
     box-shadow 0.18s ease,
     transform 0.12s ease;
   position: relative;
   vertical-align: middle;
+  cursor: pointer;
 }
 
 .turni-page .form-check-input:hover {
   transform: scale(1.05);
-  border-color: rgba(255, 138, 0, 0.95);
-  background: rgba(255, 255, 255, 0.24);
-  box-shadow:
-    0 12px 24px rgba(0, 0, 0, 0.28),
-    0 0 0 4px rgba(255, 138, 0, 0.12);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 .turni-page .form-check-input:focus {
   outline: none;
-  border-color: var(--brand-sky);
-  box-shadow:
-    0 0 0 4px rgba(47, 183, 255, 0.22),
-    0 10px 24px rgba(0, 0, 0, 0.22);
+  box-shadow: 0 0 0 3px rgba(255, 138, 0, 0.3);
 }
 
 .turni-page .form-check-input:checked {
-  background: linear-gradient(135deg, var(--brand-orange), var(--brand-sky));
-  border-color: rgba(255, 255, 255, 0.95);
-  box-shadow:
-    0 12px 28px rgba(0, 0, 0, 0.28),
-    0 0 0 4px rgba(47, 183, 255, 0.14);
+  border-color: var(--brand-orange);
+  box-shadow: 0 4px 8px rgba(255, 138, 0, 0.3);
 }
 
 .turni-page .form-check-input:checked::after {
   content: "✓";
-  color: #fff;
-  font-size: 15px;
+  color: var(--brand-orange);
+  font-size: 16px;
   font-weight: 900;
   line-height: 1;
   position: absolute;
   top: 48%;
   left: 50%;
   transform: translate(-50%, -50%);
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
 }
 
 .turni-page .form-check-input:disabled {
@@ -228,21 +264,30 @@ body::before {
 }
 
 .turni-controls .form-check-input {
-  border: 2px solid rgba(0, 0, 0, 0.35);
-  background: #ffffff;
-  box-shadow:
-    0 6px 14px rgba(0, 0, 0, 0.12),
-    inset 0 1px 0 rgba(255, 255, 255, 0.8);
+  border: 2px solid #000;
+  background: #fff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .turni-controls .form-check-input:hover {
-  border-color: var(--brand-orange);
-  background: #fffaf5;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 .turni-controls .form-check-input:checked {
-  background: linear-gradient(135deg, var(--brand-orange), var(--brand-sky));
-  border-color: rgba(0, 0, 0, 0.12);
+  border-color: var(--brand-orange);
+  box-shadow: 0 4px 8px rgba(255, 138, 0, 0.3);
+}
+
+.turni-controls .form-check-input:checked::after {
+  content: "✓";
+  color: var(--brand-orange);
+  font-size: 16px;
+  font-weight: 900;
+  line-height: 1;
+  position: absolute;
+  top: 48%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
 
 /* ✅ CONTROLS: hai bg-light (chiaro) -> testo NERO */
@@ -403,4 +448,38 @@ body::before {
 /* WhatsApp icon lasciata com'è */
 .btn-wa .text-success {
   color: #25d366 !important;
+}
+
+/* Pulsante toggle vista */
+.btn-view-glass {
+  background: rgba(255, 255, 255, 0.15);
+  color: #fff !important;
+  font-weight: 700;
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+  transition:
+    background 0.15s ease,
+    transform 0.14s ease;
+}
+.btn-view-glass:hover {
+  background: rgba(255, 255, 255, 0.26);
+  transform: translateY(-2px);
+}
+
+/* Header cliente (vista per cliente) */
+.client-header {
+  padding: 14px;
+  border-radius: var(--radius-lg);
+  border: 1px solid rgba(0, 83, 128, 0.28);
+  background: rgba(47, 183, 255, 0.1);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.22);
+  color: rgba(0, 0, 0, 0.95);
+}
+.client-header h4,
+.client-header small {
+  color: rgba(0, 0, 0, 0.95) !important;
 }

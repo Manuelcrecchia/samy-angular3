@@ -527,16 +527,62 @@
           </mat-form-field>
         </div>
 
-        <div class="col-md-6">
-          <mat-form-field class="w-100" appearance="fill">
-            <mat-label>Stanze e oggetti</mat-label>
-            <textarea
-              matInput
-              rows="3"
-              name="stanzeEOggetti"
-              [(ngModel)]="customerModelService.stanzeEOggetti"
-            ></textarea>
+        <div class="col-12">
+          <h5>Stanze e oggetti</h5>
+        </div>
+
+        <div class="col-md-4">
+          <mat-form-field appearance="fill" class="w-100">
+            <mat-label>Seleziona stanza</mat-label>
+            <mat-select [(ngModel)]="stanzaSelezionata" name="stanzaSelezionata">
+              <mat-option *ngFor="let stanza of nomiStanze" [value]="stanza">
+                {{ stanza }}
+              </mat-option>
+            </mat-select>
           </mat-form-field>
+        </div>
+
+        <div class="col-md-4">
+          <button
+            mat-raised-button
+            color="primary"
+            type="button"
+            (click)="aggiungiCampoStanza()"
+          >
+            Aggiungi stanza
+          </button>
+        </div>
+
+        <div class="col-12">
+          <div
+            *ngFor="let stanza of stanzeEOggettiList; let i = index"
+            class="border rounded p-3 mb-3 bg-white"
+          >
+            <div
+              class="d-flex justify-content-between align-items-center mb-2 text-black"
+            >
+              <h6 class="mb-0">{{ stanza.stanza }}</h6>
+
+              <button
+                mat-icon-button
+                color="warn"
+                type="button"
+                (click)="rimuoviStanzaEOggetti(i)"
+              >
+                <mat-icon>delete</mat-icon>
+              </button>
+            </div>
+
+            <mat-form-field appearance="fill" class="w-100">
+              <mat-label>Oggetti</mat-label>
+              <input
+                matInput
+                [(ngModel)]="stanza.oggetti"
+                [name]="'oggettiAdd' + i"
+                placeholder="Es: Divano, Letto, Tavolo"
+              />
+            </mat-form-field>
+          </div>
         </div>
 
         <div class="col-12 mt-3">

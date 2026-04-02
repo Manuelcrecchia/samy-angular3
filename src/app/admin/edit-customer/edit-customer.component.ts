@@ -12,6 +12,92 @@ import { TenantService } from '../../service/tenant.service';
   styleUrl: './edit-customer.component.css',
 })
 export class EditCustomerComponent {
+  nomiStanze = [
+    'Ingresso',
+    'Soggiorno',
+    'Salotto',
+    'Studio',
+    'Tinello',
+    'Cucina',
+    'Camera matr.',
+    'Cameretta',
+    'Bagno',
+    'Disimpegno',
+    'Ripostiglio',
+    'Terrazzo',
+    'Giardino',
+    'Garage',
+    'Cantina',
+    'Solaio',
+  ];
+
+  stanzaSelezionata = '';
+  stanzeEOggettiList: { stanza: string; oggetti: string }[] = [];
+
+  aggiornaListaStanze(): void {
+    this.nomiStanze = [
+      'Ingresso',
+      'Soggiorno',
+      'Salotto',
+      'Studio',
+      'Tinello',
+      'Cucina',
+      'Camera matr.',
+      'Cameretta',
+      'Bagno',
+      'Disimpegno',
+      'Ripostiglio',
+      'Terrazzo',
+      'Giardino',
+      'Garage',
+      'Cantina',
+      'Solaio',
+    ];
+  }
+
+  ngOnInit(): void {
+    this.caricaStanzeEOggetti();
+  }
+
+  caricaStanzeEOggetti(): void {
+    const raw = this.customerModelService.stanzeEOggetti;
+    if (!raw) {
+      this.stanzeEOggettiList = [];
+      return;
+    }
+    try {
+      const parsed = typeof raw === 'string' ? JSON.parse(raw as string) : raw;
+      this.stanzeEOggettiList = Array.isArray(parsed) ? parsed : [];
+    } catch {
+      this.stanzeEOggettiList = [];
+    }
+  }
+
+  aggiungiCampoStanza(): void {
+    if (this.stanzeEOggettiList.length >= 10) {
+      alert('Limite massimo di 10 stanze raggiunto');
+      return;
+    }
+
+    if (!this.stanzaSelezionata) return;
+
+    const numeroEsistenti = this.stanzeEOggettiList.filter((s) =>
+      s.stanza.startsWith(this.stanzaSelezionata),
+    ).length;
+
+    const nomeStanza =
+      numeroEsistenti > 0
+        ? `${this.stanzaSelezionata} ${numeroEsistenti + 1}`
+        : this.stanzaSelezionata;
+
+    this.stanzeEOggettiList.push({ stanza: nomeStanza, oggetti: '' });
+    this.stanzaSelezionata = '';
+  }
+
+  rimuoviStanzaEOggetti(index: number): void {
+    this.stanzeEOggettiList.splice(index, 1);
+  }
+
   constructor(
     public customerModelService: CustomerModelService,
     public tenantService: TenantService,
@@ -84,7 +170,7 @@ export class EditCustomerComponent {
       capDiArrivo: this.customerModelService.capDiArrivo,
 
       altreDestinazioni: this.customerModelService.altreDestinazioni,
-      stanzeEOggetti: this.customerModelService.stanzeEOggetti,
+      stanzeEOggetti: JSON.stringify(this.stanzeEOggettiList),
 
       lampadari: this.customerModelService.lampadari,
       imballaggio: this.customerModelService.imballaggio,

@@ -11,6 +11,92 @@ import { TenantService } from '../../service/tenant.service';
   styleUrl: './add-customer.component.css',
 })
 export class AddCustomerComponent {
+  nomiStanze = [
+    'Ingresso',
+    'Soggiorno',
+    'Salotto',
+    'Studio',
+    'Tinello',
+    'Cucina',
+    'Camera matr.',
+    'Cameretta',
+    'Bagno',
+    'Disimpegno',
+    'Ripostiglio',
+    'Terrazzo',
+    'Giardino',
+    'Garage',
+    'Cantina',
+    'Solaio',
+  ];
+
+  stanzaSelezionata = '';
+  stanzeEOggettiList: { stanza: string; oggetti: string }[] = [];
+
+  ngOnInit(): void {
+    this.caricaStanzeEOggetti();
+  }
+
+  caricaStanzeEOggetti(): void {
+    const raw = this.customerModelService.stanzeEOggetti;
+    if (!raw) {
+      this.stanzeEOggettiList = [];
+      return;
+    }
+    try {
+      const parsed = typeof raw === 'string' ? JSON.parse(raw) : raw;
+      this.stanzeEOggettiList = Array.isArray(parsed) ? parsed : [];
+    } catch {
+      this.stanzeEOggettiList = [];
+    }
+  }
+
+  aggiornaListaStanze(): void {
+    this.nomiStanze = [
+      'Ingresso',
+      'Soggiorno',
+      'Salotto',
+      'Studio',
+      'Tinello',
+      'Cucina',
+      'Camera matr.',
+      'Cameretta',
+      'Bagno',
+      'Disimpegno',
+      'Ripostiglio',
+      'Terrazzo',
+      'Giardino',
+      'Garage',
+      'Cantina',
+      'Solaio',
+    ];
+  }
+
+  aggiungiCampoStanza(): void {
+    if (this.stanzeEOggettiList.length >= 10) {
+      alert('Limite massimo di 10 stanze raggiunto');
+      return;
+    }
+
+    if (!this.stanzaSelezionata) return;
+
+    const numeroEsistenti = this.stanzeEOggettiList.filter((s) =>
+      s.stanza.startsWith(this.stanzaSelezionata),
+    ).length;
+
+    const nomeStanza =
+      numeroEsistenti > 0
+        ? `${this.stanzaSelezionata} ${numeroEsistenti + 1}`
+        : this.stanzaSelezionata;
+
+    this.stanzeEOggettiList.push({ stanza: nomeStanza, oggetti: '' });
+    this.stanzaSelezionata = '';
+  }
+
+  rimuoviStanzaEOggetti(index: number): void {
+    this.stanzeEOggettiList.splice(index, 1);
+  }
+
   constructor(
     public globalService: GlobalService,
     public customerModelService: CustomerModelService,
@@ -19,11 +105,10 @@ export class AddCustomerComponent {
     private router: Router,
   ) {}
 
-  ngOnInit() {}
-
   private buildSamiBody() {
     return {
       codiceOperatore: this.globalService.userCode,
+      numeroCliente: this.customerModelService.numeroPreventivo || undefined,
       tipoCliente: this.customerModelService.tipoCliente,
       nominativo: this.customerModelService.nominativo,
       cfpi: this.customerModelService.cfpi,
@@ -55,6 +140,7 @@ export class AddCustomerComponent {
   private buildEmmeciBody() {
     return {
       codiceOperatore: this.globalService.userCode,
+      numeroCliente: this.customerModelService.numeroPreventivo || undefined,
       data: this.customerModelService.data,
       nominativo: this.customerModelService.nominativo,
       cfpi: this.customerModelService.cfpi,
@@ -81,7 +167,7 @@ export class AddCustomerComponent {
       capDiArrivo: this.customerModelService.capDiArrivo,
 
       altreDestinazioni: this.customerModelService.altreDestinazioni,
-      stanzeEOggetti: this.customerModelService.stanzeEOggetti,
+      stanzeEOggetti: JSON.stringify(this.stanzeEOggettiList),
 
       lampadari: this.customerModelService.lampadari,
       imballaggio: this.customerModelService.imballaggio,
@@ -144,11 +230,10 @@ export class AddCustomerComponent {
     const numeroPreventivo = this.customerModelService.numeroPreventivo;
 
     this.http
-      .post<{ message: string; numeroCliente: string }>(
-        this.globalService.url + 'customers/add',
-        body,
-        { headers: this.globalService.headers },
-      )
+      .post<{
+        message: string;
+        numeroCliente: string;
+      }>(this.globalService.url + 'customers/add', body, { headers: this.globalService.headers })
       .subscribe({
         next: (res) => {
           const numeroCliente = res?.numeroCliente;
@@ -162,8 +247,14 @@ export class AddCustomerComponent {
                 { headers: this.globalService.headers },
               )
               .subscribe({
-                next: () => this.router.navigateByUrl('/listCustomer', { replaceUrl: true }),
-                error: () => this.router.navigateByUrl('/listCustomer', { replaceUrl: true }),
+                next: () =>
+                  this.router.navigateByUrl('/listCustomer', {
+                    replaceUrl: true,
+                  }),
+                error: () =>
+                  this.router.navigateByUrl('/listCustomer', {
+                    replaceUrl: true,
+                  }),
               });
           } else {
             this.router.navigateByUrl('/listCustomer', { replaceUrl: true });
@@ -183,7 +274,8 @@ export class AddCustomerComponent {
 
   private parseServerError(err: any): string {
     try {
-      const body = typeof err.error === 'string' ? JSON.parse(err.error) : err.error;
+      const body =
+        typeof err.error === 'string' ? JSON.parse(err.error) : err.error;
       if (body?.error) return body.error;
     } catch {}
     if (err.status === 0) return 'Impossibile connettersi al server';

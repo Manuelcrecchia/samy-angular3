@@ -220,8 +220,14 @@
       </div>
     </div>
 
+    <!-- OVERLAY DRAG & DROP -->
+    <div class="drag-overlay" *ngIf="isDragging">
+      <mat-icon>cloud_upload</mat-icon>
+      <span>Rilascia per allegare</span>
+    </div>
+
     <!-- INPUT AREA FISSA IN BASSO (solo con permesso di scrittura) -->
-    <div class="input-area" *ngIf="globalService.hasPermission('QUOTES_NOTES_MANAGE')">
+    <div class="input-area" *ngIf="globalService.hasPermission('QUOTES_NOTES_MANAGE')" [class.drag-active]="isDragging">
       <div class="input-inner">
 
         <textarea

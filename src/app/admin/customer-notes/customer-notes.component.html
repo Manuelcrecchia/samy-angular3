@@ -220,8 +220,14 @@
       </div>
     </div>
 
+    <!-- OVERLAY DRAG & DROP -->
+    <div class="drag-overlay" *ngIf="isDragging">
+      <mat-icon>cloud_upload</mat-icon>
+      <span>Rilascia per allegare</span>
+    </div>
+
     <!-- INPUT AREA FISSA IN BASSO -->
-    <div class="input-area">
+    <div class="input-area" [class.drag-active]="isDragging">
       <div class="input-inner">
 
         <textarea

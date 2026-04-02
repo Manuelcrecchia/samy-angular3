@@ -14,13 +14,22 @@
     class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2"
   >
     <div class="d-flex align-items-center gap-2">
-      <button class="btn btn-secondary rounded-pill btn-nav-glass" (click)="prevDay()">←</button>
+      <button
+        class="btn btn-secondary rounded-pill btn-nav-glass"
+        (click)="prevDay()"
+      >
+        ←
+      </button>
 
       <div class="shift-mini-cal-wrapper">
         <button class="shift-date-btn" (click)="toggleMiniCal()">
           {{ selectedDate | date: "fullDate" }} ▾
         </button>
-        <div class="shift-mini-cal" *ngIf="showMiniCal" (click)="$event.stopPropagation()">
+        <div
+          class="shift-mini-cal"
+          *ngIf="showMiniCal"
+          (click)="$event.stopPropagation()"
+        >
           <div class="smc-header">
             <button (click)="miniPrev()">‹</button>
             <span>{{ miniCalTitle }}</span>
@@ -29,11 +38,13 @@
           <div class="smc-grid">
             <div class="smc-dow" *ngFor="let d of DAYS_SHORT">{{ d }}</div>
             <ng-container *ngFor="let week of miniCalGrid">
-              <div class="smc-day"
+              <div
+                class="smc-day"
                 *ngFor="let day of week"
                 [class.smc-today]="isSameDay(day, selectedDate)"
                 [class.smc-other]="day.getMonth() !== miniCalDate.getMonth()"
-                (click)="miniSelectDay(day)">
+                (click)="miniSelectDay(day)"
+              >
                 {{ day.getDate() }}
               </div>
             </ng-container>
@@ -41,16 +52,35 @@
         </div>
       </div>
 
-      <button class="btn btn-secondary rounded-pill btn-nav-glass" (click)="nextDay()">→</button>
+      <button
+        class="btn btn-secondary rounded-pill btn-nav-glass"
+        (click)="nextDay()"
+      >
+        →
+      </button>
     </div>
 
-    <button
-      class="btn btn-primary rounded-pill px-4 btn-create-glass"
-      (click)="createShifts()"
-      title="Crea nuovi turni per questa data"
-    >
-      ➕ Crea Turni
-    </button>
+    <div class="d-flex align-items-center gap-2">
+      <button
+        class="btn rounded-pill px-3 btn-view-glass"
+        (click)="toggleViewMode()"
+        [title]="
+          viewMode === 'employee'
+            ? 'Visualizza per cliente'
+            : 'Visualizza per dipendente'
+        "
+      >
+        {{ viewMode === "employee" ? "🏢 Per cliente" : "👤 Per dipendente" }}
+      </button>
+
+      <button
+        class="btn btn-primary rounded-pill px-4 btn-create-glass"
+        (click)="createShifts()"
+        title="Crea nuovi turni per questa data"
+      >
+        ➕ Crea Turni
+      </button>
+    </div>
   </div>
 
   <div class="border rounded p-3 mb-4 bg-light shadow-sm turni-controls">
@@ -87,7 +117,8 @@
     Nessun turno presente per il giorno selezionato.
   </div>
 
-  <div class="turni-list" *ngIf="shifts.length > 0">
+  <!-- VISTA PER DIPENDENTE -->
+  <div class="turni-list" *ngIf="shifts.length > 0 && viewMode === 'employee'">
     <ul class="list-group">
       <div *ngFor="let empName of groupedKeys()">
         <div class="d-flex align-items-center mt-3 emp-header">
@@ -137,12 +168,20 @@
               <span class="ms-2 small text-dark">
                 • Durata: {{ formatDuration(turno.duration) }}
 
-                <span *ngIf="turno.vehicleName" class="ms-2">
-                  • Mezzo: {{ turno.vehicleName }}
-                  <span *ngIf="turno.vehiclePlate">
-                    ({{ turno.vehiclePlate }})
+                <ng-container *ngIf="turno.vehicles && turno.vehicles.length > 0; else singleVehicle">
+                  <span class="ms-2">
+                    • Mezzo/i:
+                    <ng-container *ngFor="let v of turno.vehicles; let last = last">
+                      {{ v.name }}<span *ngIf="v.plate"> ({{ v.plate }})</span><span *ngIf="!last">, </span>
+                    </ng-container>
                   </span>
-                </span>
+                </ng-container>
+                <ng-template #singleVehicle>
+                  <span *ngIf="turno.vehicleName" class="ms-2">
+                    • Mezzo: {{ turno.vehicleName }}
+                    <span *ngIf="turno.vehiclePlate">({{ turno.vehiclePlate }})</span>
+                  </span>
+                </ng-template>
               </span>
 
               <br />
@@ -162,6 +201,76 @@
               *ngIf="tenantService.isSami && turno.keyRequired"
               class="key-icon ms-2"
               (click)="handleClick($event, turno.appointmentId)"
+              title="Chiavi richieste"
+            >
+              🔑
+            </span>
+          </li>
+        </ul>
+      </div>
+    </ul>
+  </div>
+
+  <!-- VISTA PER CLIENTE -->
+  <div class="turni-list" *ngIf="shifts.length > 0 && viewMode === 'client'">
+    <ul class="list-group">
+      <div *ngFor="let clientName of clientKeys()">
+        <div class="d-flex align-items-center mt-3 client-header">
+          <h4 class="mb-0 text-dark">
+            🏢 {{ clientName }}
+            <small>
+              —
+              {{
+                selectedDate | date: "EEEE d MMMM y" : "" : "it-IT" | uppercase
+              }}
+            </small>
+          </h4>
+        </div>
+
+        <ul class="list-group mt-2">
+          <li
+            *ngFor="let row of groupedByClient[clientName]"
+            class="list-group-item d-flex justify-content-between align-items-center turni-item"
+            [ngClass]="{
+              published: row.published,
+              'bg-light border-success': row.published,
+            }"
+          >
+            <span class="text-dark">
+              <strong>{{ row.empName.toUpperCase() }}</strong>
+
+              <span *ngIf="row.start"> — {{ row.start | date: "HH:mm" }} </span>
+
+              <span class="ms-2 small text-dark">
+                • Durata: {{ formatDuration(row.duration) }}
+
+                <ng-container *ngIf="row.vehicles && row.vehicles.length > 0; else singleVehicleClient">
+                  <span class="ms-2">
+                    • Mezzo/i:
+                    <ng-container *ngFor="let v of row.vehicles; let last = last">
+                      {{ v.name }}<span *ngIf="v.plate"> ({{ v.plate }})</span><span *ngIf="!last">, </span>
+                    </ng-container>
+                  </span>
+                </ng-container>
+                <ng-template #singleVehicleClient>
+                  <span *ngIf="row.vehicleName" class="ms-2">
+                    • Mezzo: {{ row.vehicleName }}
+                    <span *ngIf="row.vehiclePlate">({{ row.vehiclePlate }})</span>
+                  </span>
+                </ng-template>
+              </span>
+
+              <br />
+
+              <small class="text-dark">
+                {{ row.description }}
+              </small>
+            </span>
+
+            <span
+              *ngIf="tenantService.isSami && row.keyRequired"
+              class="key-icon ms-2"
+              (click)="handleClick($event, row.appointmentId)"
               title="Chiavi richieste"
             >
               🔑

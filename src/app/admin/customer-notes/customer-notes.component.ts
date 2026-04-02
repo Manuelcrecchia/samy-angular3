@@ -34,6 +34,8 @@ export class CustomerNotesComponent implements OnInit {
   nuoviAllegati: AllegatoNota[] = [];
   loading = false;
   sending = false;
+  isDragging = false;
+  private dragCounter = 0;
 
   // ── Filtri ──────────────────────────────────────
   soloAllegati = false;
@@ -133,19 +135,40 @@ export class CustomerNotesComponent implements OnInit {
       });
   }
 
+  @HostListener('dragenter', ['$event'])
+  onDragEnter(e: DragEvent) { e.preventDefault(); this.dragCounter++; this.isDragging = true; }
+
+  @HostListener('dragleave', ['$event'])
+  onDragLeave(_e: DragEvent) { if (--this.dragCounter === 0) this.isDragging = false; }
+
+  @HostListener('dragover', ['$event'])
+  onDragOver(e: DragEvent) { e.preventDefault(); }
+
+  @HostListener('drop', ['$event'])
+  onDrop(e: DragEvent) {
+    e.preventDefault();
+    this.dragCounter = 0;
+    this.isDragging = false;
+    const files = e.dataTransfer?.files;
+    if (files && files.length > 0) this.processFiles(Array.from(files));
+  }
+
   onFileSelected(event: Event) {
     const input = event.target as HTMLInputElement;
     if (!input.files) return;
-    Array.from(input.files).forEach((file) => {
+    this.processFiles(Array.from(input.files));
+    input.value = '';
+  }
+
+  private processFiles(files: File[]) {
+    files.forEach((file) => {
       const reader = new FileReader();
       reader.onload = () => {
         const result = reader.result as string;
-        const base64 = result.split(',')[1];
-        this.nuoviAllegati.push({ nome: file.name, base64, mimeType: file.type });
+        this.nuoviAllegati.push({ nome: file.name, base64: result.split(',')[1], mimeType: file.type });
       };
       reader.readAsDataURL(file);
     });
-    input.value = '';
   }
 
   removeAllegato(index: number) {

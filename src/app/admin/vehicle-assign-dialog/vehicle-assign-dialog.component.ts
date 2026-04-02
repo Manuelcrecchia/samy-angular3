@@ -16,7 +16,7 @@ interface Vehicle {
 })
 export class VehicleAssignDialogComponent implements OnInit {
   vehicles: Vehicle[] = [];
-  selectedVehicleId: number | null = null;
+  selectedVehicleIds: number[] = [];
   loading = false;
 
   constructor(
@@ -26,12 +26,15 @@ export class VehicleAssignDialogComponent implements OnInit {
     public globalService: GlobalService,
   ) {}
 
-  toggleVehicle(id: number) {
-    this.selectedVehicleId = this.selectedVehicleId === id ? null : id;
-  }
-
   ngOnInit(): void {
-    this.selectedVehicleId = this.data?.assignedVehicleId ?? null;
+    const ids = this.data?.assignedVehicleIds;
+    if (Array.isArray(ids)) {
+      this.selectedVehicleIds = [...ids];
+    } else if (this.data?.assignedVehicleId != null) {
+      this.selectedVehicleIds = [this.data.assignedVehicleId];
+    } else {
+      this.selectedVehicleIds = [];
+    }
     this.loadVehicles();
   }
 
@@ -45,7 +48,6 @@ export class VehicleAssignDialogComponent implements OnInit {
             (a.name || '').localeCompare(b.name || '', 'it'),
           );
           this.loading = false;
-          console.log(this.vehicles);
         },
         error: (err) => {
           console.error('Errore loadVehicles:', err);
@@ -55,12 +57,25 @@ export class VehicleAssignDialogComponent implements OnInit {
       });
   }
 
+  isSelected(id: number): boolean {
+    return this.selectedVehicleIds.includes(id);
+  }
+
+  toggleVehicle(id: number) {
+    const idx = this.selectedVehicleIds.indexOf(id);
+    if (idx >= 0) {
+      this.selectedVehicleIds.splice(idx, 1);
+    } else {
+      this.selectedVehicleIds.push(id);
+    }
+  }
+
   clearSelection() {
-    this.selectedVehicleId = null;
+    this.selectedVehicleIds = [];
   }
 
   save() {
-    this.dialogRef.close({ vehicleId: this.selectedVehicleId });
+    this.dialogRef.close({ vehicleIds: this.selectedVehicleIds });
   }
 
   cancel() {

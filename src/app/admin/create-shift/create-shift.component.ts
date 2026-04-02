@@ -56,7 +56,7 @@ export class CreateShiftComponent implements OnInit, OnDestroy {
 
   appointments: any[] = [];
   assignedShifts: { [appointmentId: string]: number[] } = {};
-  assignedVehicles: { [appointmentId: string]: number | null } = {};
+  assignedVehicles: { [appointmentId: string]: number[] } = {};
   vehiclesCache: any[] = [];
   loading = false;
   employeeList: any[] = [];
@@ -235,7 +235,7 @@ export class CreateShiftComponent implements OnInit, OnDestroy {
       startDate: start,
       duration: app.duration ?? 0,
       sortOrderByEmployee: app.sortOrderByEmployee || {},
-      vehicleId: this.assignedVehicles[app.id] ?? null,
+      vehicleIds: this.assignedVehicles[app.id] || [],
     };
 
     console.log('AUTOSAVE PAYLOAD ->', payload);
@@ -413,7 +413,7 @@ export class CreateShiftComponent implements OnInit, OnDestroy {
         startDate: start,
         duration: app.duration || 60,
         sortOrderByEmployee: app.sortOrderByEmployee || {},
-        vehicleId: this.assignedVehicles[app.id] ?? null,
+        vehicleIds: this.assignedVehicles[app.id] || [],
       };
     });
 
@@ -644,7 +644,7 @@ export class CreateShiftComponent implements OnInit, OnDestroy {
             this.assignedShifts[extraId] = (s.employees || []).map(
               (e: any) => e.id,
             );
-            this.assignedVehicles[extraId] = s.vehicleId ?? null;
+            this.assignedVehicles[extraId] = Array.isArray(s.vehicleIds) ? s.vehicleIds : (s.vehicleId != null ? [s.vehicleId] : []);
           } else {
             const app = this.appointments.find(
               (a) =>
@@ -699,7 +699,7 @@ export class CreateShiftComponent implements OnInit, OnDestroy {
               this.assignedShifts[newId] = (s.employees || []).map(
                 (e: any) => e.id,
               );
-              this.assignedVehicles[newId] = s.vehicleId ?? null;
+              this.assignedVehicles[newId] = Array.isArray(s.vehicleIds) ? s.vehicleIds : (s.vehicleId != null ? [s.vehicleId] : []);
               continue;
             }
 
@@ -732,7 +732,7 @@ export class CreateShiftComponent implements OnInit, OnDestroy {
             this.assignedShifts[app.id] = (s.employees || []).map(
               (e: any) => e.id,
             );
-            this.assignedVehicles[app.id] = s.vehicleId ?? null;
+            this.assignedVehicles[app.id] = Array.isArray(s.vehicleIds) ? s.vehicleIds : (s.vehicleId != null ? [s.vehicleId] : []);
           }
         }
 
@@ -752,7 +752,7 @@ export class CreateShiftComponent implements OnInit, OnDestroy {
     const dialogRef = this.dialog.open(VehicleAssignDialogComponent, {
       width: '520px',
       data: {
-        assignedVehicleId: this.assignedVehicles[app.id] ?? null,
+        assignedVehicleIds: this.assignedVehicles[app.id] || [],
         vehicles: this.vehiclesCache || [],
       },
       panelClass: 'glass-dialog',
@@ -760,17 +760,22 @@ export class CreateShiftComponent implements OnInit, OnDestroy {
 
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
-        this.assignedVehicles[app.id] = result.vehicleId ?? null;
+        this.assignedVehicles[app.id] = result.vehicleIds || [];
         this.scheduleAutosave(app);
       }
     });
   }
 
   getVehicleLabel(appId: string): string {
-    const id = this.assignedVehicles[appId];
-    if (!id) return '';
-    const v = (this.vehiclesCache || []).find((x: any) => x.id === id);
-    return v ? (v.plate ? `${v.name} (${v.plate})` : v.name) : '';
+    const ids = this.assignedVehicles[appId] || [];
+    if (!ids.length) return '';
+    return ids
+      .map((id: number) => {
+        const v = (this.vehiclesCache || []).find((x: any) => x.id === id);
+        return v ? (v.plate ? `${v.name} (${v.plate})` : v.name) : '';
+      })
+      .filter(Boolean)
+      .join(', ');
   }
 
   openAssignmentDialog(app: any): void {

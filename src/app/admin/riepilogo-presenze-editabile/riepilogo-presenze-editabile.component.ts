@@ -236,6 +236,9 @@ export class RiepilogoPresenzeEditabileComponent implements OnInit {
         });
       });
 
+      // Ricalcola totale dopo aver applicato gli override celle
+      this.dipendenti.forEach((d) => this.ricalcolaTotale(d));
+
       // 7️⃣ APPLICO NOTE MANUALI (AttendanceEditableNote)
       const noteEdits: any = await this.http
         .get(
@@ -279,8 +282,9 @@ export class RiepilogoPresenzeEditabileComponent implements OnInit {
       d.ore[i] = primaVoce.ore;
     }
 
-    // Sincronizza con tipologie
+    // Sincronizza con tipologie e ricalcola totale
     this.sincronizzaTipologie(d, i);
+    this.ricalcolaTotale(d);
 
     this.http
       .post(`${this.globalService.url}admin/attendanceEdit/saveEditableCell`, {
@@ -321,6 +325,18 @@ export class RiepilogoPresenzeEditabileComponent implements OnInit {
       }
       this.onCellaChange(d, i);
     }
+  }
+
+  // 🔵 RICALCOLA TOTALE ORE ORDINARIO
+  private ricalcolaTotale(d: any) {
+    let total = 0;
+    (d.tipologie.Ordinario || []).forEach((val: any) => {
+      const n = parseFloat(val);
+      if (!isNaN(n) && n > 0) total += n;
+    });
+    const h = Math.floor(total);
+    const c = Math.round((total - h) * 100);
+    d.totale = c === 0 ? `${h}` : `${h}.${String(c).padStart(2, '0')}`;
   }
 
   // 🔵 SINCRONIZZA VOCI CON TIPOLOGIE

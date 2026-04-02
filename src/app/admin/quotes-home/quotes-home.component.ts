@@ -406,6 +406,49 @@ export class QuotesHomeComponent {
           this.customerModelService.tempistica = quote.tempistica || '';
           this.customerModelService.note = quote.note || '';
 
+          (this.customerModelService as any).ragSociale = quote.ragSociale || '';
+          (this.customerModelService as any).data = quote.data || '';
+          (this.customerModelService as any).cittaDiPartenza = quote.cittaDiPartenza || '';
+          (this.customerModelService as any).selettorePrefissoViaDiPartenza = quote.selettorePrefissoViaDiPartenza || '';
+          (this.customerModelService as any).viaDiPartenza = quote.viaDiPartenza || '';
+          (this.customerModelService as any).pianoDiPartenza = quote.pianoDiPartenza || '';
+          (this.customerModelService as any).occupazioneSuoloPubblicoDiPartenza = quote.occupazioneSuoloPubblicoDiPartenza || '';
+          (this.customerModelService as any).capDiPartenza = quote.capDiPartenza || '';
+
+          (this.customerModelService as any).cittaDiArrivo = quote.cittaDiArrivo || '';
+          (this.customerModelService as any).selettorePrefissoViaDiArrivo = quote.selettorePrefissoViaDiArrivo || '';
+          (this.customerModelService as any).viaDiArrivo = quote.viaDiArrivo || '';
+          (this.customerModelService as any).pianoDiArrivo = quote.pianoDiArrivo || '';
+          (this.customerModelService as any).occupazioneSuoloPubblicoDiArrivo = quote.occupazioneSuoloPubblicoDiArrivo || '';
+          (this.customerModelService as any).capDiArrivo = quote.capDiArrivo || '';
+
+          (this.customerModelService as any).altreDestinazioni = quote.altreDestinazioni || '';
+          (this.customerModelService as any).stanzeEOggetti = this.parseMaybeJsonArray(quote.stanzeEOggetti);
+
+          (this.customerModelService as any).lampadari = !!quote.lampadari;
+          (this.customerModelService as any).imballaggio = !!quote.imballaggio;
+          (this.customerModelService as any).smaltimentoMaterialiDiRisulta = !!quote.smaltimentoMaterialiDiRisulta;
+          (this.customerModelService as any).riposizionamentoContenutiDegliArredi = !!quote.riposizionamentoContenutiDegliArredi;
+          (this.customerModelService as any).smontaggioEImballaggioDegliArredi = !!quote.smontaggioEImballaggioDegliArredi;
+          (this.customerModelService as any).caricoSuNostroMezzoIdoneo = !!quote.caricoSuNostroMezzoIdoneo;
+          (this.customerModelService as any).trasporto = !!quote.trasporto;
+          (this.customerModelService as any).scaricoEConsegnaAlPiano = !!quote.scaricoEConsegnaAlPiano;
+          (this.customerModelService as any).montaggioDegliArredi = !!quote.montaggioDegliArredi;
+          (this.customerModelService as any).ausilioDiElevatoreEsternoOvePossibile = !!quote.ausilioDiElevatoreEsternoOvePossibile;
+          (this.customerModelService as any).assicurazioneControIRischiDiTrasporto = !!quote.assicurazioneControIRischiDiTrasporto;
+          (this.customerModelService as any).fornituraMaterialiDaImballo = !!quote.fornituraMaterialiDaImballo;
+          (this.customerModelService as any).imballaggioDeiContenuti = !!quote.imballaggioDeiContenuti;
+          (this.customerModelService as any).custodiaInDeposito = !!quote.custodiaInDeposito;
+          (this.customerModelService as any).ospCarico = !!quote.ospCarico;
+          (this.customerModelService as any).ospScarico = !!quote.ospScarico;
+
+          (this.customerModelService as any).prezzoTrasloco = quote.prezzoTrasloco || 0;
+          (this.customerModelService as any).prezzoFornituraMaterialiDaImballo = quote.prezzoFornituraMaterialiDaImballo || 0;
+          (this.customerModelService as any).prezzoImballaggioDeiContenuti = quote.prezzoImballaggioDeiContenuti || 0;
+          (this.customerModelService as any).prezzoPassaggioInDeposito = quote.prezzoPassaggioInDeposito || 0;
+          (this.customerModelService as any).prezzoOccupazioneSuoloPubblico = quote.prezzoOccupazioneSuoloPubblico || 0;
+          (this.customerModelService as any).prezzoMensileCustodiaMobili = quote.prezzoMensileCustodiaMobili || 0;
+
           this.customerModelService.numeroPreventivo = numeroPreventivo;
 
           this.http
@@ -503,7 +546,8 @@ export class QuotesHomeComponent {
 
   private parseServerError(err: any): string {
     try {
-      const body = typeof err.error === 'string' ? JSON.parse(err.error) : err.error;
+      const body =
+        typeof err.error === 'string' ? JSON.parse(err.error) : err.error;
       if (body?.error) return body.error;
     } catch {}
     if (err.status === 0) return 'Impossibile connettersi al server';

@@ -17,7 +17,23 @@ interface ShiftRow {
   published: boolean;
   vehicleName?: string | null;
   vehiclePlate?: string | null;
+  vehicles?: { name: string; plate?: string | null }[];
   sortOrder?: number | null;
+}
+
+interface ClientRow {
+  empId: number;
+  empName: string;
+  start: string | null;
+  duration: number;
+  published: boolean;
+  cellulare?: string | null;
+  description: string;
+  vehicleName?: string | null;
+  vehiclePlate?: string | null;
+  vehicles?: { name: string; plate?: string | null }[];
+  keyRequired: boolean;
+  appointmentId: number;
 }
 
 @Component({
@@ -76,6 +92,49 @@ export class ShiftHomeComponent implements OnInit {
     if (!t.closest('.shift-mini-cal-wrapper') && !t.closest('.shift-date-btn')) {
       this.showMiniCal = false;
     }
+  }
+
+  viewMode: 'employee' | 'client' = 'employee';
+
+  toggleViewMode() {
+    this.viewMode = this.viewMode === 'employee' ? 'client' : 'employee';
+  }
+
+  get groupedByClient(): { [key: string]: ClientRow[] } {
+    const result: { [key: string]: ClientRow[] } = {};
+    for (const shift of this.shifts) {
+      const clientTitle = this.cleanShiftTitle(shift?.appointment?.title || shift?.title || '-');
+      const employees = Array.isArray(shift.employees) ? shift.employees : [];
+      if (!result[clientTitle]) result[clientTitle] = [];
+      for (const emp of employees) {
+        const empId = Number(emp?.id) || 0;
+        const empName = `${emp?.nome ?? ''} ${emp?.cognome ?? ''}`.trim();
+        result[clientTitle].push({
+          empId,
+          empName,
+          start: shift?.startDate && shift?.startDate !== 'null' && shift?.startDate !== '' ? shift.startDate : null,
+          duration: emp?.ShiftEmployees?.durationOverride != null
+            ? Number(emp.ShiftEmployees.durationOverride) || 0
+            : Number(shift?.duration) || 0,
+          published: emp?.ShiftEmployees?.published === true,
+          cellulare: emp?.cellulare ?? null,
+          description: shift?.description || '',
+          vehicleName: shift?.vehicles?.length ? shift.vehicles[0].name : (shift?.vehicle?.name ?? null),
+          vehiclePlate: shift?.vehicles?.length ? shift.vehicles[0].plate : (shift?.vehicle?.plate ?? null),
+          vehicles: Array.isArray(shift?.vehicles) ? shift.vehicles : (shift?.vehicle ? [shift.vehicle] : []),
+          keyRequired: this.resolveKeyRequired(shift),
+          appointmentId: Number(shift?.appointmentId) || 0,
+        });
+      }
+    }
+    for (const key of Object.keys(result)) {
+      result[key].sort((a, b) => a.empName.localeCompare(b.empName));
+    }
+    return result;
+  }
+
+  clientKeys(): string[] {
+    return Object.keys(this.groupedByClient).sort();
   }
 
   shifts: any[] = [];
@@ -289,8 +348,9 @@ export class ShiftHomeComponent implements OnInit {
           cellulare: emp?.cellulare ?? null,
           colleghi,
           published: joinPublished,
-          vehicleName: shift?.vehicle?.name ?? null,
-          vehiclePlate: shift?.vehicle?.plate ?? null,
+          vehicleName: shift?.vehicles?.length ? shift.vehicles[0].name : (shift?.vehicle?.name ?? null),
+          vehiclePlate: shift?.vehicles?.length ? shift.vehicles[0].plate : (shift?.vehicle?.plate ?? null),
+          vehicles: Array.isArray(shift?.vehicles) ? shift.vehicles : (shift?.vehicle ? [shift.vehicle] : []),
           sortOrder:
             sortMap[empId] != null ? Number(sortMap[empId]) || 0 : null,
         });
@@ -522,10 +582,12 @@ export class ShiftHomeComponent implements OnInit {
       lines.push(`Durata: ${this.formatDuration(turno.duration)}`);
       lines.push(`Con chi: ${colleghiText}`);
 
-      if (turno.vehicleName) {
-        lines.push(
-          `Mezzo: ${turno.vehicleName}${turno.vehiclePlate ? ` (${turno.vehiclePlate})` : ''}`,
-        );
+      const vehiclesList = turno.vehicles && turno.vehicles.length > 0
+        ? turno.vehicles
+        : (turno.vehicleName ? [{ name: turno.vehicleName, plate: turno.vehiclePlate }] : []);
+      if (vehiclesList.length > 0) {
+        const mezziStr = vehiclesList.map((v: any) => v.plate ? `${v.name} (${v.plate})` : v.name).join(', ');
+        lines.push(`Mezzo/i: ${mezziStr}`);
       }
 
       lines.push(`Chiave richiesta: ${turno.keyRequired ? 'Sì' : 'No'}`);

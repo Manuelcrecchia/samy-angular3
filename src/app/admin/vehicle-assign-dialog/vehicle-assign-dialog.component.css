@@ -34,6 +34,28 @@
   color: #000 !important;
 }
 
-.row-item input[type="radio"] {
+.row-item input[type="checkbox"] {
   transform: scale(1.15);
+  cursor: pointer;
 }
+
+.selected-count {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 10px;
+  font-size: 13px;
+  color: #333;
+  font-weight: 600;
+}
+
+.btn-deselect {
+  background: none;
+  border: 1px solid rgba(0,0,0,0.2);
+  border-radius: 999px;
+  padding: 2px 10px;
+  font-size: 12px;
+  cursor: pointer;
+  color: #c00;
+}
+.btn-deselect:hover { background: rgba(200,0,0,0.08); }

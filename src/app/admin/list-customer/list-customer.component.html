@@ -17,14 +17,6 @@
         <button class="btn-back me-3" type="button" (click)="back()">
           &larr; Torna Indietro
         </button>
-        <button
-          *ngIf="globalService.hasPermission('CUSTOMERS_MANAGE')"
-          (click)="navigateToAddCustomer()"
-          mat-icon-button
-          class="btn btn-pink me-2"
-        >
-          <mat-icon>add</mat-icon>
-        </button>
       </div>
 
       <div class="d-flex flex-wrap gap-2">

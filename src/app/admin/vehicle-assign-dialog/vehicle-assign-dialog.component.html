@@ -1,4 +1,4 @@
-<h2 class="dialog-title">Assegna mezzo</h2>
+<h2 class="dialog-title">Assegna mezzi</h2>
 
 <div class="body">
   <div *ngIf="loading" class="muted">Caricamento...</div>
@@ -7,7 +7,7 @@
     <label class="row-item" *ngFor="let v of vehicles">
       <input
         type="checkbox"
-        [checked]="selectedVehicleId === v.id"
+        [checked]="isSelected(v.id)"
         (change)="toggleVehicle(v.id)"
       />
       <div class="meta">
@@ -19,6 +19,11 @@
     <div class="text-center py-3" *ngIf="vehicles.length === 0">
       Nessun mezzo disponibile. Aggiungilo da Impostazioni → Gestione mezzi.
     </div>
+  </div>
+
+  <div class="selected-count" *ngIf="selectedVehicleIds.length > 0">
+    {{ selectedVehicleIds.length }} mezzo/i selezionato/i
+    <button type="button" class="btn-deselect" (click)="clearSelection()">Rimuovi tutti</button>
   </div>
 </div>
 
