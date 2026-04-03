@@ -18,6 +18,7 @@ export class GestionePermessiComponent implements OnInit {
   loading = false;
   selectedRequest: any = null;
   creaLoading = false;
+  savingAllegati = false;
 
   modalData: any = {
     categoria: 'Ferie',
@@ -116,6 +117,34 @@ export class GestionePermessiComponent implements OnInit {
     });
   }
 
+  savePermessoNoSend(): void {
+    if (!this.creaData.employeeId || !this.creaData.fromDate) {
+      this.showToast('❌ Compilare tutti i campi obbligatori', true);
+      return;
+    }
+    if (this.creaData.tipoPermesso === 'parziale' && (!this.creaData.oraInizio || !this.creaData.oraFine)) {
+      this.showToast('❌ Inserire orario di inizio e fine per permesso parziale', true);
+      return;
+    }
+    if (this.creaData.tipoPermesso === 'settimanale' && !this.creaData.toDate) {
+      this.showToast('❌ Inserire data di fine per permesso settimanale', true);
+      return;
+    }
+    this.creaLoading = true;
+    const dataToSend = { ...this.creaData, send: false };
+    this.http.post(this.globalService.url + 'permission/admin-create', dataToSend).subscribe({
+      next: () => {
+        this.creaLoading = false;
+        bootstrap.Modal.getInstance(this.creaModalElement.nativeElement)?.hide();
+        this.showToast('✅ Permesso salvato');
+      },
+      error: (err) => {
+        this.creaLoading = false;
+        this.showToast('❌ ' + (err.error?.error || 'Errore durante il salvataggio'), true);
+      },
+    });
+  }
+
   loadRequests(): void {
     this.loading = true;
     this.http.get<any[]>(this.globalService.url + 'permission').subscribe({
@@ -133,13 +162,40 @@ export class GestionePermessiComponent implements OnInit {
   openModal(req: any): void {
     this.selectedRequest = req;
     this.modalData = {
-      categoria: 'Ferie',
+      categoria: req.categoria || 'Ferie',
       oreGiornaliere: null,
       oraInizioModificata: req.tipoPermesso === 'parziale' ? (req.oraInizio || '') : '',
       oraFineModificata: req.tipoPermesso === 'parziale' ? (req.oraFine || '') : '',
     };
     const modal = new bootstrap.Modal(this.modalElement.nativeElement);
     modal.show();
+  }
+
+  confirmAcceptDirect(req: any): void {
+    const body: any = {
+      id: req.id,
+      employeeId: req.employeeId,
+      categoria: req.categoria || 'Ferie',
+      dataInizio: req.fromDate,
+      dataFine: req.toDate,
+      oreGiornaliere: null,
+    };
+
+    if (req.tipoPermesso === 'parziale') {
+      body.oraInizioModificata = null;
+      body.oraFineModificata = null;
+    }
+
+    this.http.post(this.globalService.url + 'permission/accept', body).subscribe({
+      next: (res: any) => {
+        this.showToast('✅ Permesso accettato');
+        this.loadRequests();
+      },
+      error: (err) => {
+        console.error('Errore durante accettazione:', err);
+        this.showToast('❌ Errore durante l\'accettazione', true);
+      },
+    });
   }
 
   confirmAccept(): void {
@@ -187,7 +243,7 @@ export class GestionePermessiComponent implements OnInit {
         },
         error: (err) => {
           console.error('Errore durante accettazione:', err);
-          this.showToast('❌ Errore durante l’accettazione', true);
+          this.showToast('❌ Errore durante l\'accettazione', true);
         },
       });
   }
@@ -207,6 +263,61 @@ export class GestionePermessiComponent implements OnInit {
       });
   }
 
+  get allegatiParsati(): any[] {
+    if (!this.selectedRequest?.allegati) return [];
+    try {
+      const allegatiStr = this.selectedRequest.allegati;
+      return typeof allegatiStr === 'string' ? JSON.parse(allegatiStr) : allegatiStr;
+    } catch {
+      return [];
+    }
+  }
+
+  saveAllegati(): void {
+    if (!this.selectedRequest) return;
+
+    const allegatiStr = this.selectedRequest.allegati;
+    if (!allegatiStr) {
+      this.showToast('❌ Nessun allegato da salvare', true);
+      return;
+    }
+
+    let allegati: any[] = [];
+    try {
+      allegati = typeof allegatiStr === 'string' ? JSON.parse(allegatiStr) : allegatiStr;
+    } catch {
+      this.showToast('❌ Errore nel parsing degli allegati', true);
+      return;
+    }
+
+    if (!allegati.length) {
+      this.showToast('❌ Nessun allegato da salvare', true);
+      return;
+    }
+
+    this.savingAllegati = true;
+
+    const body = {
+      employeeId: this.selectedRequest.employeeId,
+      requestId: this.selectedRequest.id,
+      allegati: allegati,
+    };
+
+    this.http
+      .post(this.globalService.url + 'permission/save-allegati', body)
+      .subscribe({
+        next: (res: any) => {
+          this.savingAllegati = false;
+          this.showToast(`✅ ${allegati.length} allegato/i salvato/i nella cartella documenti`);
+        },
+        error: (err) => {
+          this.savingAllegati = false;
+          this.showToast('❌ Errore durante il salvataggio degli allegati', true);
+          console.error('Errore saveAllegati:', err);
+        },
+      });
+  }
+
   showToast(message: string, error: boolean = false): void {
     const toastEl = document.getElementById('liveToast');
     const toastBody = document.getElementById('toastBody');
@@ -217,6 +328,27 @@ export class GestionePermessiComponent implements OnInit {
     } border-0`;
     const toast = new bootstrap.Toast(toastEl, { delay: 3000 });
     toast.show();
+  }
+
+  downloadAllegato(filepath: string, filename: string): void {
+    this.http
+      .get(this.globalService.url + `permission/download-temp-allegato?filepath=${encodeURIComponent(filepath)}`, {
+        responseType: 'blob',
+      })
+      .subscribe({
+        next: (blob: Blob) => {
+          const url = window.URL.createObjectURL(blob);
+          const link = document.createElement('a');
+          link.href = url;
+          link.download = filename;
+          link.click();
+          window.URL.revokeObjectURL(url);
+        },
+        error: (err) => {
+          console.error('Errore download allegato:', err);
+          this.showToast('❌ Errore nel download dell\'allegato', true);
+        },
+      });
   }
 
   goBack(): void {

@@ -205,8 +205,8 @@
           </div>
         </section>
 
-        <!-- PDF VIEWER -->
-        <section class="mv-card mv-viewer" *ngIf="pdfBase64">
+        <!-- FILE VIEWER - PDF -->
+        <section class="mv-card mv-viewer" *ngIf="pdfBase64 && fileType === 'pdf'">
           <div class="mv-card__head mv-viewer-head">
             <div>
               <h3 class="mv-h3">Anteprima PDF</h3>
@@ -246,6 +246,78 @@
                 </button>
               </div>
             </ng-template>
+          </div>
+        </section>
+
+        <!-- FILE VIEWER - IMAGE -->
+        <section class="mv-card mv-viewer" *ngIf="imageBase64 && fileType === 'image'">
+          <div class="mv-card__head mv-viewer-head">
+            <div>
+              <h3 class="mv-h3">Anteprima Immagine</h3>
+              <p class="mv-sub">Visualizza, stampa o scarica l'immagine</p>
+            </div>
+          </div>
+
+          <div class="mv-card__body mv-viewer-body">
+            <img
+              [src]="imageBase64"
+              alt="Anteprima immagine"
+              class="mv-image"
+              style="max-width: 100%; max-height: 80vh; object-fit: contain; margin: 0 auto; display: block;"
+            />
+          </div>
+
+          <div class="mv-pdf-toolbar">
+            <button
+              mat-raised-button
+              class="mv-cta mv-cta--soft"
+              color="accent"
+              (click)="printFile(currentFilename)"
+              type="button"
+            >
+              🖨️ Stampa
+            </button>
+
+            <button
+              mat-raised-button
+              class="mv-cta mv-cta--soft"
+              color="accent"
+              (click)="downloadCurrentFile(currentFilename)"
+              type="button"
+            >
+              ⬇️ Scarica
+            </button>
+          </div>
+        </section>
+
+        <!-- FILE VIEWER - OTHER -->
+        <section class="mv-card mv-viewer" *ngIf="fileType === 'other' && currentFilename">
+          <div class="mv-card__head mv-viewer-head">
+            <div>
+              <h3 class="mv-h3">File Documento</h3>
+              <p class="mv-sub">Questo tipo di file non può essere visualizzato in anteprima</p>
+            </div>
+          </div>
+
+          <div class="mv-card__body mv-viewer-body">
+            <div style="padding: 2rem; text-align: center;">
+              <div style="font-size: 4rem; margin-bottom: 1rem;">📄</div>
+              <div style="margin-bottom: 1rem;">
+                <strong>{{ currentFilename }}</strong>
+              </div>
+              <p style="color: #666; margin-bottom: 2rem;">
+                Scarica il file per visualizzarlo
+              </p>
+              <button
+                mat-raised-button
+                class="mv-cta mv-cta--primary"
+                color="primary"
+                (click)="downloadCurrentFile(currentFilename)"
+                type="button"
+              >
+                ⬇️ Scarica File
+              </button>
+            </div>
           </div>
         </section>
       </main>

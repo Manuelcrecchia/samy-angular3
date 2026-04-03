@@ -60,10 +60,13 @@ export class RiepilogoPresenzeEditabileComponent implements OnInit {
     const year = +this.annoSelezionato;
     const month = +this.meseSelezionato;
     const numGiorni = new Date(year, month, 0).getDate();
+    const abbr = ['D', 'L', 'M', 'M', 'G', 'V', 'S']; // domenica=0, lunedì=1, martedì=2, mercoledì=3, giovedì=4, venerdì=5, sabato=6
 
-    this.giorni = Array.from({ length: numGiorni }, (_, i) =>
-      (i + 1).toString().padStart(2, '0')
-    );
+    this.giorni = Array.from({ length: numGiorni }, (_, i) => {
+      const date = new Date(year, month - 1, i + 1);
+      const dayOfWeek = abbr[date.getDay()];
+      return `${(i + 1).toString().padStart(2, '0')}\n${dayOfWeek}`;
+    });
   }
 
   async caricaPresenze() {
@@ -107,6 +110,13 @@ export class RiepilogoPresenzeEditabileComponent implements OnInit {
       this.dipendenti = dipTmp;
       this.dipendentiSelezionati = new Set(dipTmp.map((d: any) => d.id));
 
+      // ✅ NORMALIZZAZIONE: assicura che il totale abbia sempre 2 decimali
+      this.dipendenti.forEach((d: any) => {
+        if (d.totale) {
+          d.totale = this.formatOreStr(d.totale);
+        }
+      });
+
       // 5️⃣ INIZIALIZZO VOCI GIORNO (struttura per giornate miste)
       // Ogni giorno può avere multiple voci: [{categoria: 'O', ore: '4'}, {categoria: 'P', ore: '4'}]
       this.dipendenti.forEach((d) => {
@@ -125,24 +135,25 @@ export class RiepilogoPresenzeEditabileComponent implements OnInit {
 
           // 🔹 Ordinario (può essere numero o stringa vuota)
           if (ordin && !isNaN(Number(ordin)) && Number(ordin) > 0) {
-            voci.push({ categoria: 'O', ore: String(ordin) });
+            // ✅ SEMPRE con 2 decimali
+            voci.push({ categoria: 'O', ore: this.formatOreStr(ordin) });
           }
 
-          // 🔹 Altre categorie
+          // 🔹 Altre categorie - SEMPRE con 2 decimali
           if (ferie && (String(ferie).trim() !== '' || ferie === 'F')) {
-            voci.push({ categoria: 'F', ore: !isNaN(Number(ferie)) ? String(ferie) : '' });
+            voci.push({ categoria: 'F', ore: !isNaN(Number(ferie)) ? this.formatOreStr(ferie) : '' });
           }
           if (mal && (String(mal).trim() !== '' || mal === 'M')) {
-            voci.push({ categoria: 'M', ore: !isNaN(Number(mal)) ? String(mal) : '' });
+            voci.push({ categoria: 'M', ore: !isNaN(Number(mal)) ? this.formatOreStr(mal) : '' });
           }
           if (perm && (String(perm).trim() !== '' || perm === 'P')) {
-            voci.push({ categoria: 'P', ore: !isNaN(Number(perm)) ? String(perm) : '' });
+            voci.push({ categoria: 'P', ore: !isNaN(Number(perm)) ? this.formatOreStr(perm) : '' });
           }
           if (ass && (String(ass).trim() !== '' || ass === 'AI')) {
-            voci.push({ categoria: 'AI', ore: !isNaN(Number(ass)) ? String(ass) : '' });
+            voci.push({ categoria: 'AI', ore: !isNaN(Number(ass)) ? this.formatOreStr(ass) : '' });
           }
           if (inf && (String(inf).trim() !== '' || inf === 'INF')) {
-            voci.push({ categoria: 'INF', ore: !isNaN(Number(inf)) ? String(inf) : '' });
+            voci.push({ categoria: 'INF', ore: !isNaN(Number(inf)) ? this.formatOreStr(inf) : '' });
           }
 
           // Se non ci sono voci, aggiungiamo una voce vuota di default
@@ -212,25 +223,26 @@ export class RiepilogoPresenzeEditabileComponent implements OnInit {
             case 'O':
               if (oreVal) {
                 const curr = dip.tipologie.Ordinario[index];
-                dip.tipologie.Ordinario[index] = curr
-                  ? String(Number(curr) + Number(oreVal))
-                  : String(oreVal);
+                const sum = (parseFloat(curr) || 0) + (parseFloat(oreVal) || 0);
+                // ✅ SEMPRE con 2 decimali
+                dip.tipologie.Ordinario[index] = this.formatOreStr(sum);
               }
               break;
             case 'F':
-              dip.tipologie.Ferie[index] = oreVal || 'F';
+              // ✅ SEMPRE in decimale con 2 cifre
+              dip.tipologie.Ferie[index] = oreVal ? this.formatOreStr(oreVal) : '0.00';
               break;
             case 'M':
-              dip.tipologie.Malattia[index] = oreVal || 'M';
+              dip.tipologie.Malattia[index] = oreVal ? this.formatOreStr(oreVal) : '0.00';
               break;
             case 'P':
-              dip.tipologie['Permessi/ROL'][index] = oreVal || 'P';
+              dip.tipologie['Permessi/ROL'][index] = oreVal ? this.formatOreStr(oreVal) : '0.00';
               break;
             case 'AI':
-              dip.tipologie['Assenza Ingiustificata'][index] = oreVal || 'AI';
+              dip.tipologie['Assenza Ingiustificata'][index] = oreVal ? this.formatOreStr(oreVal) : '0.00';
               break;
             case 'INF':
-              dip.tipologie.Infortunio[index] = oreVal || 'INF';
+              dip.tipologie.Infortunio[index] = oreVal ? this.formatOreStr(oreVal) : '0.00';
               break;
           }
         });
@@ -269,6 +281,14 @@ export class RiepilogoPresenzeEditabileComponent implements OnInit {
   cambiaMeseAnno() {
     this.generaGiorni();
     this.caricaPresenze();
+  }
+
+  // ✅ Formatta SEMPRE con 2 decimali (es: "4.00", "3.25")
+  formatOreStr(ore: any): string {
+    const n = parseFloat(ore) || 0;
+    const h = Math.floor(n);
+    const c = Math.round((n - h) * 100);
+    return `${h}.${String(c).padStart(2, '0')}`;
   }
 
   // 🔵 QUANDO CAMBIA UNA CELLA (giorno specifico)
@@ -327,60 +347,76 @@ export class RiepilogoPresenzeEditabileComponent implements OnInit {
     }
   }
 
-  // 🔵 RICALCOLA TOTALE ORE ORDINARIO
+  // 🔵 RICALCOLA TOTALE: somma di TUTTE le categorie
   private ricalcolaTotale(d: any) {
-    let total = 0;
-    (d.tipologie.Ordinario || []).forEach((val: any) => {
-      const n = parseFloat(val);
-      if (!isNaN(n) && n > 0) total += n;
-    });
-    const h = Math.floor(total);
-    const c = Math.round((total - h) * 100);
-    d.totale = c === 0 ? `${h}` : `${h}.${String(c).padStart(2, '0')}`;
+    const numGiorni = (d.tipologie.Ordinario || []).length;
+    let totalCents = 0;
+
+    for (let i = 0; i < numGiorni; i++) {
+      const ordinarioCents = Math.round((parseFloat(d.tipologie.Ordinario[i]) || 0) * 100);
+      const malattiaVal = parseFloat(d.tipologie.Malattia[i]) || 0;
+      const ferieVal = parseFloat(d.tipologie.Ferie[i]) || 0;
+      const permessiVal = parseFloat(d.tipologie['Permessi/ROL'][i]) || 0;
+      const assenzaVal = parseFloat(d.tipologie['Assenza Ingiustificata'][i]) || 0;
+      const infortunioVal = parseFloat(d.tipologie.Infortunio[i]) || 0;
+
+      const giornoCents = ordinarioCents +
+                         Math.round(malattiaVal * 100) +
+                         Math.round(ferieVal * 100) +
+                         Math.round(permessiVal * 100) +
+                         Math.round(assenzaVal * 100) +
+                         Math.round(infortunioVal * 100);
+      totalCents += giornoCents;
+    }
+
+    const h = Math.floor(totalCents / 100);
+    const c = totalCents % 100;
+    // ✅ SEMPRE con 2 decimali per coerenza
+    d.totale = `${h}.${String(c).padStart(2, '0')}`;
   }
 
   // 🔵 SINCRONIZZA VOCI CON TIPOLOGIE
   private sincronizzaTipologie(d: any, i: number) {
     const voci = d.vociGiorno[i] || [];
 
-    // Reset tipologie
-    d.tipologie.Ordinario[i] = '';
-    d.tipologie.Ferie[i] = '';
-    d.tipologie.Malattia[i] = '';
-    d.tipologie['Permessi/ROL'][i] = '';
-    d.tipologie['Assenza Ingiustificata'][i] = '';
-    d.tipologie.Infortunio[i] = '';
+    // Reset tipologie a 0.00
+    d.tipologie.Ordinario[i] = '0.00';
+    d.tipologie.Ferie[i] = '0.00';
+    d.tipologie.Malattia[i] = '0.00';
+    d.tipologie['Permessi/ROL'][i] = '0.00';
+    d.tipologie['Assenza Ingiustificata'][i] = '0.00';
+    d.tipologie.Infortunio[i] = '0.00';
 
     // Accumula ore per categoria
     let oreOrdinario = 0;
     voci.forEach((voce: any) => {
-      const ore = parseFloat(voce.ore) || 0;
+      const ore = voce.ore ? parseFloat(voce.ore) : 0;
 
       switch (voce.categoria) {
         case 'O':
           oreOrdinario += ore;
           break;
         case 'F':
-          d.tipologie.Ferie[i] = voce.ore || 'F';
+          // ✅ SEMPRE in decimale con 2 cifre
+          d.tipologie.Ferie[i] = voce.ore ? this.formatOreStr(voce.ore) : '0.00';
           break;
         case 'M':
-          d.tipologie.Malattia[i] = voce.ore || 'M';
+          d.tipologie.Malattia[i] = voce.ore ? this.formatOreStr(voce.ore) : '0.00';
           break;
         case 'P':
-          d.tipologie['Permessi/ROL'][i] = voce.ore || 'P';
+          d.tipologie['Permessi/ROL'][i] = voce.ore ? this.formatOreStr(voce.ore) : '0.00';
           break;
         case 'AI':
-          d.tipologie['Assenza Ingiustificata'][i] = voce.ore || 'AI';
+          d.tipologie['Assenza Ingiustificata'][i] = voce.ore ? this.formatOreStr(voce.ore) : '0.00';
           break;
         case 'INF':
-          d.tipologie.Infortunio[i] = voce.ore || 'INF';
+          d.tipologie.Infortunio[i] = voce.ore ? this.formatOreStr(voce.ore) : '0.00';
           break;
       }
     });
 
-    if (oreOrdinario > 0) {
-      d.tipologie.Ordinario[i] = String(oreOrdinario);
-    }
+    // ✅ Ordinario: SEMPRE in decimale con 2 cifre
+    d.tipologie.Ordinario[i] = oreOrdinario > 0 ? this.formatOreStr(oreOrdinario) : '0.00';
   }
 
   // 🔵 AUTOSAVE NOTE con debounce

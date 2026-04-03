@@ -21,6 +21,9 @@ export class DocumentManagerComponent implements OnInit {
   email: string = '';
 
   currentFilename: string = ''; // 👈 NECESSARIO PER STAMPA E DOWNLOAD CORRETTI
+  fileType: 'pdf' | 'image' | 'other' = 'other';
+  imageBase64: string = '';
+  fileBlob: Blob | null = null;
 
   constructor(
     private route: ActivatedRoute,
@@ -146,7 +149,7 @@ export class DocumentManagerComponent implements OnInit {
           if (folder === this.selectedFolder) {
             this.selectedFolder = '';
             this.files = [];
-            this.pdfBase64 = '';
+            this.clearFilePreview();
           }
           this.loadFolders();
         },
@@ -160,7 +163,15 @@ export class DocumentManagerComponent implements OnInit {
   selectFolder(folder: string): void {
     this.selectedFolder = folder;
     this.loadFiles();
+    this.clearFilePreview();
+  }
+
+  private clearFilePreview(): void {
     this.pdfBase64 = '';
+    this.imageBase64 = '';
+    this.fileBlob = null;
+    this.currentFilename = '';
+    this.fileType = 'other';
   }
 
   loadFiles(): void {
@@ -212,20 +223,48 @@ export class DocumentManagerComponent implements OnInit {
       });
   }
 
+  private getFileType(filename: string): 'pdf' | 'image' | 'other' {
+    const ext = filename.split('.').pop()?.toLowerCase() || '';
+    const imageExts = ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp', 'svg'];
+    if (ext === 'pdf') return 'pdf';
+    if (imageExts.includes(ext)) return 'image';
+    return 'other';
+  }
+
   selectFile(filename: string): void {
     this.currentFilename = filename; // 👈 IMPORTANTE
+    this.fileType = this.getFileType(filename);
 
     const body = this.getPayload({ folder: this.selectedFolder, filename });
 
+    // For all file types, fetch as blob first to store it
     this.http
-      .post(this.globalService.url + 'documents/getPdf', body, {
+      .post(this.globalService.url + 'documents/downloadSecure', body, {
         headers: this.globalService.headers,
-        responseType: 'text',
+        responseType: 'blob',
       })
       .subscribe({
-        next: (base64) => (this.pdfBase64 = base64),
+        next: (blob) => {
+          this.fileBlob = blob;
+
+          if (this.fileType === 'pdf') {
+            // Convert blob to base64 for PDF viewer
+            const reader = new FileReader();
+            reader.onload = () => {
+              this.pdfBase64 = (reader.result as string).split(',')[1];
+            };
+            reader.readAsDataURL(blob);
+          } else if (this.fileType === 'image') {
+            // Convert blob to base64 for image preview
+            const reader = new FileReader();
+            reader.onload = () => {
+              this.imageBase64 = reader.result as string;
+            };
+            reader.readAsDataURL(blob);
+          }
+        },
         error: (err) => {
-          console.error('Errore caricamento PDF:', err);
+          console.error('Errore caricamento file:', err);
           alert('Errore durante il caricamento dei dati');
         },
       });
@@ -312,7 +351,7 @@ export class DocumentManagerComponent implements OnInit {
       .subscribe({
         next: () => {
           this.files = this.files.filter((f) => f.filename !== filename);
-          if (this.currentFilename === filename) this.pdfBase64 = '';
+          if (this.currentFilename === filename) this.clearFilePreview();
         },
         error: (err) => {
           console.error('Errore eliminazione file:', err);
