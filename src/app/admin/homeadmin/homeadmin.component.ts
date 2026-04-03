@@ -88,6 +88,10 @@ export class HomeAdminComponent implements OnInit {
     this.router.navigate(['/riepilogo-presenze-editabile']);
   }
 
+  goToRiepilogoOreClienti() {
+    this.router.navigate(['/riepilogo-ore-clienti']);
+  }
+
   back() {
     this.global.logout();
   }

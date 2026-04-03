@@ -389,6 +389,14 @@
             </button>
           </div>
 
+          <!-- Riepilogo Ore Clienti -->
+          <div class="col-12 col-sm-6 col-lg-4" *ngIf="global.hasPermission('ATTENDANCE_VIEW')">
+            <button class="dash-btn" (click)="goToRiepilogoOreClienti()">
+              <span class="icon"><i class="fas fa-user-clock"></i></span>
+              <span class="label">Riepilogo ore clienti</span>
+            </button>
+          </div>
+
           <!-- Gestione Permessi -->
           <div class="col-12 col-sm-6 col-lg-4" *ngIf="global.hasPermission('EMPLOYEE_PERMITS_MANAGE')">
             <button class="dash-btn" (click)="navigateToGestionePermessi()">

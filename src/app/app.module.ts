@@ -82,6 +82,7 @@ import { GestioneAssenzeComponent } from './admin/gestione-assenze/gestione-asse
 import { LeaveSettingsComponent } from './admin/leave-settings/leave-settings.component';
 import { GestioneTagClienteComponent } from './gestione-tag-cliente/gestione-tag-cliente.component';
 import { RiepilogoPresenzeEditabileComponent } from './admin/riepilogo-presenze-editabile/riepilogo-presenze-editabile.component';
+import { RiepilogoOreClientiComponent } from './admin/riepilogo-ore-clienti/riepilogo-ore-clienti.component';
 import { InternalDocumentsComponent } from './admin/internal-documents/internal-documents.component';
 import { QuoteNotesComponent } from './admin/quote-notes/quote-notes.component';
 import { CustomerNotesComponent } from './admin/customer-notes/customer-notes.component';
@@ -124,6 +125,7 @@ registerLocaleData(localeIt);
     LeaveSettingsComponent,
     GestioneTagClienteComponent,
     RiepilogoPresenzeEditabileComponent,
+    RiepilogoOreClientiComponent,
     InternalDocumentsComponent,
     QuoteNotesComponent,
     CustomerNotesComponent,

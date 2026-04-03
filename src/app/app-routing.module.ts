@@ -38,6 +38,7 @@ import { GestioneAssenzeComponent } from './admin/gestione-assenze/gestione-asse
 import { LeaveSettingsComponent } from './admin/leave-settings/leave-settings.component';
 
 import { RiepilogoPresenzeEditabileComponent } from './admin/riepilogo-presenze-editabile/riepilogo-presenze-editabile.component';
+import { RiepilogoOreClientiComponent } from './admin/riepilogo-ore-clienti/riepilogo-ore-clienti.component';
 
 import { TimbratureHomeComponent } from './admin/timbrature-home/timbrature-home.component';
 import { TimbratureDettaglioComponent } from './admin/timbrature-dettaglio/timbrature-dettaglio.component';
@@ -208,6 +209,14 @@ const routes: Routes = [
     component: RiepilogoPresenzeEditabileComponent,
     canActivate: [AuthGuard, AuthLevelGuard],
     data: { permissionsAny: ['ATTENDANCE_VIEW', 'ATTENDANCE_MANAGE'] },
+  },
+
+  // ore clienti
+  {
+    path: 'riepilogo-ore-clienti',
+    component: RiepilogoOreClientiComponent,
+    canActivate: [AuthGuard, AuthLevelGuard],
+    data: { permission: 'ATTENDANCE_VIEW' },
   },
 
   // turni
