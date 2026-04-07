@@ -15,25 +15,14 @@ html,
 body {
   height: 100%;
   margin: 0;
-  background:
-    radial-gradient(
-      1100px 680px at 10% 10%,
-      rgba(47, 183, 255, 0.2),
-      transparent 60%
-    ),
-    radial-gradient(
-      1100px 680px at 90% 15%,
-      rgba(255, 138, 0, 0.2),
-      transparent 65%
-    ),
-    linear-gradient(180deg, #0b0f14, #121c28);
+  background: linear-gradient(180deg, #B3E5FC, #81D4FA);
   background-attachment: fixed;
 }
 
 /* PAGE */
 .container.py-4 {
   min-height: 100vh;
-  color: rgba(255, 255, 255, 0.92);
+  color: #000;
 }
 
 .container.py-4 h2 {

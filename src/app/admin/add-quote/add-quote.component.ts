@@ -120,6 +120,8 @@ export class AddQuoteComponent {
   ngOnInit() {
     if (this.tenantService.isEmmeci) {
       this.aggiornaListaStanze();
+      const today = new Date();
+      this.quoteModelService.data = this.datePipe.transform(today, 'dd/MM/yyyy') || '';
     }
   }
   private buildSamiBody() {

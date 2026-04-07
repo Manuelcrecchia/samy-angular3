@@ -118,6 +118,8 @@ export class CalendarHomeComponent implements OnInit {
     this.loadAll();
   }
 
+  private quotesMap: Map<string, any> = new Map();
+
   loadAll() {
     this.http.get(this.globalService.url + 'appointments/getAll', {
       headers: this.globalService.headers, responseType: 'text',
@@ -138,10 +140,12 @@ export class CalendarHomeComponent implements OnInit {
       headers: this.globalService.headers, responseType: 'text',
     }).subscribe((res) => {
       const data = JSON.parse(res);
+      this.quotesMap.clear();
+      data.forEach((q: any) => {
+        this.quotesMap.set(this.normalize(q.numeroPreventivo), q);
+      });
       this.nPreventiviArray = data.filter((q: any) => !q.complete)
         .map((q: any) => `${q.numeroPreventivo} - ${q.nominativo}`);
-      this.descrizioneArray = data.map((q: any) =>
-        `Contatto: ${q.nominativo} Telefono: ${q.telefono}`);
     });
 
     this.http.get(this.globalService.url + 'customers/getAll', {
@@ -481,8 +485,16 @@ export class CalendarHomeComponent implements OnInit {
 
   selectAutocomplete(val: string) {
     this.popupTitle = val; this.autocompleteOpen = false;
-    const idxPrev = this.nPreventiviArray.findIndex(p=>this.normalize(p)===this.normalize(val));
-    if (idxPrev!==-1) { this.popupDescription=`Sopralluogo – ${this.descrizioneArray[idxPrev]}`; this.popupCategory='sopralluogo'; return; }
+
+    // Cerca il preventivo per numero preventivo (contenuto prima del " - ")
+    const codice = val.split(' - ')[0];
+    const preventivoData = this.quotesMap.get(this.normalize(codice));
+    if (preventivoData) {
+      this.popupDescription = `Sopralluogo – Contatto: ${preventivoData.nominativo} Telefono: ${preventivoData.telefono}`;
+      this.popupCategory = 'sopralluogo';
+      return;
+    }
+
     const cliente = this.clientiArray.find(c=>this.normalize(`${c.numeroCliente} - ${c.nominativo}`)===this.normalize(val));
     if (cliente) {
       if (this.tenantService.isSami&&this.categories.some(c=>c.id==='straordinario'))

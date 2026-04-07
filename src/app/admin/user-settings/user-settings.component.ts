@@ -61,6 +61,7 @@ export class UserSettingsComponent implements OnInit {
     QUOTES_NOTES_MANAGE:   ['QUOTES_NOTES_VIEW'],   // → transitivo: QUOTES_VIEW
     CUSTOMERS_MANAGE:      ['CUSTOMERS_VIEW'],
     CUSTOMERS_NOTES_MANAGE:['CUSTOMERS_NOTES_VIEW'], // → transitivo: CUSTOMERS_VIEW
+    CUSTOMERS_HOURS_VIEW:  ['CUSTOMERS_VIEW'],
 
     // Operatività
     SHIFTS_MANAGE:         ['SHIFTS_VIEW'],
@@ -226,6 +227,7 @@ export class UserSettingsComponent implements OnInit {
           'CUSTOMERS_MANAGE',
           'CUSTOMERS_NOTES_VIEW',
           'CUSTOMERS_NOTES_MANAGE',
+          'CUSTOMERS_HOURS_VIEW',
         ]),
       },
       { title: 'Turni', items: pick(['SHIFTS_VIEW', 'SHIFTS_MANAGE']) },

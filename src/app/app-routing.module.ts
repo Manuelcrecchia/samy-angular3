@@ -216,7 +216,7 @@ const routes: Routes = [
     path: 'riepilogo-ore-clienti',
     component: RiepilogoOreClientiComponent,
     canActivate: [AuthGuard, AuthLevelGuard],
-    data: { permission: 'ATTENDANCE_VIEW' },
+    data: { permission: 'CUSTOMERS_HOURS_VIEW' },
   },
 
   // turni

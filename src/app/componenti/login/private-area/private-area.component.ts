@@ -62,37 +62,44 @@ export class PrivateAreaComponent {
         { email, password },
         { headers: this.globalService.headers, responseType: 'text' }
       )
-      .subscribe(async (response) => {
-        const res = JSON.parse(response);
-        const resp = res['response'];
+      .subscribe({
+        next: async (response) => {
+          const res = JSON.parse(response);
+          const resp = res['response'];
 
-        if (resp === 'NON TROVATO') {
-          this.popup.text = 'UTENTE NON TROVATO.';
+          if (resp === 'NON TROVATO') {
+            this.popup.text = 'UTENTE NON TROVATO.';
+            this.popup.openPopup();
+            return;
+          }
+
+          if (resp === 'NO') {
+            this.popup.text = 'PASSWORD ERRATA.';
+            this.popup.openPopup();
+            return;
+          }
+
+          // --- LOGIN OK ---
+          this.authService.email = email;
+          this.authService.userCode = res['codiceOperatore'];
+          this.authService.token = res['token'];
+          this.authService.permissions = res['permissions'] || [];
+
+          console.log(automatic ? '🤖 Login automatico' : '📩 Login manuale');
+
+          // 🔒 SALVA NEL KEYCHAIN SOLO SE È LOGIN MANUALE
+          if (!automatic) {
+            console.log('🔒 Salvo credenziali nel Keychain...');
+            await this.bio.storeCredentials(email, password);
+          }
+
+          this.router.navigateByUrl('/homeAdmin');
+        },
+        error: (err) => {
+          console.error('❌ Errore login:', err);
+          this.popup.text = 'Errore durante il login. Riprova.';
           this.popup.openPopup();
-          return;
         }
-
-        if (resp === 'NO') {
-          this.popup.text = 'PASSWORD ERRATA.';
-          this.popup.openPopup();
-          return;
-        }
-
-        // --- LOGIN OK ---
-        this.authService.email = email;
-        this.authService.userCode = res['codiceOperatore'];
-        this.authService.token = res['token'];
-        this.authService.permissions = res['permissions'] || [];
-
-        console.log(automatic ? '🤖 Login automatico' : '📩 Login manuale');
-
-        // 🔒 SALVA NEL KEYCHAIN SOLO SE È LOGIN MANUALE
-        if (!automatic) {
-          console.log('🔒 Salvo credenziali nel Keychain...');
-          await this.bio.storeCredentials(email, password);
-        }
-
-        this.router.navigateByUrl('/homeAdmin');
       });
   }
 

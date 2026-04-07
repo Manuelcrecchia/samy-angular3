@@ -392,21 +392,10 @@
           </div>
         </div>
 
-        <div class="col-md-6">
-          <mat-form-field appearance="fill" class="w-100">
-            <mat-label>Data</mat-label>
-            <input
-              matInput
-              [matDatepicker]="pickerEmmeciDataEdit"
-              name="data"
-              [(ngModel)]="quoteModelService.data"
-            />
-            <mat-datepicker-toggle
-              matSuffix
-              [for]="pickerEmmeciDataEdit"
-            ></mat-datepicker-toggle>
-            <mat-datepicker #pickerEmmeciDataEdit></mat-datepicker>
-          </mat-form-field>
+        <div class="col-md-6 d-flex align-items-center">
+          <div class="w-100">
+            <strong>Data:</strong> {{ quoteModelService.data }}
+          </div>
         </div>
 
         <div class="col-md-6">
@@ -484,11 +473,21 @@
         <div class="col-md-6">
           <mat-form-field appearance="fill" class="w-100">
             <mat-label>Prefisso via di partenza</mat-label>
-            <input
-              matInput
+            <mat-select
               name="selettorePrefissoViaDiPartenza"
               [(ngModel)]="quoteModelService.selettorePrefissoViaDiPartenza"
-            />
+            >
+              <mat-option value="VIA">VIA</mat-option>
+              <mat-option value="STRADA">STRADA</mat-option>
+              <mat-option value="PIAZZA">PIAZZA</mat-option>
+              <mat-option value="VIALE">VIALE</mat-option>
+              <mat-option value="CORSO">CORSO</mat-option>
+              <mat-option value="CONTRADA">CONTRADA</mat-option>
+              <mat-option value="LOCALITA'">LOCALITA'</mat-option>
+              <mat-option value="VICOLO">VICOLO</mat-option>
+              <mat-option value="LARGO">LARGO</mat-option>
+              <mat-option value="ROTONDA">ROTONDA</mat-option>
+            </mat-select>
           </mat-form-field>
         </div>
 
@@ -556,11 +555,21 @@
         <div class="col-md-6">
           <mat-form-field appearance="fill" class="w-100">
             <mat-label>Prefisso via di arrivo</mat-label>
-            <input
-              matInput
+            <mat-select
               name="selettorePrefissoViaDiArrivo"
               [(ngModel)]="quoteModelService.selettorePrefissoViaDiArrivo"
-            />
+            >
+              <mat-option value="VIA">VIA</mat-option>
+              <mat-option value="STRADA">STRADA</mat-option>
+              <mat-option value="PIAZZA">PIAZZA</mat-option>
+              <mat-option value="VIALE">VIALE</mat-option>
+              <mat-option value="CORSO">CORSO</mat-option>
+              <mat-option value="CONTRADA">CONTRADA</mat-option>
+              <mat-option value="LOCALITA'">LOCALITA'</mat-option>
+              <mat-option value="VICOLO">VICOLO</mat-option>
+              <mat-option value="LARGO">LARGO</mat-option>
+              <mat-option value="ROTONDA">ROTONDA</mat-option>
+            </mat-select>
           </mat-form-field>
         </div>
 
