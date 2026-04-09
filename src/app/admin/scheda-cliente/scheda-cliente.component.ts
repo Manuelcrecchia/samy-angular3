@@ -51,6 +51,24 @@ export class SchedaClienteComponent implements OnInit {
     }
   }
 
+  isSami(): boolean {
+    return this.cliente && (!!this.cliente.citta || !!this.cliente.via || !!this.cliente.cap);
+  }
+
+  isEmmeci(): boolean {
+    return this.cliente && (!!this.cliente.cittaDiPartenza || !!this.cliente.viaDiPartenza || !!this.cliente.ragSociale || this.cliente.stanzeEOggetti);
+  }
+
+  parseStanzeEOggetti(value: any): any[] {
+    if (!value) return [];
+    try {
+      const parsed = typeof value === 'string' ? JSON.parse(value) : value;
+      return Array.isArray(parsed) ? parsed : [];
+    } catch {
+      return [];
+    }
+  }
+
   back() {
     this.router.navigateByUrl('/listCustomer');
   }

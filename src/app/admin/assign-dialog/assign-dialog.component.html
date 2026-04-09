@@ -1,7 +1,4 @@
-<div class="container py-3">
-  <div class="d-flex justify-content-between align-items-center mb-3">
-    <h2 class="m-0 text-dark" mat-dialog-title>Assegna Dipendenti</h2>
-  </div>
+<h2 mat-dialog-title>Assegna Dipendenti</h2>
 
   <mat-dialog-content *ngIf="data">
     <p>
@@ -11,29 +8,48 @@
     <p><strong>Cliente:</strong> {{ data.title }}</p>
     <p><strong>Dipendenti richiesti:</strong> {{ data.requiredEmployees }}</p>
 
-    <mat-selection-list [(ngModel)]="selectedEmployees">
-      <mat-list-option
-        *ngFor="let e of employees"
-        [value]="e.id"
-        [disabled]="isOnLeave(e.id)"
-        [ngClass]="{ 'busy': isBusy(e.id), 'on-leave': isOnLeave(e.id) }"
+    <div style="margin-bottom: 20px;">
+      <p style="font-weight: bold; margin-bottom: 10px;">Dipendenti assegnati:</p>
+      <mat-selection-list [(ngModel)]="selectedEmployees">
+        <mat-list-option
+          *ngFor="let e of employees"
+          [value]="e.id"
+          [disabled]="isOnLeave(e.id)"
+          [ngClass]="{ 'busy': isBusy(e.id), 'on-leave': isOnLeave(e.id) }"
+        >
+          {{ e.nome }} {{ e.cognome }}
+          <span *ngIf="isOnLeave(e.id)" style="color: #e67e22; font-size: 0.82em; margin-left: 6px;">
+            {{ getLeaveLabel(e.id) }}
+          </span>
+          <span *ngIf="!isOnLeave(e.id) && getLeaveLabel(e.id)" style="color: #3498db; font-size: 0.82em; margin-left: 6px;">
+            {{ getLeaveLabel(e.id) }}
+          </span>
+          <span *ngIf="isBusy(e.id) && !isOnLeave(e.id)" style="color: #e74c3c; font-size: 0.82em; margin-left: 6px;">
+            (occupato)
+          </span>
+        </mat-list-option>
+      </mat-selection-list>
+    </div>
+
+    <div *ngIf="selectedEmployees.length > 0" style="margin-top: 20px; padding-top: 20px; padding: 15px; border-top: 1px solid #e0e0e0; border-radius: 8px; background: #f5f5f5;">
+      <p style="font-weight: bold; margin-bottom: 15px; margin-top: 0;">
+        <i class="fas fa-star me-2" style="color: #ff8a00;"></i> Seleziona Caposquadra:
+      </p>
+      <div
+        *ngFor="let empId of selectedEmployees"
+        style="margin-bottom: 12px; display: flex; align-items: center; padding: 10px; background: #ffffff; border-radius: 6px; border: 1px solid #e0e0e0;"
       >
-        {{ e.nome }} {{ e.cognome }}
-        <span *ngIf="isOnLeave(e.id)" style="color: #e67e22; font-size: 0.82em; margin-left: 6px;">
-          {{ getLeaveLabel(e.id) }}
-        </span>
-        <span *ngIf="!isOnLeave(e.id) && getLeaveLabel(e.id)" style="color: #3498db; font-size: 0.82em; margin-left: 6px;">
-          {{ getLeaveLabel(e.id) }}
-        </span>
-        <span *ngIf="isBusy(e.id) && !isOnLeave(e.id)" style="color: #e74c3c; font-size: 0.82em; margin-left: 6px;">
-          (occupato)
-        </span>
-      </mat-list-option>
-    </mat-selection-list>
+        <mat-checkbox
+          [checked]="selectedCapisquadra.includes(empId)"
+          (change)="$event.checked ? selectedCapisquadra.push(empId) : selectedCapisquadra.splice(selectedCapisquadra.indexOf(empId), 1)"
+          style="margin-right: 10px;"
+        ></mat-checkbox>
+        <span style="font-weight: 600;">{{ getEmployeeName(empId) }}</span>
+      </div>
+    </div>
   </mat-dialog-content>
 
   <mat-dialog-actions align="end">
     <button mat-button (click)="onCancel()">Annulla</button>
     <button mat-button color="primary" (click)="onSave()">Salva</button>
   </mat-dialog-actions>
-</div>

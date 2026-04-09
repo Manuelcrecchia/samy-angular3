@@ -56,6 +56,7 @@ export class CreateShiftComponent implements OnInit, OnDestroy {
 
   appointments: any[] = [];
   assignedShifts: { [appointmentId: string]: number[] } = {};
+  assignedCapisquadra: { [appointmentId: string]: number[] } = {};
   assignedVehicles: { [appointmentId: string]: number[] } = {};
   vehiclesCache: any[] = [];
   loading = false;
@@ -230,6 +231,7 @@ export class CreateShiftComponent implements OnInit, OnDestroy {
       appointmentId: app.isExtra ? null : app.originalAppointmentId || app.id,
       data: dateStr,
       employeeIds: this.assignedShifts[app.id] || [],
+      capisquadra: this.assignedCapisquadra[app.id] || [],
       title: app.title,
       description: app.description,
       startDate: start,
@@ -408,6 +410,7 @@ export class CreateShiftComponent implements OnInit, OnDestroy {
         appointmentId: app.isExtra ? null : app.originalAppointmentId || app.id,
         data: dateStr,
         employeeIds: this.assignedShifts[app.id] || [],
+        capisquadra: this.assignedCapisquadra[app.id] || [],
         title: app.title,
         description: app.description,
         startDate: start,
@@ -780,10 +783,12 @@ export class CreateShiftComponent implements OnInit, OnDestroy {
 
   openAssignmentDialog(app: any): void {
     const dialogRef = this.dialog.open(AssignDialogComponent, {
-      width: '500px',
+      width: '700px',
+      maxHeight: '90vh',
       data: {
         ...app,
         assigned: this.assignedShifts[app.id] || [],
+        capisquadra: this.assignedCapisquadra[app.id] || [],
         busyDetails: this.getBusyDetails(app),
         requiredEmployees: app.requiredEmployees,
         selectedDate: this.formatDate(this.selectedDate),
@@ -793,6 +798,7 @@ export class CreateShiftComponent implements OnInit, OnDestroy {
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
         this.assignedShifts[app.id] = result.employees || result;
+        this.assignedCapisquadra[app.id] = result.capisquadra || [];
         this.scheduleAutosave(app);
 
         this.socketService.emitUpdate({

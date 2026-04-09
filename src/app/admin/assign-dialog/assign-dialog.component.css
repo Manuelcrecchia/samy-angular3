@@ -16,32 +16,32 @@
 .mat-mdc-dialog-container .mdc-dialog__surface{
   border-radius: var(--radius-lg) !important;
   border: 1px solid var(--glass-border) !important;
-  background: rgba(11,15,20,0.88) !important;
+  background: #ffffff !important;
   backdrop-filter: blur(18px);
   -webkit-backdrop-filter: blur(18px);
   box-shadow: var(--shadow-soft) !important;
-  color: rgba(255,255,255,0.92);
+  color: #000000;
 }
 
 /* Padding container interno */
 .container.py-3{
-  color: rgba(255,255,255,0.92);
+  color: #000000;
 }
 
 /* Title */
 [mat-dialog-title]{
   font-weight: 950;
   letter-spacing: .2px;
-  color: rgba(255,255,255,0.92) !important;
+  color: #000000 !important;
 }
 
 /* Paragrafi */
 mat-dialog-content p{
   margin-bottom: 8px;
-  color: rgba(255,255,255,0.90);
+  color: #333333;
 }
 mat-dialog-content strong{
-  color: rgba(255,255,255,0.95);
+  color: #000000;
   font-weight: 950;
 }
 
@@ -135,6 +135,29 @@ mat-dialog-actions button[mat-button]:hover{
 /* Save button (color="primary") -> brand gradient */
 mat-dialog-actions button[color="primary"]{
   background: linear-gradient(135deg, var(--brand-orange), var(--brand-sky)) !important;
+}
+
+/* ===============================
+   SEZIONE CAPOSQUADRA
+================================= */
+mat-dialog-content > div {
+  color: #000000;
+}
+
+mat-dialog-content > div p {
+  color: #000000 !important;
+}
+
+mat-dialog-content > div span {
+  color: #000000 !important;
+}
+
+mat-checkbox {
+  color: #000000 !important;
+}
+
+mat-checkbox .mdc-label {
+  color: #000000 !important;
 }
 
 /* Mobile */

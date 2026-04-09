@@ -1,5 +1,5 @@
-import { Component, HostListener } from '@angular/core';
-import { Router } from '@angular/router';
+import { Component, HostListener, OnInit } from '@angular/core';
+import { Router, ActivatedRoute } from '@angular/router';
 import { CustomerModelService } from '../../service/customer-model.service';
 import { HttpClient } from '@angular/common/http';
 import { GlobalService } from '../../service/global.service';
@@ -56,7 +56,103 @@ export class EditCustomerComponent {
   }
 
   ngOnInit(): void {
+    // Carica il cliente dal database per assicurarsi di avere i dati più recenti
+    const numeroCliente = this.customerModelService.numeroCliente;
+    if (numeroCliente) {
+      this.caricaClienteFromDb(numeroCliente);
+    }
     this.caricaStanzeEOggetti();
+  }
+
+  private caricaClienteFromDb(numeroCliente: string): void {
+    this.http
+      .post(this.globalService.url + 'customers/getCustomer', { numeroCliente }, {
+        headers: this.globalService.headers,
+      })
+      .subscribe({
+        next: (res: any) => {
+          if (res && res[0]) {
+            const cliente = res[0];
+            // Aggiorna il customerModelService con i dati dal database
+            this.customerModelService.numeroCliente = cliente.numeroCliente;
+            this.customerModelService.tipoCliente = cliente.tipoCliente;
+            this.customerModelService.nominativo = cliente.nominativo;
+            this.customerModelService.cfpi = cliente.cfpi;
+            this.customerModelService.email = cliente.email;
+            this.customerModelService.telefono = cliente.telefono;
+            this.customerModelService.pagamento = cliente.pagamento;
+            this.customerModelService.note = cliente.note;
+            this.customerModelService.key = cliente.key;
+            this.customerModelService.tempistica = cliente.tempistica;
+            this.customerModelService.nOperatori = cliente.nOperatori;
+
+            // SAMI fields
+            this.customerModelService.cittaDiFatturazione = cliente.cittaDiFatturazione;
+            this.customerModelService.selettorePrefissoViaDiFatturazione = cliente.selettorePrefissoViaDiFatturazione;
+            this.customerModelService.viaDiFatturazione = cliente.viaDiFatturazione;
+            this.customerModelService.capDiFatturazione = cliente.capDiFatturazione;
+            this.customerModelService.citta = cliente.citta;
+            this.customerModelService.selettorePrefissoVia = cliente.selettorePrefissoVia;
+            this.customerModelService.via = cliente.via;
+            this.customerModelService.cap = cliente.cap;
+            this.customerModelService.referente = cliente.referente;
+            this.customerModelService.descrizioneImmobile = cliente.descrizioneImmobile;
+            this.customerModelService.servizi = cliente.servizi;
+            this.customerModelService.interventi = cliente.interventi;
+            this.customerModelService.imponibile = cliente.imponibile;
+            this.customerModelService.iva = cliente.iva;
+
+            // EMMECI fields
+            this.customerModelService.ragSociale = cliente.ragSociale;
+            this.customerModelService.codiceOperatore = cliente.codiceOperatore;
+            this.customerModelService.data = cliente.data;
+            this.customerModelService.cittaDiPartenza = cliente.cittaDiPartenza;
+            this.customerModelService.selettorePrefissoViaDiPartenza = cliente.selettorePrefissoViaDiPartenza;
+            this.customerModelService.viaDiPartenza = cliente.viaDiPartenza;
+            this.customerModelService.pianoDiPartenza = cliente.pianoDiPartenza;
+            this.customerModelService.occupazioneSuoloPubblicoDiPartenza = cliente.occupazioneSuoloPubblicoDiPartenza;
+            this.customerModelService.capDiPartenza = cliente.capDiPartenza;
+            this.customerModelService.cittaDiArrivo = cliente.cittaDiArrivo;
+            this.customerModelService.selettorePrefissoViaDiArrivo = cliente.selettorePrefissoViaDiArrivo;
+            this.customerModelService.viaDiArrivo = cliente.viaDiArrivo;
+            this.customerModelService.pianoDiArrivo = cliente.pianoDiArrivo;
+            this.customerModelService.occupazioneSuoloPubblicoDiArrivo = cliente.occupazioneSuoloPubblicoDiArrivo;
+            this.customerModelService.capDiArrivo = cliente.capDiArrivo;
+            this.customerModelService.altreDestinazioni = cliente.altreDestinazioni;
+            this.customerModelService.stanzeEOggetti = cliente.stanzeEOggetti;
+
+            // Boolean fields
+            this.customerModelService.lampadari = cliente.lampadari;
+            this.customerModelService.imballaggio = cliente.imballaggio;
+            this.customerModelService.smaltimentoMaterialiDiRisulta = cliente.smaltimentoMaterialiDiRisulta;
+            this.customerModelService.riposizionamentoContenutiDegliArredi = cliente.riposizionamentoContenutiDegliArredi;
+            this.customerModelService.smontaggioEImballaggioDegliArredi = cliente.smontaggioEImballaggioDegliArredi;
+            this.customerModelService.caricoSuNostroMezzoIdoneo = cliente.caricoSuNostroMezzoIdoneo;
+            this.customerModelService.trasporto = cliente.trasporto;
+            this.customerModelService.scaricoEConsegnaAlPiano = cliente.scaricoEConsegnaAlPiano;
+            this.customerModelService.montaggioDegliArredi = cliente.montaggioDegliArredi;
+            this.customerModelService.ausilioDiElevatoreEsternoOvePossibile = cliente.ausilioDiElevatoreEsternoOvePossibile;
+            this.customerModelService.assicurazioneControIRischiDiTrasporto = cliente.assicurazioneControIRischiDiTrasporto;
+            this.customerModelService.fornituraMaterialiDaImballo = cliente.fornituraMaterialiDaImballo;
+            this.customerModelService.imballaggioDeiContenuti = cliente.imballaggioDeiContenuti;
+            this.customerModelService.custodiaInDeposito = cliente.custodiaInDeposito;
+            this.customerModelService.ospCarico = cliente.ospCarico;
+            this.customerModelService.ospScarico = cliente.ospScarico;
+            this.customerModelService.prezzoTrasloco = cliente.prezzoTrasloco;
+            this.customerModelService.prezzoFornituraMaterialiDaImballo = cliente.prezzoFornituraMaterialiDaImballo;
+            this.customerModelService.prezzoImballaggioDeiContenuti = cliente.prezzoImballaggioDeiContenuti;
+            this.customerModelService.prezzoPassaggioInDeposito = cliente.prezzoPassaggioInDeposito;
+            this.customerModelService.prezzoOccupazioneSuoloPubblico = cliente.prezzoOccupazioneSuoloPubblico;
+            this.customerModelService.prezzoMensileCustodiaMobili = cliente.prezzoMensileCustodiaMobili;
+
+            // Dopo aver caricato i dati, parsa le stanzeEOggetti
+            this.caricaStanzeEOggetti();
+          }
+        },
+        error: (err) => {
+          console.error('Errore caricamento cliente:', err);
+        },
+      });
   }
 
   caricaStanzeEOggetti(): void {
@@ -105,6 +201,7 @@ export class EditCustomerComponent {
     private globalService: GlobalService,
     private router: Router,
     private location: Location,
+    private route: ActivatedRoute,
   ) {}
 
   private buildSamiBody() {

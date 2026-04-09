@@ -54,60 +54,166 @@
 
       <hr />
 
-      <h5 class="mt-3 mb-2 text-primary">📍 Dati Fatturazione</h5>
-      <p class="mb-1">
-        <strong>Città:</strong> {{ cliente.cittaDiFatturazione }}
-      </p>
-      <p class="mb-1">
-        <strong>Indirizzo:</strong>
-        {{ cliente.selettorePrefissoViaDiFatturazione }}
-        {{ cliente.viaDiFatturazione }}
-      </p>
-      <p class="mb-1"><strong>CAP:</strong> {{ cliente.capDiFatturazione }}</p>
+      <!-- SEZIONE SAMI -->
+      <ng-container *ngIf="isSami()">
+        <h5 class="mt-3 mb-2 text-primary">📍 Dati Fatturazione</h5>
+        <p class="mb-1">
+          <strong>Città:</strong> {{ cliente.cittaDiFatturazione }}
+        </p>
+        <p class="mb-1">
+          <strong>Indirizzo:</strong>
+          {{ cliente.selettorePrefissoViaDiFatturazione }}
+          {{ cliente.viaDiFatturazione }}
+        </p>
+        <p class="mb-1"><strong>CAP:</strong> {{ cliente.capDiFatturazione }}</p>
 
-      <h5 class="mt-3 mb-2 text-primary">🏠 Dati Sede Operativa</h5>
-      <p class="mb-1"><strong>Città:</strong> {{ cliente.citta }}</p>
-      <p class="mb-1">
-        <strong>Indirizzo:</strong> {{ cliente.selettorePrefissoVia }}
-        {{ cliente.via }}
-      </p>
-      <p class="mb-3"><strong>CAP:</strong> {{ cliente.cap }}</p>
+        <h5 class="mt-3 mb-2 text-primary">🏠 Dati Sede Operativa</h5>
+        <p class="mb-1"><strong>Città:</strong> {{ cliente.citta }}</p>
+        <p class="mb-1">
+          <strong>Indirizzo:</strong> {{ cliente.selettorePrefissoVia }}
+          {{ cliente.via }}
+        </p>
+        <p class="mb-3"><strong>CAP:</strong> {{ cliente.cap }}</p>
 
-      <h5 class="mt-3 mb-2 text-primary">🧾 Servizi</h5>
-      <ul
-        *ngIf="parseJson(cliente.servizi).length > 0"
-        class="list-group list-group-flush mb-3"
-      >
-        <li
-          class="list-group-item py-2"
-          *ngFor="let s of parseJson(cliente.servizi)"
+        <h5 class="mt-3 mb-2 text-primary">🧾 Servizi</h5>
+        <ul
+          *ngIf="parseJson(cliente.servizi).length > 0"
+          class="list-group list-group-flush mb-3"
         >
-          <i class="fas fa-check text-success me-2"></i>{{ s }}
-        </li>
-      </ul>
-      <p
-        *ngIf="parseJson(cliente.servizi).length === 0"
-        class="text-muted small"
-      >
-        Nessun servizio registrato
-      </p>
-
-      <div
-        *ngIf="
-          cliente.tipoCliente === 'O' &&
-          parseJson(cliente.interventi).length > 0
-        "
-      >
-        <h5 class="mt-3 mb-2 text-primary">🧹 Interventi</h5>
-        <ul class="list-group list-group-flush mb-3">
           <li
             class="list-group-item py-2"
-            *ngFor="let i of parseJson(cliente.interventi)"
+            *ngFor="let s of parseJson(cliente.servizi)"
           >
-            <i class="fas fa-arrow-right text-secondary me-2"></i>{{ i }}
+            <i class="fas fa-check text-success me-2"></i>{{ s }}
           </li>
         </ul>
-      </div>
+        <p
+          *ngIf="parseJson(cliente.servizi).length === 0"
+          class="text-muted small"
+        >
+          Nessun servizio registrato
+        </p>
+
+        <div
+          *ngIf="
+            cliente.tipoCliente === 'O' &&
+            parseJson(cliente.interventi).length > 0
+          "
+        >
+          <h5 class="mt-3 mb-2 text-primary">🧹 Interventi</h5>
+          <ul class="list-group list-group-flush mb-3">
+            <li
+              class="list-group-item py-2"
+              *ngFor="let i of parseJson(cliente.interventi)"
+            >
+              <i class="fas fa-arrow-right text-secondary me-2"></i>{{ i }}
+            </li>
+          </ul>
+        </div>
+      </ng-container>
+
+      <!-- SEZIONE EMMECI -->
+      <ng-container *ngIf="isEmmeci()">
+        <h5 class="mt-3 mb-2 text-primary">🏢 Ragione Sociale</h5>
+        <p class="mb-3"><strong>{{ cliente.ragSociale }}</strong></p>
+
+        <h5 class="mt-3 mb-2 text-primary">📤 Luogo di Partenza</h5>
+        <p class="mb-1"><strong>Città:</strong> {{ cliente.cittaDiPartenza }}</p>
+        <p class="mb-1">
+          <strong>Indirizzo:</strong>
+          {{ cliente.selettorePrefissoViaDiPartenza }}
+          {{ cliente.viaDiPartenza }}
+        </p>
+        <p class="mb-1"><strong>Piano:</strong> {{ cliente.pianoDiPartenza || '-' }}</p>
+        <p class="mb-1"><strong>Occupazione Suolo Pubblico:</strong> {{ cliente.occupazioneSuoloPubblicoDiPartenza || '-' }}</p>
+        <p class="mb-3"><strong>CAP:</strong> {{ cliente.capDiPartenza }}</p>
+
+        <h5 class="mt-3 mb-2 text-primary">📥 Luogo di Arrivo</h5>
+        <p class="mb-1"><strong>Città:</strong> {{ cliente.cittaDiArrivo }}</p>
+        <p class="mb-1">
+          <strong>Indirizzo:</strong>
+          {{ cliente.selettorePrefissoViaDiArrivo }}
+          {{ cliente.viaDiArrivo }}
+        </p>
+        <p class="mb-1"><strong>Piano:</strong> {{ cliente.pianoDiArrivo || '-' }}</p>
+        <p class="mb-1"><strong>Occupazione Suolo Pubblico:</strong> {{ cliente.occupazioneSuoloPubblicoDiArrivo || '-' }}</p>
+        <p class="mb-3"><strong>CAP:</strong> {{ cliente.capDiArrivo }}</p>
+
+        <div *ngIf="cliente.altreDestinazioni">
+          <h5 class="mt-3 mb-2 text-primary">📍 Altre Destinazioni</h5>
+          <p class="mb-3">{{ cliente.altreDestinazioni }}</p>
+        </div>
+
+        <div *ngIf="parseStanzeEOggetti(cliente.stanzeEOggetti).length > 0">
+          <h5 class="mt-3 mb-2 text-primary">🚪 Stanze e Oggetti</h5>
+          <table class="table table-sm" style="background: #f8f9fa; border-radius: 6px; overflow: hidden; margin-bottom: 1.5rem;">
+            <thead style="background: #e9ecef;">
+              <tr>
+                <th style="border: none; padding: 12px; width: 40%;">Stanza</th>
+                <th style="border: none; padding: 12px; width: 60%;">Oggetti</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let item of parseStanzeEOggetti(cliente.stanzeEOggetti)">
+                <td style="padding: 12px; border: 1px solid #e0e0e0;">{{ item.stanza || '-' }}</td>
+                <td style="padding: 12px; border: 1px solid #e0e0e0;">{{ item.oggetti || '-' }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h5 class="mt-3 mb-2 text-primary">🧾 Servizi Richiesti</h5>
+        <div class="row">
+          <div class="col-md-6 mb-2" *ngIf="cliente.lampadari !== undefined">
+            <strong>Lampadari:</strong> {{ cliente.lampadari ? '✓ Sì' : '✗ No' }}
+          </div>
+          <div class="col-md-6 mb-2" *ngIf="cliente.imballaggio !== undefined">
+            <strong>Imballaggio:</strong> {{ cliente.imballaggio ? '✓ Sì' : '✗ No' }}
+          </div>
+          <div class="col-md-6 mb-2" *ngIf="cliente.smaltimentoMaterialiDiRisulta !== undefined">
+            <strong>Smaltimento Materiali:</strong> {{ cliente.smaltimentoMaterialiDiRisulta ? '✓ Sì' : '✗ No' }}
+          </div>
+          <div class="col-md-6 mb-2" *ngIf="cliente.riposizionamentoContenutiDegliArredi !== undefined">
+            <strong>Riposizionamento Contenuti:</strong> {{ cliente.riposizionamentoContenutiDegliArredi ? '✓ Sì' : '✗ No' }}
+          </div>
+          <div class="col-md-6 mb-2" *ngIf="cliente.smontaggioEImballaggioDegliArredi !== undefined">
+            <strong>Smontaggio/Imballaggio:</strong> {{ cliente.smontaggioEImballaggioDegliArredi ? '✓ Sì' : '✗ No' }}
+          </div>
+          <div class="col-md-6 mb-2" *ngIf="cliente.caricoSuNostroMezzoIdoneo !== undefined">
+            <strong>Carico su Nostro Mezzo:</strong> {{ cliente.caricoSuNostroMezzoIdoneo ? '✓ Sì' : '✗ No' }}
+          </div>
+          <div class="col-md-6 mb-2" *ngIf="cliente.trasporto !== undefined">
+            <strong>Trasporto:</strong> {{ cliente.trasporto ? '✓ Sì' : '✗ No' }}
+          </div>
+          <div class="col-md-6 mb-2" *ngIf="cliente.scaricoEConsegnaAlPiano !== undefined">
+            <strong>Scarico e Consegna:</strong> {{ cliente.scaricoEConsegnaAlPiano ? '✓ Sì' : '✗ No' }}
+          </div>
+          <div class="col-md-6 mb-2" *ngIf="cliente.montaggioDegliArredi !== undefined">
+            <strong>Montaggio Arredi:</strong> {{ cliente.montaggioDegliArredi ? '✓ Sì' : '✗ No' }}
+          </div>
+          <div class="col-md-6 mb-2" *ngIf="cliente.ausilioDiElevatoreEsternoOvePossibile !== undefined">
+            <strong>Ausilio Elevatore:</strong> {{ cliente.ausilioDiElevatoreEsternoOvePossibile ? '✓ Sì' : '✗ No' }}
+          </div>
+          <div class="col-md-6 mb-2" *ngIf="cliente.assicurazioneControIRischiDiTrasporto !== undefined">
+            <strong>Assicurazione Trasporto:</strong> {{ cliente.assicurazioneControIRischiDiTrasporto ? '✓ Sì' : '✗ No' }}
+          </div>
+          <div class="col-md-6 mb-2" *ngIf="cliente.fornituraMaterialiDaImballo !== undefined">
+            <strong>Fornitura Materiali:</strong> {{ cliente.fornituraMaterialiDaImballo ? '✓ Sì' : '✗ No' }}
+          </div>
+          <div class="col-md-6 mb-2" *ngIf="cliente.imballaggioDeiContenuti !== undefined">
+            <strong>Imballaggio Contenuti:</strong> {{ cliente.imballaggioDeiContenuti ? '✓ Sì' : '✗ No' }}
+          </div>
+          <div class="col-md-6 mb-2" *ngIf="cliente.custodiaInDeposito !== undefined">
+            <strong>Custodia in Deposito:</strong> {{ cliente.custodiaInDeposito ? '✓ Sì' : '✗ No' }}
+          </div>
+          <div class="col-md-6 mb-2" *ngIf="cliente.ospCarico !== undefined">
+            <strong>OSP Carico:</strong> {{ cliente.ospCarico ? '✓ Sì' : '✗ No' }}
+          </div>
+          <div class="col-md-6 mb-2" *ngIf="cliente.ospScarico !== undefined">
+            <strong>OSP Scarico:</strong> {{ cliente.ospScarico ? '✓ Sì' : '✗ No' }}
+          </div>
+        </div>
+      </ng-container>
 
       <h5 class="mt-3 mb-2 text-primary">💰 Dati Contrattuali</h5>
       <div class="row">

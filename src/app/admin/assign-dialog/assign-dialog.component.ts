@@ -11,6 +11,7 @@ import { GlobalService } from '../../service/global.service';
 export class AssignDialogComponent implements OnInit {
   employees: any[] = [];
   selectedEmployees: number[] = [];
+  selectedCapisquadra: number[] = [];
   busyIds: number[] = [];
   forceConfirmed = false;
 
@@ -26,6 +27,7 @@ export class AssignDialogComponent implements OnInit {
 
   ngOnInit(): void {
     this.selectedEmployees = [...(this.data.assigned || [])];
+    this.selectedCapisquadra = [...(this.data.capisquadra || [])];
 
     if (this.data.busyDetails) {
       this.busyIds = this.data.busyDetails.map((c: any) => c.employeeId);
@@ -128,11 +130,17 @@ export class AssignDialogComponent implements OnInit {
     this.forceConfirmed = true;
     this.dialogRef.close({
       employees: this.selectedEmployees,
+      capisquadra: this.selectedCapisquadra,
       forceConfirmed: this.forceConfirmed
     });
   }
 
   onCancel(): void {
     this.dialogRef.close(null);
+  }
+
+  getEmployeeName(empId: number): string {
+    const emp = this.employees.find(e => e.id === empId);
+    return emp ? `${emp.nome} ${emp.cognome}` : '';
   }
 }

@@ -465,20 +465,14 @@ export class CalendarHomeComponent implements OnInit {
   onTitleInput(event: Event) {
     const val = (event.target as HTMLInputElement).value;
     this.popupTitle = val;
-    const allOptions = [
-      ...this.nPreventiviArray,
-      ...this.clientiArray.map(c => `${c.numeroCliente} - ${c.nominativo}`),
-    ];
+    const allOptions = this.getAutocompleteSource(this.popupCategory);
     const norm = this.normalize(val);
     this.filteredAutocomplete = norm ? allOptions.filter(s => this.normalize(s).includes(norm)) : allOptions;
     this.autocompleteOpen = this.filteredAutocomplete.length > 0;
   }
 
   onTitleFocus() {
-    const allOptions = [
-      ...this.nPreventiviArray,
-      ...this.clientiArray.map(c => `${c.numeroCliente} - ${c.nominativo}`),
-    ];
+    const allOptions = this.getAutocompleteSource(this.popupCategory);
     this.filteredAutocomplete = allOptions;
     this.autocompleteOpen = allOptions.length > 0;
   }
@@ -486,20 +480,24 @@ export class CalendarHomeComponent implements OnInit {
   selectAutocomplete(val: string) {
     this.popupTitle = val; this.autocompleteOpen = false;
 
-    // Cerca il preventivo per numero preventivo (contenuto prima del " - ")
     const codice = val.split(' - ')[0];
-    const preventivoData = this.quotesMap.get(this.normalize(codice));
-    if (preventivoData) {
-      this.popupDescription = `Sopralluogo – Contatto: ${preventivoData.nominativo} Telefono: ${preventivoData.telefono}`;
-      this.popupCategory = 'sopralluogo';
-      return;
+
+    // Se la categoria è "sopralluogo", cerca il preventivo
+    if (this.popupCategory === 'sopralluogo') {
+      const preventivoData = this.quotesMap.get(this.normalize(codice));
+      if (preventivoData) {
+        this.popupDescription = `Sopralluogo – Contatto: ${preventivoData.nominativo} Telefono: ${preventivoData.telefono}`;
+        return;
+      }
     }
 
-    const cliente = this.clientiArray.find(c=>this.normalize(`${c.numeroCliente} - ${c.nominativo}`)===this.normalize(val));
-    if (cliente) {
-      if (this.tenantService.isSami&&this.categories.some(c=>c.id==='straordinario'))
-        this.popupCategory = cliente.tipoCliente==='O'?'ordinario':'straordinario';
-      else this.popupCategory='ordinario';
+    // Se la categoria è "ordinario" o "straordinario", cerca il cliente
+    if (this.popupCategory === 'ordinario' || this.popupCategory === 'straordinario') {
+      const cliente = this.clientiArray.find(c=>this.normalize(`${c.numeroCliente} - ${c.nominativo}`)===this.normalize(val));
+      if (cliente) {
+        // Categoria già impostata, non cambiarla
+        return;
+      }
     }
   }
 
