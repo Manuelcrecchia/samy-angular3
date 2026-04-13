@@ -21,6 +21,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { UserSettingsComponent } from './admin/user-settings/user-settings.component';
 import { VehiclesSettingsComponent } from './admin/vehicles-settings/vehicles-settings.component';
+import { QuoteSettingsComponent } from './admin/quote-settings/quote-settings.component';
 import { VehicleAssignDialogComponent } from './admin/vehicle-assign-dialog/vehicle-assign-dialog.component';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatInputModule } from '@angular/material/input';
@@ -118,6 +119,7 @@ registerLocaleData(localeIt);
     AssignDialogComponent,
     VehicleAssignDialogComponent,
     VehiclesSettingsComponent,
+    QuoteSettingsComponent,
     GestionePermessiComponent,
     TimbratureHomeComponent,
     TimbratureDettaglioComponent,

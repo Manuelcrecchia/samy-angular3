@@ -23,6 +23,7 @@
             <mat-select
               name="tipoPreventivo"
               [(ngModel)]="quoteModelService.tipoPreventivo"
+              (selectionChange)="updateNomiStanze()"
             >
               <mat-option value="O">Ordinario</mat-option>
               <mat-option value="S">Straordinario</mat-option>
@@ -630,7 +631,21 @@
           </mat-form-field>
         </div>
 
-        <div class="border rounded p-3 bg-light">
+        <div class="col-md-6">
+          <mat-form-field appearance="fill" class="w-100">
+            <mat-label>Tipo preventivo</mat-label>
+            <mat-select
+              name="tipoPreventivo"
+              [(ngModel)]="quoteModelService.tipoPreventivo"
+              (ngModelChange)="updateNomiStanze()"
+            >
+              <mat-option value="R">Residenziale</mat-option>
+              <mat-option value="U">Ufficio</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <div class="border rounded p-3 bg-light w-100">
           <h5 class="mb-3">Stanze e oggetti</h5>
 
           <div class="row g-2 align-items-end mb-3">
@@ -678,10 +693,19 @@
               <mat-label>Oggetti</mat-label>
               <input
                 matInput
+                [matAutocomplete]="autoOggetti"
                 [(ngModel)]="stanza.oggetti"
                 [name]="'oggettiEdit' + i"
                 placeholder="Es: Divano, Letto, Tavolo"
               />
+              <mat-autocomplete #autoOggetti="matAutocomplete" autoActiveFirstOption>
+                <mat-option
+                  *ngFor="let frase of getPhrasesForStanza(stanza.stanza)"
+                  [value]="frase"
+                >
+                  {{ frase }}
+                </mat-option>
+              </mat-autocomplete>
             </mat-form-field>
           </div>
         </div>

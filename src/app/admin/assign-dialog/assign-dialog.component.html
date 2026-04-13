@@ -37,14 +37,21 @@
       </p>
       <div
         *ngFor="let empId of selectedEmployees"
-        style="margin-bottom: 12px; display: flex; align-items: center; padding: 10px; background: #ffffff; border-radius: 6px; border: 1px solid #e0e0e0;"
+        style="margin-bottom: 12px; display: flex; align-items: center; gap: 10px; padding: 10px; background: #ffffff; border-radius: 6px; border: 1px solid #e0e0e0;"
       >
         <mat-checkbox
           [checked]="selectedCapisquadra.includes(empId)"
           (change)="$event.checked ? selectedCapisquadra.push(empId) : selectedCapisquadra.splice(selectedCapisquadra.indexOf(empId), 1)"
-          style="margin-right: 10px;"
+          style="flex-shrink: 0;"
         ></mat-checkbox>
-        <span style="font-weight: 600;">{{ getEmployeeName(empId) }}</span>
+        <span style="font-weight: 600; min-width: 150px;">{{ getEmployeeName(empId) }}</span>
+        <input
+          *ngIf="selectedCapisquadra.includes(empId)"
+          type="text"
+          placeholder="Note personalizzate..."
+          [(ngModel)]="capisquadraNotes[empId]"
+          style="flex: 1; padding: 6px 10px; border: 1px solid #ddd; border-radius: 4px; font-size: 0.9em;"
+        />
       </div>
     </div>
   </mat-dialog-content>

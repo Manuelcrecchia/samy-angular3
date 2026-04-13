@@ -7,6 +7,7 @@ import { PassworddimenticataComponent } from './componenti/login/passworddimenti
 import { HomeAdminComponent } from './admin/homeadmin/homeadmin.component';
 import { UserSettingsComponent } from './admin/user-settings/user-settings.component';
 import { VehiclesSettingsComponent } from './admin/vehicles-settings/vehicles-settings.component';
+import { QuoteSettingsComponent } from './admin/quote-settings/quote-settings.component';
 
 import { QuotesHomeComponent } from './admin/quotes-home/quotes-home.component';
 import { AddQuoteComponent } from './admin/add-quote/add-quote.component';
@@ -74,6 +75,13 @@ const routes: Routes = [
     path: 'vehiclesSettings',
     component: VehiclesSettingsComponent,
     canActivate: [AuthGuard, AuthLevelGuard],
+  },
+  // impostazioni preventivi
+  {
+    path: 'quoteSettings',
+    component: QuoteSettingsComponent,
+    canActivate: [AuthGuard, AuthLevelGuard],
+    data: { permission: 'SETTINGS_QUOTES' },
   },
 
   // preventivi

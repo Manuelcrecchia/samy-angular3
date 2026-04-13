@@ -321,6 +321,7 @@
         <a (click)="navigateToCambiapassword()">Cambia password</a>
         <a *ngIf="global.hasPermission('EMPLOYEE_PERMITS_MANAGE')" (click)="navigateToLeaveSettings()">Impostazioni Permessi</a>
         <a *ngIf="global.hasPermission('SETTINGS_ADMIN')" (click)="navigateToVehiclesSettings()">Gestione mezzi</a>
+        <a *ngIf="global.hasPermission('SETTINGS_QUOTES')" (click)="navigateToQuoteSettings()">Impostazioni preventivi</a>
       </div>
 
       <div class="logo-container text-center">

@@ -12,6 +12,7 @@ export class AssignDialogComponent implements OnInit {
   employees: any[] = [];
   selectedEmployees: number[] = [];
   selectedCapisquadra: number[] = [];
+  capisquadraNotes: { [employeeId: number]: string } = {};
   busyIds: number[] = [];
   forceConfirmed = false;
 
@@ -28,6 +29,7 @@ export class AssignDialogComponent implements OnInit {
   ngOnInit(): void {
     this.selectedEmployees = [...(this.data.assigned || [])];
     this.selectedCapisquadra = [...(this.data.capisquadra || [])];
+    this.capisquadraNotes = { ...(this.data.capisquadraNotes || {}) };
 
     if (this.data.busyDetails) {
       this.busyIds = this.data.busyDetails.map((c: any) => c.employeeId);
@@ -128,11 +130,14 @@ export class AssignDialogComponent implements OnInit {
     }
 
     this.forceConfirmed = true;
-    this.dialogRef.close({
+    const result = {
       employees: this.selectedEmployees,
       capisquadra: this.selectedCapisquadra,
+      capisquadraNotesMap: this.capisquadraNotes,
       forceConfirmed: this.forceConfirmed
-    });
+    };
+    console.log('[assign-dialog] Closing with:', result);
+    this.dialogRef.close(result);
   }
 
   onCancel(): void {

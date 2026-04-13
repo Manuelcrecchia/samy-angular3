@@ -57,6 +57,7 @@ export class CreateShiftComponent implements OnInit, OnDestroy {
   appointments: any[] = [];
   assignedShifts: { [appointmentId: string]: number[] } = {};
   assignedCapisquadra: { [appointmentId: string]: number[] } = {};
+  assignedCapisquadraNotes: { [appointmentId: string]: { [employeeId: number]: string } } = {};
   assignedVehicles: { [appointmentId: string]: number[] } = {};
   vehiclesCache: any[] = [];
   loading = false;
@@ -232,6 +233,7 @@ export class CreateShiftComponent implements OnInit, OnDestroy {
       data: dateStr,
       employeeIds: this.assignedShifts[app.id] || [],
       capisquadra: this.assignedCapisquadra[app.id] || [],
+      capisquadraNotesMap: this.assignedCapisquadraNotes[app.id] || {},
       title: app.title,
       description: app.description,
       startDate: start,
@@ -241,6 +243,7 @@ export class CreateShiftComponent implements OnInit, OnDestroy {
     };
 
     console.log('AUTOSAVE PAYLOAD ->', payload);
+    console.log('assignedCapisquadraNotes[' + app.id + '] =', this.assignedCapisquadraNotes[app.id]);
 
     this.http
       .post<any>(this.globalService.url + 'shifts/autosave', payload)
@@ -411,6 +414,7 @@ export class CreateShiftComponent implements OnInit, OnDestroy {
         data: dateStr,
         employeeIds: this.assignedShifts[app.id] || [],
         capisquadra: this.assignedCapisquadra[app.id] || [],
+        capisquadraNotesMap: this.assignedCapisquadraNotes[app.id] || {},
         title: app.title,
         description: app.description,
         startDate: start,
@@ -647,6 +651,18 @@ export class CreateShiftComponent implements OnInit, OnDestroy {
             this.assignedShifts[extraId] = (s.employees || []).map(
               (e: any) => e.id,
             );
+
+            // Carica caposquadra e note
+            this.assignedCapisquadra[extraId] = (s.employees || [])
+              .filter((e: any) => e.ShiftEmployees?.isCaposquadra)
+              .map((e: any) => e.id);
+            this.assignedCapisquadraNotes[extraId] = {};
+            (s.employees || []).forEach((e: any) => {
+              if (e.ShiftEmployees?.caposquadraNote) {
+                this.assignedCapisquadraNotes[extraId][e.id] = e.ShiftEmployees.caposquadraNote;
+              }
+            });
+
             this.assignedVehicles[extraId] = Array.isArray(s.vehicleIds) ? s.vehicleIds : (s.vehicleId != null ? [s.vehicleId] : []);
           } else {
             const app = this.appointments.find(
@@ -702,6 +718,18 @@ export class CreateShiftComponent implements OnInit, OnDestroy {
               this.assignedShifts[newId] = (s.employees || []).map(
                 (e: any) => e.id,
               );
+
+              // Carica caposquadra e note
+              this.assignedCapisquadra[newId] = (s.employees || [])
+                .filter((e: any) => e.ShiftEmployees?.isCaposquadra)
+                .map((e: any) => e.id);
+              this.assignedCapisquadraNotes[newId] = {};
+              (s.employees || []).forEach((e: any) => {
+                if (e.ShiftEmployees?.caposquadraNote) {
+                  this.assignedCapisquadraNotes[newId][e.id] = e.ShiftEmployees.caposquadraNote;
+                }
+              });
+
               this.assignedVehicles[newId] = Array.isArray(s.vehicleIds) ? s.vehicleIds : (s.vehicleId != null ? [s.vehicleId] : []);
               continue;
             }
@@ -735,6 +763,18 @@ export class CreateShiftComponent implements OnInit, OnDestroy {
             this.assignedShifts[app.id] = (s.employees || []).map(
               (e: any) => e.id,
             );
+
+            // Carica caposquadra e note
+            this.assignedCapisquadra[app.id] = (s.employees || [])
+              .filter((e: any) => e.ShiftEmployees?.isCaposquadra)
+              .map((e: any) => e.id);
+            this.assignedCapisquadraNotes[app.id] = {};
+            (s.employees || []).forEach((e: any) => {
+              if (e.ShiftEmployees?.caposquadraNote) {
+                this.assignedCapisquadraNotes[app.id][e.id] = e.ShiftEmployees.caposquadraNote;
+              }
+            });
+
             this.assignedVehicles[app.id] = Array.isArray(s.vehicleIds) ? s.vehicleIds : (s.vehicleId != null ? [s.vehicleId] : []);
           }
         }
@@ -789,6 +829,7 @@ export class CreateShiftComponent implements OnInit, OnDestroy {
         ...app,
         assigned: this.assignedShifts[app.id] || [],
         capisquadra: this.assignedCapisquadra[app.id] || [],
+        capisquadraNotes: this.assignedCapisquadraNotes[app.id] || {},
         busyDetails: this.getBusyDetails(app),
         requiredEmployees: app.requiredEmployees,
         selectedDate: this.formatDate(this.selectedDate),
@@ -799,6 +840,7 @@ export class CreateShiftComponent implements OnInit, OnDestroy {
       if (result) {
         this.assignedShifts[app.id] = result.employees || result;
         this.assignedCapisquadra[app.id] = result.capisquadra || [];
+        this.assignedCapisquadraNotes[app.id] = result.capisquadraNotesMap || {};
         this.scheduleAutosave(app);
 
         this.socketService.emitUpdate({

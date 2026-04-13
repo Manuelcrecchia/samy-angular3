@@ -109,6 +109,10 @@ export class HomeAdminComponent implements OnInit {
     this.router.navigateByUrl('/vehiclesSettings');
   }
 
+  navigateToQuoteSettings() {
+    this.router.navigateByUrl('/quoteSettings');
+  }
+
   @HostListener('window:popstate', ['$event'])
   onPopState(event: PopStateEvent) {
     console.log('[AppComponent] Freccia indietro rilevata');

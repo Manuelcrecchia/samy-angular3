@@ -53,35 +53,35 @@ export class UserSettingsComponent implements OnInit {
 
   private permissionDeps: Record<string, string[]> = {
     // Note: richiedono prima la VIEW della sezione padre
-    QUOTES_NOTES_VIEW:     ['QUOTES_VIEW'],
-    CUSTOMERS_NOTES_VIEW:  ['CUSTOMERS_VIEW'],
+    QUOTES_NOTES_VIEW: ['QUOTES_VIEW'],
+    CUSTOMERS_NOTES_VIEW: ['CUSTOMERS_VIEW'],
 
     // Gestione preventivi/clienti
-    QUOTES_MANAGE:         ['QUOTES_VIEW'],
-    QUOTES_NOTES_MANAGE:   ['QUOTES_NOTES_VIEW'],   // → transitivo: QUOTES_VIEW
-    CUSTOMERS_MANAGE:      ['CUSTOMERS_VIEW'],
-    CUSTOMERS_NOTES_MANAGE:['CUSTOMERS_NOTES_VIEW'], // → transitivo: CUSTOMERS_VIEW
-    CUSTOMERS_HOURS_VIEW:  ['CUSTOMERS_VIEW'],
+    QUOTES_MANAGE: ['QUOTES_VIEW'],
+    QUOTES_NOTES_MANAGE: ['QUOTES_NOTES_VIEW'], // → transitivo: QUOTES_VIEW
+    CUSTOMERS_MANAGE: ['CUSTOMERS_VIEW'],
+    CUSTOMERS_NOTES_MANAGE: ['CUSTOMERS_NOTES_VIEW'], // → transitivo: CUSTOMERS_VIEW
+    CUSTOMERS_HOURS_VIEW: ['CUSTOMERS_VIEW'],
 
     // Operatività
-    SHIFTS_MANAGE:         ['SHIFTS_VIEW'],
-    ATTENDANCE_MANAGE:     ['ATTENDANCE_VIEW'],
-    STAMPING_MANAGE:       ['STAMPING_VIEW'],
+    SHIFTS_MANAGE: ['SHIFTS_VIEW'],
+    ATTENDANCE_MANAGE: ['ATTENDANCE_VIEW'],
+    STAMPING_MANAGE: ['STAMPING_VIEW'],
     CALENDAR_EVENT_MANAGE: ['CALENDAR_VIEW'],
-    NOTIFICATIONS_MANAGE:  ['NOTIFICATIONS_VIEW'],
+    NOTIFICATIONS_MANAGE: ['NOTIFICATIONS_VIEW'],
 
     // Amministratori
-    ADMIN_CREATE:          ['ADMIN_VIEW'],
-    ADMIN_EDIT:            ['ADMIN_VIEW'],
-    ADMIN_DELETE:          ['ADMIN_VIEW'],
-    SETTINGS_ADMIN:        ['ADMIN_VIEW'],
+    ADMIN_CREATE: ['ADMIN_VIEW'],
+    ADMIN_EDIT: ['ADMIN_VIEW'],
+    ADMIN_DELETE: ['ADMIN_VIEW'],
+    SETTINGS_ADMIN: ['ADMIN_VIEW'],
 
     // Dipendenti
-    EMPLOYEE_CREATE:        ['EMPLOYEE_VIEW'],
-    EMPLOYEE_EDIT:          ['EMPLOYEE_VIEW'],
-    EMPLOYEE_DELETE:        ['EMPLOYEE_VIEW'],
-    EMPLOYEE_DOCS_MANAGE:   ['EMPLOYEE_VIEW'],
-    EMPLOYEE_PERMITS_MANAGE:['EMPLOYEE_VIEW'],
+    EMPLOYEE_CREATE: ['EMPLOYEE_VIEW'],
+    EMPLOYEE_EDIT: ['EMPLOYEE_VIEW'],
+    EMPLOYEE_DELETE: ['EMPLOYEE_VIEW'],
+    EMPLOYEE_DOCS_MANAGE: ['EMPLOYEE_VIEW'],
+    EMPLOYEE_PERMITS_MANAGE: ['EMPLOYEE_VIEW'],
   };
 
   constructor(
@@ -218,6 +218,7 @@ export class UserSettingsComponent implements OnInit {
           'QUOTES_MANAGE',
           'QUOTES_NOTES_VIEW',
           'QUOTES_NOTES_MANAGE',
+          'SETTINGS_QUOTES',
         ]),
       },
       {

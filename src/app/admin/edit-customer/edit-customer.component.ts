@@ -5,6 +5,7 @@ import { HttpClient } from '@angular/common/http';
 import { GlobalService } from '../../service/global.service';
 import { Location } from '@angular/common';
 import { TenantService } from '../../service/tenant.service';
+import { PopupServiceService } from '../../componenti/popup/popup-service.service';
 
 @Component({
   selector: 'app-edit-customer',
@@ -12,56 +13,107 @@ import { TenantService } from '../../service/tenant.service';
   styleUrl: './edit-customer.component.css',
 })
 export class EditCustomerComponent {
-  nomiStanze = [
-    'Ingresso',
-    'Soggiorno',
-    'Salotto',
-    'Studio',
-    'Tinello',
-    'Cucina',
-    'Camera matr.',
-    'Cameretta',
-    'Bagno',
-    'Disimpegno',
-    'Ripostiglio',
-    'Terrazzo',
-    'Giardino',
-    'Garage',
-    'Cantina',
-    'Solaio',
-  ];
+  stanzaSelezionata: string = '';
 
-  stanzaSelezionata = '';
+  nomiStanze: string[] = [];
+  serviziOptions: string[] = [];
   stanzeEOggettiList: { stanza: string; oggetti: string }[] = [];
 
-  aggiornaListaStanze(): void {
-    this.nomiStanze = [
-      'Ingresso',
-      'Soggiorno',
-      'Salotto',
-      'Studio',
-      'Tinello',
-      'Cucina',
-      'Camera matr.',
-      'Cameretta',
-      'Bagno',
-      'Disimpegno',
-      'Ripostiglio',
-      'Terrazzo',
-      'Giardino',
-      'Garage',
-      'Cantina',
-      'Solaio',
-    ];
-  }
+  frasePerStanza: Map<number, string[]> = new Map();
+  stanzaMap: Map<string, number> = new Map();
+  private allRooms: any[] = [];
 
   ngOnInit(): void {
+    this.loadQuoteSettings();
     // Carica il cliente dal database per assicurarsi di avere i dati più recenti
     const numeroCliente = this.customerModelService.numeroCliente;
     if (numeroCliente) {
       this.caricaClienteFromDb(numeroCliente);
     }
     this.caricaStanzeEOggetti();
+
+    if (this.tenantService.isEmmeci) {
+      // Inizializza tipoCliente se non è impostato
+      if (!this.customerModelService.tipoCliente) {
+        this.customerModelService.tipoCliente = 'R';
+      }
+      this.updateNomiStanze();
+    }
+  }
+
+  loadQuoteSettings(): void {
+    this.http
+      .get<any[]>(this.globalService.url + 'admin/quote-settings/phrases', {
+        headers: this.globalService.headers,
+      })
+      .subscribe({
+        next: (phrases) => {
+          if (this.tenantService.isEmmeci) {
+            this.frasePerStanza.clear();
+            this.serviziOptions = [];
+
+            phrases.forEach((phrase) => {
+              if (phrase.roomId) {
+                if (!this.frasePerStanza.has(phrase.roomId)) {
+                  this.frasePerStanza.set(phrase.roomId, []);
+                }
+                this.frasePerStanza.get(phrase.roomId)!.push(phrase.testo);
+              }
+            });
+          } else {
+            this.serviziOptions = phrases
+              .filter((p) => !p.roomId)
+              .map((p) => p.testo);
+          }
+        },
+        error: (err) => {
+          console.error('Errore caricamento frasi:', err);
+        },
+      });
+
+    if (this.tenantService.isEmmeci) {
+      this.http
+        .get<any[]>(this.globalService.url + 'admin/quote-settings/rooms', {
+          headers: this.globalService.headers,
+        })
+        .subscribe({
+          next: (rooms) => {
+            this.allRooms = rooms;
+            this.updateNomiStanze();
+          },
+          error: (err) => {
+            console.error('Errore caricamento stanze:', err);
+          },
+        });
+    }
+  }
+
+  updateNomiStanze(): void {
+    if (!this.tenantService.isEmmeci || this.allRooms.length === 0) return;
+
+    const tipoPreventivo = this.customerModelService.tipoCliente === 'U' ? 'U' : 'R';
+
+    this.nomiStanze = this.allRooms
+      .filter((r) => r.tipoPreventivo === tipoPreventivo)
+      .map((r) => r.nome)
+      .sort();
+
+    this.stanzaMap.clear();
+    this.allRooms.forEach((room) => {
+      if (room.tipoPreventivo === tipoPreventivo) {
+        this.stanzaMap.set(room.nome, room.id);
+      }
+    });
+  }
+
+  getPhrasesForStanza(nomestanza: string): string[] {
+    if (!nomestanza) return [];
+
+    const nomeBase = nomestanza.split(' ').slice(0, -1).join(' ') || nomestanza;
+    const stanzaId = this.stanzaMap.get(nomeBase) || this.stanzaMap.get(nomestanza);
+
+    if (!stanzaId) return [];
+    return this.frasePerStanza.get(stanzaId) || [];
   }
 
   private caricaClienteFromDb(numeroCliente: string): void {
@@ -147,6 +199,7 @@ export class EditCustomerComponent {
 
             // Dopo aver caricato i dati, parsa le stanzeEOggetti
             this.caricaStanzeEOggetti();
+            this.updateNomiStanze();
           }
         },
         error: (err) => {
@@ -202,6 +255,7 @@ export class EditCustomerComponent {
     private router: Router,
     private location: Location,
     private route: ActivatedRoute,
+    private popup: PopupServiceService,
   ) {}
 
   private buildSamiBody() {

@@ -27,57 +27,16 @@ export class EditQuoteComponent {
 
   stanzaSelezionata: string = '';
 
-  nomiStanze: string[] = [
-    'Ingresso',
-    'Soggiorno',
-    'Salotto',
-    'Studio',
-    'Tinello',
-    'Cucina',
-    'Camera matr.',
-    'Cameretta',
-    'Bagno',
-    'Disimpegno',
-    'Ripostiglio',
-    'Terrazzo',
-    'Giardino',
-    'Garage',
-    'Cantina',
-    'Solaio',
-  ];
-
+  nomiStanze: string[] = [];
+  serviziOptions: string[] = [];
   stanzeEOggettiList: { stanza: string; oggetti: string }[] = [];
 
-  aggiornaListaStanze(): void {
-    if (this.quoteModelService.tipoPreventivo === 'U') {
-      this.nomiStanze = [
-        'Ufficio Sala',
-        'Sala Server',
-        'Sala Ristoro',
-        'Archivio',
-        'Reception',
-      ];
-    } else {
-      this.nomiStanze = [
-        'Ingresso',
-        'Soggiorno',
-        'Salotto',
-        'Studio',
-        'Tinello',
-        'Cucina',
-        'Camera matr.',
-        'Cameretta',
-        'Bagno',
-        'Disimpegno',
-        'Ripostiglio',
-        'Terrazzo',
-        'Giardino',
-        'Garage',
-        'Cantina',
-        'Solaio',
-      ];
-    }
-  }
+  // Per EMMECI: mappa di frasi per stanza (roomId -> array di frasi)
+  frasePerStanza: Map<number, string[]> = new Map();
+  // Per EMMECI: mappa di stanze per ottenere l'ID da nome (nome -> id)
+  stanzaMap: Map<string, number> = new Map();
+  // Store all rooms for EMMECI
+  private allRooms: any[] = [];
 
   aggiungiCampoStanza(): void {
     if (this.stanzeEOggettiList.length >= 10) {
@@ -104,22 +63,16 @@ export class EditQuoteComponent {
     this.stanzeEOggettiList.splice(index, 1);
   }
 
-  serviziOptions = [
-    'Spazzaggio e lavaggio pavimentazione',
-    'Vuotatura cestini con relativa sostituzione dei sacchetti',
-    'Pulizia ed igienizzazione dei servizi igenici',
-    'Pulizia porte',
-    'Pulizia dei vetri e relativi infisii interni ed esterni ove possibile',
-    'Deragnatura generale',
-    'Pulizia termosifoni e/o condizionatori',
-    'Pulizia battiscopa',
-  ];
-
   sameAddress = false;
 
   ngOnInit() {
+    this.loadQuoteSettings();
+
     if (this.tenantService.isEmmeci) {
-      this.aggiornaListaStanze();
+      // Inizializza tipoPreventivo se non è impostato
+      if (!this.quoteModelService.tipoPreventivo) {
+        this.quoteModelService.tipoPreventivo = 'R';
+      }
 
       const raw = this.quoteModelService.stanzeEOggetti;
 
@@ -135,7 +88,93 @@ export class EditQuoteComponent {
       } else {
         this.stanzeEOggettiList = [];
       }
+
+      this.updateNomiStanze();
     }
+  }
+
+  loadQuoteSettings(): void {
+    // Carica frasi e stanze dal backend
+    this.http
+      .get<any[]>(this.globalService.url + 'admin/quote-settings/phrases', {
+        headers: this.globalService.headers,
+      })
+      .subscribe({
+        next: (phrases) => {
+          if (this.tenantService.isEmmeci) {
+            // Per EMMECI: filtra le frasi per stanza
+            this.frasePerStanza.clear();
+            this.serviziOptions = [];
+
+            phrases.forEach((phrase) => {
+              if (phrase.roomId) {
+                if (!this.frasePerStanza.has(phrase.roomId)) {
+                  this.frasePerStanza.set(phrase.roomId, []);
+                }
+                this.frasePerStanza.get(phrase.roomId)!.push(phrase.testo);
+              }
+            });
+          } else {
+            // Per SAMI: tutte le frasi senza stanza
+            this.serviziOptions = phrases
+              .filter((p) => !p.roomId)
+              .map((p) => p.testo);
+          }
+        },
+        error: (err) => {
+          console.error('Errore caricamento frasi:', err);
+        },
+      });
+
+    // Per EMMECI: carica anche le stanze
+    if (this.tenantService.isEmmeci) {
+      this.http
+        .get<any[]>(this.globalService.url + 'admin/quote-settings/rooms', {
+          headers: this.globalService.headers,
+        })
+        .subscribe({
+          next: (rooms) => {
+            this.allRooms = rooms;
+            this.updateNomiStanze();
+          },
+          error: (err) => {
+            console.error('Errore caricamento stanze:', err);
+          },
+        });
+    }
+  }
+
+  // Aggiorna la lista di stanze in base al tipo preventivo corrente
+  updateNomiStanze(): void {
+    if (!this.tenantService.isEmmeci || this.allRooms.length === 0) return;
+
+    // Se tipoPreventivo non è impostato, default a 'R' (Residenziale)
+    const tipoPreventivo = this.quoteModelService.tipoPreventivo === 'U' ? 'U' : 'R';
+
+    this.nomiStanze = this.allRooms
+      .filter((r) => r.tipoPreventivo === tipoPreventivo)
+      .map((r) => r.nome)
+      .sort();
+
+    // Ricrea mappa nome -> id
+    this.stanzaMap.clear();
+    this.allRooms.forEach((room) => {
+      if (room.tipoPreventivo === tipoPreventivo) {
+        this.stanzaMap.set(room.nome, room.id);
+      }
+    });
+  }
+
+  // Ritorna le frasi precompilate per una specifica stanza (EMMECI)
+  getPhrasesForStanza(nomestanza: string): string[] {
+    if (!nomestanza) return [];
+
+    // Estrai il nome base della stanza (es: "Camera matrimoniale" da "Camera matrimoniale 1")
+    const nomeBase = nomestanza.split(' ').slice(0, -1).join(' ') || nomestanza;
+    const stanzaId = this.stanzaMap.get(nomeBase) || this.stanzaMap.get(nomestanza);
+
+    if (!stanzaId) return [];
+    return this.frasePerStanza.get(stanzaId) || [];
   }
   private buildSamiBody() {
     if (this.sameAddress) {
