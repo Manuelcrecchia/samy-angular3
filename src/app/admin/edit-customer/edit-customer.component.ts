@@ -392,6 +392,7 @@ export class EditCustomerComponent {
   }
 
   back(): void {
+    this.customerModelService.reset();
     this.router.navigateByUrl('/listCustomer');
   }
 
@@ -407,6 +408,7 @@ export class EditCustomerComponent {
   @HostListener('window:popstate', ['$event'])
   onBrowserBackBtnClose(event: Event): void {
     event.preventDefault();
+    this.customerModelService.reset();
     this.router.navigateByUrl('/listCustomer', { replaceUrl: true });
   }
 }

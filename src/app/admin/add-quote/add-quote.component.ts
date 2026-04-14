@@ -336,6 +336,7 @@ export class AddQuoteComponent {
   }
 
   back() {
+    this.quoteModelService.resetQuoteModel();
     this.router.navigateByUrl('/quotesHome');
   }
 

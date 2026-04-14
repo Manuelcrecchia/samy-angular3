@@ -72,13 +72,15 @@
       <table class="table table-hover align-middle text-dark">
         <thead>
           <tr>
+            <th class="drag-handle text-dark"></th>
             <th class="text-dark">Frase</th>
             <th class="text-end text-dark">Azioni</th>
           </tr>
         </thead>
 
-        <tbody>
-          <tr *ngFor="let phrase of phrases">
+        <tbody cdkDropList (cdkDropListDropped)="dropPhrase($event)">
+          <tr *ngFor="let phrase of phrases" cdkDrag>
+            <td class="drag-handle" cdkDragHandle>⠿</td>
             <td>
               <ng-container *ngIf="editingPhraseId !== phrase.id; else editPhraseView">
                 <span>{{ phrase.testo }}</span>
@@ -125,7 +127,7 @@
           </tr>
 
           <tr *ngIf="phrases.length === 0">
-            <td colspan="2" class="text-center muted py-4">
+            <td colspan="3" class="text-center muted py-4">
               Nessuna frase inserita
             </td>
           </tr>
@@ -170,13 +172,15 @@
             <table class="table table-hover align-middle text-dark">
               <thead>
                 <tr>
+                  <th class="drag-handle text-dark"></th>
                   <th class="text-dark">Stanza</th>
                   <th class="text-dark">Frasi associate</th>
                   <th class="text-end text-dark">Azioni</th>
                 </tr>
               </thead>
-              <tbody>
-                <tr *ngFor="let room of getRoomsByType('R')">
+              <tbody cdkDropList [cdkDropListData]="roomsR" (cdkDropListDropped)="dropRoom($event, 'R')">
+                <tr *ngFor="let room of roomsR" cdkDrag>
+                  <td class="drag-handle" cdkDragHandle>⠿</td>
                   <td>
                     <ng-container
                       *ngIf="editingRoomId !== room.id; else editRoomView"
@@ -257,13 +261,15 @@
             <table class="table table-hover align-middle text-dark">
               <thead>
                 <tr>
+                  <th class="drag-handle text-dark"></th>
                   <th class="text-dark">Stanza</th>
                   <th class="text-dark">Frasi associate</th>
                   <th class="text-end text-dark">Azioni</th>
                 </tr>
               </thead>
-              <tbody>
-                <tr *ngFor="let room of getRoomsByType('U')">
+              <tbody cdkDropList [cdkDropListData]="roomsU" (cdkDropListDropped)="dropRoom($event, 'U')">
+                <tr *ngFor="let room of roomsU" cdkDrag>
+                  <td class="drag-handle" cdkDragHandle>⠿</td>
                   <td>
                     <ng-container
                       *ngIf="editingRoomId !== room.id; else editRoomViewU"
@@ -370,14 +376,16 @@
       <table class="table table-hover align-middle text-dark">
         <thead>
           <tr>
+            <th class="drag-handle text-dark"></th>
             <th class="text-dark">Frase</th>
             <th class="text-dark">Stanza</th>
             <th class="text-end text-dark">Azioni</th>
           </tr>
         </thead>
 
-        <tbody>
-          <tr *ngFor="let phrase of phrases">
+        <tbody cdkDropList (cdkDropListDropped)="dropPhrase($event)">
+          <tr *ngFor="let phrase of phrases" cdkDrag>
+            <td class="drag-handle" cdkDragHandle>⠿</td>
             <td>
               <ng-container
                 *ngIf="editingPhraseId !== phrase.id; else editPhraseViewEmmeci"
@@ -445,7 +453,7 @@
           </tr>
 
           <tr *ngIf="phrases.length === 0">
-            <td colspan="3" class="text-center muted py-4">
+            <td colspan="4" class="text-center muted py-4">
               Nessuna frase inserita
             </td>
           </tr>

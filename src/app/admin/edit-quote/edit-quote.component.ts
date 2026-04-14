@@ -343,6 +343,7 @@ export class EditQuoteComponent {
   }
 
   back() {
+    this.quoteModelService.resetQuoteModel();
     this.router.navigateByUrl('/quotesHome');
   }
 

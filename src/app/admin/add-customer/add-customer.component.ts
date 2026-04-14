@@ -327,6 +327,7 @@ export class AddCustomerComponent {
   }
 
   back() {
+    this.customerModelService.reset();
     this.router.navigateByUrl('/listCustomer');
   }
 

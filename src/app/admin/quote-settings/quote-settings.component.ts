@@ -3,11 +3,13 @@ import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { GlobalService } from '../../service/global.service';
 import { TenantService } from '../../service/tenant.service';
+import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 
 interface QuoteRoom {
   id: number;
   nome: string;
   tipoPreventivo: 'R' | 'U';
+  position: number;
   createdAt: string;
 }
 
@@ -15,6 +17,7 @@ interface QuotePhrase {
   id: number;
   testo: string;
   roomId: number | null;
+  position: number;
   createdAt: string;
 }
 
@@ -26,6 +29,8 @@ interface QuotePhrase {
 export class QuoteSettingsComponent implements OnInit {
   // Data
   rooms: QuoteRoom[] = [];
+  roomsR: QuoteRoom[] = [];
+  roomsU: QuoteRoom[] = [];
   phrases: QuotePhrase[] = [];
   loading = false;
 
@@ -81,11 +86,7 @@ export class QuoteSettingsComponent implements OnInit {
       )
       .subscribe({
         next: (res) => {
-          this.phrases = (res || []).sort(
-            (a, b) =>
-              new Date(b.createdAt).getTime() -
-              new Date(a.createdAt).getTime(),
-          );
+          this.phrases = res || [];
           this.loading = false;
         },
         error: (err) => {
@@ -202,11 +203,9 @@ export class QuoteSettingsComponent implements OnInit {
       )
       .subscribe({
         next: (res) => {
-          this.rooms = (res || []).sort(
-            (a, b) =>
-              a.tipoPreventivo.localeCompare(b.tipoPreventivo) ||
-              (a.nome || '').localeCompare(b.nome || '', 'it'),
-          );
+          this.rooms = res || [];
+          this.roomsR = this.rooms.filter((r) => r.tipoPreventivo === 'R');
+          this.roomsU = this.rooms.filter((r) => r.tipoPreventivo === 'U');
         },
         error: (err) => {
           console.error('Errore loadRooms:', err);
@@ -295,6 +294,45 @@ export class QuoteSettingsComponent implements OnInit {
         error: (err) => {
           console.error('Errore deleteRoom:', err);
           alert(err?.error?.error || 'Errore eliminazione stanza');
+        },
+      });
+  }
+
+  // ════════════════════════════════════════════════════════════════════════════
+  // DRAG & DROP
+  // ════════════════════════════════════════════════════════════════════════════
+
+  dropPhrase(event: CdkDragDrop<QuotePhrase[]>) {
+    moveItemInArray(this.phrases, event.previousIndex, event.currentIndex);
+    const order = this.phrases.map((p, i) => ({ id: p.id, position: i }));
+    this.http
+      .put(
+        this.globalService.url + 'admin/quote-settings/phrases/reorder',
+        { order },
+        { headers: this.globalService.headers },
+      )
+      .subscribe({
+        error: (err) => {
+          console.error('Errore reorder frasi:', err);
+          alert('Errore durante il riordino');
+        },
+      });
+  }
+
+  dropRoom(event: CdkDragDrop<QuoteRoom[]>, type: 'R' | 'U') {
+    const arr = type === 'R' ? this.roomsR : this.roomsU;
+    moveItemInArray(arr, event.previousIndex, event.currentIndex);
+    const order = arr.map((r, i) => ({ id: r.id, position: i }));
+    this.http
+      .put(
+        this.globalService.url + 'admin/quote-settings/rooms/reorder',
+        { order },
+        { headers: this.globalService.headers },
+      )
+      .subscribe({
+        error: (err) => {
+          console.error('Errore reorder stanze:', err);
+          alert('Errore durante il riordino');
         },
       });
   }
