@@ -21,7 +21,7 @@ export class DocumentManagerComponent implements OnInit {
   email: string = '';
 
   currentFilename: string = ''; // 👈 NECESSARIO PER STAMPA E DOWNLOAD CORRETTI
-  fileType: 'pdf' | 'image' | 'other' = 'other';
+  fileType: 'pdf' | 'image' | 'signed' | 'other' = 'other';
   imageBase64: string = '';
   fileBlob: Blob | null = null;
 
@@ -223,15 +223,18 @@ export class DocumentManagerComponent implements OnInit {
       });
   }
 
-  private getFileType(filename: string): 'pdf' | 'image' | 'other' {
-    const ext = filename.split('.').pop()?.toLowerCase() || '';
+  private getFileType(filename: string): 'pdf' | 'image' | 'signed' | 'other' {
+    const lower = filename.toLowerCase();
+    const ext = lower.split('.').pop() || '';
     const imageExts = ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp', 'svg'];
+    if (lower.endsWith('.p7m')) return 'signed';
     if (ext === 'pdf') return 'pdf';
     if (imageExts.includes(ext)) return 'image';
     return 'other';
   }
 
   selectFile(filename: string): void {
+    this.clearFilePreview();
     this.currentFilename = filename; // 👈 IMPORTANTE
     this.fileType = this.getFileType(filename);
 
@@ -295,6 +298,13 @@ export class DocumentManagerComponent implements OnInit {
   }
 
   printFile(filename: string): void {
+    const type = this.getFileType(filename);
+
+    if (filename.toLowerCase().endsWith('.p7m')) {
+      alert('I file .p7m non possono essere stampati direttamente. Scaricali e aprili con un verificatore di firma digitale.');
+      return;
+    }
+
     const body = this.getPayload({
       folder: this.selectedFolder,
       filename,
@@ -307,7 +317,13 @@ export class DocumentManagerComponent implements OnInit {
       })
       .subscribe({
         next: (blob) => {
-          const pdfUrl = URL.createObjectURL(blob);
+          const printableBlob =
+            type === 'pdf'
+              ? new Blob([blob], { type: 'application/pdf' })
+              : type === 'image'
+                ? new Blob([blob], { type: blob.type || 'image/png' })
+                : blob;
+          const pdfUrl = URL.createObjectURL(printableBlob);
 
           // Apri in nuova scheda
           const newWindow = window.open(pdfUrl);

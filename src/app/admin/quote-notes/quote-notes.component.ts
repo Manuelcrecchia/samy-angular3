@@ -206,9 +206,65 @@ export class QuoteNotesComponent implements OnInit {
 
   downloadAllegato(allegato: AllegatoNota) {
     const link = document.createElement('a');
-    link.href = `data:${allegato.mimeType};base64,${allegato.base64}`;
+    const url = this.createObjectUrl(allegato);
+    link.href = url;
     link.download = allegato.nome;
     link.click();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  }
+
+  viewAllegato(allegato: AllegatoNota) {
+    const url = this.createObjectUrl(allegato);
+    const newWindow = window.open(url, '_blank');
+    if (!newWindow) {
+      alert('⚠️ Popup bloccato dal browser. Consenti i popup per visualizzare l’allegato.');
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+      return;
+    }
+
+    newWindow.onload = () => setTimeout(() => URL.revokeObjectURL(url), 5000);
+  }
+
+  printAllegato(allegato: AllegatoNota) {
+    if (this.isP7m(allegato)) {
+      alert('I file .p7m non possono essere stampati direttamente. Scaricali e aprili con un verificatore di firma digitale.');
+      return;
+    }
+
+    const url = this.createObjectUrl(allegato);
+    const newWindow = window.open(url, '_blank');
+    if (!newWindow) {
+      alert('⚠️ Popup bloccato dal browser. Consenti i popup per stampare l’allegato.');
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+      return;
+    }
+
+    newWindow.onload = () => {
+      newWindow.focus();
+      const tryPrint = setInterval(() => {
+        try {
+          newWindow.print();
+          clearInterval(tryPrint);
+          setTimeout(() => URL.revokeObjectURL(url), 5000);
+        } catch {}
+      }, 300);
+    };
+  }
+
+  private createObjectUrl(allegato: AllegatoNota): string {
+    const mimeType = this.isP7m(allegato)
+      ? 'application/pkcs7-mime'
+      : allegato.mimeType || 'application/octet-stream';
+    const byteCharacters = atob(allegato.base64);
+    const byteNumbers = new Array(byteCharacters.length);
+
+    for (let i = 0; i < byteCharacters.length; i++) {
+      byteNumbers[i] = byteCharacters.charCodeAt(i);
+    }
+
+    const byteArray = new Uint8Array(byteNumbers);
+    const blob = new Blob([byteArray], { type: mimeType });
+    return URL.createObjectURL(blob);
   }
 
   isImage(allegato: AllegatoNota): boolean {
@@ -223,6 +279,10 @@ export class QuoteNotesComponent implements OnInit {
       allegato.mimeType === 'application/pdf' ||
       allegato.nome?.toLowerCase().endsWith('.pdf')
     );
+  }
+
+  isP7m(allegato: AllegatoNota): boolean {
+    return allegato.nome?.toLowerCase().endsWith('.p7m');
   }
 
   getDataUrl(allegato: AllegatoNota): SafeUrl {

@@ -179,10 +179,21 @@
                   [src]="getDataUrl(a)"
                   [alt]="a.nome"
                   class="allegato-img"
-                  (click)="downloadAllegato(a)"
-                  title="Clicca per scaricare"
+                  (click)="viewAllegato(a)"
+                  title="Clicca per visualizzare"
                 />
                 <span class="allegato-img-nome">{{ a.nome }}</span>
+                <div class="allegato-actions">
+                  <button type="button" class="btn-pdf-download" (click)="viewAllegato(a)" title="Visualizza">
+                    <mat-icon>visibility</mat-icon>
+                  </button>
+                  <button type="button" class="btn-pdf-download" (click)="downloadAllegato(a)" title="Scarica">
+                    <mat-icon>download</mat-icon>
+                  </button>
+                  <button type="button" class="btn-pdf-download" (click)="printAllegato(a)" title="Stampa">
+                    <mat-icon>print</mat-icon>
+                  </button>
+                </div>
               </div>
 
               <!-- PDF viewer inline -->
@@ -195,23 +206,41 @@
                 <div class="allegato-pdf-footer">
                   <mat-icon class="pdf-icon">picture_as_pdf</mat-icon>
                   <span>{{ a.nome }}</span>
+                  <button type="button" class="btn-pdf-download" (click)="viewAllegato(a)" title="Visualizza">
+                    <mat-icon>visibility</mat-icon>
+                  </button>
                   <button type="button" class="btn-pdf-download" (click)="downloadAllegato(a)" title="Scarica">
                     <mat-icon>download</mat-icon>
+                  </button>
+                  <button type="button" class="btn-pdf-download" (click)="printAllegato(a)" title="Stampa">
+                    <mat-icon>print</mat-icon>
                   </button>
                 </div>
               </div>
 
               <!-- Altro file -->
-              <button
-                *ngIf="!isImage(a) && !isPdf(a)"
-                type="button"
-                class="allegato-chip"
-                (click)="downloadAllegato(a)"
-              >
-                <mat-icon>insert_drive_file</mat-icon>
-                {{ a.nome }}
-                <mat-icon class="chip-download">download</mat-icon>
-              </button>
+              <div *ngIf="!isImage(a) && !isPdf(a)" class="allegato-file-wrapper" [class.allegato-p7m-wrapper]="isP7m(a)">
+                <button
+                  type="button"
+                  class="allegato-chip"
+                  (click)="viewAllegato(a)"
+                >
+                  <mat-icon>{{ isP7m(a) ? 'lock' : 'insert_drive_file' }}</mat-icon>
+                  {{ a.nome }}
+                </button>
+                <small *ngIf="isP7m(a)" class="allegato-p7m-label">File firmato digitalmente</small>
+                <div class="allegato-actions">
+                  <button type="button" class="btn-pdf-download" (click)="viewAllegato(a)" title="Visualizza">
+                    <mat-icon>visibility</mat-icon>
+                  </button>
+                  <button type="button" class="btn-pdf-download" (click)="downloadAllegato(a)" title="Scarica">
+                    <mat-icon>download</mat-icon>
+                  </button>
+                  <button type="button" class="btn-pdf-download" (click)="printAllegato(a)" title="Stampa">
+                    <mat-icon>print</mat-icon>
+                  </button>
+                </div>
+              </div>
 
             </ng-container>
           </div>
@@ -241,7 +270,7 @@
           <div *ngFor="let a of nuoviAllegati; let i = index" class="allegato-preview-chip">
             <img *ngIf="isImage(a)" [src]="getDataUrl(a)" [alt]="a.nome" class="preview-thumb" />
             <mat-icon *ngIf="isPdf(a)">picture_as_pdf</mat-icon>
-            <mat-icon *ngIf="!isImage(a) && !isPdf(a)">attach_file</mat-icon>
+            <mat-icon *ngIf="!isImage(a) && !isPdf(a)">{{ isP7m(a) ? 'lock' : 'attach_file' }}</mat-icon>
             <span>{{ a.nome }}</span>
             <button type="button" class="remove-allegato" (click)="removeAllegato(i)">
               <mat-icon>close</mat-icon>

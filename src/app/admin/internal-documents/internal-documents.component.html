@@ -104,6 +104,16 @@
           <div class="file-actions">
             <button
               mat-icon-button
+              class="icon-btn icon-view"
+              title="Visualizza"
+              type="button"
+              (click)="selectFile(file.filename); $event.stopPropagation()"
+            >
+              <mat-icon>visibility</mat-icon>
+            </button>
+
+            <button
+              mat-icon-button
               class="icon-btn icon-primary"
               title="Scarica"
               type="button"
@@ -112,6 +122,16 @@
               "
             >
               <mat-icon>download</mat-icon>
+            </button>
+
+            <button
+              mat-icon-button
+              class="icon-btn icon-print"
+              title="Stampa"
+              type="button"
+              (click)="printFile(file.filename); $event.stopPropagation()"
+            >
+              <mat-icon>print</mat-icon>
             </button>
 
             <button
@@ -156,6 +176,54 @@
             </button>
           </div>
         </ng-template>
+      </div>
+
+      <div *ngIf="currentFilename && fileType === 'image' && imageUrl" class="image-viewer">
+        <div class="image-toolbar">
+          <strong>{{ currentFilename }}</strong>
+          <button
+            mat-raised-button
+            color="accent"
+            class="btn-brand"
+            (click)="downloadCurrentFile(currentFilename)"
+          >
+            ⬇️ Scarica
+          </button>
+        </div>
+        <img [src]="imageUrl" [alt]="currentFilename" />
+      </div>
+
+      <div *ngIf="currentFilename && fileType === 'signed'" class="signed-viewer">
+        <div class="signed-icon">🔐</div>
+        <h3>File firmato digitalmente</h3>
+        <strong>{{ currentFilename }}</strong>
+        <p>
+          I file .p7m non possono essere visualizzati come PDF direttamente nel
+          browser. Scaricali e aprili con un verificatore di firma digitale.
+        </p>
+        <button
+          mat-raised-button
+          color="accent"
+          class="btn-brand"
+          (click)="downloadCurrentFile(currentFilename)"
+        >
+          ⬇️ Scarica .p7m
+        </button>
+      </div>
+
+      <div *ngIf="currentFilename && fileType === 'other'" class="signed-viewer">
+        <div class="signed-icon">📄</div>
+        <h3>Anteprima non disponibile</h3>
+        <strong>{{ currentFilename }}</strong>
+        <p>Scarica il file per aprirlo con un’applicazione compatibile.</p>
+        <button
+          mat-raised-button
+          color="accent"
+          class="btn-brand"
+          (click)="downloadCurrentFile(currentFilename)"
+        >
+          ⬇️ Scarica
+        </button>
       </div>
     </main>
   </div>

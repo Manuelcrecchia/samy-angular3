@@ -217,7 +217,7 @@
       <div *ngFor="let clientName of clientKeys()">
         <div class="d-flex align-items-center mt-3 client-header">
           <h4 class="mb-0 text-dark">
-            🏢 {{ clientName }}
+            🏢 {{ getClientDisplayName(clientName) }}
             <small>
               —
               {{

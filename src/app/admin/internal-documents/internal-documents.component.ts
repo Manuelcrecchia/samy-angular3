@@ -6,16 +6,18 @@ import { GlobalService } from '../../service/global.service';
 @Component({
   selector: 'app-internal-documents',
   templateUrl: './internal-documents.component.html',
-  styleUrls: ['./internal-documents.component.scss'],
+  styleUrls: ['./internal-documents.component.css'],
 })
 export class InternalDocumentsComponent implements OnInit {
   folders: string[] = [];
   selectedFolder: string = '';
   files: any[] = [];
   pdfBase64: string = '';
+  imageUrl: string = '';
   newFolderName: string = '';
 
   currentFilename: string = '';
+  fileType: 'pdf' | 'image' | 'signed' | 'other' = 'other';
 
   constructor(
     private router: Router,
@@ -97,6 +99,7 @@ export class InternalDocumentsComponent implements OnInit {
             this.selectedFolder = '';
             this.files = [];
             this.pdfBase64 = '';
+            this.clearImageUrl();
             this.currentFilename = '';
           }
           this.loadFolders();
@@ -111,7 +114,9 @@ export class InternalDocumentsComponent implements OnInit {
   selectFolder(folder: string): void {
     this.selectedFolder = folder;
     this.pdfBase64 = '';
+    this.clearImageUrl();
     this.currentFilename = '';
+    this.fileType = 'other';
     this.loadFiles();
   }
 
@@ -181,8 +186,39 @@ export class InternalDocumentsComponent implements OnInit {
   selectFile(filename: string): void {
     if (!this.selectedFolder) return;
     this.currentFilename = filename;
+    this.fileType = this.getFileType(filename);
+    this.pdfBase64 = '';
+    this.clearImageUrl();
+
+    if (this.fileType === 'signed') {
+      return;
+    }
 
     const body = { folder: this.selectedFolder, filename };
+
+    if (this.fileType === 'image') {
+      this.http
+        .post(
+          this.globalService.url + 'admin/internal-documents/downloadSecure',
+          body,
+          {
+            headers: this.globalService.headers,
+            responseType: 'blob',
+          },
+        )
+        .subscribe({
+          next: (blob) => {
+            this.imageUrl = URL.createObjectURL(blob);
+          },
+          error: (err) => {
+            console.error('IMAGE PREVIEW ERROR:', err);
+            alert('Errore apertura immagine');
+          },
+        });
+      return;
+    }
+
+    if (this.fileType !== 'pdf') return;
 
     this.http
       .post(this.globalService.url + 'admin/internal-documents/getPdf', body, {
@@ -230,6 +266,10 @@ export class InternalDocumentsComponent implements OnInit {
 
   printFile(filename: string): void {
     if (!this.selectedFolder) return;
+    if (filename.toLowerCase().endsWith('.p7m')) {
+      alert('I file .p7m non possono essere stampati direttamente. Scaricali e aprili con un verificatore di firma digitale.');
+      return;
+    }
 
     const body = { folder: this.selectedFolder, filename };
 
@@ -308,6 +348,8 @@ export class InternalDocumentsComponent implements OnInit {
           if (this.currentFilename === filename) {
             this.currentFilename = '';
             this.pdfBase64 = '';
+            this.clearImageUrl();
+            this.fileType = 'other';
           }
         },
         error: (err) => {
@@ -329,6 +371,19 @@ export class InternalDocumentsComponent implements OnInit {
       i++;
     }
     return `${v.toFixed(i === 0 ? 0 : 1)} ${units[i]}`;
+  }
+
+  private getFileType(filename: string): 'pdf' | 'image' | 'signed' | 'other' {
+    const lower = String(filename || '').toLowerCase();
+    if (/\.(png|jpe?g|gif|webp|bmp|svg)$/i.test(lower)) return 'image';
+    if (lower.endsWith('.pdf')) return 'pdf';
+    if (lower.endsWith('.p7m')) return 'signed';
+    return 'other';
+  }
+
+  private clearImageUrl(): void {
+    if (this.imageUrl) URL.revokeObjectURL(this.imageUrl);
+    this.imageUrl = '';
   }
 
   back(): void {

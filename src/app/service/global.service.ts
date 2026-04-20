@@ -7,7 +7,7 @@ import { TenantService } from './tenant.service';
   providedIn: 'root',
 })
 export class GlobalService {
-  version = '3.5';
+  version = '3.6';
 
   constructor(
     private authService: AuthServiceService,
@@ -27,12 +27,12 @@ export class GlobalService {
     }
 
     if (this.tenantService.isEmmeci) {
-      //return 'https://nodeemmeci.mvtechcore.it/';
-      return 'http://nodeemmeci.mvtechcore.it:5001/';
+      return 'https://nodeemmeci.mvtechcore.it/';
+      //return 'http://nodeemmeci.mvtechcore.it:5001/';
     }
 
-    //return 'https://nodesami.mvtechcore.it/';
-    return 'http://nodesami.mvtechcore.it:5001/';
+    return 'https://nodesami.mvtechcore.it/';
+    //return 'http://nodesami.mvtechcore.it:5001/';
   }
 
   checkVersion(): Promise<boolean> {

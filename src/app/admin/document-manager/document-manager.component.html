@@ -160,8 +160,18 @@
                 <div class="mv-file-actions">
                   <button
                     mat-icon-button
-                    class="mv-icon-btn"
-                    (click)="downloadCurrentFile(file.filename)"
+                    class="mv-icon-btn mv-icon-btn--view"
+                    (click)="selectFile(file.filename); $event.stopPropagation()"
+                    matTooltip="Visualizza"
+                    type="button"
+                  >
+                    <mat-icon>visibility</mat-icon>
+                  </button>
+
+                  <button
+                    mat-icon-button
+                    class="mv-icon-btn mv-icon-btn--download"
+                    (click)="downloadCurrentFile(file.filename); $event.stopPropagation()"
                     matTooltip="Scarica"
                     type="button"
                   >
@@ -170,8 +180,18 @@
 
                   <button
                     mat-icon-button
+                    class="mv-icon-btn mv-icon-btn--print"
+                    (click)="printFile(file.filename); $event.stopPropagation()"
+                    matTooltip="Stampa"
+                    type="button"
+                  >
+                    <mat-icon>print</mat-icon>
+                  </button>
+
+                  <button
+                    mat-icon-button
                     class="mv-icon-btn mv-icon-btn--accent"
-                    (click)="sendFileMail(file.filename)"
+                    (click)="sendFileMail(file.filename); $event.stopPropagation()"
                     matTooltip="Invia via mail"
                     type="button"
                   >
@@ -181,7 +201,7 @@
                   <button
                     mat-icon-button
                     class="mv-icon-btn mv-icon-btn--danger"
-                    (click)="deleteFile(file.filename)"
+                    (click)="deleteFile(file.filename); $event.stopPropagation()"
                     matTooltip="Elimina"
                     type="button"
                   >
@@ -290,6 +310,36 @@
           </div>
         </section>
 
+        <!-- FILE VIEWER - SIGNED P7M -->
+        <section class="mv-card mv-viewer" *ngIf="fileType === 'signed' && currentFilename">
+          <div class="mv-card__head mv-viewer-head">
+            <div>
+              <h3 class="mv-h3">File firmato digitalmente</h3>
+              <p class="mv-sub">I file .p7m vanno aperti con un verificatore di firma digitale</p>
+            </div>
+          </div>
+
+          <div class="mv-card__body mv-viewer-body">
+            <div class="mv-generic-preview">
+              <div class="mv-generic-preview__icon">🔐</div>
+              <strong>{{ currentFilename }}</strong>
+              <p>
+                Il file è stato caricato correttamente. Scaricalo per verificarlo
+                o aprirlo con un software compatibile con firme digitali.
+              </p>
+              <button
+                mat-raised-button
+                class="mv-cta mv-cta--primary"
+                color="primary"
+                (click)="downloadCurrentFile(currentFilename)"
+                type="button"
+              >
+                ⬇️ Scarica .p7m
+              </button>
+            </div>
+          </div>
+        </section>
+
         <!-- FILE VIEWER - OTHER -->
         <section class="mv-card mv-viewer" *ngIf="fileType === 'other' && currentFilename">
           <div class="mv-card__head mv-viewer-head">
@@ -300,12 +350,10 @@
           </div>
 
           <div class="mv-card__body mv-viewer-body">
-            <div style="padding: 2rem; text-align: center;">
-              <div style="font-size: 4rem; margin-bottom: 1rem;">📄</div>
-              <div style="margin-bottom: 1rem;">
-                <strong>{{ currentFilename }}</strong>
-              </div>
-              <p style="color: #666; margin-bottom: 2rem;">
+            <div class="mv-generic-preview">
+              <div class="mv-generic-preview__icon">📄</div>
+              <strong>{{ currentFilename }}</strong>
+              <p>
                 Scarica il file per visualizzarlo
               </p>
               <button

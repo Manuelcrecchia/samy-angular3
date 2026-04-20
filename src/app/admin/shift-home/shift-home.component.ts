@@ -7,6 +7,7 @@ import { TenantService } from '../../service/tenant.service';
 interface ShiftRow {
   empId: number;
   title: string;
+  numeroCliente?: string | null;
   description: string;
   start: string | null;
   duration: number;
@@ -24,6 +25,7 @@ interface ShiftRow {
 interface ClientRow {
   empId: number;
   empName: string;
+  numeroCliente?: string | null;
   start: string | null;
   duration: number;
   published: boolean;
@@ -102,16 +104,21 @@ export class ShiftHomeComponent implements OnInit {
 
   get groupedByClient(): { [key: string]: ClientRow[] } {
     const result: { [key: string]: ClientRow[] } = {};
+    this.clientLabels = {};
     for (const shift of this.shifts) {
-      const clientTitle = this.cleanShiftTitle(shift?.appointment?.title || shift?.title || '-');
+      const numeroCliente = this.getShiftNumeroCliente(shift);
+      const clientLabel = this.getShiftClientLabel(shift);
+      const clientKey = numeroCliente || `appointment-${shift?.appointmentId || shift?.id || clientLabel}`;
       const employees = Array.isArray(shift.employees) ? shift.employees : [];
-      if (!result[clientTitle]) result[clientTitle] = [];
+      if (!result[clientKey]) result[clientKey] = [];
+      this.clientLabels[clientKey] = clientLabel;
       for (const emp of employees) {
         const empId = Number(emp?.id) || 0;
         const empName = `${emp?.nome ?? ''} ${emp?.cognome ?? ''}`.trim();
-        result[clientTitle].push({
+        result[clientKey].push({
           empId,
           empName,
+          numeroCliente,
           start: shift?.startDate && shift?.startDate !== 'null' && shift?.startDate !== '' ? shift.startDate : null,
           duration: emp?.ShiftEmployees?.durationOverride != null
             ? Number(emp.ShiftEmployees.durationOverride) || 0
@@ -137,8 +144,13 @@ export class ShiftHomeComponent implements OnInit {
     return Object.keys(this.groupedByClient).sort();
   }
 
+  getClientDisplayName(clientKey: string): string {
+    return this.clientLabels[clientKey] || clientKey;
+  }
+
   shifts: any[] = [];
   groupedByEmployee: { [key: string]: ShiftRow[] } = {};
+  clientLabels: { [key: string]: string } = {};
 
   selectedEmployees: number[] = [];
   selectAll: boolean = false;
@@ -332,6 +344,7 @@ export class ShiftHomeComponent implements OnInit {
         result[key].push({
           empId,
           title: shift?.appointment?.title || shift?.title || '-',
+          numeroCliente: this.getShiftNumeroCliente(shift),
           description: shift?.description || '',
           start:
             shift?.startDate &&
@@ -638,5 +651,26 @@ export class ShiftHomeComponent implements OnInit {
     // "123-Cliente"
     // "45 – Nome cliente"
     return value.replace(/^\s*\d+\s*[-–]\s*/, '').trim() || 'Sede sconosciuta';
+  }
+
+  private getShiftNumeroCliente(shift: any): string | null {
+    const raw =
+      shift?.appointment?.numeroCliente ??
+      shift?.appointment?.customer?.numeroCliente ??
+      shift?.customer?.numeroCliente ??
+      null;
+
+    if (raw === null || raw === undefined) return null;
+    const value = String(raw).trim();
+    return value || null;
+  }
+
+  private getShiftClientLabel(shift: any): string {
+    const numeroCliente = this.getShiftNumeroCliente(shift);
+    const cleanedTitle = this.cleanShiftTitle(
+      shift?.appointment?.title || shift?.title || '-',
+    );
+
+    return numeroCliente ? `${numeroCliente} - ${cleanedTitle}` : cleanedTitle;
   }
 }
