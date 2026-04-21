@@ -189,6 +189,7 @@
 }
 .legend-dot.cat-sopralluogo   { background: #e86a6a; }
 .legend-dot.cat-ordinario     { background: #5fa878; }
+.legend-dot.cat-ordineServizio { background: #2563eb; }
 .legend-dot.cat-straordinario { background: #d6b85a; color: #1a1a1a; }
 .legend-dot.cat-lavoriSvolti  { background: #6f8fcf; }
 .legend-dot.cat-altro         { background: #9a7bc2; }
@@ -426,6 +427,7 @@
 ═══════════════════════════════════════════════ */
 .cat-sopralluogo   { background: #e86a6a; }
 .cat-ordinario     { background: #5fa878; }
+.cat-ordineServizio { background: #2563eb; }
 .cat-straordinario { background: #d6b85a; color: #1a1a1a !important; }
 .cat-lavoriSvolti  { background: #6f8fcf; }
 .cat-altro         { background: #9a7bc2; }

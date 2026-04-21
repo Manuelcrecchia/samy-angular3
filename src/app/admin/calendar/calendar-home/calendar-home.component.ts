@@ -595,7 +595,7 @@ export class CalendarHomeComponent implements OnInit {
   // ── UTILS ──────────────────────────────────────────────────────────────
 
   getCategoryClass(cat: string): string {
-    return ['sopralluogo','ordinario','straordinario','lavoriSvolti','altro'].includes(cat)?`cat-${cat}`:'cat-default';
+    return ['sopralluogo','ordinario','ordineServizio','straordinario','lavoriSvolti','altro'].includes(cat)?`cat-${cat}`:'cat-default';
   }
 
   formatTime(date: Date): string { return `${date.getHours().toString().padStart(2,'0')}:${date.getMinutes().toString().padStart(2,'0')}`; }
@@ -608,7 +608,7 @@ export class CalendarHomeComponent implements OnInit {
   normalize(s: string): string { return (s||'').normalize('NFD').replace(/\p{Diacritic}/gu,'').toLowerCase().trim(); }
 
   getCategoriesForTenant(): {id:string;text:string}[] {
-    if (this.tenantService.isEmmeci) return [{id:'ordinario',text:'Ordinario'},{id:'sopralluogo',text:'Sopralluogo'},{id:'altro',text:'Altro'}];
+    if (this.tenantService.isEmmeci) return [{id:'ordinario',text:'Ordinario'},{id:'ordineServizio',text:'Ordine di servizio'},{id:'sopralluogo',text:'Sopralluogo'},{id:'altro',text:'Altro'}];
     return [{id:'ordinario',text:'Ordinario'},{id:'straordinario',text:'Straordinario'},{id:'sopralluogo',text:'Sopralluogo'},{id:'lavoriSvolti',text:'Lavori svolti'},{id:'altro',text:'Altro'}];
   }
 

@@ -87,6 +87,8 @@ import { RiepilogoOreClientiComponent } from './admin/riepilogo-ore-clienti/riep
 import { InternalDocumentsComponent } from './admin/internal-documents/internal-documents.component';
 import { QuoteNotesComponent } from './admin/quote-notes/quote-notes.component';
 import { CustomerNotesComponent } from './admin/customer-notes/customer-notes.component';
+import { ServiceOrdersComponent } from './admin/service-orders/service-orders.component';
+import { AddServiceOrderComponent } from './admin/add-service-order/add-service-order.component';
 
 registerLocaleData(localeIt);
 
@@ -131,6 +133,8 @@ registerLocaleData(localeIt);
     InternalDocumentsComponent,
     QuoteNotesComponent,
     CustomerNotesComponent,
+    ServiceOrdersComponent,
+    AddServiceOrderComponent,
   ],
   imports: [
     BrowserModule,

@@ -1,0 +1,65 @@
+.add-service-order-page {
+  max-width: 980px;
+}
+
+.page-title h2 {
+  color: #1f2937;
+  font-weight: 800;
+}
+
+.form-section {
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  background: #fff;
+  padding: 18px;
+  margin-bottom: 16px;
+  box-shadow: 0 8px 22px rgba(15, 23, 42, 0.08);
+}
+
+.form-section h5 {
+  margin-bottom: 14px;
+  color: #111827;
+  font-weight: 800;
+}
+
+.lookup-row,
+.schedule-grid {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 10px;
+  align-items: end;
+}
+
+.customer-card {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  border-top: 1px solid #e5e7eb;
+  padding-top: 14px;
+}
+
+.customer-card span,
+.schedule-grid label {
+  color: #6b7280;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.customer-card strong {
+  display: block;
+  color: #111827;
+  font-weight: 700;
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+@media (max-width: 700px) {
+  .lookup-row,
+  .schedule-grid,
+  .customer-card {
+    grid-template-columns: 1fr;
+  }
+}

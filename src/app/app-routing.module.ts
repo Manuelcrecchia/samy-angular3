@@ -14,6 +14,8 @@ import { AddQuoteComponent } from './admin/add-quote/add-quote.component';
 import { EditQuoteComponent } from './admin/edit-quote/edit-quote.component';
 import { QuoteNotesComponent } from './admin/quote-notes/quote-notes.component';
 import { CustomerNotesComponent } from './admin/customer-notes/customer-notes.component';
+import { ServiceOrdersComponent } from './admin/service-orders/service-orders.component';
+import { AddServiceOrderComponent } from './admin/add-service-order/add-service-order.component';
 
 import { AddCustomerComponent } from './admin/add-customer/add-customer.component';
 import { ListCustomerComponent } from './admin/list-customer/list-customer.component';
@@ -114,6 +116,18 @@ const routes: Routes = [
     component: CustomerNotesComponent,
     canActivate: [AuthGuard, AuthLevelGuard],
     data: { permission: 'CUSTOMERS_NOTES_VIEW' },
+  },
+  {
+    path: 'service-orders',
+    component: ServiceOrdersComponent,
+    canActivate: [AuthGuard, AuthLevelGuard],
+    data: { permission: 'QUOTES_VIEW' },
+  },
+  {
+    path: 'service-orders/add',
+    component: AddServiceOrderComponent,
+    canActivate: [AuthGuard, AuthLevelGuard],
+    data: { permission: 'QUOTES_MANAGE' },
   },
 
   // clienti

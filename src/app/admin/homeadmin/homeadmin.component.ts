@@ -6,6 +6,7 @@ import { QuoteModelService } from '../../service/quote-model.service';
 import { Location } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { AuthServiceService } from '../../auth-service.service';
+import { TenantService } from '../../service/tenant.service';
 
 @Component({
   selector: 'app-homeadmin',
@@ -22,6 +23,7 @@ export class HomeAdminComponent implements OnInit {
     private location: Location,
     private http: HttpClient,
     private authService: AuthServiceService,
+    public tenantService: TenantService,
   ) {}
 
   isMenuOpen: boolean = false;
@@ -67,6 +69,10 @@ export class HomeAdminComponent implements OnInit {
 
   navigateToQuotesHome() {
     this.router.navigateByUrl('/quotesHome');
+  }
+
+  navigateToServiceOrders() {
+    this.router.navigateByUrl('/service-orders');
   }
 
   navigateToGestionePermessi() {

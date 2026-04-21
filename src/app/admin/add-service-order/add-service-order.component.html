@@ -1,0 +1,94 @@
+<div class="container py-4 add-service-order-page">
+  <div class="d-flex justify-content-start align-items-center mb-4">
+    <button class="btn btn-outline-secondary" type="button" (click)="goBack()">
+      &larr; Indietro
+    </button>
+  </div>
+
+  <div class="page-title mb-4">
+    <p class="text-uppercase text-muted mb-1">EMMECI</p>
+    <h2>Nuovo ordine di servizio</h2>
+  </div>
+
+  <section class="form-section">
+    <h5>Cliente</h5>
+    <div class="lookup-row">
+      <input
+        class="form-control"
+        type="search"
+        [ngModel]="customerQuery"
+        (ngModelChange)="onCustomerQueryChange($event)"
+        (keyup.enter)="searchCustomers()"
+        placeholder="Numero cliente o nome cliente"
+      />
+      <button class="btn btn-dark" type="button" (click)="searchCustomers()">
+        Cerca
+      </button>
+    </div>
+
+    <div class="list-group mt-2" *ngIf="customers.length > 0">
+      <button
+        class="list-group-item list-group-item-action"
+        type="button"
+        *ngFor="let customer of customers"
+        (click)="selectCustomer(customer)"
+      >
+        <strong>{{ customer.numeroCliente }}</strong>
+        - {{ customerName(customer) }}
+        <span class="text-muted" *ngIf="customer.telefono"> - {{ customer.telefono }}</span>
+      </button>
+    </div>
+
+    <p class="text-muted mt-2" *ngIf="loadingCustomers">Ricerca clienti...</p>
+
+    <div class="customer-card mt-3" *ngIf="selectedCustomer">
+      <div>
+        <span>Cliente</span>
+        <strong>{{ selectedCustomer.numeroCliente }} - {{ customerName(selectedCustomer) }}</strong>
+      </div>
+      <div>
+        <span>Telefono</span>
+        <strong>{{ selectedCustomer.telefono || '-' }}</strong>
+      </div>
+      <div>
+        <span>Email</span>
+        <strong>{{ selectedCustomer.email || '-' }}</strong>
+      </div>
+      <div>
+        <span>Partenza</span>
+        <strong>{{ address('Partenza') }}</strong>
+      </div>
+      <div>
+        <span>Destinazione</span>
+        <strong>{{ address('Arrivo') }}</strong>
+      </div>
+    </div>
+  </section>
+
+  <section class="form-section">
+    <h5>Descrizione</h5>
+    <textarea
+      class="form-control"
+      rows="7"
+      [(ngModel)]="descrizione"
+      placeholder="Dettagli dell'ordine di servizio"
+    ></textarea>
+  </section>
+
+  <section class="form-section schedule-grid">
+    <label>
+      Data
+      <input class="form-control" type="date" [(ngModel)]="data" />
+    </label>
+    <label>
+      Ora
+      <input class="form-control" type="time" [(ngModel)]="ora" />
+    </label>
+  </section>
+
+  <div class="actions">
+    <button class="btn btn-success" type="button" (click)="save()" [disabled]="saving">
+      {{ saving ? 'Salvataggio...' : 'Salva ordine di servizio' }}
+    </button>
+  </div>
+</div>

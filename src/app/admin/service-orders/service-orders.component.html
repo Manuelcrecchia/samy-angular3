@@ -1,0 +1,57 @@
+<div class="container py-4 service-orders-page">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <button class="btn btn-outline-secondary" type="button" (click)="goBack()">
+      &larr; Indietro
+    </button>
+
+    <button
+      class="btn btn-primary"
+      type="button"
+      (click)="addOrder()"
+      *ngIf="global.hasPermission('QUOTES_MANAGE')"
+    >
+      Aggiungi
+    </button>
+  </div>
+
+  <div class="page-title mb-4">
+    <p class="text-uppercase text-muted mb-1">EMMECI</p>
+    <h2>Ordini di servizio</h2>
+  </div>
+
+  <div class="search-bar mb-4">
+    <input
+      class="form-control"
+      type="search"
+      [(ngModel)]="search"
+      (keyup.enter)="loadOrders()"
+      placeholder="Cerca per nome o numero cliente"
+    />
+    <button class="btn btn-dark" type="button" (click)="loadOrders()">Cerca</button>
+  </div>
+
+  <div *ngIf="loading" class="alert alert-info">Caricamento...</div>
+  <div *ngIf="!loading && orders.length === 0" class="alert alert-light border">
+    Nessun ordine di servizio trovato.
+  </div>
+
+  <div class="orders-list" *ngIf="!loading && orders.length > 0">
+    <article class="order-card" *ngFor="let order of orders">
+      <div>
+        <span class="order-number">Ordine #{{ order.numeroOrdine || order.id }}</span>
+        <h5>{{ customerName(order) }}</h5>
+        <p class="mb-1">
+          Cliente {{ order.numeroCliente }}
+          <span *ngIf="order.customer?.telefono"> - {{ order.customer.telefono }}</span>
+          <span *ngIf="order.customer?.email"> - {{ order.customer.email }}</span>
+        </p>
+        <p class="description">{{ order.descrizione }}</p>
+      </div>
+
+      <div class="date-box">
+        <strong>{{ order.scheduledStart | date : "dd/MM/yyyy" }}</strong>
+        <span>{{ order.scheduledStart | date : "HH:mm" }}</span>
+      </div>
+    </article>
+  </div>
+</div>
