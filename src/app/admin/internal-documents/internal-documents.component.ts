@@ -26,16 +26,49 @@ export class InternalDocumentsComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.loadFolders();
+    this.refreshDirectory();
   }
 
   // ============ FOLDERS ============
+
+  get currentPathLabel(): string {
+    return this.selectedFolder || 'Directory principale';
+  }
+
+  get canGoUp(): boolean {
+    return !!this.selectedFolder;
+  }
+
+  private joinPath(base: string, name: string): string {
+    return [base, name]
+      .map((part) => String(part || '').trim())
+      .filter(Boolean)
+      .join('/');
+  }
+
+  private parentPath(pathValue: string): string {
+    const parts = String(pathValue || '')
+      .split('/')
+      .map((part) => part.trim())
+      .filter(Boolean);
+    parts.pop();
+    return parts.join('/');
+  }
+
+  private refreshDirectory(): void {
+    this.loadFolders();
+    this.loadFiles();
+    this.pdfBase64 = '';
+    this.clearImageUrl();
+    this.currentFilename = '';
+    this.fileType = 'other';
+  }
 
   loadFolders(): void {
     this.http
       .post(
         this.globalService.url + 'admin/internal-documents/folders',
-        {},
+        { path: this.selectedFolder },
         {
           headers: this.globalService.headers,
           responseType: 'text',
@@ -63,7 +96,7 @@ export class InternalDocumentsComponent implements OnInit {
     this.http
       .post(
         this.globalService.url + 'admin/internal-documents/createFolder',
-        { folder },
+        { folder: this.joinPath(this.selectedFolder, folder) },
         {
           headers: this.globalService.headers,
           responseType: 'text',
@@ -87,7 +120,7 @@ export class InternalDocumentsComponent implements OnInit {
     this.http
       .post(
         this.globalService.url + 'admin/internal-documents/deleteFolder',
-        { folder },
+        { folder: this.joinPath(this.selectedFolder, folder) },
         {
           headers: this.globalService.headers,
           responseType: 'text',
@@ -95,14 +128,7 @@ export class InternalDocumentsComponent implements OnInit {
       )
       .subscribe({
         next: () => {
-          if (folder === this.selectedFolder) {
-            this.selectedFolder = '';
-            this.files = [];
-            this.pdfBase64 = '';
-            this.clearImageUrl();
-            this.currentFilename = '';
-          }
-          this.loadFolders();
+          this.refreshDirectory();
         },
         error: (err) => {
           console.error('DELETE FOLDER ERROR:', err);
@@ -112,22 +138,23 @@ export class InternalDocumentsComponent implements OnInit {
   }
 
   selectFolder(folder: string): void {
-    this.selectedFolder = folder;
-    this.pdfBase64 = '';
-    this.clearImageUrl();
-    this.currentFilename = '';
-    this.fileType = 'other';
-    this.loadFiles();
+    this.selectedFolder = this.joinPath(this.selectedFolder, folder);
+    this.refreshDirectory();
+  }
+
+  selectRoot(): void {
+    this.selectedFolder = '';
+    this.refreshDirectory();
+  }
+
+  goUp(): void {
+    this.selectedFolder = this.parentPath(this.selectedFolder);
+    this.refreshDirectory();
   }
 
   // ============ FILES ============
 
   loadFiles(): void {
-    if (!this.selectedFolder) {
-      this.files = [];
-      return;
-    }
-
     const body = { folder: this.selectedFolder };
 
     this.http
@@ -153,8 +180,8 @@ export class InternalDocumentsComponent implements OnInit {
 
   uploadFile(event: any): void {
     const file = event?.target?.files?.[0];
-    if (!file || !this.selectedFolder) {
-      return alert('Seleziona una cartella e un file');
+    if (!file) {
+      return alert('Seleziona un file');
     }
 
     const formData = new FormData();
@@ -184,7 +211,6 @@ export class InternalDocumentsComponent implements OnInit {
   }
 
   selectFile(filename: string): void {
-    if (!this.selectedFolder) return;
     this.currentFilename = filename;
     this.fileType = this.getFileType(filename);
     this.pdfBase64 = '';
@@ -235,8 +261,6 @@ export class InternalDocumentsComponent implements OnInit {
   }
 
   downloadCurrentFile(filename: string): void {
-    if (!this.selectedFolder) return;
-
     const body = { folder: this.selectedFolder, filename };
 
     this.http
@@ -265,7 +289,6 @@ export class InternalDocumentsComponent implements OnInit {
   }
 
   printFile(filename: string): void {
-    if (!this.selectedFolder) return;
     if (filename.toLowerCase().endsWith('.p7m')) {
       alert('I file .p7m non possono essere stampati direttamente. Scaricali e aprili con un verificatore di firma digitale.');
       return;
@@ -332,7 +355,6 @@ export class InternalDocumentsComponent implements OnInit {
   }
 
   deleteFile(filename: string): void {
-    if (!this.selectedFolder) return;
     if (!confirm(`Eliminare il file "${filename}"?`)) return;
 
     const body = { folder: this.selectedFolder, filename };

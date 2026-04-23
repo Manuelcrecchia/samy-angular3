@@ -202,7 +202,7 @@ export class CreateShiftComponent implements OnInit, OnDestroy {
     }
 
     const category = String(a.categories || '').toLowerCase();
-    return category === 'ordinario' || category === 'straordinario';
+    return category === 'ordinario' || category === 'straordinario' || category === 'ordineservizio';
   }
 
   private scheduleAutosave(app: any): void {

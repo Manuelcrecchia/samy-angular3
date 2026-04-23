@@ -37,7 +37,7 @@ export class DocumentManagerComponent implements OnInit {
     this.isCustomer = this.route.snapshot.url[1].path === 'client';
     this.prefix = this.isCustomer ? 'customer' : 'employee';
 
-    this.loadFolders();
+    this.refreshDirectory();
     this.loadEmailIfNeeded();
   }
 
@@ -45,6 +45,36 @@ export class DocumentManagerComponent implements OnInit {
     return this.isCustomer
       ? { numeroCliente: this.userId, prefix: this.prefix, ...extra }
       : { employeeId: this.userId, prefix: this.prefix, ...extra };
+  }
+
+  get currentPathLabel(): string {
+    return this.selectedFolder || 'Directory principale';
+  }
+
+  get canGoUp(): boolean {
+    return !!this.selectedFolder;
+  }
+
+  private joinPath(base: string, name: string): string {
+    return [base, name]
+      .map((part) => String(part || '').trim())
+      .filter(Boolean)
+      .join('/');
+  }
+
+  private parentPath(pathValue: string): string {
+    const parts = String(pathValue || '')
+      .split('/')
+      .map((part) => part.trim())
+      .filter(Boolean);
+    parts.pop();
+    return parts.join('/');
+  }
+
+  private refreshDirectory(): void {
+    this.loadFolders();
+    this.loadFiles();
+    this.clearFilePreview();
   }
 
   private loadEmailIfNeeded() {
@@ -75,7 +105,6 @@ export class DocumentManagerComponent implements OnInit {
   }
 
   sendFileMail(filename: string): void {
-    if (!this.selectedFolder) return alert('Seleziona una cartella');
     if (!this.email) return alert('Email utente non disponibile');
 
     const body = this.getPayload({ folder: this.selectedFolder, filename });
@@ -92,7 +121,7 @@ export class DocumentManagerComponent implements OnInit {
   }
 
   loadFolders(): void {
-    const body = this.getPayload();
+    const body = this.getPayload({ path: this.selectedFolder });
 
     this.http
       .post(this.globalService.url + 'documents/folders', body, {
@@ -115,7 +144,9 @@ export class DocumentManagerComponent implements OnInit {
   createFolder(): void {
     if (!this.newFolderName.trim()) return alert('Inserisci un nome');
 
-    const body = this.getPayload({ folder: this.newFolderName.trim() });
+    const body = this.getPayload({
+      folder: this.joinPath(this.selectedFolder, this.newFolderName.trim()),
+    });
 
     this.http
       .post(this.globalService.url + 'documents/createFolder', body, {
@@ -137,7 +168,7 @@ export class DocumentManagerComponent implements OnInit {
   deleteFolder(folder: string): void {
     if (!confirm(`Eliminare la cartella "${folder}"?`)) return;
 
-    const body = this.getPayload({ folder });
+    const body = this.getPayload({ folder: this.joinPath(this.selectedFolder, folder) });
 
     this.http
       .post(this.globalService.url + 'documents/deleteFolder', body, {
@@ -146,12 +177,7 @@ export class DocumentManagerComponent implements OnInit {
       })
       .subscribe({
         next: () => {
-          if (folder === this.selectedFolder) {
-            this.selectedFolder = '';
-            this.files = [];
-            this.clearFilePreview();
-          }
-          this.loadFolders();
+          this.refreshDirectory();
         },
         error: (err) => {
           console.error('Errore eliminazione cartella:', err);
@@ -161,9 +187,18 @@ export class DocumentManagerComponent implements OnInit {
   }
 
   selectFolder(folder: string): void {
-    this.selectedFolder = folder;
-    this.loadFiles();
-    this.clearFilePreview();
+    this.selectedFolder = this.joinPath(this.selectedFolder, folder);
+    this.refreshDirectory();
+  }
+
+  selectRoot(): void {
+    this.selectedFolder = '';
+    this.refreshDirectory();
+  }
+
+  goUp(): void {
+    this.selectedFolder = this.parentPath(this.selectedFolder);
+    this.refreshDirectory();
   }
 
   private clearFilePreview(): void {
@@ -197,8 +232,7 @@ export class DocumentManagerComponent implements OnInit {
 
   uploadFile(event: any): void {
     const file = event.target.files[0];
-    if (!file || !this.selectedFolder)
-      return alert('Seleziona una cartella e un file');
+    if (!file) return alert('Seleziona un file');
 
     const formData = new FormData();
     formData.append('document', file);
@@ -215,6 +249,9 @@ export class DocumentManagerComponent implements OnInit {
         next: () => {
           alert('Documento caricato!');
           this.loadFiles();
+          try {
+            event.target.value = '';
+          } catch {}
         },
         error: (err) => {
           console.error('Errore upload documento:', err);

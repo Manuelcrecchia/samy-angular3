@@ -128,6 +128,28 @@ export class AddServiceOrderComponent implements OnDestroy {
       .trim() || '-';
   }
 
+  isEmmeciCustomer(): boolean {
+    return !!(
+      this.selectedCustomer?.viaDiPartenza ||
+      this.selectedCustomer?.viaDiArrivo ||
+      this.selectedCustomer?.cittaDiPartenza ||
+      this.selectedCustomer?.cittaDiArrivo
+    );
+  }
+
+  samiAddress(): string {
+    const customer = this.selectedCustomer || {};
+    return [
+      customer.selettorePrefissoVia,
+      customer.via,
+      customer.cap,
+      customer.citta,
+    ]
+      .filter(Boolean)
+      .join(' ')
+      .trim() || '-';
+  }
+
   address(prefix: string): string {
     const customer = this.selectedCustomer || {};
     return [

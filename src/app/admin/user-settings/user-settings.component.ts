@@ -59,6 +59,7 @@ export class UserSettingsComponent implements OnInit {
     // Gestione preventivi/clienti
     QUOTES_MANAGE: ['QUOTES_VIEW'],
     QUOTES_NOTES_MANAGE: ['QUOTES_NOTES_VIEW'], // → transitivo: QUOTES_VIEW
+    SERVICE_ORDERS_MANAGE: ['SERVICE_ORDERS_VIEW'],
     CUSTOMERS_MANAGE: ['CUSTOMERS_VIEW'],
     CUSTOMERS_NOTES_MANAGE: ['CUSTOMERS_NOTES_VIEW'], // → transitivo: CUSTOMERS_VIEW
     CUSTOMERS_HOURS_VIEW: ['CUSTOMERS_VIEW'],
@@ -220,6 +221,10 @@ export class UserSettingsComponent implements OnInit {
           'QUOTES_NOTES_MANAGE',
           'SETTINGS_QUOTES',
         ]),
+      },
+      {
+        title: 'Ordini di servizio',
+        items: pick(['SERVICE_ORDERS_VIEW', 'SERVICE_ORDERS_MANAGE']),
       },
       {
         title: 'Clienti',

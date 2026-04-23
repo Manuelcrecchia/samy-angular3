@@ -252,6 +252,49 @@
   white-space: nowrap;
 }
 
+.folder-item {
+  height: auto !important;
+  padding: 0 !important;
+}
+
+.folder-row {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.folder-btn,
+.root-folder-btn {
+  width: 100%;
+  justify-content: flex-start !important;
+  text-align: left;
+  color: var(--mv-text) !important;
+  font-weight: 900;
+  display: flex !important;
+  align-items: center;
+  gap: 8px;
+}
+
+.folder-btn.selected,
+.root-folder-btn.selected {
+  background: linear-gradient(
+    135deg,
+    rgba(47, 124, 255, 0.28),
+    rgba(34, 211, 238, 0.18)
+  );
+  border-radius: 12px;
+}
+
+.folder-delete-btn {
+  flex: 0 0 auto;
+}
+
+:host ::ng-deep .folder-list .mat-mdc-list-item .mdc-list-item__content {
+  width: 100% !important;
+  padding: 0 !important;
+}
+
 .mv-inline {
   display: grid;
   grid-template-columns: 1fr auto;

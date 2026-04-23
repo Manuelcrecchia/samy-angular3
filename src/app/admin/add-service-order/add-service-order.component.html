@@ -6,7 +6,7 @@
   </div>
 
   <div class="page-title mb-4">
-    <p class="text-uppercase text-muted mb-1">EMMECI</p>
+    <p class="text-uppercase text-muted mb-1">Ordini di servizio</p>
     <h2>Nuovo ordine di servizio</h2>
   </div>
 
@@ -54,13 +54,17 @@
         <span>Email</span>
         <strong>{{ selectedCustomer.email || '-' }}</strong>
       </div>
-      <div>
+      <div *ngIf="isEmmeciCustomer()">
         <span>Partenza</span>
         <strong>{{ address('Partenza') }}</strong>
       </div>
-      <div>
+      <div *ngIf="isEmmeciCustomer()">
         <span>Destinazione</span>
         <strong>{{ address('Arrivo') }}</strong>
+      </div>
+      <div *ngIf="!isEmmeciCustomer()">
+        <span>Indirizzo</span>
+        <strong>{{ samiAddress() }}</strong>
       </div>
     </div>
   </section>

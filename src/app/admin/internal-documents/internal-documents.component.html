@@ -13,7 +13,30 @@
     <aside class="sidebar glass-panel">
       <div class="sidebar-head">
         <h3 class="sidebar-title">Cartelle</h3>
+        <p class="path-label">{{ currentPathLabel }}</p>
       </div>
+
+      <button
+        mat-button
+        (click)="selectRoot()"
+        class="folder-btn root-folder-btn"
+        [class.selected]="!selectedFolder"
+        type="button"
+      >
+        <mat-icon>home</mat-icon>
+        Directory principale
+      </button>
+
+      <button
+        *ngIf="canGoUp"
+        mat-button
+        (click)="goUp()"
+        class="folder-btn root-folder-btn"
+        type="button"
+      >
+        <mat-icon>arrow_upward</mat-icon>
+        Torna su
+      </button>
 
       <mat-list class="folder-list">
         <mat-list-item *ngFor="let folder of folders" class="folder-item">
@@ -25,6 +48,7 @@
               [class.selected]="folder === selectedFolder"
               type="button"
             >
+              <mat-icon>folder</mat-icon>
               {{ folder }}
             </button>
 
@@ -62,11 +86,9 @@
     <!-- Main -->
     <main class="main glass-panel">
       <div class="main-head">
-        <h3 class="main-title" *ngIf="selectedFolder">
-          File in "{{ selectedFolder }}"
-        </h3>
+        <h3 class="main-title">File in "{{ currentPathLabel }}"</h3>
 
-        <div class="file-upload" *ngIf="selectedFolder">
+        <div class="file-upload">
           <input type="file" #fileInput (change)="uploadFile($event)" hidden />
           <button
             mat-raised-button
@@ -79,11 +101,7 @@
         </div>
       </div>
 
-      <div class="empty-hint" *ngIf="!selectedFolder">
-        Seleziona una cartella a sinistra per vedere e gestire i documenti.
-      </div>
-
-      <div *ngIf="selectedFolder" class="file-list">
+      <div class="file-list">
         <div class="file-row" *ngFor="let file of files">
           <button
             type="button"
@@ -145,6 +163,10 @@
             </button>
           </div>
         </div>
+      </div>
+
+      <div class="empty-hint" *ngIf="(!files || files.length === 0) && (!folders || folders.length === 0)">
+        Carica un documento o crea una sottocartella per iniziare.
       </div>
 
       <div *ngIf="pdfBase64" class="pdf-viewer">

@@ -366,8 +366,8 @@
             </button>
           </div>
 
-          <!-- Ordini di servizio EMMECI -->
-          <div class="col-12 col-sm-6 col-lg-4" *ngIf="tenantService.isEmmeci && global.hasPermission('QUOTES_VIEW')">
+          <!-- Ordini di servizio -->
+          <div class="col-12 col-sm-6 col-lg-4" *ngIf="global.hasPermission('SERVICE_ORDERS_VIEW')">
             <button class="dash-btn" (click)="navigateToServiceOrders()">
               <span class="icon"><i class="fas fa-clipboard-list"></i></span>
               <span class="label">Ordini di servizio</span>

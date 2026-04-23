@@ -503,6 +503,7 @@ export class CalendarHomeComponent implements OnInit {
 
   getAutocompleteSource(categoria: string): string[] {
     if (categoria==='sopralluogo') return this.nPreventiviArray;
+    if (categoria==='ordineServizio') return this.clientiArray.map(c=>`${c.numeroCliente} - ${c.nominativo}`);
     if (categoria==='ordinario') {
       if (this.tenantService.isEmmeci) return this.clientiArray.map(c=>`${c.numeroCliente} - ${c.nominativo}`);
       return this.clientiArray.filter(c=>c.tipoCliente==='O').map(c=>`${c.numeroCliente} - ${c.nominativo}`);
@@ -562,7 +563,7 @@ export class CalendarHomeComponent implements OnInit {
   validateCodice(codice: string, categoria: string): boolean {
     if (categoria==='altro'||categoria==='lavoriSvolti') return true;
     if (categoria==='sopralluogo') return this.nPreventiviArray.some(p=>this.normalize(p).startsWith(this.normalize(codice+' -')));
-    if (categoria==='ordinario'||categoria==='straordinario') return this.clientiArray.some(c=>this.normalize(c.numeroCliente.toString())===this.normalize(codice));
+    if (categoria==='ordinario'||categoria==='straordinario'||categoria==='ordineServizio') return this.clientiArray.some(c=>this.normalize(c.numeroCliente.toString())===this.normalize(codice));
     return true;
   }
 
@@ -609,7 +610,7 @@ export class CalendarHomeComponent implements OnInit {
 
   getCategoriesForTenant(): {id:string;text:string}[] {
     if (this.tenantService.isEmmeci) return [{id:'ordinario',text:'Ordinario'},{id:'ordineServizio',text:'Ordine di servizio'},{id:'sopralluogo',text:'Sopralluogo'},{id:'altro',text:'Altro'}];
-    return [{id:'ordinario',text:'Ordinario'},{id:'straordinario',text:'Straordinario'},{id:'sopralluogo',text:'Sopralluogo'},{id:'lavoriSvolti',text:'Lavori svolti'},{id:'altro',text:'Altro'}];
+    return [{id:'ordinario',text:'Ordinario'},{id:'straordinario',text:'Straordinario'},{id:'ordineServizio',text:'Ordine di servizio'},{id:'sopralluogo',text:'Sopralluogo'},{id:'lavoriSvolti',text:'Lavori svolti'},{id:'altro',text:'Altro'}];
   }
 
   getEventTopPx(ev: CalEvent): number { return ((ev.start.getHours()*60+ev.start.getMinutes())/30)*26; }

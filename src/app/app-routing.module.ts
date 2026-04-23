@@ -121,13 +121,13 @@ const routes: Routes = [
     path: 'service-orders',
     component: ServiceOrdersComponent,
     canActivate: [AuthGuard, AuthLevelGuard],
-    data: { permission: 'QUOTES_VIEW' },
+    data: { permission: 'SERVICE_ORDERS_VIEW' },
   },
   {
     path: 'service-orders/add',
     component: AddServiceOrderComponent,
     canActivate: [AuthGuard, AuthLevelGuard],
-    data: { permission: 'QUOTES_MANAGE' },
+    data: { permission: 'SERVICE_ORDERS_MANAGE' },
   },
 
   // clienti

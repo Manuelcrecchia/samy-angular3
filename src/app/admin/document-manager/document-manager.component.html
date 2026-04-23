@@ -26,10 +26,32 @@
       <aside class="mv-card mv-sidebar">
         <div class="mv-card__head">
           <h3 class="mv-h3">Cartelle</h3>
-          <p class="mv-sub">Gestisci cartelle e file interni</p>
+          <p class="mv-sub">{{ currentPathLabel }}</p>
         </div>
 
         <div class="mv-card__body">
+          <button
+            mat-button
+            (click)="selectRoot()"
+            class="folder-btn root-folder-btn"
+            [class.selected]="!selectedFolder"
+            type="button"
+          >
+            <mat-icon>home</mat-icon>
+            Directory principale
+          </button>
+
+          <button
+            *ngIf="canGoUp"
+            mat-button
+            (click)="goUp()"
+            class="folder-btn root-folder-btn"
+            type="button"
+          >
+            <mat-icon>arrow_upward</mat-icon>
+            Torna su
+          </button>
+
           <mat-list class="folder-list">
             <mat-list-item *ngFor="let folder of folders" class="folder-item">
               <div class="folder-row">
@@ -40,6 +62,7 @@
                   [class.selected]="folder === selectedFolder"
                   type="button"
                 >
+                  <mat-icon>folder</mat-icon>
                   {{ folder }}
                 </button>
 
@@ -87,24 +110,16 @@
           <div class="mv-card__head mv-main-head">
             <div>
               <h3 class="mv-h3">
-                <span *ngIf="selectedFolder"
-                  >File in “{{ selectedFolder }}”</span
-                >
-                <span *ngIf="!selectedFolder">Seleziona una cartella</span>
+                File in “{{ currentPathLabel }}”
               </h3>
 
               <p class="mv-sub">
-                <span *ngIf="selectedFolder"
-                  >Carica, invia o scarica documenti</span
-                >
-                <span *ngIf="!selectedFolder"
-                  >Scegli una cartella dalla colonna a sinistra</span
-                >
+                Carica, invia o scarica documenti
               </p>
             </div>
 
             <!-- UPLOAD (stesso funzionamento) -->
-            <div class="mv-actions" *ngIf="selectedFolder">
+            <div class="mv-actions">
               <input
                 type="file"
                 #fileInput
@@ -126,7 +141,7 @@
 
           <div class="mv-card__body">
             <!-- LISTA FILE -->
-            <mat-list *ngIf="selectedFolder" class="mv-files">
+            <mat-list class="mv-files">
               <div class="mv-file-row" *ngFor="let file of files">
                 <!-- CLICK SOLO SU NOME/ICONA -->
                 <button
@@ -214,12 +229,12 @@
             <!-- EMPTY STATE -->
             <div
               class="mv-empty"
-              *ngIf="selectedFolder && (!files || files.length === 0)"
+              *ngIf="(!files || files.length === 0) && (!folders || folders.length === 0)"
             >
               <div class="mv-empty__icon">📁</div>
-              <div class="mv-empty__title">Nessun file in questa cartella</div>
+              <div class="mv-empty__title">Nessun elemento in questa cartella</div>
               <div class="mv-empty__text">
-                Carica un documento per iniziare.
+                Carica un documento o crea una sottocartella per iniziare.
               </div>
             </div>
           </div>

@@ -81,6 +81,7 @@ export class GlobalService {
     return new HttpHeaders({
       'Content-Type': 'application/json; charset=utf-8',
       Authorization: `Bearer ${this.token}`,
+      'X-Tenant-Id': this.tenantService.tenant,
     });
   }
 
