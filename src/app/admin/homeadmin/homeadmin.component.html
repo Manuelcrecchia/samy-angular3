@@ -268,6 +268,28 @@
         padding: 0.35rem 0.55rem;
       }
 
+      .alert-badge {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 28px;
+        margin-left: 8px;
+        padding: 0.28rem 0.52rem;
+        border-radius: 999px;
+        font-size: 0.78rem;
+        font-weight: 900;
+      }
+
+      .alert-badge-warning {
+        background: #ffcf85;
+        color: #6a3a00;
+      }
+
+      .alert-badge-expired {
+        background: #dc3545;
+        color: #fff;
+      }
+
       /* Mobile tweaks */
       @media (max-width: 768px) {
         .btn-back {
@@ -339,6 +361,36 @@
             <button class="dash-btn" (click)="navigateToGestioneemployees()">
               <span class="icon"><i class="fas fa-user"></i></span>
               <span class="label">Gestione Dipendenti</span>
+            </button>
+          </div>
+
+          <div class="col-12 col-sm-6 col-lg-4" *ngIf="global.hasPermission('EMPLOYEE_DEADLINES_VIEW')">
+            <button class="dash-btn" (click)="navigateToEmployeeDeadlines()">
+              <span class="icon"><i class="fas fa-id-card"></i></span>
+              <span class="label">
+                Scadenze Dipendenti
+                <span
+                  *ngIf="employeeDeadlineSummary.alertCount > 0"
+                  [ngClass]="deadlineBadgeClass(employeeDeadlineSummary)"
+                >
+                  {{ employeeDeadlineSummary.alertCount }}
+                </span>
+              </span>
+            </button>
+          </div>
+
+          <div class="col-12 col-sm-6 col-lg-4" *ngIf="global.hasPermission('VEHICLE_DEADLINES_VIEW')">
+            <button class="dash-btn" (click)="navigateToVehicleDeadlines()">
+              <span class="icon"><i class="fas fa-car"></i></span>
+              <span class="label">
+                Scadenze Mezzi
+                <span
+                  *ngIf="vehicleDeadlineSummary.alertCount > 0"
+                  [ngClass]="deadlineBadgeClass(vehicleDeadlineSummary)"
+                >
+                  {{ vehicleDeadlineSummary.alertCount }}
+                </span>
+              </span>
             </button>
           </div>
 

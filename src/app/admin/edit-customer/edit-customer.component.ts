@@ -400,6 +400,7 @@ export class EditCustomerComponent {
     try {
       const body = typeof err.error === 'string' ? JSON.parse(err.error) : err.error;
       if (body?.error) return body.error;
+      if (body?.message) return body.message;
     } catch {}
     if (err.status === 0) return 'Impossibile connettersi al server';
     return 'Errore durante il salvataggio. Riprova.';

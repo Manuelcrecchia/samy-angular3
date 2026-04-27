@@ -327,10 +327,38 @@ export class QuotesHomeComponent {
     }
   }
 
-  private parseDateIT(value: string): Date | null {
+  private parseDateIT(value: any): Date | null {
     if (!value) return null;
-    const [dd, mm, yyyy] = value.split('/');
-    return new Date(+yyyy, +mm - 1, +dd);
+
+    if (value instanceof Date && !isNaN(value.getTime())) {
+      return new Date(value.getFullYear(), value.getMonth(), value.getDate());
+    }
+
+    const raw = String(value).trim();
+    if (!raw) return null;
+
+    const italianDateMatch = /^(\d{2})\/(\d{2})\/(\d{4})$/.exec(raw);
+    if (italianDateMatch) {
+      const [, dd, mm, yyyy] = italianDateMatch;
+      return new Date(+yyyy, +mm - 1, +dd);
+    }
+
+    const isoDateOnlyMatch = /^(\d{4})-(\d{2})-(\d{2})$/.exec(raw);
+    if (isoDateOnlyMatch) {
+      const [, yyyy, mm, dd] = isoDateOnlyMatch;
+      return new Date(+yyyy, +mm - 1, +dd);
+    }
+
+    const parsed = new Date(raw);
+    if (isNaN(parsed.getTime())) {
+      return null;
+    }
+
+    return new Date(
+      parsed.getFullYear(),
+      parsed.getMonth(),
+      parsed.getDate(),
+    );
   }
 
   delete(numeroPreventivo: string) {

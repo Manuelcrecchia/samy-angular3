@@ -37,7 +37,7 @@
 
   <div class="orders-list" *ngIf="!loading && orders.length > 0">
     <article class="order-card" *ngFor="let order of orders">
-      <div>
+      <div class="order-main">
         <span class="order-number">Ordine #{{ order.numeroOrdine || order.id }}</span>
         <h5>{{ customerName(order) }}</h5>
         <p class="mb-1">
@@ -46,6 +46,23 @@
           <span *ngIf="order.customer?.email"> - {{ order.customer.email }}</span>
         </p>
         <p class="description">{{ order.descrizione }}</p>
+
+        <div class="order-actions" *ngIf="global.hasPermission('SERVICE_ORDERS_MANAGE')">
+          <button
+            class="btn btn-outline-primary btn-sm"
+            type="button"
+            (click)="editOrder(order.id)"
+          >
+            Modifica
+          </button>
+          <button
+            class="btn btn-outline-danger btn-sm"
+            type="button"
+            (click)="deleteOrder(order.id)"
+          >
+            Elimina
+          </button>
+        </div>
       </div>
 
       <div class="date-box">

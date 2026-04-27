@@ -176,6 +176,56 @@ export class EditQuoteComponent {
     if (!stanzaId) return [];
     return this.frasePerStanza.get(stanzaId) || [];
   }
+
+  private parseContractStartDate(value: any): Date | null {
+    if (!value) return null;
+
+    if (value instanceof Date && !isNaN(value.getTime())) {
+      return new Date(value.getFullYear(), value.getMonth(), value.getDate());
+    }
+
+    const raw = String(value).trim();
+    if (!raw) return null;
+
+    const italianDateMatch = /^(\d{2})\/(\d{2})\/(\d{4})$/.exec(raw);
+    if (italianDateMatch) {
+      const [, dd, mm, yyyy] = italianDateMatch;
+      return new Date(+yyyy, +mm - 1, +dd);
+    }
+
+    const isoDateOnlyMatch = /^(\d{4})-(\d{2})-(\d{2})$/.exec(raw);
+    if (isoDateOnlyMatch) {
+      const [, yyyy, mm, dd] = isoDateOnlyMatch;
+      return new Date(+yyyy, +mm - 1, +dd);
+    }
+
+    const parsed = new Date(raw);
+    if (isNaN(parsed.getTime())) {
+      return null;
+    }
+
+    return new Date(
+      parsed.getFullYear(),
+      parsed.getMonth(),
+      parsed.getDate(),
+    );
+  }
+
+  private formatContractStartDate(): string {
+    const parsed =
+      this.parseContractStartDate(
+        this.quoteModelService.dataInizioContrattoDate,
+      ) || this.parseContractStartDate(this.quoteModelService.dataInizioContratto);
+
+    if (parsed) {
+      return this.datePipe.transform(parsed, 'dd/MM/yyyy') || '';
+    }
+
+    return typeof this.quoteModelService.dataInizioContratto === 'string'
+      ? this.quoteModelService.dataInizioContratto.trim()
+      : '';
+  }
+
   private buildSamiBody() {
     if (this.sameAddress) {
       this.quoteModelService.cittaDiFatturazione = this.quoteModelService.citta;
@@ -210,12 +260,7 @@ export class EditQuoteComponent {
       iva: this.quoteModelService.iva,
       pagamento: this.quoteModelService.pagamento,
       tempistica: this.quoteModelService.tempistica,
-      dataInizioContratto: this.quoteModelService.dataInizioContrattoDate
-        ? this.datePipe.transform(
-            this.quoteModelService.dataInizioContrattoDate,
-            'dd/MM/yyyy',
-          )
-        : this.quoteModelService.dataInizioContratto,
+      dataInizioContratto: this.formatContractStartDate(),
       durataContratto: this.quoteModelService.durataContratto,
       note: this.quoteModelService.note,
     };

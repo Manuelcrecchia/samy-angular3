@@ -1,0 +1,283 @@
+<div class="page-wrap">
+  <div class="topbar">
+    <button class="btn-back" (click)="back()">← Indietro</button>
+
+    <div class="topbar-actions">
+      <button class="btn btn-outline-light btn-sm" (click)="loadAll()">
+        ↻ Aggiorna
+      </button>
+      <button
+        *ngIf="canCreate"
+        class="btn btn-primary btn-sm"
+        (click)="openAddForm()"
+      >
+        + Aggiungi scadenza
+      </button>
+    </div>
+  </div>
+
+  <div class="card glass hero-card">
+    <div>
+      <div class="eyebrow">{{ pageTitle }}</div>
+      <h2 class="title">{{ pageTitle }}</h2>
+      <p class="subtitle">{{ pageDescription }}</p>
+    </div>
+
+    <div class="summary-grid">
+      <div class="summary-box">
+        <span class="summary-value">{{ totalAlerts }}</span>
+        <span class="summary-label">Avvisi attivi</span>
+      </div>
+      <div class="summary-box summary-box-warning">
+        <span class="summary-value">{{ totalWarning }}</span>
+        <span class="summary-label">In preavviso</span>
+      </div>
+      <div class="summary-box summary-box-expired">
+        <span class="summary-value">{{ totalExpired }}</span>
+        <span class="summary-label">Scadute</span>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="success" class="alert alert-success mt-3">
+    {{ success }}
+  </div>
+
+  <div *ngIf="error && !showForm" class="alert alert-danger mt-3">
+    {{ error }}
+  </div>
+
+  <div class="card glass mt-3" *ngIf="showForm">
+    <div class="form-head">
+      <div>
+        <h3 class="section-title mb-1">{{ formTitle }}</h3>
+        <p class="section-subtitle mb-0">{{ formSubtitle }}</p>
+      </div>
+      <button class="btn btn-outline-light btn-sm" (click)="cancelForm()">
+        Chiudi
+      </button>
+    </div>
+
+    <div *ngIf="error" class="alert alert-danger mt-3 mb-0">
+      {{ error }}
+    </div>
+
+    <div class="row g-3 mt-1">
+      <div class="col-12 col-lg-6">
+        <label class="form-label">{{ entityLabel | titlecase }} *</label>
+        <input
+          *ngIf="isEditing; else entitySelect"
+          class="form-control"
+          [value]="editingEntityDisplayLabel"
+          readonly
+        />
+        <ng-template #entitySelect>
+        <select class="form-select" [(ngModel)]="form.entityId">
+          <option [ngValue]="null">Seleziona</option>
+          <option *ngFor="let entity of entities" [ngValue]="entity.id">
+            {{ getEntityLabel(entity) }}
+          </option>
+        </select>
+        </ng-template>
+      </div>
+
+      <div class="col-12 col-lg-6">
+        <label class="form-label">Titolo *</label>
+        <input
+          class="form-control"
+          [(ngModel)]="form.title"
+          maxlength="120"
+          placeholder="Es. Patente, revisione, visita medica"
+        />
+      </div>
+
+      <div class="col-12 col-lg-6">
+        <label class="form-label">Data di scadenza *</label>
+        <input
+          class="form-control"
+          type="date"
+          [(ngModel)]="form.dueDate"
+        />
+      </div>
+
+      <div class="col-12 col-lg-6">
+        <label class="form-label">Giorni di preavviso</label>
+        <input
+          class="form-control"
+          type="number"
+          min="0"
+          [(ngModel)]="form.remindDays"
+          placeholder="Es. 30"
+        />
+      </div>
+
+      <div class="col-12">
+        <label class="form-label">Descrizione</label>
+        <textarea
+          class="form-control"
+          rows="3"
+          [(ngModel)]="form.description"
+          maxlength="500"
+          placeholder="Note facoltative sulla scadenza"
+        ></textarea>
+      </div>
+
+      <div class="col-12">
+        <label class="form-label">{{ isEditing ? 'Aggiungi nuovi allegati' : 'Allegati' }}</label>
+        <input
+          #fileInput
+          class="form-control"
+          type="file"
+          multiple
+          (change)="onFilesSelected($event)"
+        />
+      </div>
+    </div>
+
+    <div class="existing-attachments" *ngIf="isEditing">
+      <div class="attachments-title">Allegati attuali</div>
+
+      <div class="empty-state mt-0" *ngIf="formAttachments.length === 0">
+        Nessun allegato presente su questa scadenza.
+      </div>
+
+      <div class="existing-attachment-row" *ngFor="let attachment of formAttachments">
+        <div class="existing-attachment-copy">
+          <strong>{{ attachment.originalName }}</strong>
+          <small>{{ formatFileSize(attachment.size) }}</small>
+        </div>
+
+        <div class="deadline-actions">
+          <button
+            class="btn btn-outline-light btn-sm"
+            *ngIf="editingDeadline"
+            (click)="downloadAttachment(editingDeadline, attachment)"
+          >
+            Scarica
+          </button>
+          <button
+            class="btn btn-outline-danger btn-sm"
+            (click)="deleteExistingAttachment(attachment)"
+          >
+            Elimina allegato
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="selected-files" *ngIf="pendingFiles.length > 0">
+      <div class="selected-file" *ngFor="let file of pendingFiles; let i = index">
+        <span>{{ file.name }}</span>
+        <button class="btn btn-link btn-sm" (click)="removePendingFile(i)">
+          rimuovi
+        </button>
+      </div>
+    </div>
+
+    <div class="form-actions">
+      <button class="btn btn-outline-light" (click)="cancelForm()">
+        Annulla
+      </button>
+      <button class="btn btn-primary" [disabled]="!canSave || saving" (click)="submit()">
+        <span *ngIf="saving" class="spinner-border spinner-border-sm me-2"></span>
+        {{ submitLabel }}
+      </button>
+    </div>
+  </div>
+
+  <div class="card glass mt-3 text-center py-4" *ngIf="loading || entitiesLoading">
+    <span class="spinner-border spinner-border-sm me-2"></span>
+    Caricamento in corso...
+  </div>
+
+  <div class="card glass mt-3 text-center py-4" *ngIf="!loading && !entitiesLoading && groups.length === 0">
+    Nessun {{ entityLabel }} disponibile.
+  </div>
+
+  <div class="groups-grid" *ngIf="!loading && !entitiesLoading && groups.length > 0">
+    <section class="card glass entity-card" *ngFor="let group of groups">
+      <div class="entity-head">
+        <div class="entity-head-copy">
+          <div class="entity-title-row">
+            <h3 class="entity-title">{{ group.label }}</h3>
+            <span
+              *ngIf="group.summary.alertCount > 0"
+              class="alert-count"
+              [ngClass]="statusClass(group.summary.status)"
+            >
+              {{ group.summary.alertCount }}
+            </span>
+          </div>
+          <p class="entity-subtitle mb-0">{{ group.subtitle || ' ' }}</p>
+        </div>
+
+        <button
+          *ngIf="canCreate"
+          class="btn btn-outline-light btn-sm"
+          (click)="openAddForm(group.id)"
+        >
+          Aggiungi scadenza
+        </button>
+      </div>
+
+        <div class="empty-state" *ngIf="group.deadlines.length === 0">
+          Nessuna scadenza registrata.
+        </div>
+
+      <div class="deadline-list" *ngIf="group.deadlines.length > 0">
+        <article class="deadline-item" *ngFor="let deadline of group.deadlines">
+          <div class="deadline-top">
+            <div>
+              <div class="deadline-title-row">
+                <h4 class="deadline-title">{{ deadline.title }}</h4>
+                <span class="status-pill" [ngClass]="statusClass(deadline.status)">
+                  {{ statusLabel(deadline.status) }}
+                </span>
+              </div>
+
+              <div class="deadline-meta">
+                <span>Scadenza: {{ formatDueDate(deadline.dueDate) }}</span>
+                <span>{{ relativeDueLabel(deadline) }}</span>
+                <span>{{ remindLabel(deadline.remindDays) }}</span>
+              </div>
+            </div>
+
+            <div class="deadline-actions">
+              <button
+                *ngIf="canEdit"
+                class="btn btn-dark btn-sm"
+                (click)="openEditForm(deadline)"
+              >
+                Modifica
+              </button>
+              <button
+                *ngIf="canDelete"
+                class="btn btn-outline-danger btn-sm"
+                (click)="deleteDeadline(deadline)"
+              >
+                Elimina
+              </button>
+            </div>
+          </div>
+
+          <p class="deadline-description mb-0" *ngIf="deadline.description">
+            {{ deadline.description }}
+          </p>
+
+          <div class="attachments" *ngIf="deadline.attachments?.length">
+            <span class="attachments-title">Allegati</span>
+
+            <button
+              class="attachment-chip"
+              *ngFor="let attachment of deadline.attachments"
+              (click)="downloadAttachment(deadline, attachment)"
+            >
+              <span>{{ attachment.originalName }}</span>
+              <small>{{ formatFileSize(attachment.size) }}</small>
+            </button>
+          </div>
+        </article>
+      </div>
+    </section>
+  </div>
+</div>

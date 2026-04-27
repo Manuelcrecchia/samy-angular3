@@ -22,6 +22,12 @@
   font-weight: 800;
 }
 
+.section-note {
+  margin: 0 0 14px;
+  color: #6b7280;
+  font-size: 14px;
+}
+
 .lookup-row,
 .schedule-grid {
   display: grid;
@@ -49,6 +55,11 @@
   display: block;
   color: #111827;
   font-weight: 700;
+}
+
+.schedule-note {
+  grid-column: 1 / -1;
+  margin-bottom: 0;
 }
 
 .actions {

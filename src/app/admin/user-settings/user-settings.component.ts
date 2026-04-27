@@ -83,6 +83,12 @@ export class UserSettingsComponent implements OnInit {
     EMPLOYEE_DELETE: ['EMPLOYEE_VIEW'],
     EMPLOYEE_DOCS_MANAGE: ['EMPLOYEE_VIEW'],
     EMPLOYEE_PERMITS_MANAGE: ['EMPLOYEE_VIEW'],
+    EMPLOYEE_DEADLINES_CREATE: ['EMPLOYEE_DEADLINES_VIEW'],
+    EMPLOYEE_DEADLINES_EDIT: ['EMPLOYEE_DEADLINES_VIEW'],
+    EMPLOYEE_DEADLINES_DELETE: ['EMPLOYEE_DEADLINES_VIEW'],
+    VEHICLE_DEADLINES_CREATE: ['VEHICLE_DEADLINES_VIEW'],
+    VEHICLE_DEADLINES_EDIT: ['VEHICLE_DEADLINES_VIEW'],
+    VEHICLE_DEADLINES_DELETE: ['VEHICLE_DEADLINES_VIEW'],
   };
 
   constructor(
@@ -209,6 +215,24 @@ export class UserSettingsComponent implements OnInit {
           'EMPLOYEE_DELETE',
           'EMPLOYEE_DOCS_MANAGE',
           'EMPLOYEE_PERMITS_MANAGE',
+        ]),
+      },
+      {
+        title: 'Scadenze dipendenti',
+        items: pick([
+          'EMPLOYEE_DEADLINES_VIEW',
+          'EMPLOYEE_DEADLINES_CREATE',
+          'EMPLOYEE_DEADLINES_EDIT',
+          'EMPLOYEE_DEADLINES_DELETE',
+        ]),
+      },
+      {
+        title: 'Scadenze mezzi',
+        items: pick([
+          'VEHICLE_DEADLINES_VIEW',
+          'VEHICLE_DEADLINES_CREATE',
+          'VEHICLE_DEADLINES_EDIT',
+          'VEHICLE_DEADLINES_DELETE',
         ]),
       },
       { title: 'Documenti interni', items: pick(['INTERNAL_DOCS_ACCESS']) },

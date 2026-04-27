@@ -62,6 +62,7 @@ import { PopUpComponent } from './admin/pop-up/pop-up.component';
 import { QuestionPopupComponent } from './componenti/popup/question-popup/question-popup.component';
 import { GestioneEmployeesComponent } from './admin/gestione-employees/gestione-employees.component';
 import { SettingsEmployeesComponent } from './admin/settings-employees/settings-employees.component';
+import { DeadlinesManagementComponent } from './admin/deadlines-management/deadlines-management.component';
 import { DocumentManagerComponent } from './admin/document-manager/document-manager.component';
 import { ViewPdfComponent } from './admin/view-pdf/view-pdf.component';
 import { DateAdapter, MAT_DATE_LOCALE } from '@angular/material/core';
@@ -112,6 +113,7 @@ registerLocaleData(localeIt);
     QuestionPopupComponent,
     GestioneEmployeesComponent,
     SettingsEmployeesComponent,
+    DeadlinesManagementComponent,
     ViewPdfComponent,
     DocumentManagerComponent,
     EditCustomerComponent,

@@ -1,6 +1,6 @@
-import { Component, OnDestroy } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { GlobalService } from '../../service/global.service';
 
 @Component({
@@ -8,13 +8,16 @@ import { GlobalService } from '../../service/global.service';
   templateUrl: './add-service-order.component.html',
   styleUrls: ['./add-service-order.component.css'],
 })
-export class AddServiceOrderComponent implements OnDestroy {
+export class AddServiceOrderComponent implements OnInit, OnDestroy {
   customerQuery = '';
   customers: any[] = [];
   selectedCustomer: any = null;
   descrizione = '';
   data = '';
   ora = '';
+  isEditMode = false;
+  loadingOrder = false;
+  orderId: number | null = null;
   loadingCustomers = false;
   saving = false;
   private searchTimer: ReturnType<typeof setTimeout> | null = null;
@@ -22,9 +25,19 @@ export class AddServiceOrderComponent implements OnDestroy {
 
   constructor(
     private http: HttpClient,
+    private route: ActivatedRoute,
     private router: Router,
     public global: GlobalService,
   ) {}
+
+  ngOnInit(): void {
+    const id = Number.parseInt(this.route.snapshot.paramMap.get('id') || '', 10);
+    if (Number.isInteger(id) && id > 0) {
+      this.isEditMode = true;
+      this.orderId = id;
+      this.loadOrder();
+    }
+  }
 
   ngOnDestroy(): void {
     if (this.searchTimer) {
@@ -33,6 +46,10 @@ export class AddServiceOrderComponent implements OnDestroy {
   }
 
   onCustomerQueryChange(value: string): void {
+    if (this.isEditMode) {
+      return;
+    }
+
     this.customerQuery = value;
 
     if (this.suppressNextSearch) {
@@ -57,6 +74,10 @@ export class AddServiceOrderComponent implements OnDestroy {
   }
 
   searchCustomers(): void {
+    if (this.isEditMode) {
+      return;
+    }
+
     const q = this.customerQuery.trim();
     if (!q) {
       this.customers = [];
@@ -86,35 +107,80 @@ export class AddServiceOrderComponent implements OnDestroy {
     this.customers = [];
   }
 
+  private loadOrder(): void {
+    if (!this.orderId) {
+      return;
+    }
+
+    this.loadingOrder = true;
+    this.http
+      .get<any>(this.global.url + `service-orders/${this.orderId}`)
+      .subscribe({
+        next: (order) => {
+          this.loadingOrder = false;
+          const customer = order?.customer || { numeroCliente: order?.numeroCliente };
+          this.selectedCustomer = customer;
+          this.customerQuery = `${customer.numeroCliente || '-'} - ${this.customerName(customer)}`;
+          this.descrizione = order?.descrizione || '';
+          this.data = this.toInputDate(order?.scheduledStart);
+          this.ora = this.toInputTime(order?.scheduledStart);
+        },
+        error: (err) => {
+          console.error("Errore caricamento ordine di servizio:", err);
+          this.loadingOrder = false;
+          alert(err?.error?.error || "Errore nel caricamento dell'ordine di servizio.");
+          this.goBack();
+        },
+      });
+  }
+
   save(): void {
-    if (!this.selectedCustomer) {
+    if (!this.isEditMode && !this.selectedCustomer) {
       alert('Seleziona un cliente.');
       return;
     }
 
-    if (!this.descrizione.trim() || !this.data || !this.ora) {
+    if (!this.descrizione.trim() || (!this.isEditMode && (!this.data || !this.ora))) {
       alert('Descrizione, data e ora sono obbligatorie.');
       return;
     }
 
     this.saving = true;
-    this.http
-      .post(this.global.url + 'service-orders', {
-        numeroCliente: this.selectedCustomer.numeroCliente,
-        descrizione: this.descrizione.trim(),
-        scheduledStart: `${this.data}T${this.ora}:00`,
-      })
-      .subscribe({
-        next: () => {
-          this.saving = false;
-          this.router.navigateByUrl('/service-orders');
-        },
-        error: (err) => {
-          console.error('Errore creazione ordine di servizio:', err);
-          this.saving = false;
-          alert(err?.error?.error || "Errore nella creazione dell'ordine di servizio.");
-        },
-      });
+    const url = this.isEditMode && this.orderId
+      ? this.global.url + `service-orders/${this.orderId}`
+      : this.global.url + 'service-orders';
+
+    const payload = this.isEditMode
+      ? {
+          descrizione: this.descrizione.trim(),
+        }
+      : {
+          numeroCliente: this.selectedCustomer.numeroCliente,
+          descrizione: this.descrizione.trim(),
+          scheduledStart: `${this.data}T${this.ora}:00`,
+        };
+
+    this.http.post(url, payload).subscribe({
+      next: () => {
+        this.saving = false;
+        this.router.navigateByUrl('/service-orders');
+      },
+      error: (err) => {
+        console.error(
+          this.isEditMode
+            ? 'Errore modifica ordine di servizio:'
+            : 'Errore creazione ordine di servizio:',
+          err,
+        );
+        this.saving = false;
+        alert(
+          err?.error?.error ||
+            (this.isEditMode
+              ? "Errore nella modifica dell'ordine di servizio."
+              : "Errore nella creazione dell'ordine di servizio."),
+        );
+      },
+    });
   }
 
   goBack(): void {
@@ -161,5 +227,21 @@ export class AddServiceOrderComponent implements OnDestroy {
       .filter(Boolean)
       .join(' ')
       .trim() || '-';
+  }
+
+  private toInputDate(value: any): string {
+    if (!value) return '';
+    const parsed = new Date(value);
+    if (isNaN(parsed.getTime())) return '';
+    const pad = (part: number) => String(part).padStart(2, '0');
+    return `${parsed.getFullYear()}-${pad(parsed.getMonth() + 1)}-${pad(parsed.getDate())}`;
+  }
+
+  private toInputTime(value: any): string {
+    if (!value) return '';
+    const parsed = new Date(value);
+    if (isNaN(parsed.getTime())) return '';
+    const pad = (part: number) => String(part).padStart(2, '0');
+    return `${pad(parsed.getHours())}:${pad(parsed.getMinutes())}`;
   }
 }

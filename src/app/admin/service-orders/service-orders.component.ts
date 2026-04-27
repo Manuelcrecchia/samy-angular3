@@ -45,6 +45,29 @@ export class ServiceOrdersComponent implements OnInit {
     this.router.navigateByUrl('/service-orders/add');
   }
 
+  editOrder(orderId: number): void {
+    this.router.navigate(['/service-orders/edit', orderId]);
+  }
+
+  deleteOrder(orderId: number): void {
+    const confirmed = confirm(
+      "Vuoi davvero eliminare questo ordine di servizio? Verrà eliminato anche l'appuntamento collegato nel calendario.",
+    );
+    if (!confirmed) {
+      return;
+    }
+
+    this.http.post(this.global.url + `service-orders/${orderId}/delete`, {}).subscribe({
+      next: () => {
+        this.loadOrders();
+      },
+      error: (err) => {
+        console.error("Errore eliminazione ordine di servizio:", err);
+        alert(err?.error?.error || "Errore nell'eliminazione dell'ordine di servizio.");
+      },
+    });
+  }
+
   goBack(): void {
     this.router.navigateByUrl('/homeAdmin');
   }

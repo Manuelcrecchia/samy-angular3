@@ -7,12 +7,18 @@
 
   <div class="page-title mb-4">
     <p class="text-uppercase text-muted mb-1">Ordini di servizio</p>
-    <h2>Nuovo ordine di servizio</h2>
+    <h2>{{ isEditMode ? 'Modifica ordine di servizio' : 'Nuovo ordine di servizio' }}</h2>
   </div>
+
+  <div *ngIf="loadingOrder" class="alert alert-info">Caricamento ordine di servizio...</div>
 
   <section class="form-section">
     <h5>Cliente</h5>
-    <div class="lookup-row">
+    <p class="section-note" *ngIf="isEditMode">
+      Il cliente associato all'ordine di servizio non e modificabile.
+    </p>
+
+    <div class="lookup-row" *ngIf="!isEditMode">
       <input
         class="form-control"
         type="search"
@@ -26,7 +32,7 @@
       </button>
     </div>
 
-    <div class="list-group mt-2" *ngIf="customers.length > 0">
+    <div class="list-group mt-2" *ngIf="!isEditMode && customers.length > 0">
       <button
         class="list-group-item list-group-item-action"
         type="button"
@@ -39,7 +45,7 @@
       </button>
     </div>
 
-    <p class="text-muted mt-2" *ngIf="loadingCustomers">Ricerca clienti...</p>
+    <p class="text-muted mt-2" *ngIf="!isEditMode && loadingCustomers">Ricerca clienti...</p>
 
     <div class="customer-card mt-3" *ngIf="selectedCustomer">
       <div>
@@ -71,6 +77,9 @@
 
   <section class="form-section">
     <h5>Descrizione</h5>
+    <p class="section-note" *ngIf="isEditMode">
+      In modifica puoi aggiornare solo la descrizione.
+    </p>
     <textarea
       class="form-control"
       rows="7"
@@ -80,19 +89,26 @@
   </section>
 
   <section class="form-section schedule-grid">
+    <p class="section-note schedule-note" *ngIf="isEditMode">
+      Data e ora iniziali sono bloccate e non possono essere modificate.
+    </p>
     <label>
       Data
-      <input class="form-control" type="date" [(ngModel)]="data" />
+      <input class="form-control" type="date" [(ngModel)]="data" [disabled]="isEditMode" />
     </label>
     <label>
       Ora
-      <input class="form-control" type="time" [(ngModel)]="ora" />
+      <input class="form-control" type="time" [(ngModel)]="ora" [disabled]="isEditMode" />
     </label>
   </section>
 
   <div class="actions">
-    <button class="btn btn-success" type="button" (click)="save()" [disabled]="saving">
-      {{ saving ? 'Salvataggio...' : 'Salva ordine di servizio' }}
+    <button class="btn btn-success" type="button" (click)="save()" [disabled]="saving || loadingOrder">
+      {{
+        saving
+          ? 'Salvataggio...'
+          : (isEditMode ? 'Salva modifiche' : 'Salva ordine di servizio')
+      }}
     </button>
   </div>
 </div>

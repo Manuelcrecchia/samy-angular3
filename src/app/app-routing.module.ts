@@ -29,6 +29,7 @@ import { CalendarHomeComponent } from './admin/calendar/calendar-home/calendar-h
 
 import { GestioneEmployeesComponent } from './admin/gestione-employees/gestione-employees.component';
 import { SettingsEmployeesComponent } from './admin/settings-employees/settings-employees.component';
+import { DeadlinesManagementComponent } from './admin/deadlines-management/deadlines-management.component';
 
 import { DocumentManagerComponent } from './admin/document-manager/document-manager.component';
 import { ViewPdfComponent } from './admin/view-pdf/view-pdf.component';
@@ -129,6 +130,12 @@ const routes: Routes = [
     canActivate: [AuthGuard, AuthLevelGuard],
     data: { permission: 'SERVICE_ORDERS_MANAGE' },
   },
+  {
+    path: 'service-orders/edit/:id',
+    component: AddServiceOrderComponent,
+    canActivate: [AuthGuard, AuthLevelGuard],
+    data: { permission: 'SERVICE_ORDERS_MANAGE' },
+  },
 
   // clienti
   {
@@ -174,6 +181,18 @@ const routes: Routes = [
     component: SettingsEmployeesComponent,
     canActivate: [AuthGuard, AuthLevelGuard],
     data: { permissionsAny: ['EMPLOYEE_VIEW', 'EMPLOYEE_CREATE', 'EMPLOYEE_EDIT', 'EMPLOYEE_DELETE'] },
+  },
+  {
+    path: 'employee-deadlines',
+    component: DeadlinesManagementComponent,
+    canActivate: [AuthGuard, AuthLevelGuard],
+    data: { permission: 'EMPLOYEE_DEADLINES_VIEW', kind: 'employee' },
+  },
+  {
+    path: 'vehicle-deadlines',
+    component: DeadlinesManagementComponent,
+    canActivate: [AuthGuard, AuthLevelGuard],
+    data: { permission: 'VEHICLE_DEADLINES_VIEW', kind: 'vehicle' },
   },
 
   // permessi/assenze dipendenti

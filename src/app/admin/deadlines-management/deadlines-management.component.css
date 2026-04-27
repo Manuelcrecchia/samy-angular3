@@ -1,0 +1,334 @@
+.page-wrap {
+  padding: 24px;
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at top left, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0) 34%),
+    linear-gradient(180deg, #d7ebff 0%, #eef7ff 40%, #f9fbff 100%);
+}
+
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 18px;
+  flex-wrap: wrap;
+}
+
+.topbar-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.btn-back {
+  border: 0;
+  border-radius: 999px;
+  background: #11355d;
+  color: #fff;
+  padding: 10px 18px;
+  font-weight: 700;
+  box-shadow: 0 14px 30px rgba(17, 53, 93, 0.18);
+}
+
+.glass {
+  border: 1px solid rgba(255, 255, 255, 0.75);
+  background: rgba(255, 255, 255, 0.72);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 16px 40px rgba(17, 53, 93, 0.1);
+}
+
+.hero-card {
+  padding: 24px;
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.eyebrow {
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  font-size: 0.78rem;
+  font-weight: 800;
+  color: #d66200;
+}
+
+.title {
+  margin: 6px 0 8px;
+  font-size: 2rem;
+  font-weight: 900;
+  color: #12304d;
+}
+
+.subtitle {
+  margin: 0;
+  max-width: 680px;
+  color: rgba(18, 48, 77, 0.8);
+}
+
+.summary-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(120px, 1fr));
+  gap: 12px;
+  min-width: min(420px, 100%);
+}
+
+.summary-box {
+  padding: 16px;
+  border-radius: 20px;
+  background: #e8f2ff;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.summary-box-warning {
+  background: #fff2d9;
+}
+
+.summary-box-expired {
+  background: #ffe0e5;
+}
+
+.summary-value {
+  font-size: 1.8rem;
+  font-weight: 900;
+  color: #12304d;
+}
+
+.summary-label {
+  font-size: 0.9rem;
+  color: rgba(18, 48, 77, 0.75);
+}
+
+.form-head,
+.entity-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: flex-start;
+  flex-wrap: wrap;
+}
+
+.section-title,
+.entity-title {
+  color: #12304d;
+  font-weight: 800;
+}
+
+.section-subtitle,
+.entity-subtitle,
+.deadline-description,
+.deadline-meta {
+  color: rgba(18, 48, 77, 0.78);
+}
+
+.selected-files {
+  margin-top: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.existing-attachments {
+  margin-top: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.existing-attachment-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: center;
+  padding: 12px 14px;
+  border-radius: 14px;
+  background: rgba(17, 53, 93, 0.06);
+  flex-wrap: wrap;
+}
+
+.existing-attachment-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  color: #12304d;
+}
+
+.existing-attachment-copy small {
+  color: rgba(18, 48, 77, 0.65);
+}
+
+.selected-file {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: center;
+  padding: 10px 14px;
+  border-radius: 12px;
+  background: rgba(17, 53, 93, 0.06);
+}
+
+.form-actions {
+  margin-top: 18px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.groups-grid {
+  margin-top: 18px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 16px;
+}
+
+.entity-card {
+  padding: 18px;
+}
+
+.entity-head-copy {
+  flex: 1;
+  min-width: 0;
+}
+
+.entity-title-row,
+.deadline-title-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.alert-count,
+.status-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 32px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 0.82rem;
+  font-weight: 800;
+}
+
+.status-warning {
+  background: #ffcf85;
+  color: #6a3a00;
+}
+
+.status-expired {
+  background: #e34b66;
+  color: #fff;
+}
+
+.status-ok {
+  background: #dceaf8;
+  color: #12304d;
+}
+
+.empty-state {
+  margin-top: 16px;
+  padding: 18px;
+  border-radius: 16px;
+  background: rgba(17, 53, 93, 0.05);
+  color: rgba(18, 48, 77, 0.7);
+}
+
+.deadline-list {
+  margin-top: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.deadline-item {
+  padding: 16px;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.78);
+  border: 1px solid rgba(17, 53, 93, 0.08);
+}
+
+.deadline-top {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.deadline-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.deadline-title {
+  margin: 0;
+  color: #12304d;
+  font-size: 1.05rem;
+  font-weight: 800;
+}
+
+.deadline-meta {
+  margin-top: 6px;
+  display: flex;
+  gap: 10px 14px;
+  flex-wrap: wrap;
+  font-size: 0.92rem;
+}
+
+.attachments {
+  margin-top: 14px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.attachments-title {
+  width: 100%;
+  font-size: 0.85rem;
+  font-weight: 800;
+  color: rgba(18, 48, 77, 0.72);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.attachment-chip {
+  border: 0;
+  border-radius: 14px;
+  padding: 10px 12px;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  background: #eef6ff;
+  color: #12304d;
+  font-weight: 700;
+}
+
+.attachment-chip small {
+  color: rgba(18, 48, 77, 0.65);
+}
+
+@media (max-width: 768px) {
+  .page-wrap {
+    padding: 16px;
+  }
+
+  .summary-grid {
+    grid-template-columns: 1fr;
+    min-width: 100%;
+  }
+
+  .deadline-top {
+    flex-direction: column;
+  }
+
+  .deadline-actions {
+    width: 100%;
+    justify-content: flex-start;
+  }
+}
