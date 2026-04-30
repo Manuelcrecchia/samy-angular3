@@ -78,6 +78,30 @@
             >
               <span class="quote-title">
                 {{ quote.numeroPreventivo }} - {{ quote.nominativo }}
+                <span
+                  *ngIf="quote.isLocked && quote.acceptanceStatus === 'pending' && !showCompletedQuotes"
+                  class="badge bg-warning text-dark ms-2"
+                >
+                  In attesa cliente
+                </span>
+                <span
+                  *ngIf="quote.signaturePresent"
+                  class="badge bg-info text-dark ms-2"
+                >
+                  Firmato
+                </span>
+                <span
+                  *ngIf="quote.needsOfficeReview"
+                  class="badge bg-danger ms-2"
+                >
+                  Da verificare
+                </span>
+                <span
+                  *ngIf="quote.officeConfirmedAt"
+                  class="badge bg-success ms-2"
+                >
+                  Cliente creato
+                </span>
                 <ng-container *ngIf="showCompletedQuotes">
                   <mat-icon
                     *ngIf="quote.complete === 'A'"
@@ -97,7 +121,7 @@
                 <button
                   type="button"
                   class="btn btn-sm btn-pdf"
-                  (click)="viewPdf(quote.numeroPreventivo); $event.stopPropagation()"
+                  (click)="viewPdf(quote); $event.stopPropagation()"
                 >
                   <mat-icon>picture_as_pdf</mat-icon>
                 </button>
@@ -124,7 +148,7 @@
             >
               <div class="quote-actions-inner">
                 <button
-                  *ngIf="!showCompletedQuotes && globalService.hasPermission('QUOTES_MANAGE')"
+                  *ngIf="!showCompletedQuotes && globalService.hasPermission('QUOTES_MANAGE') && !quote.isLocked"
                   mat-raised-button
                   color="accent"
                   (click)="navigateToEditQuote(quote.numeroPreventivo)"
@@ -133,7 +157,7 @@
                 </button>
 
                 <button
-                  *ngIf="globalService.hasPermission('QUOTES_MANAGE')"
+                  *ngIf="globalService.hasPermission('QUOTES_MANAGE') && !quote.isLocked"
                   mat-raised-button
                   color="warn"
                   (click)="delete(quote.numeroPreventivo)"
@@ -143,6 +167,15 @@
 
                 <button
                   *ngIf="!showCompletedQuotes"
+                  mat-raised-button
+                  color="primary"
+                  (click)="sendAcceptanceLink(quote.numeroPreventivo)"
+                >
+                  <mat-icon>chat</mat-icon>
+                </button>
+
+                <button
+                  *ngIf="!showCompletedQuotes && !quote.isLocked"
                   mat-raised-button
                   color="primary"
                   (click)="invio(quote.numeroPreventivo)"
@@ -160,7 +193,7 @@
                 </button>
 
                 <button
-                  *ngIf="!showCompletedQuotes"
+                  *ngIf="!showCompletedQuotes && !quote.isLocked"
                   mat-raised-button
                   color="success"
                   (click)="conferm(quote.numeroPreventivo)"
@@ -169,7 +202,7 @@
                 </button>
 
                 <button
-                  *ngIf="!showCompletedQuotes"
+                  *ngIf="!showCompletedQuotes && (!quote.isLocked || quote.acceptanceStatus === 'pending')"
                   mat-raised-button
                   color="warn"
                   (click)="refuse(quote.numeroPreventivo)"
@@ -178,7 +211,25 @@
                 </button>
 
                 <button
-                  *ngIf="showCompletedQuotes"
+                  *ngIf="quote.isLocked && globalService.hasPermission('QUOTES_MANAGE')"
+                  mat-raised-button
+                  color="primary"
+                  (click)="duplicateQuote(quote.numeroPreventivo)"
+                >
+                  <mat-icon>content_copy</mat-icon>
+                </button>
+
+                <button
+                  *ngIf="showCompletedQuotes && quote.needsOfficeReview"
+                  mat-raised-button
+                  color="success"
+                  (click)="conferm(quote.numeroPreventivo)"
+                >
+                  <mat-icon>verified</mat-icon>
+                </button>
+
+                <button
+                  *ngIf="showCompletedQuotes && !quote.needsOfficeReview"
                   mat-raised-button
                   color="primary"
                   (click)="restore(quote.numeroPreventivo)"

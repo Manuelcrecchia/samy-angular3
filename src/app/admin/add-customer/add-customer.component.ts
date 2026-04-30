@@ -291,10 +291,29 @@ export class AddCustomerComponent {
       .post<{
         message: string;
         numeroCliente: string;
+        signedQuoteArchived?: boolean;
+        signedQuoteArchivePath?: string | null;
+        signedQuoteArchiveError?: string | null;
       }>(this.globalService.url + 'customers/add', body, { headers: this.globalService.headers })
       .subscribe({
         next: (res) => {
           const numeroCliente = res?.numeroCliente;
+          const signedQuoteArchived = !!res?.signedQuoteArchived;
+          const signedQuoteArchivePath = res?.signedQuoteArchivePath || '';
+          const signedQuoteArchiveError = res?.signedQuoteArchiveError;
+          const finalizeCustomerCreation = () => {
+            if (signedQuoteArchiveError) {
+              alert(
+                `Cliente creato, ma non siamo riusciti ad archiviare il preventivo firmato: ${signedQuoteArchiveError}`,
+              );
+            } else if (signedQuoteArchived) {
+              alert(
+                `Cliente creato e preventivo firmato archiviato in Documenti cliente > ${signedQuoteArchivePath || 'Preventivi Firmati'}`,
+              );
+            }
+
+            this.router.navigateByUrl('/listCustomer', { replaceUrl: true });
+          };
           this.customerModelService.reset();
 
           if (numeroPreventivo && numeroCliente) {
@@ -305,17 +324,15 @@ export class AddCustomerComponent {
                 { headers: this.globalService.headers },
               )
               .subscribe({
-                next: () =>
-                  this.router.navigateByUrl('/listCustomer', {
-                    replaceUrl: true,
-                  }),
-                error: () =>
-                  this.router.navigateByUrl('/listCustomer', {
-                    replaceUrl: true,
-                  }),
+                next: () => {
+                  finalizeCustomerCreation();
+                },
+                error: () => {
+                  finalizeCustomerCreation();
+                },
               });
           } else {
-            this.router.navigateByUrl('/listCustomer', { replaceUrl: true });
+            finalizeCustomerCreation();
           }
         },
         error: (err) => {

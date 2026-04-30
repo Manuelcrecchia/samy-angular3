@@ -17,7 +17,11 @@ export class AuthServiceService {
   constructor(private router: Router) {
     if (this._token) {
       const remainingTime = this.getTokenRemainingTime(this._token);
-      this.setLogoutTimer(remainingTime);
+      if (remainingTime > 0) {
+        this.setLogoutTimer(remainingTime);
+      } else {
+        this.clearSessionState();
+      }
     }
   }
 
@@ -27,7 +31,11 @@ export class AuthServiceService {
     if (value) {
       sessionStorage.setItem('token', value);
       const remainingTime = this.getTokenRemainingTime(value);
-      this.setLogoutTimer(remainingTime);
+      if (remainingTime > 0) {
+        this.setLogoutTimer(remainingTime);
+      } else {
+        this.clearSessionState();
+      }
     } else {
       sessionStorage.removeItem('token');
       this.clearLogoutTimer();
@@ -94,13 +102,31 @@ export class AuthServiceService {
     }
   }
 
+  private isPublicQuoteAcceptanceRoute(): boolean {
+    if (typeof window === 'undefined') {
+      return false;
+    }
+
+    return window.location.pathname.toLowerCase().startsWith('/quote-accept/');
+  }
+
+  private clearSessionState(): void {
+    sessionStorage.clear();
+    this._token = null;
+    this._email = null;
+    this._userCode = null;
+    this._permissions = [];
+    this.clearLogoutTimer();
+  }
+
   logout(): void {
     console.log('[AuthService] Logout eseguito o automatico');
-  sessionStorage.clear();
-  this._token = null;
-  this._email = null;
-  this._userCode = null;
-  this.clearLogoutTimer();
-  this.router.navigateByUrl('/', { replaceUrl: true });
+    this.clearSessionState();
+
+    if (this.isPublicQuoteAcceptanceRoute()) {
+      return;
+    }
+
+    this.router.navigateByUrl('/', { replaceUrl: true });
   }
 }

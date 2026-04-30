@@ -46,6 +46,7 @@ import { RiepilogoOreClientiComponent } from './admin/riepilogo-ore-clienti/riep
 
 import { TimbratureHomeComponent } from './admin/timbrature-home/timbrature-home.component';
 import { TimbratureDettaglioComponent } from './admin/timbrature-dettaglio/timbrature-dettaglio.component';
+import { QuoteAcceptComponent } from './public/quote-accept/quote-accept.component';
 
 // ✅ Documenti interni (assumo questo path; se diverso, aggiorna SOLO l'import)
 import { InternalDocumentsComponent } from './admin/internal-documents/internal-documents.component';
@@ -54,9 +55,10 @@ import { AuthGuard } from './auth.guard';
 import { AuthLevelGuard } from './auth-level.guard';
 
 const routes: Routes = [
-  { path: '', component: PrivateAreaComponent },
-  { path: 'loginPrivateArea', component: PrivateAreaComponent },
+  { path: 'quote-accept/:token', component: QuoteAcceptComponent },
   { path: 'passworddimenticata', component: PassworddimenticataComponent },
+  { path: 'loginPrivateArea', component: PrivateAreaComponent },
+  { path: '', component: PrivateAreaComponent, pathMatch: 'full' },
 
   // 🔹 ADMIN AREA
   {

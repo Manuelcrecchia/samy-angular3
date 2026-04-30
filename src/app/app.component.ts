@@ -1,7 +1,4 @@
-import { Component, HostListener } from '@angular/core';
-import { AuthServiceService } from './auth-service.service';
-import { GlobalService } from './service/global.service';
-import { Router } from '@angular/router';
+import { Component } from '@angular/core';
 import { App as CapacitorApp } from '@capacitor/app';
 
 @Component({
@@ -11,12 +8,7 @@ import { App as CapacitorApp } from '@capacitor/app';
 })
 export class AppComponent {
   title = 'samyangularapp';
-  constructor(
-    private global: GlobalService,
-    private router: Router,
-  ) {
-    this.router.navigate(['/loginPrivateArea']);
-  }
+  constructor() {}
   ngOnInit() {
     CapacitorApp.addListener('backButton', ({ canGoBack }) => {
       // Se la pagina può tornare indietro → torna indietro

@@ -38,4 +38,14 @@ export class SocketService {
       };
     });
   }
+
+  onQuoteAcceptanceUpdate(): Observable<any> {
+    return new Observable((subscriber) => {
+      const listener = (data: any) => subscriber.next(data);
+      this.socket.on('quoteAcceptanceUpdated', listener);
+      return () => {
+        this.socket.off('quoteAcceptanceUpdated', listener);
+      };
+    });
+  }
 }

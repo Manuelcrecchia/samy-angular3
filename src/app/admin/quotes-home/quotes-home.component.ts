@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, HostListener, Input, ViewChild } from '@angular/core';
+import { Component, HostListener, Input, OnDestroy, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { NgxExtendedPdfViewerService } from 'ngx-extended-pdf-viewer';
 import { GlobalService } from '../../service/global.service';
@@ -11,27 +11,40 @@ import { Location } from '@angular/common';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { CustomerModelService } from '../../service/customer-model.service';
 import { TenantService } from '../../service/tenant.service';
+import { SocketService } from '../../service/soket.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-quotes-home',
   templateUrl: './quotes-home.component.html',
   styleUrl: './quotes-home.component.css',
 })
-export class QuotesHomeComponent {
+export class QuotesHomeComponent implements OnDestroy {
   @Input() color: any;
   numeroClienteSelezionato = '';
   showCompletedQuotes = false;
+  private quoteAcceptanceSubscription?: Subscription;
 
   quotesFrEnd: {
     numeroPreventivo: string;
     nominativo: string;
     complete: string;
+    isLocked?: boolean;
+    acceptanceStatus?: string | null;
+    signaturePresent?: boolean;
+    needsOfficeReview?: boolean;
+    officeConfirmedAt?: string | null;
   }[] = [];
 
   private allQuotes: {
     numeroPreventivo: string;
     nominativo: string;
     complete: string;
+    isLocked?: boolean;
+    acceptanceStatus?: string | null;
+    signaturePresent?: boolean;
+    needsOfficeReview?: boolean;
+    officeConfirmedAt?: string | null;
   }[] = [];
 
   pdfPrev!: string;
@@ -52,6 +65,7 @@ export class QuotesHomeComponent {
     private location: Location,
     private customerModelService: CustomerModelService,
     public tenantService: TenantService,
+    private socketService: SocketService,
   ) {}
 
   addInspection(numeroPreventivo: string, nominativo: string) {
@@ -92,6 +106,11 @@ export class QuotesHomeComponent {
 
   ngOnInit() {
     this.loadQuotes();
+    this.bindQuoteAcceptanceUpdates();
+  }
+
+  ngOnDestroy(): void {
+    this.quoteAcceptanceSubscription?.unsubscribe();
   }
 
   private loadQuotes() {
@@ -130,8 +149,90 @@ export class QuotesHomeComponent {
       });
   }
 
-  viewPdf(numeroPreventivo: string) {
-    this.router.navigate(['/view-pdf'], { queryParams: { numeroPreventivo } });
+  private bindQuoteAcceptanceUpdates(): void {
+    if (this.quoteAcceptanceSubscription) {
+      return;
+    }
+
+    this.quoteAcceptanceSubscription = this.socketService
+      .onQuoteAcceptanceUpdate()
+      .subscribe((update: any) => {
+        this.loadQuotes();
+
+        const numeroPreventivo = update?.numeroPreventivo || '';
+        if (update?.kind === 'accepted') {
+          this.snackBar.open(
+            `Preventivo ${numeroPreventivo} accettato dal cliente`,
+            'Chiudi',
+            { duration: 5000 },
+          );
+        } else if (update?.kind === 'office_confirmed') {
+          this.snackBar.open(
+            `Preventivo ${numeroPreventivo} verificato e trasformato in cliente`,
+            'Chiudi',
+            { duration: 5000 },
+          );
+        }
+      });
+  }
+
+  viewPdf(
+    quote:
+      | string
+      | {
+          numeroPreventivo: string;
+          acceptanceStatus?: string | null;
+          signaturePresent?: boolean;
+          needsOfficeReview?: boolean;
+          officeConfirmedAt?: string | null;
+        },
+  ) {
+    if (typeof quote === 'string') {
+      this.router.navigate(['/view-pdf'], {
+        queryParams: { numeroPreventivo: quote },
+      });
+      return;
+    }
+
+    const numeroPreventivo = quote.numeroPreventivo;
+    const shouldOpenSignedPdf =
+      !!quote.signaturePresent ||
+      quote.acceptanceStatus === 'accepted' ||
+      !!quote.officeConfirmedAt ||
+      !!quote.needsOfficeReview;
+
+    if (!shouldOpenSignedPdf) {
+      this.router.navigate(['/view-pdf'], {
+        queryParams: { numeroPreventivo },
+      });
+      return;
+    }
+
+    this.http
+      .post<{
+        pdfUrl?: string;
+      }>(
+        this.globalService.url + 'quotes/getAcceptanceStatus',
+        { numeroPreventivo },
+        { headers: this.globalService.headers },
+      )
+      .subscribe({
+        next: (response) => {
+          if (response?.pdfUrl) {
+            window.open(response.pdfUrl, '_blank', 'noopener,noreferrer');
+            return;
+          }
+
+          this.router.navigate(['/view-pdf'], {
+            queryParams: { numeroPreventivo },
+          });
+        },
+        error: () => {
+          this.router.navigate(['/view-pdf'], {
+            queryParams: { numeroPreventivo },
+          });
+        },
+      });
   }
 
   private normalize(s: string): string {
@@ -380,6 +481,32 @@ export class QuotesHomeComponent {
       });
   }
 
+  duplicateQuote(numeroPreventivo: string) {
+    const body = { numeroPreventivo };
+
+    this.http
+      .post<{
+        numeroPreventivo: string;
+      }>(this.globalService.url + 'quotes/duplicate', body, {
+        headers: this.globalService.headers,
+      })
+      .subscribe({
+        next: (response) => {
+          this.snackBar.open(
+            `Creato nuovo preventivo ${response.numeroPreventivo}`,
+            'Chiudi',
+            { duration: 4000 },
+          );
+          this.showCompletedQuotes = false;
+          this.loadQuotes();
+        },
+        error: (err) => {
+          console.error('Errore duplicate quote:', err);
+          alert(this.parseServerError(err));
+        },
+      });
+  }
+
   conferm(numeroPreventivo: string) {
     const body = { numeroPreventivo };
 
@@ -563,6 +690,41 @@ export class QuotesHomeComponent {
         },
         error: (err) => {
           console.error('Errore invio PDF:', err);
+          alert(this.parseServerError(err));
+        },
+      });
+  }
+
+  sendAcceptanceLink(numeroPreventivo: string) {
+    const body = {
+      numeroPreventivo,
+      deliveryChannel: 'whatsapp',
+      expiresInDays: 14,
+    };
+
+    this.http
+      .post<{
+        whatsappUrl?: string;
+        approvalUrl?: string;
+      }>(this.globalService.url + 'quotes/sendAcceptanceRequest', body, {
+        headers: this.globalService.headers,
+      })
+      .subscribe({
+        next: (response) => {
+          const targetUrl = response?.whatsappUrl || response?.approvalUrl;
+          if (targetUrl) {
+            window.open(targetUrl, '_blank');
+          }
+
+          this.snackBar.open(
+            'Link di accettazione generato',
+            'Chiudi',
+            { duration: 4000 },
+          );
+          this.loadQuotes();
+        },
+        error: (err) => {
+          console.error('Errore generazione link accettazione:', err);
           alert(this.parseServerError(err));
         },
       });

@@ -1,4 +1,4 @@
-import { Component, OnInit, ElementRef, HostListener } from '@angular/core';
+import { Component, OnDestroy, OnInit, ElementRef, HostListener } from '@angular/core';
 import { Router } from '@angular/router';
 import { GlobalService } from '../../service/global.service';
 import { PopupServiceService } from '../../componenti/popup/popup-service.service';
@@ -7,6 +7,9 @@ import { Location } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { AuthServiceService } from '../../auth-service.service';
 import { TenantService } from '../../service/tenant.service';
+import { SocketService } from '../../service/soket.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { Subscription } from 'rxjs';
 
 type DeadlineStatus = 'ok' | 'warning' | 'expired';
 
@@ -23,7 +26,9 @@ interface DeadlineSummary {
   templateUrl: './homeadmin.component.html',
   styleUrls: ['./homeadmin.component.css'],
 })
-export class HomeAdminComponent implements OnInit {
+export class HomeAdminComponent implements OnInit, OnDestroy {
+  private quoteAcceptanceSubscription?: Subscription;
+
   constructor(
     private el: ElementRef,
     private router: Router,
@@ -34,16 +39,25 @@ export class HomeAdminComponent implements OnInit {
     private http: HttpClient,
     private authService: AuthServiceService,
     public tenantService: TenantService,
+    private socketService: SocketService,
+    private snackBar: MatSnackBar,
   ) {}
 
   isMenuOpen: boolean = false;
   permessiInAttesa: number = 0;
+  pendingQuoteReviews: number = 0;
   employeeDeadlineSummary: DeadlineSummary = this.emptyDeadlineSummary();
   vehicleDeadlineSummary: DeadlineSummary = this.emptyDeadlineSummary();
 
   ngOnInit(): void {
     this.checkPermessiInAttesa();
     this.loadDeadlineSummary();
+    this.loadPendingQuoteReviews();
+    this.bindQuoteAcceptanceUpdates();
+  }
+
+  ngOnDestroy(): void {
+    this.quoteAcceptanceSubscription?.unsubscribe();
   }
 
   checkPermessiInAttesa(): void {
@@ -79,6 +93,54 @@ export class HomeAdminComponent implements OnInit {
         error: (err) => {
           console.error('Errore caricamento riepilogo scadenze:', err);
         },
+      });
+  }
+
+  loadPendingQuoteReviews(): void {
+    this.http
+      .get<{ count: number }>(
+        this.global.url + 'quotes/pendingOfficeReviewCount',
+        {
+          headers: this.global.headers,
+        },
+      )
+      .subscribe({
+        next: (res) => {
+          this.pendingQuoteReviews = Number(res?.count) || 0;
+        },
+        error: (err) => {
+          console.error(
+            'Errore caricamento preventivi da verificare:',
+            err,
+          );
+        },
+      });
+  }
+
+  private bindQuoteAcceptanceUpdates(): void {
+    if (this.quoteAcceptanceSubscription) {
+      return;
+    }
+
+    this.quoteAcceptanceSubscription = this.socketService
+      .onQuoteAcceptanceUpdate()
+      .subscribe((update: any) => {
+        this.loadPendingQuoteReviews();
+
+        const numeroPreventivo = update?.numeroPreventivo || '';
+        if (update?.kind === 'accepted') {
+          this.snackBar.open(
+            `Preventivo ${numeroPreventivo} accettato dal cliente`,
+            'Chiudi',
+            { duration: 5000 },
+          );
+        } else if (update?.kind === 'office_confirmed') {
+          this.snackBar.open(
+            `Preventivo ${numeroPreventivo} verificato dall'ufficio`,
+            'Chiudi',
+            { duration: 5000 },
+          );
+        }
       });
   }
 
