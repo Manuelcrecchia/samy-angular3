@@ -188,10 +188,19 @@ export class RiepilogoPresenzeEditabileComponent implements OnInit {
         const index = cell.giorno - 1;
         if (index < 0 || index >= this.giorni.length) return;
 
+        let cellVoci = cell.voci;
+        if (typeof cellVoci === 'string') {
+          try {
+            cellVoci = JSON.parse(cellVoci);
+          } catch {
+            cellVoci = null;
+          }
+        }
+
         // 👇 Supporto nuovo formato con voci multiple
-        if (cell.voci && Array.isArray(cell.voci)) {
+        if (Array.isArray(cellVoci)) {
           // Nuovo formato: array di voci
-          dip.vociGiorno[index] = cell.voci.map((v: any) => ({
+          dip.vociGiorno[index] = cellVoci.map((v: any) => ({
             categoria: v.categoria || 'O',
             ore: v.ore || '',
           }));
