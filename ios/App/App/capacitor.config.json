@@ -1,9 +1,12 @@
 {
-	"appId": "it.samipulizie.app",
-	"appName": "sami",
+	"appId": "it.mvtechcore.mvanager",
+	"appName": "mvanager",
 	"webDir": "dist/y/browser",
 	"packageClassList": [
+		"FirebaseMessagingPlugin",
 		"AppPlugin",
+		"PreferencesPlugin",
+		"PushNotificationsPlugin",
 		"NativeBiometric"
 	]
 }

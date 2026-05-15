@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { App as CapacitorApp } from '@capacitor/app';
+import { Capacitor } from '@capacitor/core';
 
 @Component({
   selector: 'app-root',
@@ -10,6 +11,10 @@ export class AppComponent {
   title = 'samyangularapp';
   constructor() {}
   ngOnInit() {
+    if (Capacitor.getPlatform() === 'web') {
+      return;
+    }
+
     CapacitorApp.addListener('backButton', ({ canGoBack }) => {
       // Se la pagina può tornare indietro → torna indietro
       if (canGoBack) {

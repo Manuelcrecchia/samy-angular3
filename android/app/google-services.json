@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "211215590755",
+    "project_id": "mvanager-8e341",
+    "storage_bucket": "mvanager-8e341.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:211215590755:android:866c846238b9138938df56",
+        "android_client_info": {
+          "package_name": "it.mvtechcore.mvanager"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCLVelKHdbCKLes47fcOHUa2LnnJfxFN4w"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

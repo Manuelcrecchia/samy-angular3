@@ -1,8 +1,8 @@
 import type { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'it.samipulizie.app',
-  appName: 'sami',
+  appId: 'it.mvtechcore.mvanager',
+  appName: 'mvanager',
   webDir: 'dist/y/browser',
 };
 

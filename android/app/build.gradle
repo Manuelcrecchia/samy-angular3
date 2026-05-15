@@ -1,10 +1,10 @@
 apply plugin: 'com.android.application'
 
 android {
-    namespace "it.samipulizie.app"
+    namespace "it.mvtechcore.mvanager"
     compileSdk rootProject.ext.compileSdkVersion
     defaultConfig {
-        applicationId "it.samipulizie.app"
+        applicationId "it.mvtechcore.mvanager"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1

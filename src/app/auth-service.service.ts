@@ -1,20 +1,31 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { jwtDecode } from "jwt-decode";
+import { Preferences } from '@capacitor/preferences';
+import { MobilePushService } from './service/mobile-push.service';
+import { TenantService } from './service/tenant.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthServiceService {
+  private readonly TOKEN_KEY = 'token';
+  private readonly USER_CODE_KEY = 'userCode';
+  private readonly PERMISSIONS_KEY = 'permissions';
+  private readonly EMAIL_KEY = 'email';
   private logoutTimer: any;
-  private _token: string | null = sessionStorage.getItem('token') || null;
-  private _userCode: string | null = sessionStorage.getItem('userCode') || null;
+  private _token: string | null = localStorage.getItem(this.TOKEN_KEY) || sessionStorage.getItem(this.TOKEN_KEY) || null;
+  private _userCode: string | null = localStorage.getItem(this.USER_CODE_KEY) || sessionStorage.getItem(this.USER_CODE_KEY) || null;
   private _permissions: string[] = (() => {
-    try { return JSON.parse(sessionStorage.getItem('permissions') || '[]'); } catch { return []; }
+    try { return JSON.parse(localStorage.getItem(this.PERMISSIONS_KEY) || sessionStorage.getItem(this.PERMISSIONS_KEY) || '[]'); } catch { return []; }
   })();
-  private _email: string | null = sessionStorage.getItem('email') || null;
+  private _email: string | null = localStorage.getItem(this.EMAIL_KEY) || sessionStorage.getItem(this.EMAIL_KEY) || null;
 
-  constructor(private router: Router) {
+  constructor(
+    private router: Router,
+    private mobilePush: MobilePushService,
+    private tenantService: TenantService,
+  ) {
     if (this._token) {
       const remainingTime = this.getTokenRemainingTime(this._token);
       if (remainingTime > 0) {
@@ -23,21 +34,27 @@ export class AuthServiceService {
         this.clearSessionState();
       }
     }
+
+    this.restorePersistedState();
   }
 
-  // Setter per il token e altri dati che salvano anche in sessionStorage
+  // Setter per il token e altri dati che salvano anche nello storage persistente app.
   set token(value: string | null) {
     this._token = value;
     if (value) {
-      sessionStorage.setItem('token', value);
+      this.persistValue(this.TOKEN_KEY, value);
+      this.syncTenantFromToken(value);
       const remainingTime = this.getTokenRemainingTime(value);
       if (remainingTime > 0) {
         this.setLogoutTimer(remainingTime);
+        this.mobilePush.initAfterLogin(value).catch((err) => {
+          console.error('[AuthService] Errore inizializzazione push:', err);
+        });
       } else {
         this.clearSessionState();
       }
     } else {
-      sessionStorage.removeItem('token');
+      this.removeValue(this.TOKEN_KEY);
       this.clearLogoutTimer();
     }
   }
@@ -47,8 +64,8 @@ export class AuthServiceService {
 
   set userCode(value: string | null) {
     this._userCode = value;
-    if (value) sessionStorage.setItem('userCode', value);
-    else sessionStorage.removeItem('userCode');
+    if (value) this.persistValue(this.USER_CODE_KEY, value);
+    else this.removeValue(this.USER_CODE_KEY);
   }
   get userCode(): string | null {
     return this._userCode;
@@ -56,7 +73,7 @@ export class AuthServiceService {
 
   set permissions(value: string[] | null) {
     this._permissions = Array.isArray(value) ? value : [];
-    sessionStorage.setItem('permissions', JSON.stringify(this._permissions));
+    this.persistValue(this.PERMISSIONS_KEY, JSON.stringify(this._permissions));
   }
   get permissions(): string[] {
     return this._permissions;
@@ -64,8 +81,8 @@ export class AuthServiceService {
 
   set email(value: string | null) {
     this._email = value;
-    if (value) sessionStorage.setItem('email', value);
-    else sessionStorage.removeItem('email');
+    if (value) this.persistValue(this.EMAIL_KEY, value);
+    else this.removeValue(this.EMAIL_KEY);
   }
   get email(): string | null {
     return this._email;
@@ -111,12 +128,18 @@ export class AuthServiceService {
   }
 
   private clearSessionState(): void {
-    sessionStorage.clear();
+    [
+      this.TOKEN_KEY,
+      this.USER_CODE_KEY,
+      this.PERMISSIONS_KEY,
+      this.EMAIL_KEY,
+    ].forEach((key) => this.removeValue(key));
     this._token = null;
     this._email = null;
     this._userCode = null;
     this._permissions = [];
     this.clearLogoutTimer();
+    this.mobilePush.reset();
   }
 
   logout(): void {
@@ -128,5 +151,62 @@ export class AuthServiceService {
     }
 
     this.router.navigateByUrl('/', { replaceUrl: true });
+  }
+
+  private persistValue(key: string, value: string): void {
+    localStorage.setItem(key, value);
+    sessionStorage.setItem(key, value);
+    Preferences.set({ key, value }).catch((err) => {
+      console.error('[AuthService] Errore salvataggio Preferences:', err);
+    });
+  }
+
+  private removeValue(key: string): void {
+    localStorage.removeItem(key);
+    sessionStorage.removeItem(key);
+    Preferences.remove({ key }).catch((err) => {
+      console.error('[AuthService] Errore rimozione Preferences:', err);
+    });
+  }
+
+  private async restorePersistedState(): Promise<void> {
+    try {
+      const [token, userCode, permissions, email] = await Promise.all([
+        Preferences.get({ key: this.TOKEN_KEY }),
+        Preferences.get({ key: this.USER_CODE_KEY }),
+        Preferences.get({ key: this.PERMISSIONS_KEY }),
+        Preferences.get({ key: this.EMAIL_KEY }),
+      ]);
+
+      if (token.value) this._token = token.value;
+      if (userCode.value) this._userCode = userCode.value;
+      if (email.value) this._email = email.value;
+      if (permissions.value) {
+        this._permissions = JSON.parse(permissions.value);
+      }
+
+      if (!this._token) return;
+
+      this.syncTenantFromToken(this._token);
+      const remainingTime = this.getTokenRemainingTime(this._token);
+      if (remainingTime > 0) {
+        this.persistValue(this.TOKEN_KEY, this._token);
+        this.setLogoutTimer(remainingTime);
+        await this.mobilePush.initAfterLogin(this._token);
+      } else {
+        this.clearSessionState();
+      }
+    } catch (error) {
+      console.error('[AuthService] Errore ripristino sessione:', error);
+    }
+  }
+
+  private syncTenantFromToken(token: string): void {
+    try {
+      const decoded: any = jwtDecode(token);
+      this.tenantService.setTenantFromToken(decoded?.tenantId);
+    } catch (error) {
+      console.error('[AuthService] Errore lettura tenant dal token:', error);
+    }
   }
 }

@@ -1,16 +1,4 @@
-<!DOCTYPE html>
-<html lang="it">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Login</title>
-
-  <link
-    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
-    rel="stylesheet"
-  />
-
-  <style>
+<style>
     :root{
       --glass-bg: rgba(255,255,255,0.18);
       --glass-border: rgba(255,255,255,0.35);
@@ -173,10 +161,73 @@
     .btn-login:active{
       transform:translateY(0);
     }
-  </style>
-</head>
 
-<body>
+    .btn-biometric{
+      border-radius:16px;
+      padding:12px 14px;
+      font-weight:700;
+      border:1px solid rgba(15,23,42,.10);
+      color:var(--text-strong);
+      background:rgba(255,255,255,.38);
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.35);
+      margin-top:10px;
+    }
+
+    .tenant-selector{
+      display:grid;
+      grid-template-columns:repeat(2, minmax(0,1fr));
+      gap:12px;
+      margin-bottom:18px;
+    }
+
+    .tenant-card{
+      border-radius:16px;
+      border:1px solid rgba(255,255,255,.65);
+      background:rgba(255,255,255,.42);
+      color:var(--text-strong);
+      padding:14px 12px;
+      text-align:left;
+      transition:transform .16s ease, box-shadow .16s ease, background .16s ease;
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.35);
+    }
+
+    .tenant-card strong{
+      display:block;
+      font-size:.98rem;
+      margin-bottom:4px;
+    }
+
+    .tenant-card span{
+      display:block;
+      font-size:.82rem;
+      color:var(--text-soft);
+      line-height:1.35;
+    }
+
+    .tenant-card.active{
+      background:rgba(255,255,255,.78);
+      box-shadow:0 12px 24px rgba(2,6,23,.10);
+      transform:translateY(-1px);
+      border-color:rgba(15,23,42,.14);
+    }
+
+    .tenant-card:disabled{
+      opacity:.7;
+    }
+
+    .tenant-hint{
+      margin:-4px 0 14px;
+      color:var(--text-soft);
+      font-size:.88rem;
+      text-align:center;
+    }
+
+    @media (max-width: 520px){
+      .tenant-selector{
+        grid-template-columns:1fr;
+      }
+    }
+  </style>
 
 <div class="clouds"></div>
 
@@ -198,6 +249,34 @@
       <div class="subtitle">Inserisci i tuoi dati per accedere.</div>
     </div>
 
+    <div class="tenant-selector">
+      <button
+        type="button"
+        class="tenant-card"
+        [class.active]="selectedTenant === 'sami'"
+        [disabled]="checkingLoginState"
+        (click)="selectTenant('sami')"
+      >
+        <strong>SAMI</strong>
+        <span>Impresa di pulizie e servizi</span>
+      </button>
+
+      <button
+        type="button"
+        class="tenant-card"
+        [class.active]="selectedTenant === 'emmeci'"
+        [disabled]="checkingLoginState"
+        (click)="selectTenant('emmeci')"
+      >
+        <strong>Emmeci</strong>
+        <span>Traslochi e ordini di servizio</span>
+      </button>
+    </div>
+
+    <div class="tenant-hint">
+      {{ selectedTenant ? ('Tenant selezionato: ' + tenantService.tenantLabel) : 'Seleziona l\'azienda da aprire nell\'app.' }}
+    </div>
+
     <form (submit)="loginFunction(email.value, password.value)" novalidate>
 
       <div class="mb-3">
@@ -208,6 +287,7 @@
           id="email"
           class="form-control"
           placeholder="Inserisci la tua email..."
+          [disabled]="!loginReady"
           required
         />
       </div>
@@ -222,12 +302,14 @@
             id="password"
             class="form-control"
             placeholder="Inserisci la password..."
+            [disabled]="!loginReady"
             required
           />
 
           <button
             type="button"
             class="btn btn-eye"
+            [disabled]="!loginReady"
             (click)="togglePasswordVisibility(password)"
           >
             👁️
@@ -235,8 +317,9 @@
         </div>
 
         <div class="forgot-row">
-         <button
+<button
   type="button"
+  [disabled]="!loginReady"
   (click)="navigateToPassworddimenticata(email.value)"
   class="forgot-link btn btn-link p-0">
   Password dimenticata?
@@ -245,16 +328,22 @@
       </div>
 
       <div class="d-grid mt-3">
-        <button type="submit" class="btn btn-login">
-          Login
+        <button type="submit" class="btn btn-login" [disabled]="!loginReady">
+          {{ checkingLoginState ? 'Verifica tenant...' : 'Login' }}
+        </button>
+      </div>
+
+      <div class="d-grid" *ngIf="biometricAvailable">
+        <button
+          type="button"
+          class="btn btn-biometric"
+          [disabled]="!loginReady"
+          (click)="biometricLogin()"
+        >
+          Accedi con biometria
         </button>
       </div>
 
     </form>
   </div>
 </main>
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
-</body>
-</html>

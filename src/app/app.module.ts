@@ -16,7 +16,12 @@ import {
   MatButtonToggleGroup,
   MatButtonToggleModule,
 } from '@angular/material/button-toggle';
-import { HttpClientModule } from '@angular/common/http';
+import {
+  HttpClientModule,
+  provideHttpClient,
+  withFetch,
+  withInterceptorsFromDi,
+} from '@angular/common/http';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { UserSettingsComponent } from './admin/user-settings/user-settings.component';
@@ -175,6 +180,7 @@ registerLocaleData(localeIt);
     NgbModalModule,
   ],
   providers: [
+    provideHttpClient(withFetch(), withInterceptorsFromDi()),
     {
       provide: HTTP_INTERCEPTORS,
       useClass: AuthInterceptorService,
