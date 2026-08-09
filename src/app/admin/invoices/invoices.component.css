@@ -820,6 +820,13 @@ button:disabled {
   min-width: 0;
 }
 
+.ddt-editor fieldset {
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
 .ddt-line-row {
   display: grid;
   grid-template-columns: 110px minmax(240px, 1fr) 82px 72px 110px 96px 90px 82px minmax(210px, 260px) 42px;

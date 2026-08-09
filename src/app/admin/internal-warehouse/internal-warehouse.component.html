@@ -491,9 +491,37 @@
         <span>Note ordine</span>
         <textarea class="form-control" [(ngModel)]="materialOrderForm.note" name="materialOrderNote"></textarea>
       </label>
+      <div class="field full" *ngIf="materialOrderForm.customerId">
+        <label class="material-option-toggle">
+          <input class="material-option-toggle__input" type="checkbox" [(ngModel)]="materialOrderForm.deliveryNoteRequested" name="materialDeliveryNoteRequested" />
+          <span class="material-option-toggle__switch" aria-hidden="true">
+            <span class="material-option-toggle__thumb"></span>
+          </span>
+          <span class="material-option-toggle__copy">
+            <strong>DDT per questa consegna</strong>
+            <small>Attiva per predisporre il DDT quando verrà registrata la consegna.</small>
+          </span>
+        </label>
+        <div class="assignment-grid" *ngIf="materialOrderForm.deliveryNoteRequested">
+          <label class="field">
+            <span>Causale DDT</span>
+            <input class="form-control" [(ngModel)]="materialOrderForm.deliveryNoteReason" name="materialDeliveryNoteReason" />
+          </label>
+          <label class="material-option-toggle material-option-toggle--compact align-self-end">
+            <input class="material-option-toggle__input" type="checkbox" [(ngModel)]="materialOrderForm.includeInDeferredInvoice" name="materialIncludeInDeferredInvoice" />
+            <span class="material-option-toggle__switch" aria-hidden="true">
+              <span class="material-option-toggle__thumb"></span>
+            </span>
+            <span class="material-option-toggle__copy">
+              <strong>Fatturazione differita</strong>
+              <small>Proponi questo DDT nella successiva fattura TD24.</small>
+            </span>
+          </label>
+        </div>
+      </div>
       <div class="alert alert-info field full material-order-signature-notice" role="note">
-        <strong>Documento e firma obbligatori.</strong>
-        Alla consegna verrà generato il foglio riepilogativo, che dovrà essere firmato dal cliente o dal dipendente destinatario. In alternativa potrai registrare la firma sulla copia cartacea.
+        <strong>Ricevuta e firma obbligatorie.</strong>
+        Dopo la consegna verrà generata una ricevuta separata dal DDT, firmabile digitalmente oppure su carta.
       </div>
       <button class="btn btn-dark" type="submit" [disabled]="saving || !!directMaterialOrderAvailabilityError()">
         {{ materialOrderSourceRequestId ? 'Approva e crea ordine materiali' : 'Crea ordine materiali' }}
@@ -535,15 +563,25 @@
         <h3>{{ materialOrderRecipient(order) }}</h3>
         <p><strong>Addetto alla preparazione:</strong> {{ materialOrderPreparationEmployee(order) }}</p>
         <p><strong>Incaricato della consegna:</strong> {{ materialOrderDeliveryEmployee(order) }}</p>
-        <p>
-          <strong>Modalità di consegna:</strong>
-          {{ order.deliveryMode === 'planned' ? 'Consegna pianificata' : 'Ritiro/consegna immediata' }}
-          <span *ngIf="order.deliveryMode === 'planned' && order.scheduledStart">
-            · {{ order.scheduledStart | date:'dd/MM/yyyy HH:mm' }}<ng-container *ngIf="order.scheduledEnd"> – {{ order.scheduledEnd | date:'dd/MM/yyyy HH:mm' }}</ng-container>
-          </span>
-        </p>
+        <ng-container *ngIf="materialOrderCurrentDelivery(order) as summaryDelivery; else orderDeliveryMode">
+          <p>
+            <strong>Pianificazione consegna:</strong>
+            <ng-container *ngIf="summaryDelivery.scheduledStart; else immediateDelivery">
+              {{ summaryDelivery.scheduledStart | date:'dd/MM/yyyy HH:mm' }}<ng-container *ngIf="summaryDelivery.scheduledEnd"> – {{ summaryDelivery.scheduledEnd | date:'dd/MM/yyyy HH:mm' }}</ng-container>
+            </ng-container>
+            <ng-template #immediateDelivery>Ritiro/consegna immediata</ng-template>
+          </p>
+        </ng-container>
+        <ng-template #orderDeliveryMode>
+          <p><strong>Modalità di consegna:</strong> {{ order.deliveryMode === 'planned' ? 'Consegna pianificata' : 'Ritiro/consegna immediata' }}</p>
+        </ng-template>
+        <p *ngIf="order.deliveryNoteRequested"><strong>DDT previsto:</strong> sì · causale {{ order.deliveryNoteReason || 'Vendita' }}</p>
         <span class="request-status" [ngClass]="materialOrderStatusClass(order.status)">{{ materialOrderStatusLabel(order.status) }}</span>
         <p *ngIf="order.note">{{ order.note }}</p>
+        <div class="request-admin-note" *ngIf="order.status === 'cancelled' && order.cancelReason">
+          <strong>Motivo annullamento</strong>
+          <p>{{ order.cancelReason }}</p>
+        </div>
         <div class="cancel-reason-box" *ngIf="editingMaterialOrderAssignment">
           <div class="assignment-grid">
             <label class="field" *ngIf="!order.customerId">
@@ -588,6 +626,27 @@
             <button class="btn btn-outline-secondary" type="button" (click)="editingMaterialOrderAssignment = false" [disabled]="saving">Annulla modifica</button>
           </div>
         </div>
+        <div class="cancel-reason-box" *ngIf="cancelMaterialOrderForm.orderId === order.id">
+          <div class="alert alert-warning mb-0" role="note" *ngIf="order.status === 'partially_delivered'">
+            Verranno annullate soltanto le quantità residue. Le consegne già effettuate resteranno nello storico.
+          </div>
+          <label class="field full">
+            <span>Motivo annullamento *</span>
+            <textarea
+              class="form-control"
+              rows="3"
+              [(ngModel)]="cancelMaterialOrderForm.reason"
+              name="materialOrderCancelReason"
+              placeholder="Es. Ordine duplicato, materiale non più necessario..."
+            ></textarea>
+          </label>
+          <div class="cancel-reason-actions">
+            <button class="btn btn-danger" type="button" (click)="confirmCancelMaterialOrder(order)" [disabled]="saving">
+              {{ saving ? 'Annullamento...' : (order.status === 'partially_delivered' ? 'Annulla quantità residue' : 'Conferma annullamento') }}
+            </button>
+            <button class="btn btn-outline-secondary" type="button" (click)="clearCancelMaterialOrder()" [disabled]="saving">Chiudi</button>
+          </div>
+        </div>
         <div class="request-detail-items">
           <div class="request-detail-item" *ngFor="let item of order.items">
             <span><strong>{{ item.product?.name || ('Prodotto #' + item.productId) }}</strong><small>{{ item.note || 'Nessuna nota' }}</small></span>
@@ -599,13 +658,18 @@
         </div>
         <div class="request-detail-items" *ngIf="order.deliveries?.length">
           <div class="request-detail-item" *ngFor="let delivery of order.deliveries">
-            <span><strong>{{ delivery.numeroConsegna }}</strong><small>Documento di uscita · {{ delivery.status }}</small></span>
-            <div class="delivery-document-actions" *ngIf="delivery.documentPath">
-              <button class="btn btn-outline-secondary" type="button" (click)="materialDeliveryPdf(delivery, 'open')">Apri documento</button>
-              <button class="btn btn-outline-secondary" type="button" (click)="materialDeliveryPdf(delivery, 'print')" *ngIf="delivery.status !== 'accepted'">Stampa per firma</button>
-              <button class="btn btn-outline-secondary" type="button" (click)="materialDeliveryPdf(delivery, 'download')">Scarica</button>
-              <button class="btn btn-outline-dark" type="button" (click)="requestMaterialDeliverySignature(delivery, order)" *ngIf="delivery.status !== 'accepted'">Firma digitale destinatario</button>
-              <button class="btn btn-outline-dark" type="button" (click)="startPaperMaterialDeliverySignature(delivery, paperSignatureInput)" *ngIf="delivery.status !== 'accepted'">Copia cartacea firmata</button>
+            <span><strong>{{ delivery.numeroConsegna }}</strong><small>Consegna · {{ delivery.status }}</small></span>
+            <div class="delivery-document-actions">
+              <button class="btn btn-outline-dark" type="button" (click)="createOrOpenDeliveryNote(delivery)" *ngIf="order.deliveryNoteRequested && delivery.status === 'planned'" [disabled]="saving">Crea / apri DDT</button>
+              <button class="btn btn-dark" type="button" (click)="dispatchMaterialDelivery(delivery)" *ngIf="delivery.status === 'planned'" [disabled]="saving">Avvia consegna</button>
+            </div>
+            <div class="delivery-document-actions" *ngIf="delivery.status !== 'cancelled'">
+              <button class="btn btn-outline-secondary" type="button" (click)="materialDeliveryPdf(delivery, 'open')" *ngIf="materialOrderCurrentDelivery(order)?.id !== delivery.id">Apri ricevuta</button>
+              <button class="btn btn-outline-secondary" type="button" (click)="materialDeliveryPdf(delivery, 'print')" *ngIf="delivery.status !== 'accepted' && materialOrderCurrentDelivery(order)?.id !== delivery.id">Stampa ricevuta</button>
+              <button class="btn btn-outline-secondary" type="button" (click)="materialDeliveryPdf(delivery, 'download')" *ngIf="materialOrderCurrentDelivery(order)?.id !== delivery.id">Scarica</button>
+              <button class="btn btn-outline-dark" type="button" (click)="requestMaterialDeliverySignature(delivery, order)" *ngIf="delivery.status === 'dispatched' || delivery.status === 'delivered'">Firma digitale destinatario</button>
+              <button class="btn btn-outline-dark" type="button" (click)="startPaperMaterialDeliverySignature(delivery, paperSignatureInput)" *ngIf="delivery.status === 'dispatched' || delivery.status === 'delivered'">Copia cartacea firmata</button>
+              <button class="btn btn-outline-warning" type="button" (click)="registerMaterialDeliveryException(delivery)" *ngIf="delivery.status === 'delivered'">Riserva / rifiuto</button>
               <input #paperSignatureInput type="file" accept="application/pdf,.pdf,image/jpeg,image/png,.jpg,.jpeg,.png" hidden (change)="registerPaperMaterialDeliverySignature(delivery, $event)" />
               <button class="btn btn-outline-secondary" type="button" (click)="showMaterialDeliverySignatureEvidence(delivery)" *ngIf="delivery.status === 'accepted'">Dati prova firma</button>
             </div>
@@ -616,14 +680,62 @@
         <button class="btn btn-outline-secondary" type="button" (click)="startMaterialOrderAssignmentEdit(order)" *ngIf="!editingMaterialOrderAssignment && (order.status === 'approved' || order.status === 'preparing' || order.status === 'prepared')">
           <i class="fas fa-user-pen me-1"></i> Modifica assegnazione e consegna
         </button>
-        <button class="btn btn-outline-secondary" type="button" (click)="materialPreparationPdf(order, 'open')" *ngIf="materialOrderConfig.preparationDocumentEnabled !== false">Apri preparazione</button>
-        <button class="btn btn-outline-secondary" type="button" (click)="materialPreparationPdf(order, 'download')" *ngIf="materialOrderConfig.preparationDocumentEnabled !== false">Scarica PDF</button>
-        <button class="btn btn-outline-secondary" type="button" (click)="materialPreparationPdf(order, 'print')" *ngIf="materialOrderConfig.preparationDocumentEnabled !== false">Stampa</button>
+        <ng-container *ngIf="showMaterialPreparationDocument(order)">
+          <button class="btn btn-outline-secondary" type="button" (click)="materialPreparationPdf(order, 'open')">Apri foglio di preparazione</button>
+          <button class="btn btn-outline-secondary" type="button" (click)="materialPreparationPdf(order, 'download')">Scarica preparazione</button>
+          <button class="btn btn-outline-secondary" type="button" (click)="materialPreparationPdf(order, 'print')">Stampa preparazione</button>
+        </ng-container>
+        <ng-container *ngIf="materialOrderCurrentDelivery(order) as currentDelivery">
+          <button class="btn btn-outline-dark" type="button" (click)="startMaterialDeliveryScheduleEdit(currentDelivery)" *ngIf="canEditMaterialDeliverySchedule(currentDelivery) && editingMaterialDeliveryId !== currentDelivery.id" [disabled]="saving">
+            <i class="fas fa-calendar-days me-1"></i> {{ currentDelivery.scheduledStart ? 'Modifica pianificazione' : 'Pianifica nel calendario' }}
+          </button>
+          <div class="cancel-reason-box" *ngIf="editingMaterialDeliveryId === currentDelivery.id">
+            <div class="assignment-grid">
+              <label class="field">
+                <span>Incaricato</span>
+                <select class="form-select" [(ngModel)]="materialDeliveryScheduleForm.deliveryEmployeeId" name="deliveryScheduleEmployee">
+                  <option [ngValue]="0">Da definire</option>
+                  <option *ngFor="let employee of references.employees" [ngValue]="employee.id">{{ employeeReferenceLabel(employee) }}</option>
+                </select>
+              </label>
+              <label class="field">
+                <span>Modalità</span>
+                <select class="form-select" [(ngModel)]="materialDeliveryScheduleForm.deliveryMode" name="deliveryScheduleMode">
+                  <option value="immediate">Immediata</option>
+                  <option value="planned">Nel calendario</option>
+                </select>
+              </label>
+              <label class="field" *ngIf="materialDeliveryScheduleForm.deliveryMode === 'planned'">
+                <span>Inizio</span>
+                <input class="form-control" type="datetime-local" [(ngModel)]="materialDeliveryScheduleForm.scheduledStart" name="deliveryScheduleStart" (ngModelChange)="onMaterialDeliveryScheduledStartChange($event)" />
+              </label>
+              <label class="field" *ngIf="materialDeliveryScheduleForm.deliveryMode === 'planned'">
+                <span>Fine</span>
+                <input class="form-control" type="datetime-local" [(ngModel)]="materialDeliveryScheduleForm.scheduledEnd" name="deliveryScheduleEnd" />
+              </label>
+            </div>
+            <div class="cancel-reason-actions">
+              <button class="btn btn-dark" type="button" (click)="saveMaterialDeliverySchedule(currentDelivery)" [disabled]="saving">Salva</button>
+              <button class="btn btn-outline-secondary" type="button" (click)="clearMaterialDeliveryScheduleEdit()" [disabled]="saving">Chiudi</button>
+            </div>
+          </div>
+          <ng-container *ngIf="currentDelivery.status !== 'cancelled'">
+            <button class="btn btn-outline-secondary" type="button" (click)="materialDeliveryPdf(currentDelivery, 'open')">Apri ricevuta di consegna</button>
+            <button class="btn btn-outline-secondary" type="button" (click)="materialDeliveryPdf(currentDelivery, 'download')">Scarica ricevuta</button>
+            <button class="btn btn-outline-secondary" type="button" (click)="materialDeliveryPdf(currentDelivery, 'print')" *ngIf="currentDelivery.status !== 'accepted'">Stampa ricevuta per firma</button>
+          </ng-container>
+          <button class="btn btn-outline-warning" type="button" (click)="markMaterialDeliveryDelivered(currentDelivery)" *ngIf="currentDelivery.status === 'dispatched'" [disabled]="saving">
+            <i class="fas fa-box-circle-check me-1"></i> Segna consegnato senza firma
+          </button>
+        </ng-container>
         <button class="btn btn-dark" type="button" (click)="markMaterialOrderPrepared(order)" *ngIf="canMarkMaterialOrderPrepared(order)" [disabled]="saving">
           <i class="fas fa-check me-1"></i> {{ materialOrderPreparationIsExact(order) ? 'Segna come preparato' : 'Forza preparazione' }}
         </button>
         <button class="btn btn-dark" type="button" (click)="deliverMaterialOrder(order)" *ngIf="canDeliverMaterialOrder(order)">
-          {{ order.status === 'partially_delivered' ? 'Segna il residuo come consegnato' : 'Segna come consegnato' }}
+          {{ order.status === 'partially_delivered' ? 'Pianifica consegna residua' : 'Pianifica consegna' }}
+        </button>
+        <button class="btn btn-outline-danger" type="button" (click)="startCancelMaterialOrder(order)" *ngIf="canCancelMaterialOrder(order) && cancelMaterialOrderForm.orderId !== order.id" [disabled]="saving">
+          <i class="fas fa-ban me-1"></i> {{ order.status === 'partially_delivered' ? 'Annulla quantità residue' : 'Annulla ordine' }}
         </button>
       </aside>
     </div>
@@ -964,10 +1076,11 @@
           <span class="stock-badge" [ngClass]="productStockStatusClass(product)">{{ productStockStatusLabel(product) }}</span>
         </div>
 
-        <div class="supplier-line" *ngIf="supplierDisplayName(product) || product.supplierCode || product.indicativePrice !== null">
+        <div class="supplier-line" *ngIf="supplierDisplayName(product) || product.supplierCode || product.purchasePrice !== null || product.salePrice !== null">
           <span *ngIf="supplierDisplayName(product)"><i class="fas fa-truck"></i> {{ supplierDisplayName(product) }}</span>
           <span *ngIf="product.supplierCode">Cod. {{ product.supplierCode }}</span>
-          <span *ngIf="product.indicativePrice !== null">€ {{ product.indicativePrice }}</span>
+          <span *ngIf="product.purchasePrice !== null">Acquisto € {{ product.purchasePrice }}</span>
+          <span *ngIf="product.salePrice !== null">Vendita € {{ product.salePrice }}</span>
         </div>
 
         <div class="product-card-actions" *ngIf="canManageProducts || canRegisterIn">
@@ -1373,8 +1486,12 @@
           <input class="form-control" [(ngModel)]="productForm.supplierCode" name="supplierCode" placeholder="Codice articolo del fornitore" />
         </label>
         <label class="field">
-          <span>Prezzo indicativo</span>
-          <input class="form-control" type="number" min="0" step="0.01" [(ngModel)]="productForm.indicativePrice" name="indicativePrice" placeholder="Costo indicativo per unità" />
+          <span>Prezzo d’acquisto (facoltativo)</span>
+          <input class="form-control" type="number" min="0" step="0.01" [(ngModel)]="productForm.purchasePrice" name="purchasePrice" placeholder="Prezzo d’acquisto facoltativo" />
+        </label>
+        <label class="field">
+          <span>Prezzo di vendita (facoltativo)</span>
+          <input class="form-control" type="number" min="0" step="0.01" [(ngModel)]="productForm.salePrice" name="salePrice" placeholder="Prezzo di vendita facoltativo" />
         </label>
         <label class="field">
           <span>Link riordino</span>

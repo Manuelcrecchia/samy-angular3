@@ -181,6 +181,41 @@ describe('InternalWarehouseComponent reference labels', () => {
     expect(component.canDeliverMaterialOrder({ status: 'ready', items: [item] })).toBeFalse();
   });
 
+  it('switches the side document actions from preparation to the current delivery', () => {
+    const component = createComponent();
+    const planned = { id: 10, status: 'planned' };
+    const dispatched = { id: 11, status: 'dispatched' };
+
+    expect(component.showMaterialPreparationDocument({ status: 'preparing' })).toBeTrue();
+    expect(component.showMaterialPreparationDocument({ status: 'prepared' })).toBeTrue();
+    expect(component.showMaterialPreparationDocument({ status: 'ready' })).toBeFalse();
+    expect(component.showMaterialPreparationDocument({ status: 'completed' })).toBeFalse();
+    expect(component.materialOrderCurrentDelivery({ deliveries: [planned, dispatched] })).toBe(dispatched);
+    expect(component.materialOrderCurrentDelivery({ deliveries: [{ id: 12, status: 'cancelled' }] })).toBeNull();
+  });
+
+  it('keeps delivery scheduling editable until recipient signature', () => {
+    const component = createComponent();
+
+    expect(component.canEditMaterialDeliverySchedule({ status: 'planned' })).toBeTrue();
+    expect(component.canEditMaterialDeliverySchedule({ status: 'dispatched' })).toBeTrue();
+    expect(component.canEditMaterialDeliverySchedule({ status: 'delivered' })).toBeTrue();
+    expect(component.canEditMaterialDeliverySchedule({ status: 'accepted' })).toBeFalse();
+    expect(component.canEditMaterialDeliverySchedule({ status: 'dispatched', signatureProofId: 91 })).toBeFalse();
+  });
+
+  it('offers cancellation before dispatch and for a partially delivered residual', () => {
+    const component = createComponent();
+
+    expect(component.canCancelMaterialOrder({ status: 'approved' })).toBeTrue();
+    expect(component.canCancelMaterialOrder({ status: 'preparing' })).toBeTrue();
+    expect(component.canCancelMaterialOrder({ status: 'prepared' })).toBeTrue();
+    expect(component.canCancelMaterialOrder({ status: 'partially_delivered' })).toBeTrue();
+    expect(component.canCancelMaterialOrder({ status: 'ready' })).toBeFalse();
+    expect(component.canCancelMaterialOrder({ status: 'completed' })).toBeFalse();
+    expect(component.canCancelMaterialOrder({ status: 'cancelled' })).toBeFalse();
+  });
+
   it('distinguishes an exact preparation from one that needs an admin override', () => {
     const component = createComponent();
 

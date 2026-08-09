@@ -30,9 +30,21 @@
       </div>
 
       <form class="acceptance-form" *ngIf="pending" (ngSubmit)="submit()">
+        <div *ngIf="isMaterialDelivery" class="otp-panel">
+          <label>Esito della ricezione
+            <select name="receiptOutcome" [(ngModel)]="receiptOutcome">
+              <option value="accepted">Ricevuto</option>
+              <option value="accepted_with_reservation">Ricevuto con riserva</option>
+              <option value="refused">Rifiutato</option>
+            </select>
+          </label>
+          <label *ngIf="receiptOutcome !== 'accepted'">Nota obbligatoria
+            <textarea name="receiptNote" rows="3" [(ngModel)]="receiptNote" placeholder="Descrivi la riserva o il motivo del rifiuto"></textarea>
+          </label>
+        </div>
         <label class="check-row">
           <input type="checkbox" name="acceptTerms" [(ngModel)]="acceptTerms" />
-          <span>Dichiaro di aver letto e di accettare integralmente {{ isMaterialDelivery ? 'la consegna materiali' : 'l’ordine di servizio' }} e le condizioni contenute nel PDF.</span>
+          <span>Dichiaro di aver letto {{ isMaterialDelivery ? 'la ricevuta di consegna materiali e confermo l’esito indicato' : 'e di accettare integralmente l’ordine di servizio' }} e le condizioni contenute nel PDF.</span>
         </label>
         <label class="check-row">
           <input type="checkbox" name="privacyAcknowledged" [(ngModel)]="privacyAcknowledged" />

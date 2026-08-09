@@ -43,6 +43,8 @@ interface WarehouseProduct {
   reorderUrl: string;
   reorderNote: string;
   indicativePrice: number | null;
+  purchasePrice: number | null;
+  salePrice: number | null;
   photoPath?: string | null;
   photoUrl?: string | null;
   minimumQuantity: number;
@@ -262,6 +264,9 @@ export class InternalWarehouseComponent implements OnInit, OnDestroy {
     deliveryMode: 'immediate',
     scheduledStart: '',
     scheduledEnd: '',
+    deliveryNoteRequested: false,
+    deliveryNoteReason: 'Vendita',
+    includeInDeferredInvoice: true,
     note: '',
     fields: {},
     items: [{ productId: 0, quantity: 1, note: '' }],
@@ -318,6 +323,17 @@ export class InternalWarehouseComponent implements OnInit, OnDestroy {
     deliveryMode: 'immediate',
     scheduledStart: '',
     scheduledEnd: '',
+  };
+  editingMaterialDeliveryId = 0;
+  materialDeliveryScheduleForm = {
+    deliveryEmployeeId: 0,
+    deliveryMode: 'immediate',
+    scheduledStart: '',
+    scheduledEnd: '',
+  };
+  cancelMaterialOrderForm = {
+    orderId: 0,
+    reason: '',
   };
   materialOrderReferenceSearch: Record<MaterialOrderReferenceKind, string> = {
     customer: '', recipient: '', preparation: '', delivery: '',
@@ -772,6 +788,7 @@ export class InternalWarehouseComponent implements OnInit, OnDestroy {
     this.materialOrderView = 'detail';
     this.selectedMaterialOrder = order;
     this.editingMaterialOrderAssignment = false;
+    this.clearCancelMaterialOrder();
     this.navigateEntityView('detail', order.id);
   }
 
@@ -793,6 +810,7 @@ export class InternalWarehouseComponent implements OnInit, OnDestroy {
       this.materialOrderView = 'list';
       this.selectedMaterialOrder = null;
       this.editingMaterialOrderAssignment = false;
+      this.clearCancelMaterialOrder();
       this.loadMaterialOrders();
     } else if (this.activeTab === 'orders') {
       this.supplierOrderView = 'list';
@@ -881,6 +899,75 @@ export class InternalWarehouseComponent implements OnInit, OnDestroy {
     ));
   }
 
+  materialOrderCurrentDelivery(order: any): any | null {
+    const deliveries = Array.isArray(order?.deliveries)
+      ? order.deliveries.filter((delivery: any) => delivery?.status !== 'cancelled')
+      : [];
+    if (!deliveries.length) return null;
+    return deliveries.reduce((current: any, delivery: any) => (
+      Number(delivery?.id || 0) > Number(current?.id || 0) ? delivery : current
+    ));
+  }
+
+  showMaterialPreparationDocument(order: any): boolean {
+    return this.materialOrderConfig.preparationDocumentEnabled !== false &&
+      ['draft', 'requested', 'approved', 'preparing', 'prepared'].includes(String(order?.status || ''));
+  }
+
+  canEditMaterialDeliverySchedule(delivery: any): boolean {
+    return ['planned', 'dispatched', 'delivered'].includes(String(delivery?.status || '')) &&
+      !Number(delivery?.signatureProofId || 0);
+  }
+
+  startMaterialDeliveryScheduleEdit(delivery: any): void {
+    this.loadReferences();
+    this.editingMaterialDeliveryId = Number(delivery?.id || 0);
+    this.materialDeliveryScheduleForm = {
+      deliveryEmployeeId: Number(delivery?.deliveryEmployeeId || 0),
+      deliveryMode: delivery?.scheduledStart ? 'planned' : 'immediate',
+      scheduledStart: this.dateTimeLocalValue(delivery?.scheduledStart),
+      scheduledEnd: this.dateTimeLocalValue(delivery?.scheduledEnd),
+    };
+    this.clearFeedback();
+  }
+
+  clearMaterialDeliveryScheduleEdit(): void {
+    this.editingMaterialDeliveryId = 0;
+  }
+
+  onMaterialDeliveryScheduledStartChange(value: string): void {
+    if (!value || this.materialDeliveryScheduleForm.scheduledEnd) return;
+    const start = new Date(value);
+    if (Number.isNaN(start.getTime())) return;
+    this.materialDeliveryScheduleForm.scheduledEnd = this.dateTimeLocalValue(
+      new Date(start.getTime() + 60 * 60000),
+    );
+  }
+
+  saveMaterialDeliverySchedule(delivery: any): void {
+    if (this.materialDeliveryScheduleForm.deliveryMode === 'planned' && !this.materialDeliveryScheduleForm.scheduledStart) {
+      this.error = 'Indica data e ora della consegna.';
+      return;
+    }
+    this.saving = true;
+    this.http.patch<any>(this.materialApi(`/deliveries/${delivery.id}/schedule`), {
+      ...this.materialDeliveryScheduleForm,
+    }).subscribe({
+      next: () => {
+        this.saving = false;
+        this.clearMaterialDeliveryScheduleEdit();
+        this.message = this.materialDeliveryScheduleForm.deliveryMode === 'planned'
+          ? 'Consegna collegata al calendario e ai turni.'
+          : 'Consegna impostata come immediata.';
+        this.loadMaterialOrders();
+      },
+      error: (err) => {
+        this.saving = false;
+        this.handleError(err, 'Pianificazione della consegna non aggiornata.');
+      },
+    });
+  }
+
   canMarkMaterialOrderPrepared(order: any): boolean {
     return order?.status === 'preparing' || (
       order?.status === 'approved' && !Number(order?.preparationEmployeeId || 0)
@@ -897,6 +984,61 @@ export class InternalWarehouseComponent implements OnInit, OnDestroy {
   canDeliverMaterialOrder(order: any): boolean {
     return ['prepared', 'partially_delivered'].includes(String(order?.status || '')) &&
       this.materialOrderHasRemaining(order);
+  }
+
+  canCancelMaterialOrder(order: any): boolean {
+    return ['draft', 'requested', 'approved', 'preparing', 'prepared', 'partially_delivered']
+      .includes(String(order?.status || ''));
+  }
+
+  startCancelMaterialOrder(order: any): void {
+    this.cancelMaterialOrderForm = {
+      orderId: Number(order?.id || 0),
+      reason: '',
+    };
+    this.editingMaterialOrderAssignment = false;
+    this.clearFeedback();
+  }
+
+  clearCancelMaterialOrder(): void {
+    this.cancelMaterialOrderForm = { orderId: 0, reason: '' };
+  }
+
+  confirmCancelMaterialOrder(order: any): void {
+    const reason = this.cancelMaterialOrderForm.reason.trim();
+    if (!reason) {
+      this.error = 'Inserisci il motivo dell’annullamento.';
+      this.popup.showError(this.error);
+      return;
+    }
+    this.saving = true;
+    this.error = '';
+    this.http.post<any>(this.materialApi(`/${order.id}/cancel`), { reason }).subscribe({
+      next: () => {
+        this.saving = false;
+        this.clearCancelMaterialOrder();
+        this.message = order.status === 'partially_delivered'
+          ? 'Residuo dell’ordine annullato. Le consegne già effettuate restano nello storico.'
+          : 'Ordine materiali annullato e quantità riservate liberate.';
+        this.materialOrderStatusView = 'cancelled';
+        this.showArchivedMaterialOrders = true;
+        this.materialOrderView = 'list';
+        this.selectedMaterialOrder = null;
+        void this.router.navigate([], {
+          relativeTo: this.route,
+          queryParams: { materialStatus: 'cancelled', entityView: null, entityId: null },
+          queryParamsHandling: 'merge',
+        });
+        this.loadMaterialOrders();
+        this.loadProductRequests();
+        this.loadProducts();
+        this.loadSummary();
+      },
+      error: (err) => {
+        this.saving = false;
+        this.handleError(err, 'Ordine non annullato.');
+      },
+    });
   }
 
   productPhysicalQuantity(product: WarehouseProduct): number {
@@ -1620,6 +1762,9 @@ export class InternalWarehouseComponent implements OnInit, OnDestroy {
       deliveryMode: 'immediate',
       scheduledStart: '',
       scheduledEnd: '',
+      deliveryNoteRequested: false,
+      deliveryNoteReason: 'Vendita',
+      includeInDeferredInvoice: true,
       note: request.note || '',
       fields: {},
       items: availability.items
@@ -1666,6 +1811,7 @@ export class InternalWarehouseComponent implements OnInit, OnDestroy {
         this.materialOrderForm = {
           customerId: '', recipientEmployeeId: 0, preparationEmployeeId: 0, deliveryEmployeeId: 0,
           deliveryMode: 'immediate', scheduledStart: '', scheduledEnd: '',
+          deliveryNoteRequested: false, deliveryNoteReason: 'Vendita', includeInDeferredInvoice: true,
           note: '',
           fields: {}, items: [{ productId: 0, quantity: 1, note: '' }],
         };
@@ -1692,21 +1838,64 @@ export class InternalWarehouseComponent implements OnInit, OnDestroy {
         : Number(item.requestedQuantity || 0) - Number(item.deliveredQuantity || 0))),
     })).filter((item: any) => item.quantity > 0);
     if (!items.length) return;
-    this.http.post<any>(this.materialApi(`/${order.id}/deliver`), { items }).subscribe({
+    this.http.post<any>(this.materialApi(`/${order.id}/delivery-plan`), { items }).subscribe({
       next: (result) => {
-        this.message = result?.alreadyDispatched
-          ? 'Consegna già registrata. Il documento è pronto per la firma del destinatario.'
-          : result?.requiresRecipientSignature || result?.requiresCustomerSignature
-          ? `Consegna registrata. Il documento è pronto per la firma ${result?.signatureRecipientType === 'employee' ? 'del dipendente destinatario' : 'del cliente'}.`
-          : 'Consegna registrata. L’ordine resterà aperto fino alla firma del destinatario.';
-        if (result?.alreadyDispatched && Number(this.selectedMaterialOrder?.id) === Number(order.id)) {
-          this.selectedMaterialOrder = { ...this.selectedMaterialOrder, status: 'ready' };
-        }
+        this.message = result?.awaitingDeliveryNote
+          ? 'Consegna pianificata. Ora crea e controlla il DDT, poi emettilo prima dell’uscita.'
+          : 'Consegna pianificata. Puoi ora avviare l’uscita dal magazzino.';
+        this.loadMaterialOrders();
+      },
+      error: (err) => this.handleError(err, 'Consegna non pianificata.'),
+    });
+  }
+
+  createOrOpenDeliveryNote(delivery: any): void {
+    this.saving = true;
+    this.http.post<any>(this.global.url + 'invoices/ddt/from-material-delivery', {
+      materialDeliveryId: delivery.id,
+    }).subscribe({
+      next: (ddt) => {
+        this.saving = false;
+        void this.router.navigate(['/homeAdmin/invoices'], {
+          queryParams: { view: 'ddt', mode: 'detail', entityId: ddt.id },
+        });
+      },
+      error: (err) => {
+        this.saving = false;
+        this.handleError(err, 'DDT non creato.');
+      },
+    });
+  }
+
+  dispatchMaterialDelivery(delivery: any): void {
+    this.saving = true;
+    this.http.post<any>(this.materialApi(`/deliveries/${delivery.id}/dispatch`), {}).subscribe({
+      next: () => {
+        this.saving = false;
+        this.message = 'Uscita dal magazzino registrata. Il materiale è in consegna.';
         this.loadMaterialOrders();
         this.loadProducts();
         this.loadSummary();
       },
-      error: (err) => this.handleError(err, 'Consegna non registrata.'),
+      error: (err) => {
+        this.saving = false;
+        this.handleError(err, 'Uscita non registrata.');
+      },
+    });
+  }
+
+  markMaterialDeliveryDelivered(delivery: any): void {
+    this.saving = true;
+    this.http.post<any>(this.materialApi(`/deliveries/${delivery.id}/mark-delivered`), {}).subscribe({
+      next: () => {
+        this.saving = false;
+        this.message = 'Materiale segnato come consegnato. La firma del destinatario è ancora in attesa.';
+        this.loadMaterialOrders();
+      },
+      error: (err) => {
+        this.saving = false;
+        this.handleError(err, 'Consegna non confermata.');
+      },
     });
   }
 
@@ -1793,6 +1982,29 @@ export class InternalWarehouseComponent implements OnInit, OnDestroy {
     }
   }
 
+  async registerMaterialDeliveryException(delivery: any): Promise<void> {
+    const choice = await this.popup.choose(
+      'Seleziona l’esito della ricevuta. Sarà richiesta una nota obbligatoria.',
+      'Esito consegna',
+      { primaryLabel: 'Ricevuto con riserva', secondaryLabel: 'Rifiutato', cancelLabel: 'Annulla' },
+    );
+    if (!choice) return;
+    const note = await this.popup.prompt(
+      'Descrivi la riserva o il motivo del rifiuto.',
+      '',
+      choice === 'primary' ? 'Nota di riserva' : 'Motivo del rifiuto',
+      { inputLabel: 'Nota obbligatoria', confirmLabel: 'Registra esito' },
+    );
+    if (!note?.trim()) return;
+    this.submitPaperMaterialDeliverySignature(
+      delivery,
+      null,
+      undefined,
+      choice === 'primary' ? 'accepted_with_reservation' : 'refused',
+      note.trim(),
+    );
+  }
+
   registerPaperMaterialDeliverySignature(delivery: any, event: Event): void {
     const input = event.target as HTMLInputElement;
     const file = input.files?.[0];
@@ -1804,9 +2016,13 @@ export class InternalWarehouseComponent implements OnInit, OnDestroy {
     delivery: any,
     file: File | null,
     input?: HTMLInputElement,
+    receiptOutcome = 'accepted',
+    receiptNote = '',
   ): void {
     const formData = new FormData();
     if (file) formData.append('document', file);
+    formData.append('receiptOutcome', receiptOutcome);
+    formData.append('note', receiptNote);
     this.http.post<any>(
       this.materialApi(`/deliveries/${delivery.id}/paper-signature`),
       formData,
@@ -2272,7 +2488,7 @@ export class InternalWarehouseComponent implements OnInit, OnDestroy {
   get selectedOrderTotal(): number {
     return this.selectedOrderProducts().reduce((total, product) => {
       const quantity = this.parseQuantityInput(this.orderQuantities[product.id], 0, 0);
-      return total + quantity * Number(product.indicativePrice || 0);
+      return total + quantity * Number(product.purchasePrice ?? product.indicativePrice ?? 0);
     }, 0);
   }
 
@@ -2437,9 +2653,12 @@ export class InternalWarehouseComponent implements OnInit, OnDestroy {
       ...this.productForm,
       minimumQuantity: this.parseQuantityInput(this.productForm.minimumQuantity, 0, 0),
       quantity: this.parseQuantityInput(this.productForm.quantity, 0, 0),
-      indicativePrice: this.productForm.indicativePrice === null || this.productForm.indicativePrice === undefined
+      purchasePrice: this.productForm.purchasePrice === null || this.productForm.purchasePrice === undefined
         ? null
-        : Number(this.productForm.indicativePrice || 0),
+        : Number(this.productForm.purchasePrice || 0),
+      salePrice: this.productForm.salePrice === null || this.productForm.salePrice === undefined
+        ? null
+        : Number(this.productForm.salePrice || 0),
     };
 
     if (!payload.name.trim()) {
@@ -2501,7 +2720,9 @@ export class InternalWarehouseComponent implements OnInit, OnDestroy {
       supplierCode: product.supplierCode || '',
       reorderUrl: product.reorderUrl || '',
       reorderNote: product.reorderNote || '',
-      indicativePrice: product.indicativePrice ?? null,
+      indicativePrice: product.indicativePrice ?? product.purchasePrice ?? null,
+      purchasePrice: product.purchasePrice ?? product.indicativePrice ?? null,
+      salePrice: product.salePrice ?? null,
       favorite: product.favorite || false,
       minimumQuantity: product.minimumQuantity || 0,
       quantity: product.quantity || 0,
@@ -3085,6 +3306,8 @@ export class InternalWarehouseComponent implements OnInit, OnDestroy {
       reorderUrl: '',
       reorderNote: '',
       indicativePrice: null as number | null,
+      purchasePrice: null as number | null,
+      salePrice: null as number | null,
       favorite: false,
       minimumQuantity: 0,
       quantity: 0,

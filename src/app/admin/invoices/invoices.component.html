@@ -579,6 +579,7 @@
             <strong>{{ link.label }}</strong>
             <span>{{ link.detail }}</span>
             <button type="button" class="ghost-btn" *ngIf="link.invoiceId" (click)="openLinkedInvoice(link.invoiceId)">Apri fattura</button>
+            <button type="button" class="ghost-btn" *ngIf="link.deliveryNoteId" (click)="openLinkedDdt(link.deliveryNoteId)">Apri DDT</button>
           </div>
           <p class="empty" *ngIf="linkedDocuments().length === 0">Nessun collegamento registrato</p>
         </article>
@@ -722,11 +723,11 @@
             type="checkbox"
             class="row-check"
             [checked]="isDdtSelected(ddt)"
-            [disabled]="ddt.status === 'invoiced'"
+            [disabled]="ddt.status !== 'issued' || ddt.includeInDeferredInvoice === false"
             (click)="toggleDdtSelection(ddt, $event)"
           />
           <span>
-            <strong>{{ ddt.series ? ddt.series + '/' : '' }}{{ ddt.number }}</strong>
+            <strong>{{ ddt.series || 'DDT' }}/{{ ddt.year }}/{{ ddt.number }}</strong>
             <small>{{ ddt.customerName || 'Cliente non indicato' }}</small>
           </span>
           <span class="row-meta">
@@ -742,9 +743,13 @@
       <form class="ddt-editor" *ngIf="pageMode !== 'list'" (ngSubmit)="saveDdt()">
         <div class="status-strip">
           <span class="status-pill">{{ statusLabel(selectedDdt.status) }}</span>
-          <span *ngIf="selectedDdt.invoiceId">Fattura collegata: #{{ selectedDdt.invoiceId }}</span>
+          <span *ngIf="selectedDdt.materialDeliveryId">Consegna collegata: #{{ selectedDdt.materialDeliveryId }}</span>
+          <button type="button" class="ghost-btn" *ngIf="selectedDdt.invoiceId" (click)="openLinkedInvoice(selectedDdt.invoiceId)">
+            Fattura collegata: #{{ selectedDdt.invoiceId }}
+          </button>
         </div>
 
+        <fieldset [disabled]="selectedDdt.status !== 'draft'">
         <div class="form-grid compact">
           <label>
             Numero
@@ -765,6 +770,17 @@
           <label>
             Trasporto a cura di
             <input [(ngModel)]="selectedDdt.transportBy" name="ddtTransportBy" [readonly]="selectedDdt.status === 'invoiced'" />
+          </label>
+        </div>
+
+        <div class="form-grid compact">
+          <label class="checkbox-field">
+            <input type="checkbox" [(ngModel)]="selectedDdt.showPrices" name="ddtShowPrices" />
+            Mostra i prezzi nel PDF DDT
+          </label>
+          <label class="checkbox-field">
+            <input type="checkbox" [(ngModel)]="selectedDdt.includeInDeferredInvoice" name="ddtIncludeInDeferredInvoice" />
+            Includi nella fatturazione differita
           </label>
         </div>
 
@@ -906,11 +922,22 @@
               <i class="fas fa-trash"></i>
             </button>
           </div>
+          <div class="form-grid compact" *ngFor="let line of selectedDdt.lines; let i = index">
+            <label class="checkbox-field">
+              <input type="checkbox" [(ngModel)]="line.priceSpecified" [name]="'ddtPriceSpecified' + i" />
+              Riga {{ i + 1 }}: prezzo definito
+            </label>
+            <label class="checkbox-field">
+              <input type="checkbox" [(ngModel)]="line.taxSpecified" [name]="'ddtTaxSpecified' + i" />
+              Riga {{ i + 1 }}: IVA definita
+            </label>
+          </div>
         </div>
         <button type="button" class="ghost-btn" (click)="addDdtLine()" [disabled]="selectedDdt.status === 'invoiced'">
           <i class="fas fa-plus"></i>
           Riga DDT
         </button>
+        </fieldset>
 
         <footer class="editor-footer">
           <div class="totals">
@@ -919,12 +946,13 @@
             <span>Totale <b>{{ ddtTotals().total | currency:'EUR':'symbol':'1.2-2':'it-IT' }}</b></span>
           </div>
           <div class="actions">
-            <button type="submit" class="primary-btn" [disabled]="saving || selectedDdt.status === 'invoiced'">Salva DDT</button>
-            <button type="button" class="ghost-btn" (click)="issueDdt()" [disabled]="saving || !selectedDdt.id || selectedDdt.status === 'invoiced'">Emetti DDT</button>
-            <button type="button" class="primary-btn" (click)="createInvoiceFromDdt()" [disabled]="saving || (!selectedDdt.id && selectedDdtIds.length === 0)">Fattura differita {{ selectedDdtIds.length ? '(' + selectedDdtIds.length + ')' : '' }}</button>
+            <button type="submit" class="primary-btn" [disabled]="saving || selectedDdt.status !== 'draft'">Salva DDT</button>
+            <button type="button" class="ghost-btn" (click)="issueDdt()" [disabled]="saving || !selectedDdt.id || selectedDdt.status !== 'draft'">Emetti DDT</button>
+            <button type="button" class="primary-btn" (click)="createInvoiceFromDdt()" [disabled]="saving || (selectedDdtIds.length === 0 && (!selectedDdt.id || selectedDdt.status !== 'issued'))">Fattura differita {{ selectedDdtIds.length ? '(' + selectedDdtIds.length + ')' : '' }}</button>
             <button type="button" class="ghost-btn" (click)="downloadDdtPdf()" [disabled]="saving || !selectedDdt.id">PDF DDT</button>
             <button type="button" class="ghost-btn" (click)="emailDdt()" [disabled]="saving || !selectedDdt.id">Email DDT</button>
-            <button type="button" class="ghost-btn danger" (click)="deleteDdt()" [disabled]="saving || selectedDdt.status !== 'draft'">Elimina DDT</button>
+            <button type="button" class="ghost-btn danger" (click)="deleteDdt()" [disabled]="saving || !selectedDdt.id || selectedDdt.status !== 'draft'">Elimina DDT</button>
+            <button type="button" class="ghost-btn danger" (click)="cancelDdt()" *ngIf="selectedDdt.status === 'issued'" [disabled]="saving">Annulla DDT</button>
           </div>
         </footer>
       </form>

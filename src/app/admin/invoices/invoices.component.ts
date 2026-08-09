@@ -68,6 +68,8 @@ interface Invoice {
   customerSdiCode: string;
   customerPec: string;
   customerEmail?: string;
+  requiresCompletion?: boolean;
+  validationWarnings?: string[];
   customerRecipientType?: 'business' | 'pa' | 'private';
   customerId?: string;
   supplierId?: number | null;
@@ -142,6 +144,9 @@ interface InvoiceCustomerOption {
 
 interface DeliveryNoteLine extends InvoiceLine {
   unit: string;
+  priceSpecified?: boolean;
+  taxSpecified?: boolean;
+  materialDeliveryItemId?: number | null;
 }
 
 interface DeliveryNote {
@@ -170,6 +175,10 @@ interface DeliveryNote {
   packages: number;
   weight: number;
   notes: string;
+  materialDeliveryId?: number | null;
+  sourceType?: 'manual' | 'material_delivery';
+  includeInDeferredInvoice: boolean;
+  showPrices: boolean;
   invoiceId?: number;
   lines: DeliveryNoteLine[];
 }
@@ -851,7 +860,7 @@ export class InvoicesComponent implements OnInit, OnDestroy {
     return {
       number: '',
       year: now.getFullYear(),
-      series: '',
+      series: 'DDT',
       status: 'draft',
       issueDate: now.toISOString().slice(0, 10),
       customerName: '',
@@ -872,6 +881,8 @@ export class InvoicesComponent implements OnInit, OnDestroy {
       packages: 0,
       weight: 0,
       notes: '',
+      includeInDeferredInvoice: true,
+      showPrices: false,
       lines: [this.emptyDdtLine()],
     };
   }
@@ -880,6 +891,8 @@ export class InvoicesComponent implements OnInit, OnDestroy {
     return {
       ...this.emptyLine(),
       unit: 'pz',
+      priceSpecified: true,
+      taxSpecified: true,
     };
   }
 
@@ -993,6 +1006,11 @@ export class InvoicesComponent implements OnInit, OnDestroy {
       next: (res) => {
         this.invoices = res || [];
         this.loading = false;
+        const entityId = Number(this.route.snapshot.queryParamMap.get('entityId') || 0);
+        if (this.activeView === 'invoices' && this.pageMode === 'detail' && entityId && Number(this.selected.id || 0) !== entityId) {
+          const target = this.invoices.find((item) => Number(item.id) === entityId);
+          if (target) this.selectInvoice(target);
+        }
       },
       error: (err) => {
         this.loading = false;
@@ -1023,6 +1041,11 @@ export class InvoicesComponent implements OnInit, OnDestroy {
     this.http.get<DeliveryNote[]>(this.global.url + 'invoices/ddt/getAll' + suffix).subscribe({
       next: (res) => {
         this.ddts = res || [];
+        const entityId = Number(this.route.snapshot.queryParamMap.get('entityId') || 0);
+        if (this.pageMode === 'detail' && entityId && Number(this.selectedDdt.id || 0) !== entityId) {
+          const target = this.ddts.find((item) => Number(item.id) === entityId);
+          if (target) this.selectDdt(target);
+        }
       },
       error: (err) => {
         this.error = this.errorText(err);
@@ -1508,7 +1531,7 @@ export class InvoicesComponent implements OnInit, OnDestroy {
 
   toggleDdtSelection(ddt: DeliveryNote, event?: Event): void {
     event?.stopPropagation();
-    if (!ddt.id || ddt.status === 'invoiced') return;
+    if (!ddt.id || ddt.status !== 'issued' || ddt.includeInDeferredInvoice === false) return;
     if (this.selectedDdtIds.includes(ddt.id)) {
       this.selectedDdtIds = this.selectedDdtIds.filter((id) => id !== ddt.id);
       return;
@@ -2025,7 +2048,7 @@ export class InvoicesComponent implements OnInit, OnDestroy {
     });
   }
 
-  createInvoiceFromDdt(): void {
+  createInvoiceFromDdt(overrides: Record<string, boolean> = {}): void {
     const ids = this.selectedDdtIds.length ? this.selectedDdtIds : (this.selectedDdt.id ? [this.selectedDdt.id] : []);
     if (!ids.length) {
       this.error = 'Seleziona un DDT prima di creare la fattura differita';
@@ -2034,22 +2057,40 @@ export class InvoicesComponent implements OnInit, OnDestroy {
     this.saving = true;
     this.error = '';
     this.success = '';
-    this.http.post<Invoice>(this.global.url + 'invoices/ddt/create-invoice', { ids }).subscribe({
+    this.http.post<Invoice>(this.global.url + 'invoices/ddt/create-invoice', { ids, ...overrides }).subscribe({
       next: (res) => {
         this.saving = false;
         this.selected = this.withInvoiceDefaults(res);
         this.selectedDdtIds = [];
-        this.success = 'Fattura differita creata';
+        this.success = res.requiresCompletion
+          ? 'Fattura differita creata in bozza. Completa i dati fiscali e IVA prima di salvarla o inviarla.'
+          : 'Fattura differita creata';
         this.loadInvoices();
         this.loadDdts();
         this.loadPaymentSchedule();
         this.loadEvents();
       },
-      error: (err) => {
-        this.saving = false;
-        this.error = this.errorText(err);
-      },
+      error: (err) => void this.handleDeferredInvoiceWarning(err, overrides),
     });
+  }
+
+  private async handleDeferredInvoiceWarning(err: any, overrides: Record<string, boolean>): Promise<void> {
+    this.saving = false;
+    const code = String(err?.error?.code || '');
+    const overrideByCode: Record<string, string> = {
+      UNSIGNED_DELIVERY_RECEIPT_CONFIRMATION_REQUIRED: 'allowUnsignedDeliveryReceipt',
+      DELIVERY_RECEIPT_RESERVATION_CONFIRMATION_REQUIRED: 'allowDeliveryReceiptReservation',
+      REFUSED_DELIVERY_RECEIPT_CONFIRMATION_REQUIRED: 'allowRefusedDeliveryReceipt',
+    };
+    const flag = overrideByCode[code];
+    if (!flag) {
+      this.error = this.errorText(err);
+      return;
+    }
+    const confirmed = await this.appDialog.confirm(
+      String(err?.error?.error || 'La ricevuta presenta un’anomalia. Vuoi procedere comunque?'),
+    );
+    if (confirmed) this.createInvoiceFromDdt({ ...overrides, [flag]: true });
   }
 
   async generateInstallments(): Promise<void> {
@@ -2175,6 +2216,33 @@ export class InvoicesComponent implements OnInit, OnDestroy {
         this.saving = false;
         this.success = 'DDT eliminato';
         this.newDdt();
+        this.loadDdts();
+      },
+      error: (err) => {
+        this.saving = false;
+        this.error = this.errorText(err);
+      },
+    });
+  }
+
+  async cancelDdt(): Promise<void> {
+    if (!this.selectedDdt.id) return;
+    const reason = await this.appDialog.prompt(
+      'Indica il motivo dell’annullamento. Il numero DDT resterà nello storico.',
+      '',
+      'Annulla DDT',
+      { inputLabel: 'Motivo', confirmLabel: 'Annulla DDT' },
+    );
+    if (!reason) return;
+    this.saving = true;
+    this.http.post<DeliveryNote>(this.global.url + 'invoices/ddt/cancel', {
+      id: this.selectedDdt.id,
+      reason,
+    }).subscribe({
+      next: (res) => {
+        this.saving = false;
+        this.selectedDdt = this.withDdtDefaults(res);
+        this.success = 'DDT annullato';
         this.loadDdts();
       },
       error: (err) => {
@@ -3003,8 +3071,8 @@ export class InvoicesComponent implements OnInit, OnDestroy {
     return `outcome-${this.stringValue(severity || 'info')}`;
   }
 
-  linkedDocuments(): Array<{ label: string; detail: string; invoiceId?: number | null }> {
-    const links: Array<{ label: string; detail: string; invoiceId?: number | null }> = [];
+  linkedDocuments(): Array<{ label: string; detail: string; invoiceId?: number | null; deliveryNoteId?: number | null }> {
+    const links: Array<{ label: string; detail: string; invoiceId?: number | null; deliveryNoteId?: number | null }> = [];
     if (this.selected.relatedInvoiceNumber) {
       links.push({
         label: this.selected.type === 'TD05' ? 'Fattura origine nota debito' : 'Fattura origine nota credito',
@@ -3023,6 +3091,7 @@ export class InvoicesComponent implements OnInit, OnDestroy {
           links.push({
             label: 'DDT collegato',
             detail: [ref.number, ref.date ? `del ${ref.date}` : ''].filter(Boolean).join(' '),
+            deliveryNoteId: Number(ref.id) || null,
           });
         }
       } catch {
@@ -3034,7 +3103,20 @@ export class InvoicesComponent implements OnInit, OnDestroy {
 
   openLinkedInvoice(invoiceId?: number | null): void {
     if (!invoiceId) return;
-    this.selectInvoice({ id: invoiceId } as Invoice);
+    void this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: { view: 'invoices', direction: 'outbound', mode: 'detail', entityId: invoiceId },
+      queryParamsHandling: 'merge',
+    });
+  }
+
+  openLinkedDdt(deliveryNoteId?: number | null): void {
+    if (!deliveryNoteId) return;
+    void this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: { view: 'ddt', direction: null, mode: 'detail', entityId: deliveryNoteId },
+      queryParamsHandling: 'merge',
+    });
   }
 
   supplierLocation(supplier: Supplier): string {
@@ -3515,7 +3597,13 @@ export class InvoicesComponent implements OnInit, OnDestroy {
 
   private withDdtDefaults(ddt: Partial<DeliveryNote> = {}): DeliveryNote {
     const lines = ddt.lines?.length
-      ? ddt.lines.map((line) => ({ ...this.withLineDefaults(line), unit: line.unit || 'pz' }))
+      ? ddt.lines.map((line) => ({
+          ...this.withLineDefaults(line),
+          unit: line.unit || 'pz',
+          priceSpecified: line.priceSpecified !== false,
+          taxSpecified: line.taxSpecified !== false,
+          materialDeliveryItemId: line.materialDeliveryItemId || null,
+        }))
       : [this.emptyDdtLine()];
     return {
       ...this.emptyDdt(),
@@ -3589,7 +3677,14 @@ export class InvoicesComponent implements OnInit, OnDestroy {
 
   private errorText(err: any): string {
     const details = err?.error?.details;
-    if (Array.isArray(details)) return details.join('\n');
+    if (Array.isArray(details)) {
+      return details.map((detail) => {
+        if (typeof detail === 'string') return detail;
+        if (detail?.message) return String(detail.message);
+        if (detail?.error) return String(detail.error);
+        return JSON.stringify(detail);
+      }).join('\n');
+    }
     if (details && typeof details === 'object') return JSON.stringify(details);
     return err?.error?.error || details || 'Operazione non riuscita';
   }

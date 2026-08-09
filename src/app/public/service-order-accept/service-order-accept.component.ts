@@ -24,6 +24,8 @@ export class ServiceOrderAcceptComponent implements OnInit {
   otpVerified = false;
   showSignature = false;
   hasSignature = false;
+  receiptOutcome: 'accepted' | 'accepted_with_reservation' | 'refused' = 'accepted';
+  receiptNote = '';
   pdfUrl = '';
   private context: CanvasRenderingContext2D | null = null;
   private drawing = false;
@@ -107,6 +109,10 @@ export class ServiceOrderAcceptComponent implements OnInit {
   }
 
   submit(): void {
+    if (this.isMaterialDelivery && this.receiptOutcome !== 'accepted' && !this.receiptNote.trim()) {
+      this.errorMessage = 'Inserisci una nota per la consegna con riserva o rifiutata.';
+      return;
+    }
     if (!this.hasSignature || !this.signatureCanvas) {
       this.errorMessage = 'Disegna la firma nel riquadro.';
       return;
@@ -116,6 +122,8 @@ export class ServiceOrderAcceptComponent implements OnInit {
       acceptTerms: this.acceptTerms,
       privacyAcknowledged: this.privacyAcknowledged,
       signatureDataUrl: this.signatureCanvas.nativeElement.toDataURL('image/png'),
+      receiptOutcome: this.isMaterialDelivery ? this.receiptOutcome : undefined,
+      receiptNote: this.isMaterialDelivery ? this.receiptNote.trim() : undefined,
     }, { params: this.params() }).subscribe({
       next: (result) => {
         this.busy = false;
