@@ -245,7 +245,7 @@ export class InternalDocumentsComponent implements OnInit {
     if (this.isUploading) return;
     if (!files.length) {
       resetInput?.();
-      return alert('Seleziona un file');
+      return;
     }
 
     this.isUploading = true;

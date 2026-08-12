@@ -183,9 +183,19 @@ export class SocketService {
         if (data?.tenantId && data.tenantId !== this.tenantService.tenant) return;
         subscriber.next(data);
       };
+      const readyListener = () => subscriber.next({
+        tenantId: this.tenantService.tenant,
+        resource: 'service_announcements',
+        action: 'socket_ready',
+        occurredAt: new Date().toISOString(),
+      });
       socket.on('resourceChanged', listener);
+      socket.on('realtimeReady', readyListener);
       this.connectIfReady(socket);
-      return () => socket.off('resourceChanged', listener);
+      return () => {
+        socket.off('resourceChanged', listener);
+        socket.off('realtimeReady', readyListener);
+      };
     });
   }
 

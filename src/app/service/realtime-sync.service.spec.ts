@@ -92,6 +92,39 @@ describe('RealtimeSyncService route matching', () => {
     expect(pending.value).toEqual(change);
   });
 
+  it('ricarica subito gli avvisi MVanager su qualunque pagina', () => {
+    const service = Object.create(RealtimeSyncService.prototype) as RealtimeSyncService;
+    const showAfterLogin = jasmine.createSpy('showAfterLogin').and.resolveTo();
+    Object.assign(service as any, {
+      router: { url: '/homeAdmin/invoices/new' },
+      serviceAnnouncements: { showAfterLogin },
+    });
+
+    (service as any).handleChange({
+      tenantId: 'sami',
+      resource: 'service_announcements',
+      action: 'available',
+      metadata: { apps: ['mvanager'] },
+    });
+
+    expect(showAfterLogin).toHaveBeenCalled();
+  });
+
+  it('ignora gli avvisi destinati soltanto ai dipendenti', () => {
+    const service = Object.create(RealtimeSyncService.prototype) as RealtimeSyncService;
+    const showAfterLogin = jasmine.createSpy('showAfterLogin').and.resolveTo();
+    Object.assign(service as any, { serviceAnnouncements: { showAfterLogin } });
+
+    (service as any).handleChange({
+      tenantId: 'sami',
+      resource: 'service_announcements',
+      action: 'available',
+      metadata: { apps: ['mvdipendenti'] },
+    });
+
+    expect(showAfterLogin).not.toHaveBeenCalled();
+  });
+
   it('distingue i filtri dai controlli di un modulo di modifica', () => {
     const service = Object.create(RealtimeSyncService.prototype) as RealtimeSyncService;
     const search = document.createElement('input');

@@ -4,6 +4,7 @@ import { BehaviorSubject, Subscription, filter } from 'rxjs';
 import { SocketService, ResourceChange, RealtimeConnectionState } from './soket.service';
 import { GlobalService } from './global.service';
 import { getRealtimeClientId } from './realtime-client-id';
+import { ServiceAnnouncementService } from './service-announcement.service';
 
 interface RealtimeControlState {
   tagName: string;
@@ -84,6 +85,7 @@ export class RealtimeSyncService {
     private socket: SocketService,
     private global: GlobalService,
     private zone: NgZone,
+    private serviceAnnouncements: ServiceAnnouncementService,
   ) {}
 
   start(): void {
@@ -139,6 +141,15 @@ export class RealtimeSyncService {
 
   private handleChange(change: ResourceChange): void {
     if (!change?.resource || change.originClientId === getRealtimeClientId()) return;
+    if (change.resource === 'service_announcements') {
+      const apps = Array.isArray(change.metadata?.['apps'])
+        ? change.metadata?.['apps']
+        : [];
+      if (!apps.length || apps.includes('mvanager')) {
+        void this.serviceAnnouncements.showAfterLogin();
+      }
+      return;
+    }
     if (!this.currentRouteUses(change.resource)) return;
     // Il magazzino dispone già di un refresh granulare che conserva tab,
     // filtri e scanner; il bus generale aggiorna comunque le altre app.

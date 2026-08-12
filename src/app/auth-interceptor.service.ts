@@ -31,6 +31,7 @@ export class AuthInterceptorService implements HttpInterceptor {
       catchError((err: HttpErrorResponse) => {
         if (err.status === 401) {
           this.popup.showHttpError(err, 'Sessione scaduta. Effettua di nuovo il login.', 'Sessione scaduta');
+          this.globalService.logout();
           return throwError(() => err);
         }
         if (err.status === 403) {

@@ -48,6 +48,14 @@
   color: var(--dm-text);
 }
 
+.mv-toolbar-entity {
+  margin: 5px 0 0;
+  color: rgba(255, 255, 255, 0.92);
+  font-size: 0.95rem;
+  font-weight: 750;
+  line-height: 1.2;
+}
+
 .spacer {
   flex: 1 1 auto;
 }

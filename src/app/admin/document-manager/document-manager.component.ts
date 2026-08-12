@@ -34,6 +34,7 @@ export class DocumentManagerComponent implements OnInit, AfterViewInit, OnDestro
   pdfBase64: string = '';
   newFolderName: string = '';
   email: string = '';
+  entityDisplayName: string = '';
   documentSearch: string = '';
   isFileDragActive = false;
   isUploading = false;
@@ -67,6 +68,7 @@ export class DocumentManagerComponent implements OnInit, AfterViewInit, OnDestro
       this.userId = params.get('id') || '';
       this.isCustomer = this.route.snapshot.url.some((segment) => segment.path === 'client');
       this.prefix = this.isCustomer ? 'customer' : 'employee';
+      this.entityDisplayName = '';
       this.selectedFolder = '';
       this.documentSearch = '';
       this.applyDocumentRouteQuery(this.route.snapshot.queryParamMap);
@@ -342,6 +344,7 @@ export class DocumentManagerComponent implements OnInit, AfterViewInit, OnDestro
               ? users.find((u: any) => u.numeroCliente == this.userId)
               : users.find((u: any) => u.id == this.userId);
             this.email = user?.email || '';
+            this.entityDisplayName = this.getEntityDisplayName(user);
           } catch (err) {
             console.error('Errore parsing email:', err);
           }
@@ -351,6 +354,17 @@ export class DocumentManagerComponent implements OnInit, AfterViewInit, OnDestro
           alert('Errore durante il caricamento dei dati');
         },
       });
+  }
+
+  private getEntityDisplayName(user: any): string {
+    if (!user) return '';
+
+    const fullName = [user.nome, user.cognome]
+      .map((part) => String(part || '').trim())
+      .filter(Boolean)
+      .join(' ');
+
+    return fullName || String(user.ragioneSociale || user.denominazione || '').trim();
   }
 
   sendFileMail(fileOrName: any): void {
@@ -559,7 +573,7 @@ export class DocumentManagerComponent implements OnInit, AfterViewInit, OnDestro
     }
     if (!files.length) {
       resetInput?.();
-      return alert('Seleziona un file');
+      return;
     }
 
     this.isUploading = true;
@@ -871,7 +885,9 @@ export class DocumentManagerComponent implements OnInit, AfterViewInit, OnDestro
   }
 
   back(): void {
-    this.router.navigateByUrl('/homeAdmin');
+    this.router.navigateByUrl(
+      this.isCustomer ? '/homeAdmin/listCustomer' : '/homeAdmin/gestioneemployees',
+    );
   }
 
   private parseServerError(err: any): string {

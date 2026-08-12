@@ -15,7 +15,13 @@ export class AuthServiceService {
   private readonly USER_CODE_KEY = 'userCode';
   private readonly PERMISSIONS_KEY = 'permissions';
   private readonly EMAIL_KEY = 'email';
+  private readonly LAST_ACTIVITY_KEY = 'mvanager_last_activity_at';
+  private readonly IDLE_TIMEOUT_MS = 30 * 60 * 1000;
+  private readonly ACTIVITY_THROTTLE_MS = 1000;
   private logoutTimer: any;
+  private idleTimer: any;
+  private lastActivityAt = 0;
+  private activityListenersInstalled = false;
   private postLoginServicesToken: string | null = null;
   private _token: string | null = localStorage.getItem(this.TOKEN_KEY) || sessionStorage.getItem(this.TOKEN_KEY) || null;
   private _userCode: string | null = localStorage.getItem(this.USER_CODE_KEY) || sessionStorage.getItem(this.USER_CODE_KEY) || null;
@@ -33,6 +39,7 @@ export class AuthServiceService {
       const remainingTime = this.getTokenRemainingTime(this._token);
       if (remainingTime > 0) {
         this.setLogoutTimer(remainingTime);
+        this.startIdleTracking(false);
       } else {
         this.clearSessionState();
       }
@@ -52,6 +59,7 @@ export class AuthServiceService {
       const remainingTime = this.getTokenRemainingTime(value);
       if (remainingTime > 0) {
         this.setLogoutTimer(remainingTime);
+        this.startIdleTracking(true);
         this.initializePostLoginServices(value, this._permissions);
       } else {
         this.clearSessionState();
@@ -59,6 +67,7 @@ export class AuthServiceService {
     } else {
       this.removeValue(this.TOKEN_KEY);
       this.clearLogoutTimer();
+      this.stopIdleTracking();
     }
   }
   get token(): string | null {
@@ -122,6 +131,90 @@ export class AuthServiceService {
     }
   }
 
+  private startIdleTracking(resetActivity: boolean): void {
+    if (!this._token || typeof window === 'undefined' || typeof document === 'undefined') return;
+    this.installActivityListeners();
+
+    const storedActivity = Number(localStorage.getItem(this.LAST_ACTIVITY_KEY));
+    const now = Date.now();
+    this.lastActivityAt = resetActivity || !Number.isFinite(storedActivity) || storedActivity <= 0
+      ? now
+      : storedActivity;
+
+    if (resetActivity || !localStorage.getItem(this.LAST_ACTIVITY_KEY)) {
+      localStorage.setItem(this.LAST_ACTIVITY_KEY, String(this.lastActivityAt));
+    }
+    this.scheduleIdleCheck();
+  }
+
+  private installActivityListeners(): void {
+    if (this.activityListenersInstalled) return;
+    this.activityListenersInstalled = true;
+    const passive = { passive: true };
+    ['pointermove', 'pointerdown', 'touchstart', 'scroll'].forEach((eventName) => {
+      document.addEventListener(eventName, this.recordActivity, passive);
+    });
+    document.addEventListener('keydown', this.recordActivity);
+    document.addEventListener('visibilitychange', this.checkIdleWhenVisible);
+    window.addEventListener('storage', this.syncActivityAcrossTabs);
+  }
+
+  private readonly recordActivity = (): void => {
+    if (!this._token) return;
+    const now = Date.now();
+    if (now - this.lastActivityAt >= this.IDLE_TIMEOUT_MS) {
+      this.logout();
+      return;
+    }
+    if (now - this.lastActivityAt < this.ACTIVITY_THROTTLE_MS) return;
+    this.lastActivityAt = now;
+    localStorage.setItem(this.LAST_ACTIVITY_KEY, String(now));
+    this.scheduleIdleCheck();
+  };
+
+  private readonly checkIdleWhenVisible = (): void => {
+    if (!document.hidden && this._token) this.checkIdleTimeout();
+  };
+
+  private readonly syncActivityAcrossTabs = (event: StorageEvent): void => {
+    if (event.key === this.LAST_ACTIVITY_KEY && event.newValue && this._token) {
+      const activityAt = Number(event.newValue);
+      if (Number.isFinite(activityAt) && activityAt > this.lastActivityAt) {
+        this.lastActivityAt = activityAt;
+        this.scheduleIdleCheck();
+      }
+    }
+  };
+
+  private scheduleIdleCheck(): void {
+    this.clearIdleTimer();
+    if (!this._token) return;
+    const remaining = Math.max(0, this.IDLE_TIMEOUT_MS - (Date.now() - this.lastActivityAt));
+    this.idleTimer = setTimeout(() => this.checkIdleTimeout(), remaining);
+  }
+
+  private checkIdleTimeout(): void {
+    if (!this._token) return;
+    if (Date.now() - this.lastActivityAt >= this.IDLE_TIMEOUT_MS) {
+      this.logout();
+      return;
+    }
+    this.scheduleIdleCheck();
+  }
+
+  private clearIdleTimer(): void {
+    if (this.idleTimer) {
+      clearTimeout(this.idleTimer);
+      this.idleTimer = null;
+    }
+  }
+
+  private stopIdleTracking(): void {
+    this.clearIdleTimer();
+    this.lastActivityAt = 0;
+    localStorage.removeItem(this.LAST_ACTIVITY_KEY);
+  }
+
   private isPublicQuoteAcceptanceRoute(): boolean {
     if (typeof window === 'undefined') {
       return false;
@@ -142,6 +235,7 @@ export class AuthServiceService {
     this._userCode = null;
     this._permissions = [];
     this.clearLogoutTimer();
+    this.stopIdleTracking();
     this.mobilePush.reset();
     this.postLoginServicesToken = null;
   }
@@ -224,6 +318,7 @@ export class AuthServiceService {
       if (remainingTime > 0) {
         this.persistValue(this.TOKEN_KEY, this._token);
         this.setLogoutTimer(remainingTime);
+        this.startIdleTracking(false);
         if (Capacitor.getPlatform() === 'web') {
           this.initializePostLoginServices(this._token, this._permissions);
         }
