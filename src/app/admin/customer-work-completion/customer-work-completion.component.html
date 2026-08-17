@@ -28,6 +28,13 @@
     <button type="button" class="btn btn-primary mt-4" (click)="createRequest()" [disabled]="saving">
       {{ saving ? 'Generazione in corso…' : 'Genera e invia richiesta' }}
     </button>
+    <button type="button" class="btn btn-outline-primary mt-4" (click)="openPaperPreview()" [disabled]="saving">
+      Apri / stampa foglio
+    </button>
+    <button type="button" class="btn btn-outline-primary mt-4" (click)="registerPaperSignature(paperFileInput)" [disabled]="saving">
+      Registra firma cartacea
+    </button>
+    <input #paperFileInput type="file" accept="image/*,application/pdf" hidden (change)="paperFileSelected($event)" />
     <button type="button" class="btn btn-outline-secondary mt-4" (click)="back()" [disabled]="saving">Annulla</button>
     <div class="info-box mt-4" *ngIf="latestProof">
       Ultima richiesta: <strong>{{ latestProof.status }}</strong>

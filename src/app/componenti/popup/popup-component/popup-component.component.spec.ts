@@ -37,4 +37,22 @@ describe('PopupComponentComponent', () => {
 
     expect(dialogRef.close).toHaveBeenCalledWith(null);
   });
+
+  it('returns the third action from a three-choice dialog', () => {
+    const dialogRef = { close: jasmine.createSpy('close') };
+    const component = new PopupComponentComponent({
+      mode: 'choice-three',
+      title: 'Verbale firmato',
+      message: 'Dettaglio',
+      type: 'info',
+      confirmLabel: 'Apri PDF',
+      secondaryLabel: 'Scarica PDF',
+      tertiaryLabel: 'Dati prova firma',
+      cancelLabel: 'Chiudi',
+    }, dialogRef as any);
+
+    component.chooseTertiary();
+
+    expect(dialogRef.close).toHaveBeenCalledWith('tertiary');
+  });
 });

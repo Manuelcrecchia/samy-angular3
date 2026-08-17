@@ -1,9 +1,9 @@
 <div class="quote-accept-page">
   <section class="hero">
     <div class="hero-copy">
-      <span class="eyebrow">Foglio di fine lavoro</span>
-      <h1>Valutazione e firma del servizio</h1>
-      <p>Compilate personalmente la scheda, verificate la vostra email e firmate il documento.</p>
+      <span class="eyebrow">{{ isAssetIntervention ? 'Verbale intervento presidi' : 'Foglio di fine lavoro' }}</span>
+      <h1>{{ isAssetIntervention ? 'Conferma e firma dell’intervento' : 'Valutazione e firma del servizio' }}</h1>
+      <p>{{ isAssetIntervention ? 'Controllate il verbale, verificate la vostra email e firmate il documento.' : 'Compilate personalmente la scheda, verificate la vostra email e firmate il documento.' }}</p>
     </div>
   </section>
 
@@ -41,7 +41,7 @@
 
         <label class="check-row">
           <input type="checkbox" name="acceptTerms" [(ngModel)]="acceptTerms" />
-          <span>Dichiaro di aver compilato personalmente e di accettare integralmente il foglio di fine lavoro.</span>
+          <span>Dichiaro di aver controllato e di accettare integralmente {{ isAssetIntervention ? 'il verbale intervento presidi' : 'il foglio di fine lavoro' }}.</span>
         </label>
         <label class="check-row">
           <input type="checkbox" name="privacyAcknowledged" [(ngModel)]="privacyAcknowledged" />
@@ -79,7 +79,7 @@
       </form>
 
       <div class="status-box success" *ngIf="data.status === 'accepted'">
-        <h3>Foglio compilato e firmato</h3>
+        <h3>{{ isAssetIntervention ? 'Verbale firmato' : 'Foglio compilato e firmato' }}</h3>
         <p>Data conferma: <strong>{{ data.acceptedAt | date:'dd/MM/yyyy HH:mm' }}</strong></p>
       </div>
     </section>

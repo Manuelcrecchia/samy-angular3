@@ -84,11 +84,13 @@
               <i *ngIf="quote.complete === 'A'" class="fas fa-check-circle text-success ms-2"></i>
               <i *ngIf="quote.complete === 'R'" class="fas fa-times-circle text-danger ms-2"></i>
             </ng-container>
+            <span *ngIf="quote.anonymizedAt" class="badge bg-secondary ms-2">Anonimizzato</span>
             </span>
             <span class="chev" [class.chev--open]="isQuoteOpen(quote.numeroPreventivo)">▾</span>
           </button>
           <span class="d-flex align-items-center gap-2">
             <button
+              *ngIf="!quote.anonymizedAt"
               type="button"
               class="btn btn-sm btn-pdf action-with-tooltip"
               (click)="viewPdf(quote); $event.stopPropagation()"
@@ -99,7 +101,7 @@
               <i class="fas fa-file-pdf"></i>
             </button>
             <button
-              *ngIf="globalService.hasPermission('QUOTES_NOTES_VIEW')"
+              *ngIf="globalService.hasPermission('QUOTES_NOTES_VIEW') && !quote.anonymizedAt"
               type="button"
               class="btn btn-sm btn-notes action-with-tooltip mv-note-badge-anchor"
               (click)="navigateToNotes(quote.numeroPreventivo, getQuoteDisplayName(quote)); $event.stopPropagation()"
@@ -127,7 +129,7 @@
             </button>
 
             <button type="button"
-              *ngIf="globalService.hasPermission('QUOTES_MANAGE') && !quote.isLocked"
+              *ngIf="globalService.hasPermission('QUOTES_MANAGE') && !isQuoteCompleted(quote) && !quote.isLocked && !quote.anonymizedAt"
               class="btn btn-quote-action btn-quote-delete mv-record-action mv-record-action--danger action-with-tooltip"
               (click)="delete(quote.numeroPreventivo)"
               title="Elimina il preventivo"
@@ -171,7 +173,7 @@
             </button>
 
             <button type="button"
-              *ngIf="quote.acceptanceStatus && globalService.hasPermission('QUOTES_VIEW')"
+              *ngIf="quote.acceptanceStatus && globalService.hasPermission('QUOTES_VIEW') && !quote.anonymizedAt"
               class="btn btn-quote-action btn-quote-notes mv-record-action mv-record-action--evidence action-with-tooltip"
               (click)="showAcceptanceEvidence(quote.numeroPreventivo)"
               title="Visualizza i dati di prova dell'accettazione"
@@ -217,7 +219,7 @@
             </button>
 
             <button type="button"
-              *ngIf="quote.isLocked && globalService.hasPermission('QUOTES_MANAGE')"
+              *ngIf="quote.isLocked && globalService.hasPermission('QUOTES_MANAGE') && !quote.anonymizedAt"
               class="btn btn-quote-action btn-quote-copy mv-record-action mv-record-action--signature action-with-tooltip"
               (click)="duplicateQuote(quote.numeroPreventivo)"
               title="Duplica il preventivo bloccato in una nuova bozza modificabile"
@@ -228,7 +230,7 @@
             </button>
 
             <button type="button"
-              *ngIf="isQuoteCompleted(quote) && quote.needsOfficeReview && canCreateCustomersFromQuote()"
+              *ngIf="isQuoteCompleted(quote) && quote.needsOfficeReview && canCreateCustomersFromQuote() && !quote.anonymizedAt"
               class="btn btn-quote-action btn-quote-verify mv-record-action mv-record-action--confirm action-with-tooltip"
               (click)="reviewSignedQuoteAndCreateCustomer(quote)"
               title="Apre il preventivo firmato; dopo la verifica puoi creare il cliente"
@@ -239,7 +241,7 @@
             </button>
 
             <button type="button"
-              *ngIf="isQuoteCompleted(quote) && !quote.needsOfficeReview"
+              *ngIf="isQuoteCompleted(quote) && !quote.needsOfficeReview && !quote.anonymizedAt"
               class="btn btn-quote-action btn-quote-restore mv-record-action mv-record-action--signature action-with-tooltip"
               (click)="restore(quote.numeroPreventivo)"
               title="Riporta il preventivo tra quelli aperti"
@@ -247,6 +249,17 @@
               data-tooltip="Ripristina preventivo"
             >
               <i class="fas fa-undo"></i>
+            </button>
+
+            <button type="button"
+              *ngIf="isQuoteCompleted(quote) && !quote.anonymizedAt && globalService.hasPermission('QUOTES_MANAGE')"
+              class="btn btn-quote-action btn-quote-delete mv-record-action mv-record-action--danger action-with-tooltip"
+              (click)="anonymizeQuote(quote.numeroPreventivo)"
+              title="Elimina definitivamente i dati personali del preventivo archiviato"
+              aria-label="Anonimizza preventivo"
+              data-tooltip="Anonimizza"
+            >
+              <i class="fas fa-user-slash"></i>
             </button>
           </div>
         </div>

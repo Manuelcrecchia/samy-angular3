@@ -4788,6 +4788,14 @@ export class CreateShiftComponent implements OnInit, OnDestroy {
   }
 
   finalSave(forceSave = false): void {
+    const missingLeader = this.appointments.find((app) => (
+      !!app?.customerAssetIntervention &&
+      !(this.assignedCapisquadra[app.id] || []).some((id) => (this.assignedShifts[app.id] || []).includes(id))
+    ));
+    if (missingLeader) {
+      alert(`Per "${missingLeader.title || 'Intervento presidi'}" assegna almeno un dipendente e indicalo come caposquadra.`);
+      return;
+    }
     const dateStr = this.formatDate(this.selectedDate);
 
     const payload = this.appointments.map((app) => {
@@ -4818,7 +4826,11 @@ export class CreateShiftComponent implements OnInit, OnDestroy {
     });
 
     this.http
-      .post(this.globalService.url + 'shifts/saveMultiple', { shifts: payload, forceSave })
+      .post(
+        this.globalService.url + 'shifts/saveMultiple',
+        { shifts: payload, forceSave },
+        { headers: { 'X-Skip-Global-Error-Popup': 'true' } },
+      )
       .subscribe({
         next: () => {
           this.socketService.emitUpdate({
@@ -5425,11 +5437,20 @@ export class CreateShiftComponent implements OnInit, OnDestroy {
   }
 
   openAssignmentDialog(app: any): void {
+    const startDate = app?.startDate instanceof Date && !isNaN(app.startDate.getTime())
+      ? app.startDate
+      : null;
+    const duration = Math.max(0, Number(app?.duration) || 0);
+    const endDate = startDate
+      ? new Date(startDate.getTime() + duration * 60000)
+      : app?.endDate;
+
     const dialogRef = this.dialog.open(AssignDialogComponent, {
       width: '700px',
       maxHeight: '90vh',
       data: {
         ...app,
+        endDate,
         assigned: this.assignedShifts[app.id] || [],
         capisquadra: this.assignedCapisquadra[app.id] || [],
         capisquadraNotes: this.assignedCapisquadraNotes[app.id] || {},

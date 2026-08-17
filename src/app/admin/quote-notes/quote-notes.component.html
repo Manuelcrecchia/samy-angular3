@@ -252,7 +252,7 @@
     </div>
 
     <!-- INPUT AREA FISSA IN BASSO (solo con permesso di scrittura) -->
-    <div class="input-area" *ngIf="globalService.hasPermission('QUOTES_NOTES_MANAGE')" [class.drag-active]="isDragging">
+    <div class="input-area" *ngIf="canManageNotes" [class.drag-active]="isDragging">
       <div class="input-inner">
 
         <textarea

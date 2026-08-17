@@ -1,4 +1,4 @@
-<div class="app-alert" [ngClass]="['app-alert-' + type, (data.mode === 'choice' || data.mode === 'evidence') ? 'app-alert-choice' : '']">
+<div class="app-alert" [ngClass]="['app-alert-' + type, (data.mode === 'choice' || data.mode === 'choice-three' || data.mode === 'evidence') ? 'app-alert-choice' : '']">
   <div class="app-alert-icon">
     <mat-icon *ngIf="type === 'error'">error_outline</mat-icon>
     <mat-icon *ngIf="type === 'warning'">warning_amber</mat-icon>
@@ -35,13 +35,16 @@
       type="button"
       mat-button
       class="app-alert-cancel"
-      *ngIf="data.mode === 'confirm' || data.mode === 'prompt' || data.mode === 'choice' || data.mode === 'evidence'"
+      *ngIf="data.mode === 'confirm' || data.mode === 'prompt' || data.mode === 'choice' || data.mode === 'choice-three' || data.mode === 'evidence'"
       (click)="cancel()"
     >
       {{ data.cancelLabel }}
     </button>
-    <button type="button" mat-button class="app-alert-secondary" *ngIf="data.mode === 'choice' || data.mode === 'evidence'" (click)="chooseSecondary()">
+    <button type="button" mat-button class="app-alert-secondary" *ngIf="data.mode === 'choice' || data.mode === 'choice-three' || data.mode === 'evidence'" (click)="chooseSecondary()">
       {{ data.secondaryLabel }}
+    </button>
+    <button type="button" mat-button class="app-alert-tertiary" *ngIf="data.mode === 'choice-three'" (click)="chooseTertiary()">
+      {{ data.tertiaryLabel }}
     </button>
     <button type="button" mat-button class="app-alert-button" (click)="confirm()">
       {{ data.confirmLabel }}

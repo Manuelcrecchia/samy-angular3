@@ -20,6 +20,7 @@ export class CustomerWorkCompletionComponent implements OnInit {
   success = false;
   error = '';
   latestProof: any = null;
+  selectedPaperFile: File | null = null;
 
   constructor(
     private http: HttpClient,
@@ -151,6 +152,75 @@ export class CustomerWorkCompletionComponent implements OnInit {
         this.saving = false;
         this.error = err?.error?.error || 'Impossibile creare la richiesta.';
         this.popup.showError(this.error);
+      },
+    });
+  }
+
+  openPaperPreview(): void {
+    this.saving = true;
+    this.http.get(
+      this.global.url + `admin/work-completion/paper-preview/${encodeURIComponent(this.numeroCliente)}`,
+      { responseType: 'blob' },
+    ).subscribe({
+      next: (blob) => {
+        this.saving = false;
+        const url = URL.createObjectURL(blob);
+        window.open(url, '_blank');
+        setTimeout(() => URL.revokeObjectURL(url), 60_000);
+      },
+      error: (err) => {
+        this.saving = false;
+        this.popup.showHttpError(err, 'Impossibile aprire il foglio da stampare.');
+      },
+    });
+  }
+
+  async registerPaperSignature(input: HTMLInputElement): Promise<void> {
+    const choice = await this.popup.choose(
+      'Registra la firma cartacea. La scansione o foto del foglio firmato è facoltativa e verrà salvato anche l’utente che esegue l’operazione.',
+      'Firma cartacea',
+      {
+        primaryLabel: 'Allega scansione / foto',
+        secondaryLabel: 'Registra senza allegato',
+        cancelLabel: 'Annulla',
+      },
+    );
+    if (choice === 'primary') {
+      input.value = '';
+      input.click();
+      return;
+    }
+    if (choice === 'secondary') this.submitPaperSignature(null);
+  }
+
+  paperFileSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0] || null;
+    if (file) this.submitPaperSignature(file);
+  }
+
+  private submitPaperSignature(file: File | null): void {
+    const form = new FormData();
+    if (file) form.append('document', file, file.name);
+    this.saving = true;
+    this.http.post<any>(
+      this.global.url + `admin/work-completion/paper-signature/${encodeURIComponent(this.numeroCliente)}`,
+      form,
+    ).subscribe({
+      next: (result) => {
+        this.saving = false;
+        this.success = true;
+        this.popup.show(
+          result?.attachmentProvided
+            ? 'Firma cartacea registrata con allegato.'
+            : 'Firma cartacea registrata senza allegato.',
+          'Firma registrata',
+          'success',
+        );
+      },
+      error: (err) => {
+        this.saving = false;
+        this.popup.showHttpError(err, 'Impossibile registrare la firma cartacea.');
       },
     });
   }

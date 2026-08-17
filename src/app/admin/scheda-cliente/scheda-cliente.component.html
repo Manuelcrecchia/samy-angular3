@@ -7,10 +7,18 @@
   </header>
   <div class="container">
   <div
-    *ngIf="!cliente"
+    *ngIf="loading"
     class="alert alert-warning text-center shadow-sm rounded-pill"
   >
-    Caricamento in corso o cliente non trovato...
+    Caricamento in corso...
+  </div>
+
+  <div
+    *ngIf="!loading && loadError"
+    class="alert alert-warning text-center shadow-sm"
+    role="status"
+  >
+    {{ loadError }}
   </div>
 
   <div
@@ -19,15 +27,20 @@
     style="max-width: 760px"
   >
     <div class="card-body p-4">
-      <h4 class="mb-3 text-center text-secondary">
+      <h4 class="mb-3 text-center text-secondary" *ngIf="!isAnonymized">
         {{ getDisplayName() }}
       </h4>
+
+      <div class="anonymized-state" *ngIf="isAnonymized">
+        <span class="badge bg-secondary">Anonimizzato</span>
+        <p>I dati personali del cliente sono stati eliminati definitivamente.</p>
+      </div>
 
       <div class="row mb-3">
         <div class="col-md-6 mb-2">
           <strong>Numero cliente:</strong> {{ cliente.numeroCliente }}
         </div>
-        <div class="col-md-6 mb-2" *ngIf="cliente.tipoCliente">
+        <div class="col-md-6 mb-2" *ngIf="!isAnonymized && cliente.tipoCliente">
           <strong>Tipo cliente:</strong> {{ cliente.tipoCliente }}
         </div>
       </div>

@@ -114,6 +114,12 @@ export class CustomerNotesComponent implements OnInit {
   }
 
   get canManageNotes(): boolean {
+    if (
+      this.entityType === 'customer' &&
+      /^X-\d{6,}$/i.test(String(this.numeroCliente || '').trim())
+    ) {
+      return false;
+    }
     return this.entityType === 'employee'
       ? this.globalService.hasPermission('EMPLOYEE_EDIT')
       : this.globalService.hasPermission('CUSTOMERS_NOTES_MANAGE');

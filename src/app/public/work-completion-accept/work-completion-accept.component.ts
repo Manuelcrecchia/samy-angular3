@@ -42,6 +42,10 @@ export class WorkCompletionAcceptComponent implements OnInit {
     return Array.isArray(this.data?.config?.questions) ? this.data.config.questions : [];
   }
 
+  get isAssetIntervention(): boolean {
+    return this.data?.documentType === 'customer_asset_intervention';
+  }
+
   get pending(): boolean {
     return this.data?.status === 'pending' || this.data?.status === 'otp_verified';
   }
@@ -221,7 +225,7 @@ export class WorkCompletionAcceptComponent implements OnInit {
     const url = new URL(this.data?.pdfUrl || this.api('/pdf'), window.location.origin);
     const tenant = this.params().get('tenant');
     if (tenant) url.searchParams.set('tenant', tenant);
-    url.searchParams.set('documentType', 'work_completion');
+    url.searchParams.set('documentType', this.data?.documentType || 'work_completion');
     url.searchParams.set('documentToken', this.token);
     url.searchParams.set(
       'v',

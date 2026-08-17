@@ -22,6 +22,7 @@ interface ShiftRow {
   vehiclePlate?: string | null;
   vehicles?: { name: string; plate?: string | null }[];
   sortOrder?: number | null;
+  isCaposquadra?: boolean;
 }
 
 interface ClientRow {
@@ -38,6 +39,7 @@ interface ClientRow {
   vehicles?: { name: string; plate?: string | null }[];
   keyRequired: boolean;
   appointmentId: number;
+  isCaposquadra?: boolean;
 }
 
 interface RoutePlannerStop {
@@ -181,6 +183,7 @@ export class ShiftHomeComponent implements OnInit, OnDestroy {
           vehicles: Array.isArray(shift?.vehicles) ? shift.vehicles : (shift?.vehicle ? [shift.vehicle] : []),
           keyRequired: this.resolveKeyRequired(shift),
           appointmentId: Number(shift?.appointmentId) || 0,
+          isCaposquadra: this.getShiftEmployeeLink(emp)?.isCaposquadra === true,
         });
       }
     }
@@ -493,6 +496,7 @@ export class ShiftHomeComponent implements OnInit, OnDestroy {
           vehicles: Array.isArray(shift?.vehicles) ? shift.vehicles : (shift?.vehicle ? [shift.vehicle] : []),
           sortOrder:
             sortMap[empId] != null ? Number(sortMap[empId]) || 0 : null,
+          isCaposquadra: link?.isCaposquadra === true,
         });
       }
     }

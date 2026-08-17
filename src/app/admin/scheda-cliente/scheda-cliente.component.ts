@@ -12,6 +12,8 @@ import { Router } from '@angular/router';
 })
 export class SchedaClienteComponent implements OnInit {
   cliente: any | null = null;
+  loading = true;
+  loadError = '';
 
   constructor(
     public globalService: GlobalService,
@@ -21,27 +23,39 @@ export class SchedaClienteComponent implements OnInit {
   ) {}
   ngOnInit(): void {
     const numeroCliente = this.route.snapshot.paramMap.get('numeroCliente');
-    if (numeroCliente) {
-      this.http
-        .post(
-          this.globalService.url + 'customers/getCustomer',
-          {
-            numeroCliente: numeroCliente,
-          },
-          {
-            headers: this.globalService.headers,
-          }
-        )
-        .subscribe({
-          next: (res: any) => {
-            this.cliente = res[0];
-          },
-          error: (err) => {
-            console.error('Errore caricamento cliente:', err);
-            alert('Errore durante il caricamento del cliente');
-          },
-        });
+    if (!numeroCliente) {
+      this.loading = false;
+      this.loadError = 'Cliente non trovato.';
+      return;
     }
+
+    this.http
+      .post(
+        this.globalService.url + 'customers/getCustomer',
+        { numeroCliente },
+        {
+          headers: this.globalService.headers.set(
+            'X-Skip-Global-Error-Popup',
+            'true'
+          ),
+        }
+      )
+      .subscribe({
+        next: (res: any) => {
+          this.cliente = Array.isArray(res) ? res[0] || null : null;
+          this.loading = false;
+          if (!this.cliente) this.loadError = 'Cliente non trovato.';
+        },
+        error: (err) => {
+          console.error('Errore caricamento cliente:', err);
+          this.loading = false;
+          this.loadError = 'La scheda cliente non è disponibile.';
+        },
+      });
+  }
+
+  get isAnonymized(): boolean {
+    return this.globalService.isAnonymizedRecord(this.cliente);
   }
   parseJson(val: string): string[] {
     try {
@@ -52,7 +66,8 @@ export class SchedaClienteComponent implements OnInit {
   }
 
   getDisplayName(): string {
-    return this.globalService.getRecordDisplayName('customer', this.cliente || {}) || 'Cliente sconosciuto';
+    if (this.isAnonymized) return '';
+    return this.globalService.getRecordDisplayName('customer', this.cliente || {});
   }
 
   getVisibleFields(): TenantFieldMappingFieldConfig[] {
@@ -64,6 +79,7 @@ export class SchedaClienteComponent implements OnInit {
   }
 
   formatFieldValue(field: TenantFieldMappingFieldConfig): string {
+    if (this.isAnonymized) return '';
     const value = this.getFieldValue(field);
     if (value === undefined || value === null || value === '') return '-';
     const roomRowsValue = this.formatRoomRowsValue(value);

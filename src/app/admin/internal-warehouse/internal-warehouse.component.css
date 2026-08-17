@@ -1705,7 +1705,7 @@
 }
 
 .material-option-toggle__input:checked + .material-option-toggle__switch {
-  background: #2563eb;
+  background: var(--mv-blue-600);
 }
 
 .material-option-toggle__input:checked + .material-option-toggle__switch .material-option-toggle__thumb {

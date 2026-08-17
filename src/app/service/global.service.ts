@@ -349,7 +349,7 @@ export class GlobalService {
   notifyDeadlineSummaryChanged(): void {
     this.deadlineSummaryChanged$.next();
   }
-  version = '6.4';
+  version = '6.5';
   private tenantConfig: TenantBackendConfig | null = null;
   private tenantConfigPromise: Promise<TenantBackendConfig | null> | null =
     null;
@@ -1389,7 +1389,7 @@ export class GlobalService {
     scope: 'quote' | 'customer',
     record: Record<string, any>,
   ): string {
-    if (!record) return '';
+    if (!record || this.isAnonymizedRecord(record)) return '';
 
     const roleField = this.getVisibleFieldMappingFields(scope).find((field) => {
       const role = String(field.displayRole || '').trim();
@@ -1421,7 +1421,7 @@ export class GlobalService {
     displayRole: string,
   ): any {
     const role = String(displayRole || '').trim();
-    if (!record || !role) return undefined;
+    if (!record || !role || this.isAnonymizedRecord(record)) return undefined;
     const roleFields = this.getFieldMappingFields(scope).filter(
       (field) => String(field.displayRole || '').trim() === role,
     );
@@ -1608,7 +1608,24 @@ export class GlobalService {
     source: Record<string, any>,
     field: TenantFieldMappingFieldConfig,
   ): any {
+    if (this.isAnonymizedRecord(source)) return undefined;
     return this.readMappedValue(source, field);
+  }
+
+  isAnonymizedRecord(record: Record<string, any> | null | undefined): boolean {
+    if (!record) return false;
+    if (record['anonymizedAt']) return true;
+    const identifiers = [
+      record['numeroCliente'],
+      record['customerId'],
+      record['numeroPreventivo'],
+      record['customer']?.numeroCliente,
+      record['appointment']?.numeroCliente,
+      record['entityType'] === 'customer' ? record['targetKey'] : null,
+    ];
+    return identifiers.some((value) =>
+      /^X-\d{6,}$/i.test(String(value ?? '').trim()),
+    );
   }
 
   private calculateMappedFieldValue(

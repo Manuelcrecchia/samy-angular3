@@ -363,6 +363,26 @@ export class ListCustomerComponent {
       });
   }
 
+  async anonymizeCustomer(customer: any): Promise<void> {
+    const label = this.getCustomerDisplayName(customer) || customer.numeroCliente;
+    if (!await this.appDialog.confirm(
+      `Anonimizzare definitivamente il cliente "${label}"? Dati personali, note e documenti saranno eliminati e il cliente non potrà più essere riattivato.`,
+    )) return;
+
+    this.http.post<{ numeroCliente: string }>(this.globalService.url + 'customers/anonymize', {
+      numeroCliente: customer.numeroCliente,
+    }, { headers: this.globalService.headers }).subscribe({
+      next: (response) => {
+        alert(`Cliente anonimizzato definitivamente come ${response.numeroCliente}.`);
+        this.getCustomers();
+      },
+      error: (err) => {
+        console.error('Errore durante l\'anonimizzazione cliente:', err);
+        this.appDialog.showHttpError(err, 'Errore durante l\'anonimizzazione del cliente.');
+      },
+    });
+  }
+
   applyFiltro(valore: string): void {
     this.applyCustomerSearch();
   }

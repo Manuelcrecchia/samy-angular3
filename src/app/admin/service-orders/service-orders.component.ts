@@ -234,6 +234,66 @@ export class ServiceOrdersComponent implements OnInit, OnDestroy {
     });
   }
 
+  async paperSignature(order: any, input: HTMLInputElement): Promise<void> {
+    const choice = await this.appDialog.choose(
+      'Puoi aprire e stampare l’ordine oppure registrare la firma cartacea. La scansione o foto firmata è facoltativa; verrà registrato l’utente che esegue l’operazione.',
+      'Firma cartacea ordine di servizio',
+      {
+        primaryLabel: 'Allega scansione / foto',
+        secondaryLabel: 'Registra senza allegato',
+        cancelLabel: 'Annulla',
+      },
+    );
+    if (choice === 'primary') {
+      input.value = '';
+      input.click();
+    } else if (choice === 'secondary') {
+      this.submitPaperSignature(order, null);
+    }
+  }
+
+  paperFileSelected(order: any, event: Event): void {
+    const file = (event.target as HTMLInputElement).files?.[0] || null;
+    if (file) this.submitPaperSignature(order, file);
+  }
+
+  openPaperPreview(order: any): void {
+    this.generatingSignatureId = Number(order.id);
+    this.http.get(this.global.url + `service-orders/${order.id}/paper-preview`, { responseType: 'blob' }).subscribe({
+      next: (blob) => {
+        this.generatingSignatureId = 0;
+        const url = URL.createObjectURL(blob);
+        window.open(url, '_blank');
+        setTimeout(() => URL.revokeObjectURL(url), 60_000);
+      },
+      error: (err) => {
+        this.generatingSignatureId = 0;
+        this.appDialog.showHttpError(err, 'Impossibile aprire l’ordine da stampare.');
+      },
+    });
+  }
+
+  private submitPaperSignature(order: any, file: File | null): void {
+    const form = new FormData();
+    if (file) form.append('document', file, file.name);
+    this.generatingSignatureId = Number(order.id);
+    this.http.post<any>(this.global.url + `service-orders/${order.id}/paper-signature`, form).subscribe({
+      next: (result) => {
+        this.generatingSignatureId = 0;
+        this.appDialog.show(
+          result?.attachmentProvided ? 'Firma cartacea registrata con allegato.' : 'Firma cartacea registrata senza allegato.',
+          'Firma registrata',
+          'success',
+        );
+        this.loadOrders();
+      },
+      error: (err) => {
+        this.generatingSignatureId = 0;
+        this.appDialog.showHttpError(err, 'Impossibile registrare la firma cartacea.');
+      },
+    });
+  }
+
   showSignatureEvidence(order: any): void {
     this.http.get<any>(this.global.url + `service-orders/${order.id}/signature-proof`).subscribe({
       next: async (evidence) => {

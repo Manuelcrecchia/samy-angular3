@@ -138,7 +138,7 @@ describe('Responsive entity toolbar', () => {
 
   it('keeps every audited header inside its bounds from 280px to 1920px', () => {
     if (window.innerWidth !== 500) {
-      pending('Eseguire con il profilo ChromeHeadlessMobile.');
+      pending(`Eseguire con il profilo ChromeHeadlessMobile (viewport attuale: ${window.innerWidth}px).`);
       return;
     }
 

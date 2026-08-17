@@ -51,6 +51,11 @@ export class QuoteNotesComponent implements OnInit {
   isDragging = false;
   private dragCounter = 0;
 
+  get canManageNotes(): boolean {
+    return !/^X-\d{6,}$/i.test(String(this.numeroPreventivo || '').trim()) &&
+      this.globalService.hasPermission('QUOTES_NOTES_MANAGE');
+  }
+
   // ── Filtri ──────────────────────────────────────
   soloAllegati = false;
   showSearch = false;

@@ -73,7 +73,8 @@
 }
 
 .app-alert-cancel,
-.app-alert-secondary {
+.app-alert-secondary,
+.app-alert-tertiary {
   min-width: 112px;
   height: 42px;
   border: 1px solid #cbd5e1;
@@ -86,6 +87,11 @@
 .app-alert-secondary {
   border-color: var(--mv-blue-600);
   color: var(--mv-blue-700);
+}
+
+.app-alert-tertiary {
+  border-color: #64748b;
+  color: #334155;
 }
 
 .app-alert-choice {
@@ -118,6 +124,7 @@
 
 .app-alert-choice .app-alert-button,
 .app-alert-choice .app-alert-secondary,
+.app-alert-choice .app-alert-tertiary,
 .app-alert-choice .app-alert-cancel {
   width: 100%;
   min-width: 0;
@@ -133,8 +140,13 @@
   background: #eff6ff;
 }
 
-.app-alert-choice .app-alert-cancel {
+.app-alert-choice .app-alert-tertiary {
   grid-row: 3;
+  background: #f8fafc;
+}
+
+.app-alert-choice .app-alert-cancel {
+  grid-row: 4;
   border: 0;
   background: transparent;
   color: var(--mv-muted);
@@ -174,7 +186,7 @@
   .app-alert-choice h2 { font-size: 1.2rem; }
   .app-alert-choice [mat-dialog-actions] { margin-top: 14px; }
   .app-alert [mat-dialog-actions] { align-items: stretch; flex-direction: column-reverse; }
-  .app-alert-button, .app-alert-cancel, .app-alert-secondary { width: 100%; }
+  .app-alert-button, .app-alert-cancel, .app-alert-secondary, .app-alert-tertiary { width: 100%; }
 }
 
 .app-alert-error .app-alert-icon {

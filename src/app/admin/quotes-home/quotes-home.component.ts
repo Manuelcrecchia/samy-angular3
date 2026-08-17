@@ -39,6 +39,7 @@ export class QuotesHomeComponent implements OnDestroy {
     officeConfirmedAt?: string | null;
     email?: string;
     telefono?: string;
+    anonymizedAt?: string | null;
   }[] = [];
 
   private allQuotes: {
@@ -52,6 +53,7 @@ export class QuotesHomeComponent implements OnDestroy {
     officeConfirmedAt?: string | null;
     email?: string;
     telefono?: string;
+    anonymizedAt?: string | null;
   }[] = [];
 
   get totalQuotesCount(): number {
@@ -155,9 +157,12 @@ export class QuotesHomeComponent implements OnDestroy {
             ? allQuotes
             : allQuotes.filter((q) => !this.isQuoteCompleted(q));
 
-          this.allQuotes = filteredQuotes.sort(
-            (a, b) =>
-              parseInt(b.numeroPreventivo) - parseInt(a.numeroPreventivo),
+          this.allQuotes = filteredQuotes.sort((a, b) =>
+            String(b.numeroPreventivo || '').localeCompare(
+              String(a.numeroPreventivo || ''),
+              'it',
+              { numeric: true, sensitivity: 'base' },
+            ),
           );
 
           this.applyQuoteSearch();
@@ -651,6 +656,25 @@ export class QuotesHomeComponent implements OnDestroy {
           alert(this.parseServerError(err));
         },
       });
+  }
+
+  async anonymizeQuote(numeroPreventivo: string): Promise<void> {
+    if (!await this.popup.confirm(
+      `Anonimizzare definitivamente il preventivo ${numeroPreventivo}? Dati personali, note, PDF e dati di accettazione saranno rimossi e il preventivo non potrà più essere ripristinato.`,
+    )) return;
+
+    this.http.post<{ numeroPreventivo: string }>(this.globalService.url + 'quotes/anonymize', {
+      numeroPreventivo,
+    }, { headers: this.globalService.headers }).subscribe({
+      next: (response) => {
+        alert(`Preventivo anonimizzato definitivamente come ${response.numeroPreventivo}.`);
+        this.loadQuotes();
+      },
+      error: (err) => {
+        console.error('Errore anonimizzazione preventivo:', err);
+        this.popup.showHttpError(err, 'Errore durante l\'anonimizzazione del preventivo.');
+      },
+    });
   }
 
   invio(numeroPreventivo: string) {

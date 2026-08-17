@@ -261,6 +261,9 @@
             <div>
               <div class="job-title-row" *ngIf="!a.isExtra">
                 <strong>{{ a.title }}</strong>
+                <span class="badge bg-danger" *ngIf="a.customerAssetIntervention">
+                  Intervento presidi · caposquadra obbligatorio
+                </span>
                 <button
                   class="btn btn-sm btn-outline-secondary postpone-inline-btn"
                   type="button"

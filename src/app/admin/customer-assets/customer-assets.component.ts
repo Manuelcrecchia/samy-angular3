@@ -139,7 +139,8 @@ export class CustomerAssetsComponent implements OnInit {
     this.loading = true; this.error = '';
     const archiveQuery = this.showArchived ? '?archived=1' : '';
     this.http.get<CustomerAsset[]>(this.global.url + 'admin/deadlines/customer-assets/registry' + archiveQuery).subscribe({ next: r => {
-      this.assets = Array.isArray(r) ? r : [];
+      this.assets = (Array.isArray(r) ? r : [])
+        .filter((asset) => !this.global.isAnonymizedRecord(asset));
       if (this.requestedEditId) {
         const requestedAsset = this.assets.find((asset) => asset.id === this.requestedEditId);
         this.requestedEditId = null;

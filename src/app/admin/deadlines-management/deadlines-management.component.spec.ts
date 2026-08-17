@@ -4,6 +4,7 @@ describe('DeadlinesManagementComponent selection', () => {
   function createComponent(
     router: any = {},
     globalService: any = {},
+    popup: any = { choose: jasmine.createSpy('choose').and.resolveTo('primary') },
   ): DeadlinesManagementComponent {
     return new DeadlinesManagementComponent(
       {} as any,
@@ -11,7 +12,7 @@ describe('DeadlinesManagementComponent selection', () => {
       router,
       {} as any,
       globalService,
-      {} as any,
+      popup,
       { open: jasmine.createSpy('open') } as any,
     );
   }
@@ -189,6 +190,19 @@ describe('DeadlinesManagementComponent selection', () => {
 
     expect(entry.attachmentItems).toBe(renderedList);
     expect(entry.attachmentItems[0].attachment.id).toBe('new');
+  });
+
+  it('normalizes legacy customer asset audit entries without a snapshot', () => {
+    const component = createComponent();
+
+    const [entry] = (component as any).normalizeCustomerAssetAuditHistory([{
+      action: 'updated',
+      summary: 'Presidio modificato',
+      createdAt: '2026-08-13T09:00:00.000Z',
+    }]);
+
+    expect(entry.snapshot).toEqual({});
+    expect(entry.attachmentItems).toEqual([]);
   });
 
   it('selects and deselects every deadline when the whole asset is toggled', () => {
@@ -467,8 +481,79 @@ describe('DeadlinesManagementComponent selection', () => {
     );
   });
 
-  it('opens single deadline planning', () => {
-    const router = { navigate: jasmine.createSpy('navigate') };
+  it('lists completed customer asset interventions from the customer row', () => {
+    const component = createComponent();
+    component.kind = 'customerAsset';
+    component.groups = [{
+      id: '324', label: 'Cliente', subtitle: '', deadlines: [],
+      summary: { expiredCount: 0, warningCount: 0, pendingCount: 0, alertCount: 0, totalCount: 0, status: 'ok' },
+    }] as any;
+    component.assetInterventionVerbali = [
+      { id: 1, appointmentId: 90, numeroCliente: '324', customerName: 'Cliente', mode: 'guided', status: 'signed', deadlineIds: [7], completedAt: '2026-08-12' },
+      { id: 2, appointmentId: 91, numeroCliente: '324', customerName: 'Cliente', mode: 'guided', status: 'ready_to_sign', deadlineIds: [7], completedAt: '2026-08-13' },
+    ];
+
+    expect(component.assetInterventionVerbaliForCustomer('324').map((item) => item.appointmentId)).toEqual([91, 90]);
+    expect(component.pendingAssetInterventionVerbaliForCustomer('324')).toBe(1);
+    expect(component.assetInterventionVerbaliForCustomer('999')).toEqual([]);
+
+    component.toggleAssetInterventionVerbaliForCustomer('324');
+    expect(component.isAssetInterventionVerbaliCustomerOpen('324')).toBeTrue();
+    component.toggleAssetInterventionVerbaliForCustomer('324');
+    expect(component.isAssetInterventionVerbaliCustomerOpen('324')).toBeFalse();
+  });
+
+  it('opens the intervention linked to the completed deadline signature button', () => {
+    const component = createComponent();
+    const fileInput = document.createElement('input');
+    const verbale = {
+      id: 2,
+      appointmentId: 91,
+      numeroCliente: '324',
+      customerName: 'Cliente',
+      mode: 'guided',
+      status: 'ready_to_sign',
+      deadlineIds: [7],
+    } as any;
+    spyOn(component, 'openAssetIntervention');
+
+    component.openAssetInterventionVerbale(verbale, fileInput);
+
+    expect(component.openAssetIntervention).toHaveBeenCalledWith(
+      jasmine.objectContaining({ plannedAppointmentId: 91 }),
+      fileInput,
+    );
+  });
+
+  it('formats intervention attachments without object Object in the summary', () => {
+    const component = createComponent() as any;
+
+    expect(component.formatAssetInterventionValue([{ originalName: 'etichetta-estintore.jpg' }]))
+      .toBe('etichetta-estintore.jpg');
+    expect(component.formatAssetInterventionValue({ label: 'Controllato' }))
+      .toBe('Controllato');
+    expect(component.formatAssetInterventionValue(null)).toBe('—');
+  });
+
+  it('opens an in-app correction picker with only reopenable intervention items', () => {
+    const component = createComponent();
+    const deadline = { plannedAppointmentId: 91 } as any;
+
+    component.openAssetInterventionCorrectionDialog(deadline, [
+      { id: 1, label: 'Estintore 01', status: 'completed', outcome: 'aggiornato', changes: '' },
+      { id: 2, label: 'Estintore 02', status: 'pending', outcome: 'da completare', changes: '' },
+      { id: 3, label: 'Estintore 03', status: 'skipped', outcome: 'non eseguito', changes: '' },
+    ]);
+
+    expect(component.assetInterventionCorrectionDialog?.deadline).toBe(deadline);
+    expect(component.assetInterventionCorrectionDialog?.items.map((item) => item.id)).toEqual([1, 3]);
+
+    component.closeAssetInterventionCorrectionDialog();
+    expect(component.assetInterventionCorrectionDialog).toBeNull();
+  });
+
+  it('apre il preparatore guidato dalla pianificazione di una scadenza presidio', async () => {
+    const router = { navigate: jasmine.createSpy('navigate').and.resolveTo(true) };
     const globalService = {
       hasPermission: jasmine.createSpy('hasPermission').and.returnValue(true),
     };
@@ -484,10 +569,12 @@ describe('DeadlinesManagementComponent selection', () => {
       dueDate: '2099-01-01',
     } as any;
     component.planDeadline(deadline);
+    await Promise.resolve();
+    await Promise.resolve();
 
     expect(router.navigate).toHaveBeenCalled();
     const queryParams = router.navigate.calls.mostRecent().args[1].queryParams;
     expect(queryParams.deadlineIds).toBe('7');
-    expect(queryParams.deadlineCategory).toBe('deadline_customer_asset');
+    expect(router.navigate.calls.mostRecent().args[0][0]).toContain('customer-asset-deadlines/guided-update');
   });
 });

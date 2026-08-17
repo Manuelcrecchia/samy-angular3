@@ -16,6 +16,7 @@ interface Employee {
   warehouseStockInEnabled: boolean;
   warehouseStockOutEnabled: boolean;
   active: boolean;
+  anonymizedAt?: string | null;
   [key: string]: any;
 }
 
@@ -624,6 +625,31 @@ export class SettingsEmployeesComponent implements OnInit, OnChanges {
           }
         },
       });
+  }
+
+  async anonymizeEmployee(emp: Employee): Promise<void> {
+    if (!await this.appDialog.confirm(
+      `Anonimizzare definitivamente il dipendente "${emp.nome} ${emp.cognome}"? L'ID e lo storico di turni, ore e timbrature resteranno collegati, ma il dipendente non potrà più essere riattivato.`,
+    )) return;
+
+    this.isLoading = true;
+    this.http.post(this.globalService.url + 'employees/pseudonymize', {
+      employeeId: emp.id,
+    }, {
+      headers: this.globalService.headers,
+      responseType: 'text',
+    }).subscribe({
+      next: () => {
+        this.isLoading = false;
+        alert(`Dipendente ID ${emp.id} anonimizzato definitivamente.`);
+        this.fetchEmployees();
+      },
+      error: (err) => {
+        this.isLoading = false;
+        console.error('Errore anonimizzazione dipendente:', err);
+        this.appDialog.showHttpError(err, 'Errore durante l\'anonimizzazione del dipendente.');
+      },
+    });
   }
 
   async exportAndArchiveEmployee(emp: any): Promise<void> {

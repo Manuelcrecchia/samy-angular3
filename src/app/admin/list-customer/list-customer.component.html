@@ -105,6 +105,7 @@
                 <span class="customer-num">#{{ customer.numeroCliente }}</span>
                 <span class="customer-nom">{{ getCustomerDisplayName(customer) }}</span>
                 <span class="badge bg-warning text-dark" *ngIf="customer.active === false">Archiviato</span>
+                <span class="badge bg-secondary" *ngIf="customer.anonymizedAt">Anonimizzato</span>
               </span>
 
               <span class="chev">▾</span>
@@ -142,7 +143,8 @@
                     globalService.hasTenantFeature('stamping') &&
                     globalService.isCustomerTagStampingMode() &&
                     globalService.hasPermission('CUSTOMERS_MANAGE') &&
-                    globalService.hasPermission('STAMPING_MANAGE')
+                    globalService.hasPermission('STAMPING_MANAGE') &&
+                    !customer.anonymizedAt
                   "
                   mat-raised-button
                   [routerLink]="['/gestioneTagCliente', customer.numeroCliente]"
@@ -203,7 +205,7 @@
                 </button>
 
                 <button type="button"
-                  *ngIf="globalService.hasPermission('CUSTOMERS_MANAGE') && customer.active === false"
+                  *ngIf="globalService.hasPermission('CUSTOMERS_MANAGE') && customer.active === false && !customer.anonymizedAt"
                   mat-raised-button
                   (click)="unarchiveCustomer(customer)"
                   class="mv-record-action mv-record-action--signature action-with-tooltip"
@@ -212,6 +214,18 @@
                   data-tooltip="Riattiva"
                 >
                   <mat-icon>unarchive</mat-icon>
+                </button>
+
+                <button type="button"
+                  *ngIf="globalService.hasPermission('CUSTOMERS_MANAGE') && customer.active === false && !customer.anonymizedAt"
+                  mat-raised-button
+                  (click)="anonymizeCustomer(customer)"
+                  class="mv-record-action mv-record-action--danger action-with-tooltip"
+                  title="Elimina definitivamente i dati personali del cliente archiviato"
+                  aria-label="Anonimizza cliente"
+                  data-tooltip="Anonimizza"
+                >
+                  <mat-icon>person_off</mat-icon>
                 </button>
 
                 <button type="button"
@@ -251,6 +265,7 @@
                 </button>
 
                 <button type="button"
+                  *ngIf="!customer.anonymizedAt"
                   mat-raised-button
                   (click)="openCustomerWhatsApp(customer)"
                   class="mv-record-action mv-record-action--whatsapp action-with-tooltip"
@@ -262,7 +277,7 @@
                 </button>
 
                 <button type="button"
-                  *ngIf="globalService.hasPermission('EMAIL_VIEW')"
+                  *ngIf="globalService.hasPermission('EMAIL_VIEW') && !customer.anonymizedAt"
                   mat-raised-button
                   (click)="composeCustomerEmail(customer)"
                   class="mv-record-action mv-record-action--email action-with-tooltip"
@@ -289,7 +304,7 @@
               data-tooltip="Scheda cliente"
             ><mat-icon>badge</mat-icon></button>
             <button
-              *ngIf="globalService.hasPermission('CUSTOMERS_NOTES_VIEW')"
+              *ngIf="globalService.hasPermission('CUSTOMERS_NOTES_VIEW') && !globalService.isAnonymizedRecord(customer)"
               type="button"
               class="btn btn-sm btn-notes btn-customer-quick-action action-with-tooltip mv-note-badge-anchor"
               (click)="navigateToNotes(customer.numeroCliente, getCustomerDisplayName(customer))"

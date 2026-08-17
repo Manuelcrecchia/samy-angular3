@@ -100,7 +100,7 @@ interface CustomerAssetAuditEntry {
   action: string;
   summary: string;
   changes?: Record<string, any>;
-  snapshot: Record<string, any>;
+  snapshot?: Record<string, any>;
   actorEmail?: string | null;
   createdAt: string;
   attachmentItems?: CustomerAssetAuditAttachmentItem[];
@@ -149,6 +149,26 @@ interface DeadlineHistoryDayGroup {
   entries: DeadlineHistoryEntry[];
 }
 
+interface AssetInterventionVerbale {
+  id: number;
+  appointmentId: number;
+  numeroCliente: string;
+  customerName: string;
+  mode: 'guided';
+  status: 'ready_to_sign' | 'signed';
+  deadlineIds: number[];
+  completedAt?: string | null;
+  signedAt?: string | null;
+}
+
+interface AssetInterventionCorrectionItem {
+  id: number;
+  label: string;
+  status: string;
+  outcome: string;
+  changes: string;
+}
+
 @Component({
   selector: 'app-deadlines-management',
   templateUrl: './deadlines-management.component.html',
@@ -157,6 +177,12 @@ interface DeadlineHistoryDayGroup {
 export class DeadlinesManagementComponent implements OnInit {
   @ViewChild('fileInput') fileInput?: ElementRef<HTMLInputElement>;
   @ViewChild('deadlineForm') deadlineForm?: ElementRef<HTMLElement>;
+  assetInterventionVerbali: AssetInterventionVerbale[] = [];
+  expandedVerbaleCustomerId: string | null = null;
+  assetInterventionCorrectionDialog: {
+    deadline: DeadlineRecord;
+    items: AssetInterventionCorrectionItem[];
+  } | null = null;
 
   kind: DeadlineKind = 'employee';
   entities: Array<EmployeeTarget | VehicleTarget | GenericTarget> = [];
@@ -843,9 +869,61 @@ export class DeadlinesManagementComponent implements OnInit {
     this.selectedDeadlineIds.clear();
     this.selectedCustomerAssetIds.clear();
     this.expandedCustomerAssetIds.clear();
+    this.expandedVerbaleCustomerId = null;
     this.showBulkCustomerAssetForm = false;
     this.loadEntities();
     this.loadDeadlines();
+    if (this.kind === 'customerAsset') this.loadAssetInterventionVerbali();
+  }
+
+  private loadAssetInterventionVerbali(): void {
+    this.http.get<AssetInterventionVerbale[]>(
+      this.globalService.url + 'admin/customer-asset-interventions',
+    ).subscribe({
+      next: (rows) => this.assetInterventionVerbali = Array.isArray(rows) ? rows : [],
+      error: () => this.assetInterventionVerbali = [],
+    });
+  }
+
+  openAssetInterventionVerbale(verbale: AssetInterventionVerbale, fileInput: HTMLInputElement): void {
+    this.openAssetIntervention({ plannedAppointmentId: verbale.appointmentId } as DeadlineRecord, fileInput);
+  }
+
+  registerAssetInterventionVerbalePaperSignature(verbale: AssetInterventionVerbale, event: Event): void {
+    this.registerAssetInterventionPaperSignature(
+      { plannedAppointmentId: verbale.appointmentId } as DeadlineRecord,
+      event,
+    );
+  }
+
+  assetInterventionVerbaliForCustomer(customerId: string | number): AssetInterventionVerbale[] {
+    const numeroCliente = String(customerId);
+    return this.assetInterventionVerbali
+      .filter((verbale) => String(verbale.numeroCliente) === numeroCliente)
+      .sort((a, b) => {
+        if (a.status !== b.status) return a.status === 'ready_to_sign' ? -1 : 1;
+        return String(b.completedAt || '').localeCompare(String(a.completedAt || ''));
+      });
+  }
+
+  pendingAssetInterventionVerbaliForCustomer(customerId: string | number): number {
+    return this.assetInterventionVerbaliForCustomer(customerId)
+      .filter((verbale) => verbale.status === 'ready_to_sign').length;
+  }
+
+  trackAssetInterventionVerbale(_index: number, verbale: AssetInterventionVerbale): number {
+    return verbale.appointmentId;
+  }
+
+  toggleAssetInterventionVerbaliForCustomer(customerId: string | number): void {
+    const normalizedId = String(customerId);
+    this.expandedVerbaleCustomerId = this.expandedVerbaleCustomerId === normalizedId
+      ? null
+      : normalizedId;
+  }
+
+  isAssetInterventionVerbaliCustomerOpen(customerId: string | number): boolean {
+    return this.expandedVerbaleCustomerId === String(customerId);
   }
 
   isCustomerAssetSelected(asset: DeadlineGroup): boolean {
@@ -1149,11 +1227,11 @@ export class DeadlinesManagementComponent implements OnInit {
   }
 
   planDeadline(deadline: DeadlineRecord): void {
-    this.navigateToDeadlinePlanning([deadline]);
+    void this.navigateToDeadlinePlanning([deadline]);
   }
 
   planSelectedDeadlines(): void {
-    this.navigateToDeadlinePlanning(this.selectedDeadlines);
+    void this.navigateToDeadlinePlanning(this.selectedDeadlines);
   }
 
   openPlannedEvent(deadline: DeadlineRecord): void {
@@ -1163,10 +1241,301 @@ export class DeadlinesManagementComponent implements OnInit {
     });
   }
 
-  private navigateToDeadlinePlanning(deadlines: DeadlineRecord[]): void {
+  async openAssetIntervention(deadline: DeadlineRecord, fileInput: HTMLInputElement): Promise<void> {
+    if (!deadline.plannedAppointmentId) return;
+    this.http.get<any>(this.globalService.url + `admin/customer-asset-interventions/${deadline.plannedAppointmentId}`).subscribe({
+      next: async (result) => {
+        const summary = result?.summary || {};
+        const status = String(result?.intervention?.status || 'planned');
+        const correctionItems: AssetInterventionCorrectionItem[] = (Array.isArray(result?.items) ? result.items : []).map((item: any) => {
+          const label = item?.asset?.code || item?.asset?.serialNumber || item?.asset?.name || `Presidio ${item?.id}`;
+          const changes = Object.keys(item?.draftValues || {})
+            .filter((key) => this.formatAssetInterventionValue(item?.initialValues?.[key]) !== this.formatAssetInterventionValue(item?.draftValues?.[key]))
+            .map((key) => `${key}: ${this.formatAssetInterventionValue(item?.initialValues?.[key])} → ${this.formatAssetInterventionValue(item?.draftValues?.[key])}`)
+            .join(', ');
+          const outcome = item?.status === 'skipped'
+            ? `non eseguito: ${item?.skippedReason || 'motivo non indicato'}`
+            : `${item?.status === 'completed' ? 'aggiornato' : item?.status}${item?.completedByEmployeeName ? ` da ${item.completedByEmployeeName}` : ''}`;
+          return { id: Number(item?.id), label, status: String(item?.status || ''), outcome, changes };
+        });
+        const details = correctionItems.map((item) =>
+          `• ${item.label}: ${item.outcome}${item.changes ? ` (${item.changes})` : ''}`,
+        );
+        const message = [
+          `Stato: ${status}`,
+          `Completati: ${Number(summary.completed || 0)}`,
+          `Non eseguiti: ${Number(summary.skipped || 0)}`,
+          `Da completare: ${Number(summary.pending || 0)}`,
+          ...(details.length ? ['', 'Dettaglio:', ...details] : []),
+        ].join('\n');
+        if (status === 'signed') {
+          const choice = await this.popup.chooseThree(message, 'Verbale intervento presidi', {
+            primaryLabel: 'Apri PDF',
+            secondaryLabel: 'Scarica PDF',
+            tertiaryLabel: 'Dati prova firma',
+            cancelLabel: 'Chiudi',
+          });
+          if (choice === 'primary' || choice === 'secondary') {
+            this.openAssetInterventionPdf(deadline.plannedAppointmentId!, choice === 'secondary');
+          }
+          if (choice === 'tertiary') this.showAssetInterventionSignatureEvidence(deadline.plannedAppointmentId!);
+          return;
+        }
+        if (status !== 'ready_to_sign') {
+          this.popup.show(message, 'Intervento presidi', 'info');
+          return;
+        }
+        const reviewChoice = await this.popup.choose(
+          `${message}\n\nControlla il dettaglio prima di procedere alla firma.`,
+          'Revisione verbale presidi',
+          { primaryLabel: 'Procedi alla firma', secondaryLabel: 'Richiedi correzione', cancelLabel: 'Chiudi' },
+        );
+        if (reviewChoice === 'secondary') {
+          this.openAssetInterventionCorrectionDialog(deadline, correctionItems);
+          return;
+        }
+        if (reviewChoice !== 'primary') return;
+        const choice = await this.popup.choose(
+          'Scegli la firma digitale tramite link oppure la gestione cartacea/stampa.',
+          'Verbale pronto per la firma',
+          { primaryLabel: 'Genera link firma', secondaryLabel: 'Carta / stampa', cancelLabel: 'Chiudi' },
+        );
+        if (choice === 'primary') this.createAssetInterventionSignatureLink(deadline);
+        if (choice === 'secondary') await this.choosePaperOrPrintAssetIntervention(deadline, fileInput);
+      },
+      error: (err) => this.popup.showHttpError(err, 'Impossibile caricare l’intervento presidi.'),
+    });
+  }
+
+  private formatAssetInterventionValue(value: any): string {
+    if (value === null || value === undefined || value === '') return '—';
+    if (Array.isArray(value)) {
+      const items = value.map((item) => this.formatAssetInterventionValue(item)).filter((item) => item !== '—');
+      return items.length ? items.join(', ') : '—';
+    }
+    if (typeof value === 'object') {
+      const attachmentName = value.originalName || value.name || value.filename || value.label;
+      if (attachmentName) return String(attachmentName);
+      try { return JSON.stringify(value); } catch { return 'Dato allegato'; }
+    }
+    return String(value);
+  }
+
+  private showAssetInterventionSignatureEvidence(appointmentId: number): void {
+    this.http.get<any>(
+      this.globalService.url + `admin/customer-asset-interventions/${appointmentId}/signature-proof`,
+    ).subscribe({
+      next: async (evidence) => {
+        const date = (item: any) => item ? new Date(item).toLocaleString('it-IT') : 'Non disponibile';
+        const value = (item: any) => String(item || 'Non disponibile');
+        const sourceType = evidence.sourceType === 'employee_app'
+          ? 'App dipendenti / telefono del caposquadra'
+          : evidence.sourceType === 'remote'
+            ? 'Link remoto con verifica OTP'
+            : 'Firma cartacea registrata da MVanager';
+        const requestedBy = evidence.requestedByEmployeeName
+          || evidence.requestedByAdminName
+          || evidence.requestedByAdminEmail;
+        const audit = Array.isArray(evidence.auditTrail) && evidence.auditTrail.length
+          ? evidence.auditTrail.map((entry: any) => `• ${date(entry?.at)} — ${value(entry?.type)}`).join('\n')
+          : 'Non disponibile';
+        const receipt = [
+          `Verbale intervento presidi: ${value(evidence.customerAssetInterventionId)}`,
+          `Cliente: ${value(evidence.numeroCliente)}`,
+          `Stato: ${value(evidence.status)}`,
+          `Origine firma: ${sourceType}`,
+          `Richiesta o registrazione da: ${value(requestedBy)}`,
+          `Email destinatario/OTP: ${value(evidence.recipientEmail)}`,
+          `Richiesta: ${date(evidence.requestedAt)}`,
+          `Apertura link: ${date(evidence.viewedAt)}`,
+          `OTP inviata: ${date(evidence.otpSentAt)}`,
+          `OTP verificata: ${date(evidence.otpVerifiedAt)}`,
+          `Firma: ${date(evidence.acceptedAt)}`,
+          `IP invio: ${value(evidence.requestIp)}`,
+          `IP verifica OTP: ${value(evidence.otpVerifiedIp)}`,
+          `IP firma: ${value(evidence.acceptanceIp)}`,
+          `Dispositivo o registrazione: ${value(evidence.acceptanceUserAgent)}`,
+          evidence.sourceType === 'paper'
+            ? `Scansione/foto cartacea allegata: ${evidence.paperAttachmentProvided ? 'Sì' : 'No'}`
+            : `PDF firmato disponibile: ${evidence.signedPdfAvailable ? 'Sì' : 'No'}`,
+          `SHA-256 PDF preliminare: ${value(evidence.documentSnapshotHashSha256)}`,
+          `SHA-256 PDF finale: ${value(evidence.pdfHashSha256)}`,
+          `SHA-256 firma: ${value(evidence.signatureHashSha256)}`,
+          '',
+          'Cronologia registrata:',
+          audit,
+        ].join('\n');
+        const action = await this.popup.evidence(receipt);
+        if (action === 'save') this.saveAssetInterventionSignatureEvidence(receipt, appointmentId);
+        if (action === 'print') this.printAssetInterventionSignatureEvidence(receipt);
+      },
+      error: (err) => this.popup.showHttpError(err, 'Impossibile recuperare i dati di prova della firma.'),
+    });
+  }
+
+  private saveAssetInterventionSignatureEvidence(receipt: string, appointmentId: number): void {
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(new Blob([receipt], { type: 'text/plain;charset=utf-8' }));
+    link.download = `dati-prova-verbale-intervento-presidi-${appointmentId}.txt`;
+    link.click();
+    URL.revokeObjectURL(link.href);
+  }
+
+  private printAssetInterventionSignatureEvidence(receipt: string): void {
+    const popup = window.open('', '_blank', 'width=850,height=700');
+    if (!popup) {
+      this.popup.showError('Il browser ha bloccato la finestra di stampa.');
+      return;
+    }
+    const escaped = receipt.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    popup.document.write(`<html><head><title>Dati prova firma</title><style>body{font-family:Arial;padding:32px;color:#182235}pre{white-space:pre-wrap;word-break:break-word;line-height:1.55}</style></head><body><h1>Dati di prova della firma</h1><pre>${escaped}</pre><script>window.onload=()=>window.print()</script></body></html>`);
+    popup.document.close();
+  }
+
+  openAssetInterventionCorrectionDialog(
+    deadline: DeadlineRecord,
+    items: AssetInterventionCorrectionItem[],
+  ): void {
+    const reopenableItems = items.filter((item) =>
+      Number.isFinite(item.id) && (item.status === 'completed' || item.status === 'skipped'),
+    );
+    if (!reopenableItems.length) {
+      this.popup.show('Non ci sono presidi completati o non eseguiti da riaprire.', 'Correzione non disponibile', 'info');
+      return;
+    }
+    this.assetInterventionCorrectionDialog = { deadline, items: reopenableItems };
+  }
+
+  closeAssetInterventionCorrectionDialog(): void {
+    this.assetInterventionCorrectionDialog = null;
+  }
+
+  requestAssetInterventionItemCorrection(itemId: number): void {
+    const dialog = this.assetInterventionCorrectionDialog;
+    if (!dialog) return;
+    this.assetInterventionCorrectionDialog = null;
+    this.reopenAssetInterventionItem(dialog.deadline, itemId);
+  }
+
+  private reopenAssetInterventionItem(deadline: DeadlineRecord, itemId: number): void {
+    if (!deadline.plannedAppointmentId) return;
+    this.http.post<any>(
+      this.globalService.url + `admin/customer-asset-interventions/${deadline.plannedAppointmentId}/items/${itemId}/reopen`,
+      {},
+    ).subscribe({
+      next: (result) => {
+        this.popup.show(`Presidio riaperto da ${result?.reopenedBy || 'MVanager'}. I capisquadra possono correggerlo e completarlo di nuovo.`, 'Correzione richiesta', 'success');
+        this.loadAll();
+      },
+      error: (err) => this.popup.showHttpError(err, 'Impossibile riaprire il presidio.'),
+    });
+  }
+
+  private async choosePaperOrPrintAssetIntervention(deadline: DeadlineRecord, fileInput: HTMLInputElement): Promise<void> {
+    const choice = await this.popup.choose(
+      'Puoi aprire e stampare il verbale oppure registrare la firma cartacea. La scansione/foto resta facoltativa.',
+      'Firma cartacea',
+      { primaryLabel: 'Registra firma', secondaryLabel: 'Apri / stampa PDF', cancelLabel: 'Indietro' },
+    );
+    if (choice === 'primary') await this.choosePaperAssetIntervention(deadline, fileInput);
+    if (choice === 'secondary' && deadline.plannedAppointmentId) this.openAssetInterventionPdf(deadline.plannedAppointmentId, false);
+  }
+
+  private createAssetInterventionSignatureLink(deadline: DeadlineRecord): void {
+    if (!deadline.plannedAppointmentId) return;
+    this.http.post<any>(
+      this.globalService.url + `admin/customer-asset-interventions/${deadline.plannedAppointmentId}/request-link`,
+      {},
+    ).subscribe({
+      next: async (result) => {
+        const link = String(result?.approvalUrl || '');
+        try { if (link && navigator.clipboard) await navigator.clipboard.writeText(link); } catch {}
+        this.popup.show(
+          `Link per la firma del cliente${result?.recipientEmail ? ` (${result.recipientEmail})` : ''}:\n\n${link}\n\nIl link è stato copiato negli appunti quando consentito dal browser.`,
+          'Link firma verbale',
+          'success',
+        );
+      },
+      error: (err) => this.popup.showHttpError(err, 'Impossibile generare il link di firma.'),
+    });
+  }
+
+  private async choosePaperAssetIntervention(deadline: DeadlineRecord, fileInput: HTMLInputElement): Promise<void> {
+    const choice = await this.popup.choose(
+      'Dichiara che il verbale è stato firmato dal cliente sulla copia cartacea. Puoi allegare una scansione/foto oppure conservare soltanto l’originale.',
+      'Registra firma cartacea',
+      { primaryLabel: 'Allega e conferma', secondaryLabel: 'Conferma senza allegato', cancelLabel: 'Annulla' },
+    );
+    if (choice === 'primary') fileInput.click();
+    if (choice === 'secondary') this.submitAssetInterventionPaperSignature(deadline, null);
+  }
+
+  registerAssetInterventionPaperSignature(deadline: DeadlineRecord, event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0];
+    if (!file) return;
+    this.submitAssetInterventionPaperSignature(deadline, file, input);
+  }
+
+  private submitAssetInterventionPaperSignature(deadline: DeadlineRecord, file: File | null, input?: HTMLInputElement): void {
+    if (!deadline.plannedAppointmentId) return;
+    const formData = new FormData();
+    if (file) formData.append('document', file);
+    this.http.post<any>(
+      this.globalService.url + `admin/customer-asset-interventions/${deadline.plannedAppointmentId}/paper-signature`,
+      formData,
+    ).subscribe({
+      next: (result) => {
+        if (input) input.value = '';
+        this.popup.show(
+          result?.attachmentProvided
+            ? `Firma cartacea registrata da ${result.registeredBy}. Copia firmata allegata.`
+            : `Firma cartacea registrata da ${result.registeredBy}. Originale conservato su carta senza copia allegata.`,
+          'Verbale firmato',
+          'success',
+        );
+        this.loadAll();
+      },
+      error: (err) => {
+        if (input) input.value = '';
+        this.popup.showHttpError(err, 'Impossibile registrare la firma cartacea.');
+      },
+    });
+  }
+
+  private openAssetInterventionPdf(appointmentId: number, download: boolean): void {
+    const url = this.globalService.url + `admin/customer-asset-interventions/${appointmentId}/pdf`;
+    this.http.get(url, { headers: this.globalService.headers, responseType: 'blob' }).subscribe({
+      next: (blob) => {
+        const objectUrl = URL.createObjectURL(blob);
+        if (download) {
+          const link = document.createElement('a');
+          link.href = objectUrl;
+          link.download = `verbale-intervento-presidi-${appointmentId}.pdf`;
+          link.click();
+        } else {
+          window.open(objectUrl, '_blank', 'noopener');
+        }
+        setTimeout(() => URL.revokeObjectURL(objectUrl), 60000);
+      },
+      error: (err) => this.popup.showHttpError(err, 'Impossibile aprire il verbale.'),
+    });
+  }
+
+  private async navigateToDeadlinePlanning(deadlines: DeadlineRecord[]): Promise<void> {
     if (!this.canPlan || !deadlines.length) return;
+    if (this.kind === 'customerAsset') {
+      const customerId = String(this.selectedGroupView?.id || '');
+      await this.router.navigate([this.responsiveAdminPath('customer-asset-deadlines/guided-update')], {
+        queryParams: {
+          customerId,
+          deadlineIds: deadlines.map((deadline) => deadline.id).join(','),
+        },
+      });
+      return;
+    }
     const targetKeys = new Set(deadlines.map((deadline) => this.planningTargetKey(deadline)));
-    if (targetKeys.size > 1 && this.kind !== 'customerAsset') {
+    if (targetKeys.size > 1) {
       this.popup.showError(`Seleziona scadenze dello stesso ${this.entityLabel}.`);
       return;
     }
@@ -1175,29 +1544,29 @@ export class DeadlinesManagementComponent implements OnInit {
       || deadlines[0].targetLabel
       || this.getEntityLabel(this.getEntityFromDeadline(deadlines[0]));
     const items = deadlines.map((deadline) => {
-      const assetLabel = this.kind === 'customerAsset' && deadline.targetLabel
-        ? `${deadline.targetLabel}: `
-        : '';
-      return `${assetLabel}${deadline.title}`;
+      return deadline.title;
     });
+    // Le categorie collegate ai clienti usano il codice prima del primo " - "
+    // per validare e collegare l'anagrafica nel calendario.
     const title = `Aggiornamento ${targetLabel} – ${items.join(', ')}`.slice(0, 240);
     const description = [
       `Scadenze da aggiornare: ${items.join(', ')}`,
       ...deadlines.map((deadline) => deadline.description).filter(Boolean),
-    ].join('\n').slice(0, 500);
+    ].join('\n').slice(0, 4000);
     const today = this.toDateOnly(new Date());
     const candidateDates = deadlines
       .map((deadline) => deadline.dueDate)
       .filter((date) => date && date >= today)
       .sort();
 
-    this.router.navigate(['/homeAdmin/calendarHome'], {
+    await this.router.navigate(['/homeAdmin/calendarHome'], {
       queryParams: {
         deadlineIds: deadlines.map((deadline) => deadline.id).join(','),
         deadlineCategory: this.deadlineCalendarCategory,
         planTitle: title,
         planDescription: description,
         planDate: candidateDates[0] || today,
+        interventionMode: null,
       },
     });
   }
@@ -1230,7 +1599,9 @@ export class DeadlinesManagementComponent implements OnInit {
 
     this.http.get<any[]>(this.globalService.url + endpoint).subscribe({
       next: (response) => {
-        const items = Array.isArray(response) ? response : [];
+        const items = (Array.isArray(response) ? response : [])
+          .filter((item) => !['customer', 'customerAsset'].includes(this.kind)
+            || !this.globalService.isAnonymizedRecord(item));
         this.entities = items.sort((a, b) =>
           this.getEntityLabel(a).localeCompare(this.getEntityLabel(b), 'it'),
         );
@@ -2525,10 +2896,13 @@ export class DeadlinesManagementComponent implements OnInit {
 
   private normalizeCustomerAssetAuditHistory(value: unknown): CustomerAssetAuditEntry[] {
     if (!Array.isArray(value)) return [];
-    return value.map((entry: CustomerAssetAuditEntry) => ({
-      ...entry,
-      attachmentItems: this.customerAssetAuditAttachments(entry),
-    }));
+    return value
+      .filter((entry): entry is CustomerAssetAuditEntry => !!entry && typeof entry === 'object')
+      .map((entry) => ({
+        ...entry,
+        snapshot: entry.snapshot && typeof entry.snapshot === 'object' ? entry.snapshot : {},
+        attachmentItems: this.customerAssetAuditAttachments(entry),
+      }));
   }
 
   private summarize(deadlines: DeadlineRecord[]): DeadlineSummary {

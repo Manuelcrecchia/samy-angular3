@@ -406,13 +406,13 @@ label {
 .live-invalid > textarea,
 .line-field.live-invalid > input,
 .line-field.live-invalid > select {
-  border-color: #dc3545 !important;
-  background: #fff5f5 !important;
+  border-color: var(--mv-danger);
+  background: color-mix(in srgb, var(--mv-danger) 6%, var(--mv-surface));
   box-shadow: 0 0 0 2px rgba(220, 53, 69, 0.1);
 }
 
 .field-error {
-  color: #b4232f !important;
+  color: var(--mv-danger);
   font-size: 0.72rem;
   font-weight: 750;
   line-height: 1.25;
@@ -642,6 +642,7 @@ button:disabled {
 
 .economics-panel {
   margin-top: 22px;
+  box-sizing: border-box;
   padding: 18px;
   background: rgba(255, 255, 255, 0.92);
   border: 1px solid rgba(23, 32, 51, 0.09);
@@ -714,13 +715,18 @@ button:disabled {
 
 .economics-table-panel {
   margin-top: 14px;
+  box-sizing: border-box;
+  width: 100%;
   min-width: 0;
   max-width: 100%;
   overflow-x: auto;
 }
 
 .economics-table {
+  width: 100%;
+  max-width: 100%;
   min-width: 0;
+  overflow-x: auto;
 }
 
 .economics-chart {
@@ -1163,6 +1169,10 @@ button:disabled {
 }
 
 @media (max-width: 1100px) {
+  .schedule-summary {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
   .schedule-table-wrap {
     overflow-x: visible;
     border: 0;
@@ -1815,7 +1825,9 @@ pre {
     padding: 0 0 24px;
   }
 
-  .invoice-page--economics .economics-panel {
+  .economics-panel {
+    width: calc(100% - 48px);
+    max-width: none;
     margin-right: 24px;
     margin-left: 24px;
   }
@@ -1984,7 +1996,9 @@ pre {
     padding: 0 0 24px;
   }
 
-  .invoice-page--economics .economics-panel {
+  .economics-panel {
+    width: calc(100% - 24px);
+    max-width: none;
     margin-right: 12px;
     margin-left: 12px;
   }

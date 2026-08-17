@@ -189,7 +189,11 @@ function inspectNode(file, node, ancestors) {
     const isDraggableAssistant = attributeValue(node, 'class')
       .split(/\s+/)
       .includes('ai-fab');
-    if (!isSignatureCanvas && !isDraggableAssistant) {
+    const isAuditedPointerGesture = hasAttributeOrInput(
+      node,
+      'data-audited-pointer-gesture',
+    );
+    if (!isSignatureCanvas && !isDraggableAssistant && !isAuditedPointerGesture) {
       addIssue(
         file,
         node,

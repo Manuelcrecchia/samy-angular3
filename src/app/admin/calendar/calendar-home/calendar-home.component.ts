@@ -155,11 +155,14 @@ export class CalendarHomeComponent implements OnInit {
 
   categories: CalendarCategoryOption[] = [];
   private pendingDeadlineIds: number[] = [];
+  private pendingInterventionMode: 'guided' | null = null;
+  private pendingInterventionItems: Array<{ assetId: number; fieldKeys: string[]; deadlineIds: number[] }> = [];
+  private readonly assetPreparationStorageKey = 'mvanager-customer-asset-intervention-preparation';
   private pendingAppointmentId: number | null = null;
   private routeActionOpened = false;
 
   get isDeadlinePlanning(): boolean {
-    return this.pendingDeadlineIds.length > 0;
+    return this.pendingDeadlineIds.length > 0 || this.pendingInterventionItems.length > 0;
   }
 
   constructor(
@@ -187,6 +190,23 @@ export class CalendarHomeComponent implements OnInit {
       .map((value) => Number.parseInt(value, 10))
       .filter((value) => Number.isInteger(value) && value > 0);
     this.pendingDeadlineIds = [...new Set(ids)];
+    const interventionMode = String(this.route.snapshot.queryParamMap.get('interventionMode') || '');
+    this.pendingInterventionMode = interventionMode === 'guided' ? 'guided' : null;
+    if (this.route.snapshot.queryParamMap.get('assetPreparation') === '1') {
+      try {
+        const preparation = JSON.parse(sessionStorage.getItem(this.assetPreparationStorageKey) || '{}');
+        this.pendingInterventionItems = Array.isArray(preparation?.items)
+          ? preparation.items.map((item: any) => ({
+              assetId: Number(item.assetId),
+              fieldKeys: Array.isArray(item.fieldKeys) ? item.fieldKeys.map(String) : [],
+              deadlineIds: Array.isArray(item.deadlineIds) ? item.deadlineIds.map(Number) : [],
+            })).filter((item: any) => item.assetId > 0 && item.fieldKeys.length > 0)
+          : [];
+        if (this.pendingInterventionItems.length) this.pendingInterventionMode = 'guided';
+      } catch {
+        this.pendingInterventionItems = [];
+      }
+    }
     const appointmentId = Number.parseInt(
       String(this.route.snapshot.queryParamMap.get('appointmentId') || ''),
       10,
@@ -195,10 +215,11 @@ export class CalendarHomeComponent implements OnInit {
       ? appointmentId
       : null;
 
-    if (!this.pendingDeadlineIds.length) return;
+    if (!this.isDeadlinePlanning) return;
     const category = String(this.route.snapshot.queryParamMap.get('deadlineCategory') || '');
     if (!this.categories.some((item) => item.id === category)) {
       this.pendingDeadlineIds = [];
+      this.pendingInterventionItems = [];
       this.popupService.showError('Categoria calendario della scadenza non configurata in MVControl.');
       this.clearRouteActionQuery();
       return;
@@ -230,6 +251,8 @@ export class CalendarHomeComponent implements OnInit {
         planDescription: null,
         planDate: null,
         appointmentId: null,
+        interventionMode: null,
+        assetPreparation: null,
       },
       queryParamsHandling: 'merge',
       replaceUrl: true,
@@ -775,6 +798,9 @@ export class CalendarHomeComponent implements OnInit {
   closePopup() {
     this.showPopup=false; this.showDeleteConfirm=false;
     this.pendingDeadlineIds = [];
+    this.pendingInterventionMode = null;
+    this.pendingInterventionItems = [];
+    sessionStorage.removeItem(this.assetPreparationStorageKey);
     this.routeActionOpened = false;
     this.editingSingleOccurrence=false; this.editingOccurrenceStart=null; this.editingSelectedDate=null;
     this.popupServiceOrderId = null;
@@ -1004,7 +1030,7 @@ export class CalendarHomeComponent implements OnInit {
       return;
     }
     if (!this.isNewEvent) body.id = this.editingEventId;
-    if (this.isNewEvent && this.pendingDeadlineIds.length) {
+    if (this.isNewEvent && this.isDeadlinePlanning) {
       body.returnAppointmentId = true;
     }
     const wasNewEvent = this.isNewEvent;
@@ -1021,11 +1047,14 @@ export class CalendarHomeComponent implements OnInit {
       }
       const finish = () => {
         this.pendingDeadlineIds = [];
+        this.pendingInterventionMode = null;
+        this.pendingInterventionItems = [];
+        sessionStorage.removeItem(this.assetPreparationStorageKey);
         this.routeActionOpened = false;
         this.closePopup();
         this.loadAll();
       };
-      if (this.pendingDeadlineIds.length) {
+      if (this.isDeadlinePlanning) {
         if (!appointmentId) {
           this.popupService.showError('Evento creato, ma non è stato possibile collegare le scadenze.');
           return;
@@ -1034,7 +1063,12 @@ export class CalendarHomeComponent implements OnInit {
         this.editingEventId = appointmentId;
         this.http.post(
           this.globalService.url + 'admin/deadlines/plan',
-          { deadlineIds: this.pendingDeadlineIds, appointmentId },
+          {
+            deadlineIds: this.pendingDeadlineIds,
+            appointmentId,
+            interventionMode: this.pendingInterventionMode,
+            interventionItems: this.pendingInterventionItems,
+          },
         ).subscribe({
           next: finish,
           error: (err) => {

@@ -6,13 +6,14 @@ import { firstValueFrom } from 'rxjs';
 export type AppDialogTone = 'error' | 'warning' | 'success' | 'info';
 
 export interface AppDialogData {
-  mode: 'alert' | 'action' | 'confirm' | 'prompt' | 'choice' | 'evidence';
+  mode: 'alert' | 'action' | 'confirm' | 'prompt' | 'choice' | 'choice-three' | 'evidence';
   title: string;
   message: string;
   type: AppDialogTone;
   confirmLabel: string;
   cancelLabel?: string;
   secondaryLabel?: string;
+  tertiaryLabel?: string;
   inputLabel?: string;
   inputValue?: string;
   inputType?: 'text' | 'number' | 'date' | 'email';
@@ -134,6 +135,30 @@ export class PopupServiceService {
     });
     const result = await firstValueFrom(ref.afterClosed());
     return result === 'primary' || result === 'secondary' ? result : null;
+  }
+
+  async chooseThree(
+    message: unknown,
+    title: string,
+    options: {
+      primaryLabel: string;
+      secondaryLabel: string;
+      tertiaryLabel: string;
+      cancelLabel?: string;
+    },
+  ): Promise<'primary' | 'secondary' | 'tertiary' | null> {
+    const ref = this.openDialog({
+      mode: 'choice-three',
+      title,
+      message: this.formatMessage(message),
+      type: 'info',
+      confirmLabel: options.primaryLabel,
+      secondaryLabel: options.secondaryLabel,
+      tertiaryLabel: options.tertiaryLabel,
+      cancelLabel: options.cancelLabel || 'Annulla',
+    });
+    const result = await firstValueFrom(ref.afterClosed());
+    return result === 'primary' || result === 'secondary' || result === 'tertiary' ? result : null;
   }
 
   async evidence(message: unknown, title = 'Dati di prova della firma'): Promise<'save' | 'print' | null> {

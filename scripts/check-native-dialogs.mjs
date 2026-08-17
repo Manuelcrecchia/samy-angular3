@@ -8,6 +8,9 @@ const allowedDefinitions = new Set([
   'src/app/componenti/popup/popup-component/popup-component.component.ts',
   'src/app/componenti/popup/popup-service.service.ts',
 ]);
+const generatedSources = new Set([
+  'src/app/shared/generated-responsive-page-fixtures.ts',
+]);
 const violations = [];
 
 async function walk(directory) {
@@ -21,6 +24,7 @@ async function walk(directory) {
     if (extname(entry.name) !== '.ts') continue;
 
     const projectPath = relative(projectRoot, fullPath).replaceAll('\\', '/');
+    if (generatedSources.has(projectPath)) continue;
     const source = await readFile(fullPath, 'utf8');
     const lines = source.split(/\r?\n/);
 

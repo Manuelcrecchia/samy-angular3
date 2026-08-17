@@ -142,6 +142,7 @@
           >
             <span class="text-dark">
               <strong>{{ turno.title }}</strong>
+              <span *ngIf="turno.isCaposquadra" class="badge bg-primary ms-2">Caposquadra</span>
 
               <span *ngIf="turno.start">
                 — {{ turno.start | date: "HH:mm" }}
@@ -222,6 +223,7 @@
           >
             <span class="text-dark">
               <strong>{{ row.empName.toUpperCase() }}</strong>
+              <span *ngIf="row.isCaposquadra" class="badge bg-primary ms-2">Caposquadra</span>
 
               <span *ngIf="row.start"> — {{ row.start | date: "HH:mm" }} </span>
 

@@ -1,7 +1,7 @@
 <div class="deadlines-page">
   <header class="topbar mv-entity-toolbar">
     <div class="mv-entity-toolbar__title"><h1>{{ pageTitle }}</h1><button type="button" class="btn mv-toolbar-back mv-mobile-home-back" (click)="back()">← Torna indietro</button></div>
-    <div class="topbar-actions">
+    <div class="topbar-actions mv-entity-toolbar__controls">
       <label class="deadline-month-picker desktop-secondary-operation">
         <span>Mese riepilogo</span>
         <input type="month" [(ngModel)]="selectedMonth" (ngModelChange)="onSelectedMonthChange()" />
@@ -27,10 +27,7 @@
         type="button"
         (click)="openGuidedCustomerAssetUpdate()"
       >
-        Prepara modifica guidata
-      </button>
-      <button class="btn btn-outline-light btn-sm deadline-refresh-button desktop-secondary-operation" type="button" (click)="loadAll()">
-        ↻ Aggiorna
+        Prepara intervento guidato
       </button>
       <button type="button"
         *ngIf="canCreate && !showArchivedCustomerAssets"
@@ -38,6 +35,9 @@
         (click)="openPrimaryCreate()"
       >
         {{ primaryCreateLabel }}
+      </button>
+      <button class="btn btn-outline-light btn-sm deadline-refresh-button desktop-secondary-operation" type="button" (click)="loadAll()">
+        ↻ Aggiorna
       </button>
 
       <details appReliableDetails #mobileOperations class="mobile-operations-menu">
@@ -444,10 +444,8 @@
   </div>
 
   <div class="entity-list" *ngIf="!loading && !entitiesLoading && filteredGroups.length > 0 && !selectedGroup">
-    <article
-      class="card glass entity-row"
-      *ngFor="let group of filteredGroups; trackBy: trackDeadlineGroup"
-    >
+    <ng-container *ngFor="let group of filteredGroups; trackBy: trackDeadlineGroup">
+    <article class="card glass entity-row">
       <div class="entity-row-main">
         <div class="entity-head-copy">
           <div class="entity-title-row">
@@ -480,6 +478,19 @@
 
       <div class="entity-actions">
         <button
+          *ngIf="kind === 'customerAsset' && assetInterventionVerbaliForCustomer(group.id).length > 0"
+          type="button"
+          class="btn btn-outline-success btn-sm customer-verbale-button"
+          appReliableTap
+          (reliableTap)="toggleAssetInterventionVerbaliForCustomer(group.id)"
+          [attr.aria-expanded]="isAssetInterventionVerbaliCustomerOpen(group.id)"
+        >
+          Firma verbale
+          <span class="verbale-pending-count" *ngIf="pendingAssetInterventionVerbaliForCustomer(group.id) > 0">
+            {{ pendingAssetInterventionVerbaliForCustomer(group.id) }}
+          </span>
+        </button>
+        <button
           *ngIf="canCreate && kind !== 'customerAsset'"
           type="button"
           class="btn btn-primary btn-sm add-deadline-button"
@@ -504,13 +515,53 @@
         </button>
       </div>
     </article>
+    <section
+      *ngIf="kind === 'customerAsset' && isAssetInterventionVerbaliCustomerOpen(group.id)"
+      class="card glass customer-verbale-panel"
+    >
+      <div class="customer-verbale-panel-heading">
+        <div>
+          <span class="eyebrow">Verbali intervento presidi</span>
+          <h3>Pianificazioni di {{ group.label }}</h3>
+        </div>
+        <button type="button" class="btn btn-outline-light btn-sm" appReliableTap (reliableTap)="toggleAssetInterventionVerbaliForCustomer(group.id)">Chiudi</button>
+      </div>
+      <div class="customer-verbale-list">
+        <div class="customer-verbale-row" *ngFor="let verbale of assetInterventionVerbaliForCustomer(group.id); trackBy: trackAssetInterventionVerbale">
+          <div class="customer-verbale-copy">
+            <strong>Pianificazione n. {{ verbale.appointmentId }}</strong>
+            <span>
+              Guidata
+              <ng-container *ngIf="verbale.completedAt"> · Completata il {{ formatDateTime(verbale.completedAt) }}</ng-container>
+            </span>
+            <span [class.verbale-signed]="verbale.status === 'signed'" [class.verbale-ready]="verbale.status === 'ready_to_sign'">
+              {{ verbale.status === 'signed' ? 'Firmato' : 'Pronto per la firma' }}
+            </span>
+          </div>
+          <button type="button" class="btn btn-primary btn-sm" appReliableTap (reliableTap)="openAssetInterventionVerbale(verbale, customerVerbalePaperInput)">
+            {{ verbale.status === 'signed' ? 'Apri verbale' : 'Firma / stampa' }}
+          </button>
+          <input #customerVerbalePaperInput type="file" accept="application/pdf,.pdf,image/jpeg,image/png,.jpg,.jpeg,.png" hidden (change)="registerAssetInterventionVerbalePaperSignature(verbale, $event)" />
+        </div>
+      </div>
+    </section>
+    </ng-container>
   </div>
 
   <section class="card glass mt-3 detail-card" *ngIf="!loading && !entitiesLoading && selectedGroupView as currentGroup">
     <div class="entity-head">
       <div>
         <button type="button" class="detail-back" appReliableTap (reliableTap)="closeGroup()">← Elenco {{ detailListLabel }}</button>
-        <h3 class="entity-title mt-2">{{ currentGroup.label }}</h3>
+        <div class="entity-title-row mt-2">
+          <h3 class="entity-title">{{ currentGroup.label }}</h3>
+          <span
+            *ngIf="currentGroup.summary.alertCount > 0"
+            class="alert-count"
+            [ngClass]="statusClass(currentGroup.summary.status)"
+          >
+            {{ currentGroup.summary.alertCount }}
+          </span>
+        </div>
         <p class="entity-subtitle mb-0">{{ currentGroup.subtitle || ' ' }}</p>
       </div>
 
@@ -675,6 +726,13 @@
                   <ng-container *ngIf="selectedDeadlineCountForType(typeGroup)"> · {{ selectedDeadlineCountForType(typeGroup) }} selezionate</ng-container>
                 </small>
               </span>
+              <span
+                *ngIf="typeGroup.summary.alertCount > 0"
+                class="alert-count"
+                [ngClass]="statusClass(typeGroup.summary.status)"
+              >
+                {{ typeGroup.summary.alertCount }}
+              </span>
             </span>
           </summary>
 
@@ -723,9 +781,18 @@
                       <strong>{{ asset.label }}</strong>
                       <small>
                         {{ asset.summary.totalCount }} scadenze · {{ getFolderGroups(asset).length }} cartelle
-                        <ng-container *ngIf="asset.summary.alertCount"> · {{ asset.summary.alertCount }} da controllare</ng-container>
+                        <ng-container *ngIf="asset.summary.alertCount">
+                          · <span class="status-inline status-expired">{{ asset.summary.alertCount }} da controllare</span>
+                        </ng-container>
                         <ng-container *ngIf="selectedDeadlineCountForAsset(asset)"> · {{ selectedDeadlineCountForAsset(asset) }} selezionate</ng-container>
                       </small>
+                    </span>
+                    <span
+                      *ngIf="asset.summary.alertCount > 0"
+                      class="alert-count"
+                      [ngClass]="statusClass(asset.summary.status)"
+                    >
+                      {{ asset.summary.alertCount }}
                     </span>
                   </button>
                 </div>
@@ -767,9 +834,9 @@
                     <div><strong>{{ entry.summary }}</strong> · {{ entry.createdAt | date:'dd/MM/yyyy, HH:mm' }}</div>
                     <small *ngIf="entry.actorEmail">Operatore: {{ entry.actorEmail }}</small>
                     <div class="history-snapshot">
-                      <span *ngIf="entry.snapshot['code']">Codice: {{ entry.snapshot['code'] }}</span>
-                      <span *ngIf="entry.snapshot['serialNumber']">Matricola: {{ entry.snapshot['serialNumber'] }}</span>
-                      <span *ngIf="entry.snapshot['location']">Posizione: {{ entry.snapshot['location'] }}</span>
+                      <span *ngIf="entry.snapshot?.['code']">Codice: {{ entry.snapshot?.['code'] }}</span>
+                      <span *ngIf="entry.snapshot?.['serialNumber']">Matricola: {{ entry.snapshot?.['serialNumber'] }}</span>
+                      <span *ngIf="entry.snapshot?.['location']">Posizione: {{ entry.snapshot?.['location'] }}</span>
                     </div>
                     <div class="customer-asset-audit-attachments" *ngIf="entry.attachmentItems?.length">
                       <button
@@ -836,6 +903,7 @@
               *ngIf="canPlan && !deadline.plannedAppointmentId && !showArchivedCustomerAssets"
               type="button"
               class="deadline-select"
+              data-audited-pointer-gesture
               [class.deadline-select-checked]="isDeadlineSelected(deadline)"
               role="checkbox"
               [attr.aria-checked]="isDeadlineSelected(deadline)"
@@ -873,6 +941,7 @@
                 *ngIf="canPlan && !deadline.plannedAppointmentId"
                 type="button"
                 class="btn btn-primary btn-sm"
+                data-audited-pointer-gesture
                 (pointerdown)="onDeadlineActionPointerDown($event)"
                 (pointerup)="onDeadlineActionPointerUp($event, deadline, 'plan')"
                 (pointercancel)="onDeadlineActionPointerCancel()"
@@ -885,6 +954,7 @@
                 *ngIf="canPlan && deadline.plannedAppointmentId"
                 type="button"
                 class="btn btn-outline-info btn-sm"
+                data-audited-pointer-gesture
                 (pointerdown)="onDeadlineActionPointerDown($event)"
                 (pointerup)="onDeadlineActionPointerUp($event, deadline, 'open')"
                 (pointercancel)="onDeadlineActionPointerCancel()"
@@ -893,10 +963,17 @@
               >
                 Apri evento
               </button>
+              <ng-container *ngIf="kind === 'customerAsset' && deadline.plannedAppointmentId">
+                <button type="button" class="btn btn-outline-success btn-sm" appReliableTap (reliableTap)="openAssetIntervention(deadline, paperSignatureInput)">
+                  Verbale presidi
+                </button>
+                <input #paperSignatureInput type="file" accept="application/pdf,.pdf,image/jpeg,image/png,.jpg,.jpeg,.png" hidden (change)="registerAssetInterventionPaperSignature(deadline, $event)" />
+              </ng-container>
               <button
                 *ngIf="canEdit"
                 type="button"
                 class="btn btn-dark btn-sm"
+                data-audited-pointer-gesture
                 (pointerdown)="onEditDeadlinePointerDown($event)"
                 (pointerup)="onEditDeadlinePointerUp($event, deadline)"
                 (pointercancel)="onEditDeadlinePointerCancel()"
@@ -909,6 +986,7 @@
                 *ngIf="canDelete"
                 type="button"
                 class="btn btn-outline-danger btn-sm"
+                data-audited-pointer-gesture
                 (pointerdown)="onDeadlineActionPointerDown($event)"
                 (pointerup)="onDeadlineActionPointerUp($event, deadline, 'delete')"
                 (pointercancel)="onDeadlineActionPointerCancel()"
@@ -920,6 +998,7 @@
               <button
                 type="button"
                 class="btn btn-deadline-secondary btn-sm"
+                data-audited-pointer-gesture
                 (pointerdown)="onDeadlineActionPointerDown($event)"
                 (pointerup)="onDeadlineActionPointerUp($event, deadline, 'history')"
                 (pointercancel)="onDeadlineActionPointerCancel()"
@@ -969,6 +1048,7 @@
               <button
                 type="button"
                 class="history-day-toggle"
+                data-audited-pointer-gesture
                 (pointerdown)="onDeadlineActionPointerDown($event)"
                 (pointerup)="onHistoryDayPointerUp($event, deadline.id, dayGroup.key)"
                 (pointercancel)="onDeadlineActionPointerCancel()"
@@ -1032,5 +1112,48 @@
     </div>
     </ng-template>
   </section>
+
+  <div
+    class="asset-correction-backdrop"
+    *ngIf="assetInterventionCorrectionDialog as correctionDialog"
+    role="presentation"
+    (click)="closeAssetInterventionCorrectionDialog()"
+  >
+    <section
+      class="asset-correction-dialog"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="asset-correction-title"
+      (click)="$event.stopPropagation()"
+    >
+      <header class="asset-correction-header">
+        <div>
+          <span class="eyebrow">Verbale intervento presidi</span>
+          <h2 id="asset-correction-title">Quale presidio vuoi correggere?</h2>
+          <p>Seleziona il presidio: verrà riaperto e i capisquadra potranno modificarlo e completarlo nuovamente.</p>
+        </div>
+        <button type="button" class="btn btn-light asset-correction-close" aria-label="Chiudi" appReliableTap (reliableTap)="closeAssetInterventionCorrectionDialog()">×</button>
+      </header>
+
+      <div class="asset-correction-list">
+        <article class="asset-correction-item" *ngFor="let item of correctionDialog.items">
+          <div class="asset-correction-copy">
+            <strong>{{ item.label }}</strong>
+            <span [class.text-danger]="item.status === 'skipped'" [class.text-success]="item.status !== 'skipped'">
+              {{ item.status === 'skipped' ? 'Non eseguito' : 'Completato' }} · {{ item.outcome }}
+            </span>
+            <small *ngIf="item.changes">{{ item.changes }}</small>
+          </div>
+          <button type="button" class="btn btn-outline-danger btn-sm" appReliableTap (reliableTap)="requestAssetInterventionItemCorrection(item.id)">
+            Riapri per correzione
+          </button>
+        </article>
+      </div>
+
+      <footer class="d-flex justify-content-end px-4 pb-4">
+        <button type="button" class="btn btn-outline-light" appReliableTap (reliableTap)="closeAssetInterventionCorrectionDialog()">Annulla</button>
+      </footer>
+    </section>
+  </div>
 
 </div>

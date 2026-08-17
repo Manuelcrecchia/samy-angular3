@@ -122,3 +122,20 @@ h5.text-primary{
 .btn{
   transition: transform 140ms ease, box-shadow 140ms ease, background 160ms ease;
 }
+
+.anonymized-state {
+  display: grid;
+  justify-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+  padding: 18px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: var(--radius-md);
+  background: rgba(0, 0, 0, 0.035);
+  text-align: center;
+}
+
+.anonymized-state p {
+  margin: 0;
+  color: rgba(0, 0, 0, 0.58);
+}

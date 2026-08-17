@@ -108,4 +108,25 @@ describe('CreateShiftComponent', () => {
     component.assignedShifts[app.id] = [10, 11];
     expect(component.isComplete(app)).toBeTrue();
   });
+
+  it('recalculates the assignment dialog end time from the current duration', () => {
+    const component = createComponent();
+    const open = jasmine.createSpy('open').and.returnValue({
+      afterClosed: () => ({ subscribe: () => undefined }),
+    });
+    (component as any).dialog = { open };
+    component.selectedDate = new Date(2026, 7, 17);
+    const app = {
+      id: 'job-3',
+      startDate: new Date(2026, 7, 17, 10, 0),
+      endDate: new Date(2026, 7, 17, 10, 0),
+      duration: 60,
+    };
+
+    component.openAssignmentDialog(app);
+
+    const dialogConfig = open.calls.mostRecent().args[1];
+    expect(dialogConfig.data.startDate).toEqual(new Date(2026, 7, 17, 10, 0));
+    expect(dialogConfig.data.endDate).toEqual(new Date(2026, 7, 17, 11, 0));
+  });
 });

@@ -38,7 +38,7 @@
           class="btn permission-attachment"
           *ngFor="let attachment of attachments; let attachmentIndex = index"
           [value]="'📎 ' + (attachment.filename || 'Allegato')"
-          (pointerup)="openAttachment(attachment, attachmentIndex)"
+          (click)="openAttachment(attachment, attachmentIndex)"
           (keydown.enter)="openAttachment(attachment, attachmentIndex)"
           (keydown.space)="openAttachment(attachment, attachmentIndex)"
         />

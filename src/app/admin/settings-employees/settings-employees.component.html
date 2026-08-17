@@ -300,6 +300,7 @@
             <td>
               {{ emp.nome }}
               <span *ngIf="!emp.active" class="badge bg-warning text-dark ms-1">Archiviato</span>
+              <span *ngIf="emp.anonymizedAt" class="badge bg-secondary ms-1">Anonimizzato</span>
             </td>
             <td>{{ emp.cognome }}</td>
             <td class="d-none d-md-table-cell">{{ emp.email }}</td>
@@ -333,8 +334,10 @@
                         type="button" class="btn btn-glass-dark btn-round btn-sm" (click)="exportAndArchiveEmployee(emp)">📦 Archivia</button>
               </ng-container>
               <ng-container *ngIf="!emp.active">
-                <button *ngIf="globalService.hasPermission('EMPLOYEE_CREATE')"
+                <button *ngIf="globalService.hasPermission('EMPLOYEE_CREATE') && !emp.anonymizedAt"
                         type="button" class="btn btn-primary btn-round btn-sm" (click)="unarchiveEmployee(emp)">♻️ Riattiva</button>
+                <button *ngIf="globalService.hasPermission('EMPLOYEE_DELETE') && !emp.anonymizedAt"
+                        type="button" class="btn btn-danger btn-round btn-sm" (click)="anonymizeEmployee(emp)">👤 Anonimizza</button>
               </ng-container>
             </td>
           </ng-container>
@@ -417,7 +420,11 @@
         <span *ngIf="!emp.active" class="badge bg-warning text-dark">Archiviato</span>
       </div>
       <div class="employee-card__identity">
-        <h3>{{ emp.nome }} {{ emp.cognome }}</h3>
+        <h3>
+          {{ emp.nome }} {{ emp.cognome }}
+          <span *ngIf="!emp.active" class="badge bg-warning text-dark ms-1">Archiviato</span>
+          <span *ngIf="emp.anonymizedAt" class="badge bg-secondary ms-1">Anonimizzato</span>
+        </h3>
         <p>{{ emp.email }}</p>
         <p class="small">{{ emp.cellulare }} &middot; {{ emp.oreGiornaliereDefault ?? '8' }}h/g</p>
         <div class="employee-category-badges" *ngIf="getEmployeeCategoryNames(emp).length">
@@ -440,8 +447,10 @@
                     type="button" class="btn btn-glass-dark btn-round btn-sm" (click)="exportAndArchiveEmployee(emp)">📦 Archivia</button>
           </ng-container>
           <ng-container *ngIf="!emp.active">
-            <button *ngIf="globalService.hasPermission('EMPLOYEE_CREATE')"
+            <button *ngIf="globalService.hasPermission('EMPLOYEE_CREATE') && !emp.anonymizedAt"
                     type="button" class="btn btn-primary btn-round btn-sm" (click)="unarchiveEmployee(emp)">♻️ Riattiva</button>
+            <button *ngIf="globalService.hasPermission('EMPLOYEE_DELETE') && !emp.anonymizedAt"
+                    type="button" class="btn btn-danger btn-round btn-sm" (click)="anonymizeEmployee(emp)">👤 Anonimizza</button>
           </ng-container>
         </ng-container>
         <ng-template #editMobile>

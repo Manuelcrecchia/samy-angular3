@@ -488,19 +488,19 @@ export class PrivateAreaComponent {
     try {
       const saved = JSON.parse(localStorage.getItem(this.getRememberedWebCredentialsKey()) || '{}');
       this.email = String(saved.email || '');
-      this.password = String(saved.password || '');
+      this.password = '';
     } catch {
       this.email = '';
       this.password = '';
     }
   }
 
-  private saveRememberedWebCredentials(email: string, password: string): void {
+  private saveRememberedWebCredentials(email: string, _password: string): void {
     if (this.isMobile || typeof localStorage === 'undefined') return;
 
     localStorage.setItem(
       this.getRememberedWebCredentialsKey(),
-      JSON.stringify({ email, password }),
+      JSON.stringify({ email }),
     );
   }
 }

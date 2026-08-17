@@ -15,7 +15,7 @@ describe('Responsive pages – all templates and contents', () => {
   for (const page of RESPONSIVE_PAGE_FIXTURES) {
     it(`${page.name} stays within the page from 280px to 1920px`, () => {
       if (window.innerWidth !== 500) {
-        pending('Eseguire con il profilo ChromeHeadlessMobile.');
+        pending(`Eseguire con il profilo ChromeHeadlessMobile (viewport attuale: ${window.innerWidth}px).`);
         return;
       }
 

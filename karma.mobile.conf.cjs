@@ -17,8 +17,11 @@ module.exports = function configureMobileKarma(config) {
       ChromeHeadlessMobile: {
         base: 'ChromeHeadless',
         flags: [
-          '--window-size=500,760',
-          '--force-device-scale-factor=2.5',
+          // Chrome headless sottrae 15px per la scrollbar dal viewport interno.
+          '--window-size=515,760',
+          // Il test misura larghezze CSS: un DPR forzato diverso da 1 rendeva
+          // il viewport differente dai 500px attesi e saltava l'intera suite.
+          '--force-device-scale-factor=1',
           '--high-dpi-support=1',
         ],
       },
