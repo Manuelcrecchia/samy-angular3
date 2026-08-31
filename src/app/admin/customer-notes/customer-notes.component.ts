@@ -21,6 +21,10 @@ export interface AllegatoNota {
   originalUrl?: string;
   downloadUrl?: string;
   previewDownloadUrl?: string;
+  safeImageSource?: string;
+  safeImageUrl?: SafeUrl;
+  safePdfSource?: string;
+  safePdfUrl?: SafeResourceUrl;
 }
 
 export interface NotaCliente {
@@ -287,6 +291,7 @@ export class CustomerNotesComponent implements OnInit {
 
   private createObjectUrl(allegato: AllegatoNota, usePreview = true): string {
     if (usePreview && allegato.previewUrl) return allegato.previewUrl;
+    if (!usePreview && allegato.originalUrl) return allegato.originalUrl;
     if (allegato.blob) {
       if (!usePreview) {
         allegato.originalUrl ||= URL.createObjectURL(allegato.blob);
@@ -307,7 +312,10 @@ export class CustomerNotesComponent implements OnInit {
 
     const byteArray = new Uint8Array(byteNumbers);
     const blob = new Blob([byteArray], { type: mimeType });
-    return URL.createObjectURL(blob);
+    const objectUrl = URL.createObjectURL(blob);
+    if (usePreview) allegato.previewUrl = objectUrl;
+    else allegato.originalUrl = objectUrl;
+    return objectUrl;
   }
 
   private withObjectUrl(allegato: AllegatoNota, action: (url: string) => void, silent = false, usePreview = true) {
@@ -376,18 +384,24 @@ export class CustomerNotesComponent implements OnInit {
   }
 
   getDataUrl(allegato: AllegatoNota): SafeUrl {
-    if (allegato.previewUrl) return this.sanitizer.bypassSecurityTrustUrl(allegato.previewUrl);
     const mime = allegato.mimeType || 'application/octet-stream';
-    return this.sanitizer.bypassSecurityTrustUrl(
-      allegato.base64 ? `data:${mime};base64,${allegato.base64}` : '',
-    );
+    const source = allegato.previewUrl ||
+      (allegato.base64 ? `data:${mime};base64,${allegato.base64}` : '');
+    if (!allegato.safeImageUrl || allegato.safeImageSource !== source) {
+      allegato.safeImageSource = source;
+      allegato.safeImageUrl = this.sanitizer.bypassSecurityTrustUrl(source);
+    }
+    return allegato.safeImageUrl;
   }
 
   getPdfResourceUrl(allegato: AllegatoNota): SafeResourceUrl {
-    if (allegato.previewUrl) return this.sanitizer.bypassSecurityTrustResourceUrl(allegato.previewUrl);
-    return this.sanitizer.bypassSecurityTrustResourceUrl(
-      allegato.base64 ? `data:application/pdf;base64,${allegato.base64}` : '',
-    );
+    const source = allegato.previewUrl ||
+      (allegato.base64 ? `data:application/pdf;base64,${allegato.base64}` : '');
+    if (!allegato.safePdfUrl || allegato.safePdfSource !== source) {
+      allegato.safePdfSource = source;
+      allegato.safePdfUrl = this.sanitizer.bypassSecurityTrustResourceUrl(source);
+    }
+    return allegato.safePdfUrl;
   }
 
   toggleSoloAllegati() { this.soloAllegati = !this.soloAllegati; }

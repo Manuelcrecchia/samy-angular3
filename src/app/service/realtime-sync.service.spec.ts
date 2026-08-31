@@ -23,6 +23,13 @@ describe('RealtimeSyncService route matching', () => {
     expect(adminRouteUsesResource('/homeAdmin/internal-warehouse', 'internal_warehouse')).toBeTrue();
   });
 
+  it('aggiorna le pagine note solo per modifiche ai contenuti, non per le conferme di lettura', () => {
+    expect(adminRouteUsesResource('/homeAdmin/quote-notes', 'quote_notes')).toBeTrue();
+    expect(adminRouteUsesResource('/homeAdmin/customer-notes', 'customer_notes')).toBeTrue();
+    expect(adminRouteUsesResource('/homeAdmin/quote-notes', 'note_unread')).toBeFalse();
+    expect(adminRouteUsesResource('/homeAdmin/customer-notes', 'note_unread')).toBeFalse();
+  });
+
   it('does not confuse the homeAdmin shell with an admins change', () => {
     expect(adminRouteUsesResource('/homeAdmin/invoices', 'admins')).toBeFalse();
     expect(adminRouteUsesResource('/homeAdmin/gestioneusers', 'admins')).toBeTrue();

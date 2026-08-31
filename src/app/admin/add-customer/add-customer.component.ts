@@ -576,7 +576,14 @@ export class AddCustomerComponent {
               )
               .subscribe({
                 next: () => saveRequirementsAndFinalize(),
-                error: () => saveRequirementsAndFinalize(),
+                error: (error) => {
+                  this.popup.showError(
+                    this.parseServerError(error) ||
+                      'Cliente creato, ma non è stato possibile trasferire le note del preventivo.',
+                    'Trasferimento note',
+                  );
+                  saveRequirementsAndFinalize();
+                },
               });
           } else {
             saveRequirementsAndFinalize();
