@@ -15,6 +15,9 @@ interface Employee {
   warehousePreparationEnabled: boolean;
   warehouseStockInEnabled: boolean;
   warehouseStockOutEnabled: boolean;
+  customerWarehouseInventoryEnabled: boolean;
+  customerWarehouseLoadEnabled: boolean;
+  customerWarehouseUnloadEnabled: boolean;
   active: boolean;
   anonymizedAt?: string | null;
   [key: string]: any;
@@ -29,6 +32,9 @@ interface EmployeeForm {
   warehousePreparationEnabled: boolean;
   warehouseStockInEnabled: boolean;
   warehouseStockOutEnabled: boolean;
+  customerWarehouseInventoryEnabled: boolean;
+  customerWarehouseLoadEnabled: boolean;
+  customerWarehouseUnloadEnabled: boolean;
   [key: string]: any;
 }
 
@@ -83,6 +89,9 @@ export class SettingsEmployeesComponent implements OnInit, OnChanges {
     'warehousePreparationEnabled',
     'warehouseStockInEnabled',
     'warehouseStockOutEnabled',
+    'customerWarehouseInventoryEnabled',
+    'customerWarehouseLoadEnabled',
+    'customerWarehouseUnloadEnabled',
   ].map((key) => key.toLowerCase()));
 
   constructor(
@@ -123,6 +132,9 @@ export class SettingsEmployeesComponent implements OnInit, OnChanges {
       warehousePreparationEnabled: false,
       warehouseStockInEnabled: false,
       warehouseStockOutEnabled: false,
+      customerWarehouseInventoryEnabled: false,
+      customerWarehouseLoadEnabled: false,
+      customerWarehouseUnloadEnabled: false,
     };
   }
 
@@ -513,6 +525,9 @@ export class SettingsEmployeesComponent implements OnInit, OnChanges {
       warehousePreparationEnabled: !!this.employeeEdit.warehousePreparationEnabled,
       warehouseStockInEnabled: !!this.employeeEdit.warehouseStockInEnabled,
       warehouseStockOutEnabled: !!this.employeeEdit.warehouseStockOutEnabled,
+      customerWarehouseInventoryEnabled: !!this.employeeEdit.customerWarehouseInventoryEnabled,
+      customerWarehouseLoadEnabled: !!this.employeeEdit.customerWarehouseLoadEnabled,
+      customerWarehouseUnloadEnabled: !!this.employeeEdit.customerWarehouseUnloadEnabled,
     };
     this.appendEmployeeExtraPayload(body, this.employeeEdit);
 
@@ -547,6 +562,9 @@ export class SettingsEmployeesComponent implements OnInit, OnChanges {
       warehousePreparationEnabled: !!this.employeesAdd.warehousePreparationEnabled,
       warehouseStockInEnabled: !!this.employeesAdd.warehouseStockInEnabled,
       warehouseStockOutEnabled: !!this.employeesAdd.warehouseStockOutEnabled,
+      customerWarehouseInventoryEnabled: !!this.employeesAdd.customerWarehouseInventoryEnabled,
+      customerWarehouseLoadEnabled: !!this.employeesAdd.customerWarehouseLoadEnabled,
+      customerWarehouseUnloadEnabled: !!this.employeesAdd.customerWarehouseUnloadEnabled,
     };
     this.appendEmployeeExtraPayload(body, this.employeesAdd);
 

@@ -50,6 +50,17 @@
               </div>
             </div>
           </div>
+          <div class="col-12" *ngIf="globalService.hasFeature('customerWarehouse')">
+            <div class="warehouse-permissions">
+              <strong>Magazzino clienti nell'app dipendenti</strong>
+              <small>I permessi valgono su tutte le pratiche e non dipendono dal turno assegnato.</small>
+              <div class="warehouse-permissions__checks">
+                <label class="mobility-check"><input type="checkbox" name="customerWarehouseInventoryEnabled" [(ngModel)]="employeesAdd.customerWarehouseInventoryEnabled" /><span>Inventario ed etichette</span></label>
+                <label class="mobility-check"><input type="checkbox" name="customerWarehouseLoadEnabled" [(ngModel)]="employeesAdd.customerWarehouseLoadEnabled" /><span>Carico merce clienti</span></label>
+                <label class="mobility-check"><input type="checkbox" name="customerWarehouseUnloadEnabled" [(ngModel)]="employeesAdd.customerWarehouseUnloadEnabled" /><span>Scarico merce clienti</span></label>
+              </div>
+            </div>
+          </div>
           <div class="col-md-6" *ngFor="let field of employeeExtraFields">
             <label class="form-label fw-bold">{{ field.label || field.key }}</label>
             <ng-container [ngSwitch]="field.type">
@@ -231,6 +242,17 @@
             </div>
           </div>
         </div>
+        <div class="col-12" *ngIf="globalService.hasFeature('customerWarehouse')">
+          <div class="warehouse-permissions">
+            <strong>Magazzino clienti nell'app dipendenti</strong>
+            <small>Abilita liberamente le funzioni operative consentite al dipendente.</small>
+            <div class="warehouse-permissions__checks">
+              <label class="mobility-check"><input type="checkbox" [(ngModel)]="employeeEdit.customerWarehouseInventoryEnabled" name="focused_customer_warehouse_inventory" /><span>Inventario ed etichette</span></label>
+              <label class="mobility-check"><input type="checkbox" [(ngModel)]="employeeEdit.customerWarehouseLoadEnabled" name="focused_customer_warehouse_load" /><span>Carico</span></label>
+              <label class="mobility-check"><input type="checkbox" [(ngModel)]="employeeEdit.customerWarehouseUnloadEnabled" name="focused_customer_warehouse_unload" /><span>Scarico</span></label>
+            </div>
+          </div>
+        </div>
         <div class="col-md-6" *ngFor="let field of employeeExtraFields">
           <label class="form-label fw-bold">{{ field.label || field.key }}</label>
           <ng-container [ngSwitch]="field.type">
@@ -318,10 +340,13 @@
                   {{ item.label }}: {{ item.value }}
                 </span>
               </div>
-              <div class="employee-extra-badges" *ngIf="emp.warehousePreparationEnabled || emp.warehouseStockInEnabled || emp.warehouseStockOutEnabled">
+              <div class="employee-extra-badges" *ngIf="emp.warehousePreparationEnabled || emp.warehouseStockInEnabled || emp.warehouseStockOutEnabled || emp.customerWarehouseInventoryEnabled || emp.customerWarehouseLoadEnabled || emp.customerWarehouseUnloadEnabled">
                 <span class="employee-extra-badge" *ngIf="emp.warehousePreparationEnabled">Prepara ordini</span>
                 <span class="employee-extra-badge" *ngIf="emp.warehouseStockInEnabled">Entrata</span>
                 <span class="employee-extra-badge" *ngIf="emp.warehouseStockOutEnabled">Uscita</span>
+                <span class="employee-extra-badge" *ngIf="emp.customerWarehouseInventoryEnabled">Inventario clienti</span>
+                <span class="employee-extra-badge" *ngIf="emp.customerWarehouseLoadEnabled">Carico clienti</span>
+                <span class="employee-extra-badge" *ngIf="emp.customerWarehouseUnloadEnabled">Scarico clienti</span>
               </div>
             </td>
             <td class="actions-cell">
@@ -355,6 +380,10 @@
                 <label class="mobility-check mobility-check--compact"><input type="checkbox" name="e_warehouse_prep_{{ emp.id }}" [(ngModel)]="employeeEdit.warehousePreparationEnabled" /><span>Preparazione</span></label>
                 <label class="mobility-check mobility-check--compact"><input type="checkbox" name="e_warehouse_in_{{ emp.id }}" [(ngModel)]="employeeEdit.warehouseStockInEnabled" /><span>Entrata</span></label>
                 <label class="mobility-check mobility-check--compact"><input type="checkbox" name="e_warehouse_out_{{ emp.id }}" [(ngModel)]="employeeEdit.warehouseStockOutEnabled" /><span>Uscita</span></label>
+                <strong *ngIf="globalService.hasFeature('customerWarehouse')">Magazzino clienti</strong>
+                <label *ngIf="globalService.hasFeature('customerWarehouse')" class="mobility-check mobility-check--compact"><input type="checkbox" name="e_customer_warehouse_inventory_{{ emp.id }}" [(ngModel)]="employeeEdit.customerWarehouseInventoryEnabled" /><span>Inventario/etichette</span></label>
+                <label *ngIf="globalService.hasFeature('customerWarehouse')" class="mobility-check mobility-check--compact"><input type="checkbox" name="e_customer_warehouse_load_{{ emp.id }}" [(ngModel)]="employeeEdit.customerWarehouseLoadEnabled" /><span>Carico clienti</span></label>
+                <label *ngIf="globalService.hasFeature('customerWarehouse')" class="mobility-check mobility-check--compact"><input type="checkbox" name="e_customer_warehouse_unload_{{ emp.id }}" [(ngModel)]="employeeEdit.customerWarehouseUnloadEnabled" /><span>Scarico clienti</span></label>
               </div>
               <div class="employee-extra-edit-grid" *ngIf="employeeExtraFields.length; else noEmployeeExtraEdit">
                 <div class="employee-extra-field" *ngFor="let field of employeeExtraFields">
@@ -464,6 +493,10 @@
             <label class="mobility-check mobility-check--compact"><input type="checkbox" name="m_warehouse_prep_{{ emp.id }}" [(ngModel)]="employeeEdit.warehousePreparationEnabled" /><span>Preparazione</span></label>
             <label class="mobility-check mobility-check--compact"><input type="checkbox" name="m_warehouse_in_{{ emp.id }}" [(ngModel)]="employeeEdit.warehouseStockInEnabled" /><span>Entrata</span></label>
             <label class="mobility-check mobility-check--compact"><input type="checkbox" name="m_warehouse_out_{{ emp.id }}" [(ngModel)]="employeeEdit.warehouseStockOutEnabled" /><span>Uscita</span></label>
+            <strong *ngIf="globalService.hasFeature('customerWarehouse')">Magazzino clienti</strong>
+            <label *ngIf="globalService.hasFeature('customerWarehouse')" class="mobility-check mobility-check--compact"><input type="checkbox" name="m_customer_warehouse_inventory_{{ emp.id }}" [(ngModel)]="employeeEdit.customerWarehouseInventoryEnabled" /><span>Inventario/etichette</span></label>
+            <label *ngIf="globalService.hasFeature('customerWarehouse')" class="mobility-check mobility-check--compact"><input type="checkbox" name="m_customer_warehouse_load_{{ emp.id }}" [(ngModel)]="employeeEdit.customerWarehouseLoadEnabled" /><span>Carico clienti</span></label>
+            <label *ngIf="globalService.hasFeature('customerWarehouse')" class="mobility-check mobility-check--compact"><input type="checkbox" name="m_customer_warehouse_unload_{{ emp.id }}" [(ngModel)]="employeeEdit.customerWarehouseUnloadEnabled" /><span>Scarico clienti</span></label>
           </div>
           <div class="employee-extra-edit-grid employee-extra-edit-grid--mobile" *ngIf="employeeExtraFields.length">
             <div class="employee-extra-field" *ngFor="let field of employeeExtraFields">

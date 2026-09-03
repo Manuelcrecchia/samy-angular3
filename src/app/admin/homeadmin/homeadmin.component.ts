@@ -115,6 +115,7 @@ export class HomeAdminComponent implements OnInit, OnDestroy {
     'editQuote',
     'email',
     'emailSettings',
+    'emailSendingSettings',
     'employee-contracts',
     'employee-deadlines',
     'equipment-deadlines',
@@ -867,6 +868,10 @@ export class HomeAdminComponent implements OnInit, OnDestroy {
     this.navigateInHome('emailSettings');
   }
 
+  navigateToEmailSendingSettings() {
+    this.navigateInHome('emailSendingSettings');
+  }
+
   navigateToNotificationSettings() {
     this.navigateInHome('notificationSettings');
   }
@@ -1177,6 +1182,21 @@ export class HomeAdminComponent implements OnInit, OnDestroy {
         ],
       },
       {
+        id: 'customerWarehouse',
+        label: 'Magazzino clienti',
+        icon: 'fas fa-boxes-stacked',
+        buttons: [
+          {
+            label: 'Pratiche e merce clienti',
+            icon: 'fas fa-boxes-stacked',
+            permission: 'CUSTOMER_WAREHOUSE_VIEW',
+            feature: 'customerWarehouse',
+            action: () => this.navigateInHome('customer-warehouse'),
+            desktopPath: 'customer-warehouse',
+          },
+        ],
+      },
+      {
         id: 'internalWarehouse',
         label: 'Magazzino interno',
         icon: 'fas fa-warehouse',
@@ -1415,10 +1435,11 @@ export class HomeAdminComponent implements OnInit, OnDestroy {
       },
     ];
 
-    const categoryOrder = ['commerciale', 'personale', 'billing', 'accounting', 'internalWarehouse', 'operativo'];
+    const categoryOrder = ['commerciale', 'personale', 'billing', 'accounting', 'customerWarehouse', 'internalWarehouse', 'operativo'];
     const buttonOrder: Record<string, string[]> = {
       commerciale: ['quotesHome', 'listCustomer', 'service-orders', 'riepilogo-ore-clienti'],
       personale: ['gestioneemployees', 'gestionepermessi', 'shifts', 'timbratureHome', 'riepilogo-presenze-editabile', 'candidates', 'employee-contracts'],
+      customerWarehouse: ['customer-warehouse'],
       internalWarehouse: ['list', 'in', 'out', 'requests', 'material-orders', 'orders', 'products', 'movements', 'tools'],
       operativo: ['customer-deadlines', 'customer-asset-deadlines', 'employee-deadlines', 'vehicle-deadlines', 'equipment-deadlines', 'internal-deadlines'],
     };
@@ -1462,6 +1483,7 @@ export class HomeAdminComponent implements OnInit, OnDestroy {
       { type: 'button', key: 'internal-documents' },
       { type: 'category', key: 'billing' },
       { type: 'category', key: 'accounting' },
+      { type: 'category', key: 'customerWarehouse' },
       { type: 'category', key: 'internalWarehouse' },
       { type: 'category', key: 'operativo' },
       { type: 'button', key: 'statistiche' },

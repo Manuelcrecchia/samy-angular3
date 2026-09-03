@@ -1,0 +1,70 @@
+<div class="standard-management-page email-sending-settings-page">
+  <header class="mv-entity-toolbar">
+    <div class="mv-entity-toolbar__title"><h1>Impostazioni invio email</h1></div>
+    <div class="mv-entity-toolbar__controls">
+      <button class="btn mv-toolbar-back" type="button" (click)="back()">&larr; Torna indietro</button>
+    </div>
+  </header>
+  <div class="container">
+    <p class="page-intro">Configura il mittente e la connessione SMTP per ogni funzione. Se usi l’email predefinita, MVanager mantiene l’invio già impostato.</p>
+    <p *ngIf="loading" role="status">Caricamento...</p>
+    <div *ngIf="loadError" class="load-error" role="alert">
+      <p>{{ loadError }}</p>
+      <button class="btn btn-primary" type="button" (click)="load()">Riprova</button>
+    </div>
+    <div class="sending-sections" *ngIf="loaded">
+      <form class="sending-panel" *ngFor="let section of sections" #smtpForm="ngForm" (ngSubmit)="save(section)">
+        <h2>{{ section.title }}</h2>
+        <p class="section-description">{{ section.description }}</p>
+        <fieldset [disabled]="!!section.busy">
+          <label class="default-choice">
+            <input type="checkbox" name="useDefault" [(ngModel)]="section.form.useDefault" (ngModelChange)="changed(section)" />
+            Usa l’email già impostata in MVanager
+          </label>
+          <p *ngIf="section.form.useDefault" class="default-hint">Dopo il salvataggio, questa funzione userà il mittente predefinito. L’eventuale configurazione dedicata verrà rimossa.</p>
+          <div class="smtp-fields" *ngIf="!section.form.useDefault">
+            <label>
+              Indirizzo email mittente
+              <input class="form-control" name="email" type="email" required email maxlength="255" [(ngModel)]="section.form.email" (ngModelChange)="changed(section)" placeholder="commerciale@azienda.it" />
+            </label>
+            <label>
+              Username
+              <input class="form-control" name="username" required maxlength="255" autocomplete="off" [(ngModel)]="section.form.username" (ngModelChange)="changed(section)" placeholder="Utente SMTP" />
+            </label>
+            <label>
+              Password
+              <input class="form-control" name="password" type="password" [required]="!section.form.hasPassword || section.form.passwordNeedsReset" maxlength="4096" autocomplete="new-password" [(ngModel)]="section.form.password" (ngModelChange)="changed(section)" />
+              <small *ngIf="section.form.hasPassword && !section.form.passwordNeedsReset">Lascia vuoto per mantenere la password salvata.</small>
+              <small class="error-text" *ngIf="section.form.passwordNeedsReset">La password salvata non è più leggibile: reinseriscila.</small>
+            </label>
+            <label>
+              Server SMTP
+              <input class="form-control" name="smtpHost" required maxlength="255" [(ngModel)]="section.form.smtpHost" (ngModelChange)="changed(section)" placeholder="smtp.azienda.it" />
+            </label>
+            <label>
+              Porta
+              <input class="form-control" name="smtpPort" type="number" required min="1" max="65535" step="1" [(ngModel)]="section.form.smtpPort" (ngModelChange)="changed(section)" />
+            </label>
+            <label>
+              Sicurezza
+              <select class="form-control" name="smtpSecure" [(ngModel)]="section.form.smtpSecure" (ngModelChange)="changed(section)">
+                <option [ngValue]="false">STARTTLS (di solito porta 587)</option>
+                <option [ngValue]="true">SSL/TLS (di solito porta 465)</option>
+              </select>
+            </label>
+          </div>
+          <div class="panel-actions">
+            <button class="btn btn-primary btn-round" type="submit" [disabled]="smtpForm.invalid || !!section.busy">
+              {{ section.busy === 'save' ? 'Salvataggio...' : 'Salva configurazione' }}
+            </button>
+            <button class="btn btn-glass btn-round" type="button" *ngIf="!section.form.useDefault" [disabled]="smtpForm.invalid || !!section.busy" (click)="test(section)">
+              {{ section.busy === 'test' ? 'Test in corso...' : 'Test connessione SMTP' }}
+            </button>
+          </div>
+        </fieldset>
+        <p class="feedback success-text" *ngIf="section.message" role="status">{{ section.message }}</p>
+        <p class="feedback error-text" *ngIf="section.error" role="alert">{{ section.error }}</p>
+      </form>
+    </div>
+  </div>
+</div>

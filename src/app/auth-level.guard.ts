@@ -53,6 +53,8 @@ export class AuthLevelGuard implements CanActivate {
     INTERNAL_WAREHOUSE_ADJUST: 'internalWarehouse',
     INTERNAL_WAREHOUSE_HISTORY_VIEW: 'internalWarehouse',
     INTERNAL_WAREHOUSE_EXPORT: 'internalWarehouse',
+    CUSTOMER_WAREHOUSE_VIEW: 'customerWarehouse',
+    CUSTOMER_WAREHOUSE_MANAGE: 'customerWarehouse',
     VEHICLE_DEADLINES_VIEW: 'vehicleDeadlines',
     VEHICLE_DEADLINES_CREATE: 'vehicleDeadlines',
     VEHICLE_DEADLINES_EDIT: 'vehicleDeadlines',

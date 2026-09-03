@@ -1,0 +1,148 @@
+<div class="cw-page standard-management-page">
+  <header class="cw-toolbar mv-entity-toolbar">
+    <div><small>MODULO SEPARATO</small><h1>Magazzino clienti</h1></div>
+    <button class="btn btn-outline-secondary" type="button" (click)="back()"><i class="fas fa-arrow-left"></i> Indietro</button>
+  </header>
+
+  <div class="alert alert-danger" *ngIf="error">{{ error }}</div>
+  <div class="alert alert-success" *ngIf="message">{{ message }}</div>
+  <div class="cw-loading" *ngIf="loading"><span class="spinner-border spinner-border-sm"></span> Caricamento…</div>
+
+  <ng-container *ngIf="!selected">
+    <section class="cw-card cw-search">
+      <div><h2>Pratiche clienti</h2><p>Create automaticamente dagli appuntamenti configurati come carico o scarico.</p></div>
+      <div class="cw-search-row"><input class="form-control" [(ngModel)]="search" (keyup.enter)="load()" placeholder="Numero cliente" /><button class="btn btn-primary" (click)="load()">Cerca</button></div>
+    </section>
+    <section class="cw-card cw-verify">
+      <h2>Verifica libera etichetta</h2>
+      <div class="cw-search-row"><input class="form-control" [(ngModel)]="verifyCode" (keyup.enter)="verify()" placeholder="Scansiona o inserisci il codice completo" /><button class="btn btn-outline-primary" (click)="verify()">Verifica</button></div>
+      <article *ngIf="verification" class="cw-verification" [class.obsolete]="!verification.usable">
+        <strong>{{ verification.usable ? 'Etichetta corrente' : 'Etichetta vecchia o non utilizzabile' }}</strong>
+        <p>Dati letti: {{ verification.historical?.groupName }} · {{ verification.historical?.itemName }} · pezzo {{ verification.historical?.pieceNumber }}/{{ verification.historical?.totalPieces }}</p>
+        <p *ngIf="verification.current">Dati correnti: {{ verification.current.group?.name }} · {{ verification.current.item?.name }} · pezzo {{ verification.current.piece?.pieceNumber }}/{{ verification.current.piece?.totalPieces }}</p>
+        <code *ngIf="verification.current?.label?.code">{{ verification.current.label.code }}</code>
+      </article>
+    </section>
+    <div class="cw-grid">
+      <button type="button" class="cw-practice" *ngFor="let practice of practices" (click)="open(practice)">
+        <span><small>CLIENTE {{ practice.numeroCliente }}</small><strong>{{ practice.customerDisplayName }}</strong></span>
+        <span class="cw-counts"><b>{{ practice.counts?.inventoried || 0 }}</b> inventariati · <b>{{ practice.counts?.loaded || 0 }}</b> caricati · <b>{{ practice.counts?.unloaded || 0 }}</b> scaricati</span>
+        <span class="cw-flags"><em *ngIf="practice.planning?.dueToLoad">Da caricare</em><em *ngIf="practice.planning?.dueToUnload">Da scaricare</em><em class="warn" *ngIf="practice.signatureStatus === 'outdated'">Firma da rinnovare</em></span>
+      </button>
+      <p class="cw-empty" *ngIf="!loading && !practices.length">Nessuna pratica Magazzino clienti.</p>
+    </div>
+  </ng-container>
+
+  <ng-container *ngIf="selected">
+    <section class="cw-card cw-head">
+      <div><small>CLIENTE {{ selected.numeroCliente }}</small><h2>{{ selected.customerDisplayName }}</h2><p class="cw-muted">{{ selected.counts?.loaded || 0 }} pezzi caricati · {{ selected.counts?.unloaded || 0 }} scaricati</p><span class="cw-badge warn" *ngIf="selected.signatureStatus === 'outdated'">Firma da rinnovare</span></div>
+      <details class="cw-signature"><summary>Firma inventario · {{ signatureStatus(selected.signatureStatus) }}</summary><p>Revisione inventario {{ selected.inventoryRevision }}</p><div class="cw-actions"><button type="button" class="btn btn-outline-primary" [disabled]="loading" (click)="requestSignature()">Richiedi nuova firma</button><button type="button" class="btn btn-success" *ngIf="selected.signatureStatus === 'requested'" [disabled]="loading" (click)="completeSignature()">Registra firma acquisita</button></div></details>
+    </section>
+
+    <nav class="cw-tabs" aria-label="Sezioni pratica">
+      <button type="button" [class.active]="activeSection === 'inventory'" [attr.aria-pressed]="activeSection === 'inventory'" (click)="selectSection('inventory')">Inventario</button>
+      <button type="button" [class.active]="activeSection === 'operations'" [attr.aria-pressed]="activeSection === 'operations'" (click)="selectSection('operations')">Operazioni</button>
+      <button type="button" [class.active]="activeSection === 'history'" [attr.aria-pressed]="activeSection === 'history'" (click)="selectSection('history')">Storico attività</button>
+    </nav>
+
+    <section class="cw-card cw-groups" *ngIf="activeSection === 'inventory' && !selectedGroup">
+      <h2>{{ groupListLabel }}</h2><p class="cw-muted">Seleziona un raggruppamento per vedere gli elementi al suo interno.</p>
+      <div class="cw-inventory-filters">
+        <input class="form-control" type="search" [(ngModel)]="groupSearch" [attr.aria-label]="'Cerca ' + groupLabel.toLowerCase()" [placeholder]="'Cerca ' + groupLabel.toLowerCase()" />
+        <label class="cw-check"><input type="checkbox" [(ngModel)]="showDeletedGroups" /> Mostra anche i raggruppamenti eliminati</label>
+      </div>
+      <button type="button" class="cw-element-row cw-group-row" *ngFor="let group of visibleGroups(); trackBy: trackById" (click)="openGroup(group)">
+        <span class="cw-element-name"><small>{{ groupLabel }} #{{ group.id }}</small><strong>{{ group.name }}</strong></span>
+        <span class="cw-element-count"><b>{{ groupItems(group).length }} {{ groupItems(group).length === 1 ? 'elemento' : 'elementi' }}</b><small>{{ groupPieceCount(group) }} {{ groupPieceCount(group) === 1 ? 'pezzo' : 'pezzi' }}</small></span>
+        <span class="cw-badge warn" *ngIf="group.deletedAt">Eliminato</span><i class="fas fa-chevron-right" aria-hidden="true"></i>
+      </button>
+      <p class="cw-empty" *ngIf="!visibleGroups().length">{{ groupSearch ? 'Nessun raggruppamento corrisponde alla ricerca.' : 'Nessun raggruppamento da mostrare.' }}</p>
+    </section>
+
+    <section class="cw-card cw-inventory" *ngIf="activeSection === 'inventory' && selectedGroup && !selectedItem">
+      <button class="cw-text-button" type="button" (click)="closeGroup()"><i class="fas fa-arrow-left" aria-hidden="true"></i> {{ groupBackLabel }}</button>
+      <div class="cw-section-heading"><div><small>{{ groupLabel }} #{{ selectedGroup.id }}</small><h2>{{ selectedGroup.name }}</h2><p class="cw-muted">Elementi del raggruppamento. Apri un elemento per consultare i suoi pezzi, le foto e lo storico.</p></div></div>
+      <div class="cw-inventory-filters">
+        <input class="form-control" type="search" [(ngModel)]="inventorySearch" aria-label="Cerca elemento" placeholder="Cerca elemento" />
+        <label class="cw-check"><input type="checkbox" [(ngModel)]="showDeletedItems" /> Mostra anche gli elementi eliminati</label>
+      </div>
+      <div class="cw-element-list">
+        <button type="button" class="cw-element-row" *ngFor="let item of visibleItems(); trackBy: trackById" (click)="openItem(item)">
+          <span class="cw-element-name"><small>{{ groupFor(item)?.name }} · Elemento #{{ item.id }}</small><strong>{{ item.name }}</strong></span>
+          <span class="cw-element-count"><b>{{ activePieceCount(item) }} {{ activePieceCount(item) === 1 ? 'pezzo' : 'pezzi' }}</b><small>{{ loadedPieceCount(item) }} {{ loadedPieceCount(item) === 1 ? 'caricato' : 'caricati' }}</small></span>
+          <span class="cw-badge warn" *ngIf="item.deletedAt">Eliminato</span>
+          <i class="fas fa-chevron-right" aria-hidden="true"></i>
+        </button>
+      </div>
+      <p class="cw-empty" *ngIf="!visibleItems().length">{{ inventorySearch ? 'Nessun elemento corrisponde alla ricerca.' : 'Nessun elemento da mostrare.' }}</p>
+    </section>
+
+    <ng-container *ngIf="activeSection === 'inventory'">
+      <section class="cw-card cw-item-detail" *ngIf="selectedItem as item">
+        <button class="cw-text-button" type="button" (click)="closeItem()"><i class="fas fa-arrow-left" aria-hidden="true"></i> Elementi · {{ selectedGroup?.name }}</button>
+        <header class="cw-item-heading"><div><small>{{ groupFor(item)?.name }} · Elemento #{{ item.id }}</small><h2>{{ item.name }}</h2><p class="cw-muted">{{ activePieceCount(item) }} {{ activePieceCount(item) === 1 ? 'pezzo' : 'pezzi' }} · {{ loadedPieceCount(item) }} {{ loadedPieceCount(item) === 1 ? 'caricato' : 'caricati' }}<span *ngIf="item.deletedAt"> · Elemento eliminato</span></p></div><button class="btn btn-outline-secondary" type="button" (click)="openHistory(item)">Storico elemento</button></header>
+        <nav class="cw-tabs cw-item-tabs" aria-label="Dettagli elemento">
+          <button type="button" [class.active]="itemSection === 'pieces'" [attr.aria-pressed]="itemSection === 'pieces'" (click)="itemSection = 'pieces'">Pezzi</button>
+          <button type="button" [class.active]="itemSection === 'photos'" [attr.aria-pressed]="itemSection === 'photos'" (click)="itemSection = 'photos'">Foto e note</button>
+        </nav>
+        <div *ngIf="itemSection === 'pieces'">
+          <p class="cw-muted">Apri un pezzo per vedere il codice, le foto e le etichette precedenti.</p>
+          <label class="cw-check" *ngIf="hasDeletedPieces(item)"><input type="checkbox" [(ngModel)]="showDeletedPieces" /> Mostra anche i pezzi eliminati</label>
+          <article class="cw-piece-entry" *ngFor="let piece of visiblePieces(item); trackBy: trackById">
+            <button type="button" class="cw-piece-toggle" [attr.aria-expanded]="expandedPieceId === piece.id" (click)="togglePiece(piece)">
+              <span><b>Pezzo {{ piece.pieceNumber }}/{{ piece.totalPieces }}</b><small>{{ piece.permanentId }}</small></span>
+              <span class="cw-badge" [class.loaded]="piece.physicalStatus === 'loaded'" [class.warn]="!!piece.deletedAt">{{ physicalStatus(piece.physicalStatus) }}</span>
+              <i class="fas" [class.fa-chevron-up]="expandedPieceId === piece.id" [class.fa-chevron-down]="expandedPieceId !== piece.id" aria-hidden="true"></i>
+            </button>
+            <div class="cw-piece-detail" *ngIf="expandedPieceId === piece.id">
+              <p class="cw-muted">{{ piece.deletedAt ? 'Ultimo codice del pezzo eliminato — non utilizzabile' : 'Codice etichetta corrente' }}</p><code>{{ piece.currentCode }}</code>
+              <button type="button" class="btn btn-outline-secondary" (click)="openHistory(item, piece)">Storico pezzo</button>
+              <p *ngIf="piece.note">{{ piece.note }}</p>
+              <div class="cw-photos" *ngIf="piecePhotos(piece).length"><a *ngFor="let photo of piecePhotos(piece)" [href]="photoUrl(photo)" target="_blank" rel="noopener"><img [src]="photoUrl(photo)" [alt]="'Foto del pezzo ' + piece.permanentId" loading="lazy" /></a></div>
+              <details class="cw-piece-labels" *ngIf="labelsFor(piece).length"><summary>Etichette e versioni ({{ labelsFor(piece).length }})</summary><div class="cw-label" *ngFor="let label of labelsFor(piece)" [class.obsolete]="!label.active"><code>{{ label.code }}</code><span>{{ label.active ? 'Corrente' : 'Bloccata' }} · {{ labelReason(label.reason) }}</span></div></details>
+            </div>
+          </article>
+          <p class="cw-empty" *ngIf="!visiblePieces(item).length">Nessun pezzo da mostrare.</p>
+        </div>
+        <div class="cw-item-photos" *ngIf="itemSection === 'photos'">
+          <h3>Foto dell’elemento</h3><p class="cw-muted">Le foto dei singoli pezzi sono nel dettaglio del pezzo.</p>
+          <div class="cw-photos"><a *ngFor="let photo of photosFor(item)" [href]="photoUrl(photo)" target="_blank" rel="noopener"><img [src]="photoUrl(photo)" [alt]="'Foto di ' + item.name" loading="lazy" /></a></div>
+          <p *ngIf="!photosFor(item).length" class="cw-muted">Nessuna foto dell’elemento.</p>
+          <h3>Note</h3><p class="cw-note">{{ item.note || 'Nessuna nota.' }}</p>
+        </div>
+      </section>
+    </ng-container>
+
+    <section class="cw-card cw-operations" *ngIf="activeSection === 'operations'"><h2>Operazioni</h2><p class="cw-muted">Carichi e scarichi della pratica, con stato e note di chiusura.</p>
+      <div class="cw-operation" *ngFor="let operation of selected.operations">
+        <span><strong>{{ operationLabel(operation.type) }}</strong><small>{{ operation.appointment?.startDate | date:'dd/MM/yyyy HH:mm' }}</small></span>
+        <span [class.warn]="operation.status === 'forced'">{{ operationStatus(operation.status) }} · {{ operation.acceptedScans }} {{ operation.acceptedScans === 1 ? 'scansione' : 'scansioni' }}</span>
+        <p *ngIf="operation.forcedNote"><b>Nota chiusura forzata:</b> {{ operation.forcedNote }}</p>
+        <button type="button" class="btn btn-outline-primary" *ngIf="canReopenOperation(operation) && operationToReopenId !== operation.id" [disabled]="loading || reopeningOperationId !== null" (click)="operationToReopenId = operation.id">Riapri operazione</button>
+        <div class="cw-reopen-confirm" *ngIf="operationToReopenId === operation.id">
+          <p>Riaprire questa operazione di {{ operationLabel(operation.type).toLowerCase() }}? Tornerà in corso. Le scansioni precedenti e lo stato dei pezzi rimarranno invariati.</p>
+          <div class="cw-actions"><button type="button" class="btn btn-primary" [disabled]="loading || reopeningOperationId !== null" (click)="reopenOperation(operation)">{{ reopeningOperationId === operation.id ? 'Riapertura…' : 'Conferma riapertura' }}</button><button type="button" class="btn btn-outline-secondary" [disabled]="reopeningOperationId !== null" (click)="operationToReopenId = null">Annulla</button></div>
+        </div>
+      </div>
+      <p class="cw-empty" *ngIf="!selected.operations?.length">Nessuna operazione presente.</p>
+    </section>
+
+    <section class="cw-card" id="warehouse-history" *ngIf="activeSection === 'history' && historyVisible">
+      <header class="cw-history-heading"><div><h2>Storico attività</h2><p>{{ historyTitle }}</p></div><button type="button" class="btn btn-outline-secondary" (click)="closeHistory()">Torna alla consultazione</button></header>
+      <p class="text-muted">Le modifiche dettagliate vengono registrate da questo aggiornamento. Le scansioni precedenti sono incluse quando disponibili.</p>
+      <p *ngIf="historyLoading" role="status">Caricamento storico…</p>
+      <p *ngIf="!historyLoading && !historyEvents.length">Nessuna attività registrata per questa selezione.</p>
+      <article class="cw-history-event" *ngFor="let event of historyEvents">
+        <div><strong>{{ historyAction(event) }}</strong><time>{{ event.createdAt | date:'dd/MM/yyyy HH:mm:ss' }}</time></div>
+        <p><b>{{ historyEmployeeName(event) }}</b><span class="cw-muted" *ngIf="event.adminId"> · Utente MVanager #{{ event.adminId }}</span><span class="cw-muted" *ngIf="!event.adminId && event.employeeId && historyEmployeeName(event) !== 'Dipendente #' + event.employeeId"> · Dipendente #{{ event.employeeId }}</span></p>
+        <p>{{ historyTarget(event) }}</p>
+        <p class="text-muted" *ngIf="event.deviceCreatedAt">Ora dichiarata dal dispositivo offline: {{ event.deviceCreatedAt | date:'dd/MM/yyyy HH:mm:ss' }} · Registrata sul server all’orario sopra indicato.</p>
+        <details *ngIf="historyChanges(event).length"><summary>Vedi dettagli e modifiche</summary>
+          <dl><ng-container *ngFor="let change of historyChanges(event)"><dt>{{ change.label }}</dt><dd><span *ngIf="event.beforeJson">{{ change.before }} → </span>{{ change.after }}</dd></ng-container></dl>
+        </details>
+      </article>
+      <button class="btn btn-outline-primary" *ngIf="historyEvents.length < historyTotal" [disabled]="historyLoading" (click)="loadHistory(true)">Carica attività precedenti</button>
+    </section>
+
+  </ng-container>
+</div>

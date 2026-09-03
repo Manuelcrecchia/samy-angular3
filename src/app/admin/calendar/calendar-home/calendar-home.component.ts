@@ -20,6 +20,7 @@ interface RawEvent {
   status: string;
   inspectionAdminIds?: number[];
   inspectionReminderMinutes?: number | null;
+  customerWarehouseMode?: 'none' | 'load' | 'unload' | 'load_unload';
 }
 
 interface CalEvent {
@@ -36,6 +37,7 @@ interface CalEvent {
   originalId?: number;
   inspectionAdminIds?: number[];
   inspectionReminderMinutes?: number | null;
+  customerWarehouseMode?: 'none' | 'load' | 'unload' | 'load_unload';
 }
 
 interface AdminOption {
@@ -58,6 +60,11 @@ interface CalendarCategoryOption {
   inspection?: boolean;
   serviceOrder?: boolean;
   keyRequired?: boolean;
+  customerWarehouse?: {
+    enabled: boolean;
+    allowedOperations: Array<'load' | 'unload' | 'load_unload'>;
+    defaultOperation: 'none' | 'load' | 'unload' | 'load_unload';
+  };
 }
 
 interface DayCell {
@@ -116,6 +123,7 @@ export class CalendarHomeComponent implements OnInit {
   popupCategory = '';
   popupInspectionAdminIds: number[] = [];
   popupInspectionReminderMinutes: number | null = 30;
+  popupCustomerWarehouseMode: 'none' | 'load' | 'unload' | 'load_unload' = 'none';
 
   recurrenceEnabled = false;
   recurrenceFreq: 'DAILY' | 'WEEKLY' | 'MONTHLY' = 'DAILY';
@@ -391,6 +399,7 @@ export class CalendarHomeComponent implements OnInit {
         raw.inspectionReminderMinutes !== undefined
           ? Number(raw.inspectionReminderMinutes)
           : null,
+      customerWarehouseMode: raw.customerWarehouseMode || 'none',
     };
   }
 
@@ -632,6 +641,7 @@ export class CalendarHomeComponent implements OnInit {
     this.popupServiceOrderId = serviceOrderId;
     this.popupStartDate=this.toInputDatetime(start);
     this.popupCategory=category||this.globalService.getDefaultAppointmentCategory(this.categories[0]?.id || '')||'';
+    this.resetCustomerWarehouseModeForCategory();
     this.updatePopupEndFromCustomerDuration();
     this.popupInspectionAdminIds = [];
     this.popupInspectionReminderMinutes = 30;
@@ -773,6 +783,7 @@ export class CalendarHomeComponent implements OnInit {
     this.popupTitle=popupEvent.title; this.popupDescription=popupEvent.description||'';
     this.popupStartDate=this.toInputDatetime(popupEvent.start); this.popupEndDate=this.toInputDatetime(popupEvent.end);
     this.popupCategory=popupEvent.categories; this.recurrenceEnabled=this.editingSingleOccurrence ? false : this.hasRecurrenceRule; this.showDeleteConfirm=false;
+    this.popupCustomerWarehouseMode = popupEvent.customerWarehouseMode || 'none';
     this.popupInspectionAdminIds = Array.isArray(popupEvent.inspectionAdminIds)
       ? [...popupEvent.inspectionAdminIds]
       : [];
@@ -901,7 +912,35 @@ export class CalendarHomeComponent implements OnInit {
   onCategoryChange() {
     if (!this.isQuoteCategory(this.getCategoryOption(this.popupCategory))) this.popupNumeroPreventivo='';
     this.updatePopupEndFromCustomerDuration();
+    this.resetCustomerWarehouseModeForCategory();
     this.filteredAutocomplete=this.getAutocompleteSource(this.popupCategory); this.autocompleteOpen=false;
+  }
+
+  get selectedCustomerWarehouseCategory(): CalendarCategoryOption | undefined {
+    const category = this.getCategoryOption(this.popupCategory);
+    return category?.customerWarehouse?.enabled === true ? category : undefined;
+  }
+
+  customerWarehouseOperationOptions(): Array<{ value: 'load' | 'unload' | 'load_unload'; label: string }> {
+    const allowed = this.selectedCustomerWarehouseCategory?.customerWarehouse?.allowedOperations || [];
+    const labels: Record<'load' | 'unload' | 'load_unload', string> = {
+      load: 'Carico',
+      unload: 'Scarico',
+      load_unload: 'Carico e scarico',
+    };
+    return allowed.map((value) => ({ value, label: labels[value] }));
+  }
+
+  private resetCustomerWarehouseModeForCategory(): void {
+    const config = this.selectedCustomerWarehouseCategory?.customerWarehouse;
+    this.popupCustomerWarehouseMode = config?.defaultOperation && config.defaultOperation !== 'none'
+      ? config.defaultOperation
+      : 'none';
+    this.onCustomerWarehouseModeChange();
+  }
+
+  onCustomerWarehouseModeChange(): void {
+    if (this.popupCustomerWarehouseMode !== 'none') this.recurrenceEnabled = false;
   }
 
   toggleInspectionAdmin(adminId: number) {
@@ -1015,6 +1054,7 @@ export class CalendarHomeComponent implements OnInit {
         hasReminder
           ? this.popupInspectionReminderMinutes
           : null,
+      customerWarehouseMode: this.popupCustomerWarehouseMode,
     };
     // Negli edit il backend conserva il riferimento esistente quando non si
     // sta scegliendo esplicitamente un nuovo preventivo.
@@ -1036,7 +1076,7 @@ export class CalendarHomeComponent implements OnInit {
     const wasNewEvent = this.isNewEvent;
     this.http.post(this.globalService.url+(wasNewEvent?'appointments/add':'appointments/edit'), body, {
       headers: this.globalService.headers, responseType: 'text',
-    }).subscribe((response)=>{
+    }).subscribe({ next: (response)=>{
       let appointmentId = this.editingEventId;
       if (wasNewEvent) {
         try {
@@ -1089,7 +1129,9 @@ export class CalendarHomeComponent implements OnInit {
       if (isInspection) {
         this.sendInspectionConfirmation(body);
       }
-    });
+    }, error: (err) => {
+      this.popupService.showError(err?.error?.error || err?.error || 'Impossibile salvare l’appuntamento.');
+    }});
   }
 
   private saveSingleOccurrence(body: any, isInspection: boolean, hasReminder: boolean) {
@@ -1221,6 +1263,7 @@ export class CalendarHomeComponent implements OnInit {
         quoteType: category.quoteType || '',
         inspection: category.inspection === true,
         serviceOrder: category.serviceOrder === true,
+        customerWarehouse: category.customerWarehouse,
         keyRequired: category.keyRequired === true,
       }));
 

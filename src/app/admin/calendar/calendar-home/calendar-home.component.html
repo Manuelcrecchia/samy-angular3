@@ -311,6 +311,15 @@
         </select>
       </div>
 
+      <div class="form-group" *ngIf="selectedCustomerWarehouseCategory && !editingSingleOccurrence">
+        <label>Magazzino clienti</label>
+        <select [(ngModel)]="popupCustomerWarehouseMode" (change)="onCustomerWarehouseModeChange()" class="form-input">
+          <option [ngValue]="'none'">Nessuna operazione</option>
+          <option *ngFor="let option of customerWarehouseOperationOptions()" [ngValue]="option.value">{{ option.label }}</option>
+        </select>
+        <small class="small-help">La pratica del cliente e le operazioni vengono collegate automaticamente.</small>
+      </div>
+
       <div class="inspection-settings">
         <div class="form-group">
           <label>Ricorda questo evento a</label>
@@ -348,7 +357,7 @@
       </div>
 
       <!-- Recurrence toggle -->
-      <div class="form-group form-inline" *ngIf="!editingSingleOccurrence && !isDeadlinePlanning">
+      <div class="form-group form-inline" *ngIf="!editingSingleOccurrence && !isDeadlinePlanning && popupCustomerWarehouseMode === 'none'">
         <label>Abilita Ricorrenza</label>
         <label class="toggle-switch">
           <input type="checkbox" [(ngModel)]="recurrenceEnabled">
@@ -357,7 +366,7 @@
       </div>
 
       <!-- Recurrence options -->
-      <div class="recurrence-box" *ngIf="recurrenceEnabled && !editingSingleOccurrence && !isDeadlinePlanning">
+      <div class="recurrence-box" *ngIf="recurrenceEnabled && !editingSingleOccurrence && !isDeadlinePlanning && popupCustomerWarehouseMode === 'none'">
         <div class="form-group">
           <label>Ripeti</label>
           <select [(ngModel)]="recurrenceFreq" class="form-input">

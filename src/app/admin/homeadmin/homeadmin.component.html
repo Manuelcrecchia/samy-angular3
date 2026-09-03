@@ -1719,6 +1719,9 @@
             <button class="sidebar-bottom-btn" type="button" *ngIf="canUsePermission('SETTINGS_QUOTES', 'quotes')" (click)="navigateToQuoteSettings()">
               <i class="fas fa-file-invoice-dollar"></i> <span class="sidebar-btn-text">Impostazioni preventivi</span>
             </button>
+            <button class="sidebar-bottom-btn" type="button" *ngIf="canUsePermission('EMAIL_SETTINGS', 'email')" (click)="navigateToEmailSendingSettings()">
+              <i class="fas fa-paper-plane"></i> <span class="sidebar-btn-text">Impostazioni invio email</span>
+            </button>
             <button class="sidebar-bottom-btn" type="button" *ngIf="canUsePermission('EMAIL_SETTINGS', 'email')" (click)="navigateToEmailSettings()">
               <i class="fas fa-envelope-open-text"></i> <span class="sidebar-btn-text">Impostazioni email</span>
             </button>
@@ -1985,6 +1988,7 @@
           <button type="button" *ngIf="canUsePermission('VEHICLE_SETTINGS_MANAGE', 'vehicleDeadlines')" (click)="navigateToVehiclesSettings()">Gestione mezzi</button>
           <button type="button" *ngIf="canUsePermission('EQUIPMENT_SETTINGS_MANAGE', 'equipmentDeadlines')" (click)="navigateToEquipmentSettings()">Gestione attrezzature</button>
           <button type="button" *ngIf="canUsePermission('SETTINGS_QUOTES', 'quotes')" (click)="navigateToQuoteSettings()">Impostazioni preventivi</button>
+          <button type="button" *ngIf="canUsePermission('EMAIL_SETTINGS', 'email')" (click)="navigateToEmailSendingSettings()">Impostazioni invio email</button>
           <button type="button" *ngIf="canUsePermission('EMAIL_SETTINGS', 'email')" (click)="navigateToEmailSettings()">Impostazioni email</button>
           <button type="button" *ngIf="global.forMobile && canUsePermission('NOTIFICATIONS_VIEW', 'notifications')" (click)="navigateToNotificationSettings()">Preferenze notifiche amministratore</button>
           <button type="button" (click)="changeTenant()">Cambia azienda</button>

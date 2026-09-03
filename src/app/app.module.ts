@@ -109,6 +109,7 @@ import { ServiceOrderAcceptComponent } from './public/service-order-accept/servi
 import { WorkCompletionStatsComponent } from './admin/work-completion-stats/work-completion-stats.component';
 import { EmailHomeComponent } from './admin/email-home/email-home.component';
 import { EmailSettingsComponent } from './admin/email-settings/email-settings.component';
+import { EmailSendingSettingsComponent } from './admin/email-sending-settings/email-sending-settings.component';
 import { NotificationSettingsComponent } from './admin/notification-settings/notification-settings.component';
 import { AppErrorHandler } from './app-error-handler';
 import { InternalWarehouseComponent } from './admin/internal-warehouse/internal-warehouse.component';
@@ -184,6 +185,7 @@ registerLocaleData(localeIt);
     WorkCompletionStatsComponent,
     EmailHomeComponent,
     EmailSettingsComponent,
+    EmailSendingSettingsComponent,
     NotificationSettingsComponent,
     InternalWarehouseComponent,
     InvoicesComponent,

@@ -60,8 +60,10 @@ import { WorkCompletionStatsComponent } from './admin/work-completion-stats/work
 import { CustomerWorkCompletionComponent } from './admin/customer-work-completion/customer-work-completion.component';
 import { EmailHomeComponent } from './admin/email-home/email-home.component';
 import { EmailSettingsComponent } from './admin/email-settings/email-settings.component';
+import { EmailSendingSettingsComponent } from './admin/email-sending-settings/email-sending-settings.component';
 import { NotificationSettingsComponent } from './admin/notification-settings/notification-settings.component';
 import { InternalWarehouseComponent } from './admin/internal-warehouse/internal-warehouse.component';
+import { CustomerWarehouseComponent } from './admin/customer-warehouse/customer-warehouse.component';
 import { InvoicesComponent } from './admin/invoices/invoices.component';
 import { AccountingComponent } from './admin/accounting/accounting.component';
 import { EmployeeContractsComponent } from './admin/employee-contracts/employee-contracts.component';
@@ -117,6 +119,12 @@ const routes: Routes = [
       {
         path: 'emailSettings',
         component: EmailSettingsComponent,
+        canActivate: [AuthGuard, AuthLevelGuard],
+        data: { permission: 'EMAIL_SETTINGS' },
+      },
+      {
+        path: 'emailSendingSettings',
+        component: EmailSendingSettingsComponent,
         canActivate: [AuthGuard, AuthLevelGuard],
         data: { permission: 'EMAIL_SETTINGS' },
       },
@@ -250,6 +258,12 @@ const routes: Routes = [
         component: InternalWarehouseComponent,
         canActivate: [AuthGuard, AuthLevelGuard],
         data: { permission: 'INTERNAL_WAREHOUSE_VIEW' },
+      },
+      {
+        path: 'customer-warehouse',
+        component: CustomerWarehouseComponent,
+        canActivate: [AuthGuard, AuthLevelGuard],
+        data: { permission: 'CUSTOMER_WAREHOUSE_VIEW' },
       },
       {
         path: 'riepilogo-ore-clienti',
@@ -516,6 +530,12 @@ const routes: Routes = [
     data: { permission: 'EMAIL_SETTINGS' },
   },
   {
+    path: 'emailSendingSettings',
+    component: EmailSendingSettingsComponent,
+    canActivate: [AdminShellRedirectGuard, AuthGuard, AuthLevelGuard],
+    data: { permission: 'EMAIL_SETTINGS' },
+  },
+  {
     path: 'notificationSettings',
     component: NotificationSettingsComponent,
     canActivate: [AdminShellRedirectGuard, AuthGuard, AuthLevelGuard],
@@ -606,6 +626,12 @@ const routes: Routes = [
     component: InternalWarehouseComponent,
     canActivate: [AdminShellRedirectGuard, AuthGuard, AuthLevelGuard],
     data: { permission: 'INTERNAL_WAREHOUSE_VIEW' },
+  },
+  {
+    path: 'customer-warehouse',
+    component: CustomerWarehouseComponent,
+    canActivate: [AdminShellRedirectGuard, AuthGuard, AuthLevelGuard],
+    data: { permission: 'CUSTOMER_WAREHOUSE_VIEW' },
   },
 
   // clienti

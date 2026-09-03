@@ -24,6 +24,7 @@ export class AdminShellRedirectGuard implements CanActivate {
     'editQuote',
     'email',
     'emailSettings',
+    'emailSendingSettings',
     'employee-deadlines',
     'equipment-deadlines',
     'equipmentSettings',

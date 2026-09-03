@@ -105,6 +105,11 @@ export interface TenantAppointmentCategoryConfig {
   withCustomerLink?: boolean;
   inspection?: boolean;
   serviceOrder?: boolean;
+  customerWarehouse?: {
+    enabled: boolean;
+    allowedOperations: Array<'load' | 'unload' | 'load_unload'>;
+    defaultOperation: 'none' | 'load' | 'unload' | 'load_unload';
+  };
   defaultForTenant?: boolean;
   keyRequired?: boolean;
 }
@@ -712,6 +717,10 @@ export class GlobalService {
     }
 
     return true;
+  }
+
+  hasFeature(feature: string): boolean {
+    return this.hasTenantFeature(feature);
   }
 
   canCreateCustomers(): boolean {
