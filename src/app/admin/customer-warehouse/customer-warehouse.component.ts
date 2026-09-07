@@ -18,6 +18,8 @@ export class CustomerWarehouseComponent implements OnInit, OnDestroy {
   search = '';
   verifyCode = '';
   verification: any = null;
+  listMode: 'practices' | 'verify' = 'practices';
+  listFilter: 'active' | 'completed' | 'all' = 'active';
   loading = false;
   message = '';
   error = '';
@@ -94,6 +96,42 @@ export class CustomerWarehouseComponent implements OnInit, OnDestroy {
     this.selected = null; this.verification = null; this.historyVisible = false;
     this.historyRequest++; this.practiceRequest++; this.loading = false;
     this.resetInventoryNavigation();
+  }
+
+  selectListMode(mode: 'practices' | 'verify'): void {
+    this.listMode = mode; this.error = ''; this.message = '';
+    if (mode === 'practices') this.verification = null;
+  }
+
+  filteredPractices(): any[] {
+    if (this.listFilter === 'all') return this.practices;
+    return this.practices.filter(practice => this.listFilter === 'completed'
+      ? this.practiceWorkflow(practice).completed
+      : !this.practiceWorkflow(practice).completed);
+  }
+
+  practiceFilterCount(filter: 'active' | 'completed' | 'all'): number {
+    if (filter === 'all') return this.practices.length;
+    return this.practices.filter(practice => filter === 'completed'
+      ? this.practiceWorkflow(practice).completed
+      : !this.practiceWorkflow(practice).completed).length;
+  }
+
+  practiceWorkflow(practice: any): { code: string; label: string; hint: string; completed: boolean } {
+    if (practice?.workflow) return practice.workflow;
+    const counts = practice?.counts || {};
+    const operations = practice?.operations || [];
+    const active = (type: string, status: string) => operations.some((operation: any) => operation.type === type && operation.status === status);
+    if (active('unload', 'in_progress')) return { code: 'unload_in_progress', label: 'Scarico in corso', hint: 'La squadra sta registrando la riconsegna.', completed: false };
+    if (active('load', 'in_progress')) return { code: 'load_in_progress', label: 'Carico in corso', hint: 'La squadra sta registrando il carico.', completed: false };
+    if (active('load', 'scheduled') && Number(counts.inventoried || 0) > 0) return { code: 'ready_to_load', label: 'Da caricare', hint: 'Il carico è pianificato.', completed: false };
+    if (active('unload', 'scheduled') && Number(counts.loaded || 0) > 0) return { code: 'ready_to_unload', label: 'Da scaricare', hint: 'Lo scarico è pianificato.', completed: false };
+    if (active('load', 'scheduled')) return { code: 'ready_to_load', label: 'Da caricare', hint: 'La squadra deve prima creare elementi ed etichette.', completed: false };
+    if (active('unload', 'scheduled')) return { code: 'ready_to_unload', label: 'Da scaricare', hint: 'Non risultano ancora pezzi caricati.', completed: false };
+    if (Number(counts.loaded || 0) > 0) return { code: 'stored', label: 'Merce in magazzino', hint: 'Attende la pianificazione dello scarico.', completed: false };
+    if (Number(counts.inventoried || 0) > 0) return { code: 'inventory', label: 'Inventario da completare', hint: 'La merce non è ancora caricata.', completed: false };
+    if (Number(counts.unloaded || 0) > 0) return { code: 'completed', label: 'Merce riconsegnata', hint: 'Tutti i pezzi risultano scaricati.', completed: true };
+    return { code: 'empty', label: 'Inventario da creare', hint: 'La squadra deve creare elementi ed etichette.', completed: false };
   }
 
   private resetInventoryNavigation(): void {
@@ -269,6 +307,11 @@ export class CustomerWarehouseComponent implements OnInit, OnDestroy {
   operationLabel(type: string): string { return type === 'load' ? 'Carico' : 'Scarico'; }
   operationStatus(status: string): string {
     return ({ scheduled: 'Pianificata', in_progress: 'In corso', completed: 'Completata', forced: 'Chiusa incompleta', cancelled: 'Annullata' } as any)[status] || status;
+  }
+  operationActor(operation: any, phase: 'started' | 'completed'): string {
+    const id = phase === 'started' ? operation.startedByEmployeeId : operation.completedByEmployeeId;
+    const name = phase === 'started' ? operation.startedByEmployeeName : operation.completedByEmployeeName;
+    return String(name || '').trim() || (id ? `Dipendente #${id}` : 'Non disponibile');
   }
   physicalStatus(status: string): string {
     return ({ inventoried: 'Inventariato', loaded: 'Caricato', unloaded: 'Scaricato', deleted: 'Eliminato' } as any)[status] || status;

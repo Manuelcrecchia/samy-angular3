@@ -164,16 +164,19 @@ export class InternalDocumentsComponent implements OnInit {
 
   selectFolder(folder: string): void {
     this.selectedFolder = this.joinPath(this.selectedFolder, folder);
+    this.documentSearch = '';
     this.refreshDirectory();
   }
 
   selectRoot(): void {
     this.selectedFolder = '';
+    this.documentSearch = '';
     this.refreshDirectory();
   }
 
   goUp(): void {
     this.selectedFolder = this.parentPath(this.selectedFolder);
+    this.documentSearch = '';
     this.refreshDirectory();
   }
 

@@ -37,6 +37,29 @@ describe('CustomerWarehouseComponent history', () => {
     };
     render();
   };
+  it('separates practice management from free label verification and filters returned goods', () => {
+    component.selected = null;
+    component.practices = [
+      { id: 1, numeroCliente: 460, customerDisplayName: 'Cliente attivo', counts: { loaded: 2 }, workflow: { code: 'stored', label: 'Merce in magazzino', hint: 'Attende lo scarico.', completed: false } },
+      { id: 2, numeroCliente: 461, customerDisplayName: 'Cliente concluso', counts: { unloaded: 3 }, workflow: { code: 'completed', label: 'Merce riconsegnata', hint: 'Tutto consegnato.', completed: true } },
+    ];
+    render();
+    expect(all('.cw-list-tabs button').length).toBe(2); expect(all('.cw-practice').length).toBe(1);
+    expect(query('.cw-practice')!.textContent).toContain('Cliente attivo'); expect(query('.cw-verify')).toBeNull();
+    all('.cw-filter-tabs button')[1].click(); render();
+    expect(all('.cw-practice').length).toBe(1); expect(query('.cw-practice')!.textContent).toContain('Cliente concluso');
+    all('.cw-list-tabs button')[1].click(); render();
+    expect(query('.cw-search')).toBeNull(); expect(query('.cw-grid')).toBeNull(); expect(query('.cw-verify')).not.toBeNull();
+  });
+  it('shows the customer identity in office label verification', () => {
+    component.selected = null; component.listMode = 'verify'; component.verification = {
+      usable: false, customer: { numeroCliente: 460, displayName: 'Mario Rossi' },
+      historical: { groupName: 'Sala', itemName: 'Armadio', pieceNumber: 1, totalPieces: 2 }, current: null,
+    };
+    render();
+    expect(query('.cw-verification')!.textContent).toContain('Mario Rossi');
+    expect(query('.cw-verification')!.textContent).toContain('Cliente 460');
+  });
   it('opens the customer on rooms without skipping to elements or pieces', () => {
     seedInventory();
     expect(all('.cw-group-row').length).toBe(2); expect(query('.cw-group-row')!.textContent).toContain('Sala');
@@ -98,6 +121,18 @@ describe('CustomerWarehouseComponent history', () => {
     component.selectSection('history'); const request = http.expectOne(req => req.url.endsWith('/history'));
     component.selectSection('inventory'); request.flush({ events: [event], total: 1 }); render();
     expect(query('#warehouse-history')).toBeNull(); expect(query('.cw-groups')).not.toBeNull();
+  });
+  it('shows who started and completed each load or unload', () => {
+    seedInventory();
+    Object.assign(component.selected.operations[0], {
+      startedByEmployeeId: 7, startedByEmployeeName: 'Mario Rossi',
+      completedByEmployeeId: 8, completedByEmployeeName: 'Luisa Bianchi',
+      rejectedScans: 2, progress: { completed: 1, total: 3 },
+    });
+    component.selectSection('operations'); render();
+    const text = query('.cw-operation')!.textContent!;
+    expect(text).toContain('Mario Rossi'); expect(text).toContain('Luisa Bianchi');
+    expect(text).toContain('1/3 pezzi'); expect(text).toContain('2 errori bloccati');
   });
   it('requires confirmation, prevents duplicate reopen requests and preserves piece and scan data', () => {
     seedInventory(); component.selectSection('operations'); render();
